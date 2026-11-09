@@ -1,20 +1,24 @@
 const FALLBACK_FIELDS = ["year", "seasons", "episodes", "runtime", "lang"];
 const SCALAR_FIELDS = ["status", "poster", "overviewHe"];
-const LIST_FIELDS = ["creators", "cast", "providers"];
+// People lists: an empty list from TMDB usually means missing data, so keep looking.
+const PEOPLE_FIELDS = ["creators", "cast"];
 
 const pick = (...vals) => vals.find(v => v !== null && v !== undefined) ?? null;
 
 /**
  * One series for data.json. Manual fields come from the entry; each live field falls back
- * to the previous night's value, then to the legacy fallback. Live lists (even empty) win
- * when the series was fetched — an empty provider list is real news.
+ * to the previous night's value, then to the legacy fallback (including the legacy cast
+ * and creators).
  */
 export function mergeEntry(entry, live, imdb, prev, now) {
   const { fallback = {}, ...manual } = entry;
   const s = { ...manual };
   for (const f of FALLBACK_FIELDS) s[f] = pick(live?.[f], prev?.[f], fallback[f]);
   for (const f of SCALAR_FIELDS) s[f] = pick(live?.[f], prev?.[f]);
-  for (const f of LIST_FIELDS) s[f] = live ? live[f] ?? [] : prev?.[f] ?? [];
+  for (const f of PEOPLE_FIELDS) s[f] = [live?.[f], prev?.[f], fallback[f]].find(v => v && v.length) ?? [];
+  // Providers: when fetched, live wins even if empty (the series left Israeli streaming).
+  // Not fetched: last real fetch if there was one, else the legacy main platform.
+  s.providers = live ? live.providers ?? [] : prev?.fetchedAt ? prev.providers ?? [] : fallback.providers ?? [];
   s.status ??= "ended";
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;

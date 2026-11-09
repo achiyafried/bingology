@@ -26,7 +26,48 @@
       "episodes": 28,
       "runtime": 60,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Damon Lindelof",
+        "Tom Perrotta"
+      ],
+      "cast": [
+        {
+          "name": "Justin Theroux",
+          "photo": null
+        },
+        {
+          "name": "Carrie Coon",
+          "photo": null
+        },
+        {
+          "name": "Amy Brenneman",
+          "photo": null
+        },
+        {
+          "name": "Christopher Eccleston",
+          "photo": null
+        },
+        {
+          "name": "Liv Tyler",
+          "photo": null
+        },
+        {
+          "name": "Margaret Qualley",
+          "photo": null
+        },
+        {
+          "name": "Ann Dowd",
+          "photo": null
+        },
+        {
+          "name": "Scott Glenn",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -57,7 +98,47 @@
       "episodes": 86,
       "runtime": 55,
       "imdb": 9.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Chase"
+      ],
+      "cast": [
+        {
+          "name": "James Gandolfini",
+          "photo": null
+        },
+        {
+          "name": "Edie Falco",
+          "photo": null
+        },
+        {
+          "name": "Lorraine Bracco",
+          "photo": null
+        },
+        {
+          "name": "Michael Imperioli",
+          "photo": null
+        },
+        {
+          "name": "Steven Van Zandt",
+          "photo": null
+        },
+        {
+          "name": "Tony Sirico",
+          "photo": null
+        },
+        {
+          "name": "Dominic Chianese",
+          "photo": null
+        },
+        {
+          "name": "Jamie-Lynn Sigler",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -92,7 +173,47 @@
       "episodes": 62,
       "runtime": 47,
       "imdb": 9.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan"
+      ],
+      "cast": [
+        {
+          "name": "Bryan Cranston",
+          "photo": null
+        },
+        {
+          "name": "Aaron Paul",
+          "photo": null
+        },
+        {
+          "name": "Anna Gunn",
+          "photo": null
+        },
+        {
+          "name": "Bob Odenkirk",
+          "photo": null
+        },
+        {
+          "name": "Dean Norris",
+          "photo": null
+        },
+        {
+          "name": "Betsy Brandt",
+          "photo": null
+        },
+        {
+          "name": "RJ Mitte",
+          "photo": null
+        },
+        {
+          "name": "Giancarlo Esposito",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -122,7 +243,48 @@
       "episodes": 63,
       "runtime": 47,
       "imdb": 9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan",
+        "Peter Gould"
+      ],
+      "cast": [
+        {
+          "name": "Bob Odenkirk",
+          "photo": null
+        },
+        {
+          "name": "Rhea Seehorn",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Banks",
+          "photo": null
+        },
+        {
+          "name": "Michael McKean",
+          "photo": null
+        },
+        {
+          "name": "Patrick Fabian",
+          "photo": null
+        },
+        {
+          "name": "Giancarlo Esposito",
+          "photo": null
+        },
+        {
+          "name": "Michael Mando",
+          "photo": null
+        },
+        {
+          "name": "Tony Dalton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -156,7 +318,48 @@
       "episodes": 19,
       "runtime": 50,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Dan Erickson (יוצר)",
+        "Ben Stiller (במאי ומפיק)"
+      ],
+      "cast": [
+        {
+          "name": "Adam Scott",
+          "photo": null
+        },
+        {
+          "name": "Britt Lower",
+          "photo": null
+        },
+        {
+          "name": "Tramell Tillman",
+          "photo": null
+        },
+        {
+          "name": "Patricia Arquette",
+          "photo": null
+        },
+        {
+          "name": "John Turturro",
+          "photo": null
+        },
+        {
+          "name": "Christopher Walken",
+          "photo": null
+        },
+        {
+          "name": "Zach Cherry",
+          "photo": null
+        },
+        {
+          "name": "Dichen Lachman",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -189,7 +392,47 @@
       "episodes": 39,
       "runtime": 60,
       "imdb": 8.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jesse Armstrong"
+      ],
+      "cast": [
+        {
+          "name": "Brian Cox",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Strong",
+          "photo": null
+        },
+        {
+          "name": "Sarah Snook",
+          "photo": null
+        },
+        {
+          "name": "Kieran Culkin",
+          "photo": null
+        },
+        {
+          "name": "Alan Ruck",
+          "photo": null
+        },
+        {
+          "name": "Matthew Macfadyen",
+          "photo": null
+        },
+        {
+          "name": "Nicholas Braun",
+          "photo": null
+        },
+        {
+          "name": "J. Smith-Cameron",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -223,7 +466,47 @@
       "episodes": 9,
       "runtime": 60,
       "imdb": 7.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Damon Lindelof"
+      ],
+      "cast": [
+        {
+          "name": "Regina King",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Irons",
+          "photo": null
+        },
+        {
+          "name": "Don Johnson",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Tim Blake Nelson",
+          "photo": null
+        },
+        {
+          "name": "Yahya Abdul-Mateen II",
+          "photo": null
+        },
+        {
+          "name": "Louis Gossett Jr.",
+          "photo": null
+        },
+        {
+          "name": "Hong Chau",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -255,7 +538,47 @@
       "episodes": 60,
       "runtime": 58,
       "imdb": 9.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Simon"
+      ],
+      "cast": [
+        {
+          "name": "Dominic West",
+          "photo": null
+        },
+        {
+          "name": "Idris Elba",
+          "photo": null
+        },
+        {
+          "name": "Sonja Sohn",
+          "photo": null
+        },
+        {
+          "name": "Wendell Pierce",
+          "photo": null
+        },
+        {
+          "name": "Lance Reddick",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Clarke Peters",
+          "photo": null
+        },
+        {
+          "name": "Aidan Gillen",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -285,7 +608,47 @@
       "episodes": 40,
       "runtime": 60,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Eric Kripke"
+      ],
+      "cast": [
+        {
+          "name": "Karl Urban",
+          "photo": null
+        },
+        {
+          "name": "Jack Quaid",
+          "photo": null
+        },
+        {
+          "name": "Antony Starr",
+          "photo": null
+        },
+        {
+          "name": "Erin Moriarty",
+          "photo": null
+        },
+        {
+          "name": "Laz Alonso",
+          "photo": null
+        },
+        {
+          "name": "Chace Crawford",
+          "photo": null
+        },
+        {
+          "name": "Karen Fukuhara",
+          "photo": null
+        },
+        {
+          "name": "Jessie T. Usher",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
     }
   },
   {
@@ -319,7 +682,48 @@
       "episodes": 73,
       "runtime": 57,
       "imdb": 9.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Benioff",
+        "D. B. Weiss"
+      ],
+      "cast": [
+        {
+          "name": "Emilia Clarke",
+          "photo": null
+        },
+        {
+          "name": "Kit Harington",
+          "photo": null
+        },
+        {
+          "name": "Peter Dinklage",
+          "photo": null
+        },
+        {
+          "name": "Lena Headey",
+          "photo": null
+        },
+        {
+          "name": "Sophie Turner",
+          "photo": null
+        },
+        {
+          "name": "Maisie Williams",
+          "photo": null
+        },
+        {
+          "name": "Nikolaj Coster-Waldau",
+          "photo": null
+        },
+        {
+          "name": "Sean Bean",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -352,7 +756,47 @@
       "episodes": 63,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Alan Ball"
+      ],
+      "cast": [
+        {
+          "name": "Peter Krause",
+          "photo": null
+        },
+        {
+          "name": "Michael C. Hall",
+          "photo": null
+        },
+        {
+          "name": "Frances Conroy",
+          "photo": null
+        },
+        {
+          "name": "Lauren Ambrose",
+          "photo": null
+        },
+        {
+          "name": "Rachel Griffiths",
+          "photo": null
+        },
+        {
+          "name": "Freddy Rodriguez",
+          "photo": null
+        },
+        {
+          "name": "Mathew St. Patrick",
+          "photo": null
+        },
+        {
+          "name": "Justina Machado",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -379,7 +823,43 @@
       "episodes": 30,
       "runtime": 55,
       "imdb": 7.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David S. Goyer"
+      ],
+      "cast": [
+        {
+          "name": "Lee Pace",
+          "photo": null
+        },
+        {
+          "name": "Jared Harris",
+          "photo": null
+        },
+        {
+          "name": "Lou Llobell",
+          "photo": null
+        },
+        {
+          "name": "Leah Harvey",
+          "photo": null
+        },
+        {
+          "name": "Laura Birn",
+          "photo": null
+        },
+        {
+          "name": "Terrence Mann",
+          "photo": null
+        },
+        {
+          "name": "Cassian Bilton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -408,7 +888,48 @@
       "episodes": 177,
       "runtime": 45,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Frank Darabont (פיתוח)",
+        "Robert Kirkman (הקומיקס)"
+      ],
+      "cast": [
+        {
+          "name": "Andrew Lincoln",
+          "photo": null
+        },
+        {
+          "name": "Norman Reedus",
+          "photo": null
+        },
+        {
+          "name": "Melissa McBride",
+          "photo": null
+        },
+        {
+          "name": "Danai Gurira",
+          "photo": null
+        },
+        {
+          "name": "Steven Yeun",
+          "photo": null
+        },
+        {
+          "name": "Lauren Cohan",
+          "photo": null
+        },
+        {
+          "name": "Chandler Riggs",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Dean Morgan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -438,7 +959,49 @@
       "episodes": 40,
       "runtime": 55,
       "imdb": 8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Ronald D. Moore",
+        "Matt Wolpert",
+        "Ben Nedivi"
+      ],
+      "cast": [
+        {
+          "name": "Joel Kinnaman",
+          "photo": null
+        },
+        {
+          "name": "Michael Dorman",
+          "photo": null
+        },
+        {
+          "name": "Sarah Jones",
+          "photo": null
+        },
+        {
+          "name": "Wrenn Schmidt",
+          "photo": null
+        },
+        {
+          "name": "Shantel VanSanten",
+          "photo": null
+        },
+        {
+          "name": "Krys Marshall",
+          "photo": null
+        },
+        {
+          "name": "Jodi Balfour",
+          "photo": null
+        },
+        {
+          "name": "Cynthy Wu",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -473,7 +1036,49 @@
       "episodes": 121,
       "runtime": 43,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "J. J. Abrams",
+        "Jeffrey Lieber",
+        "Damon Lindelof"
+      ],
+      "cast": [
+        {
+          "name": "Matthew Fox",
+          "photo": null
+        },
+        {
+          "name": "Evangeline Lilly",
+          "photo": null
+        },
+        {
+          "name": "Jorge Garcia",
+          "photo": null
+        },
+        {
+          "name": "Terry O'Quinn",
+          "photo": null
+        },
+        {
+          "name": "Josh Holloway",
+          "photo": null
+        },
+        {
+          "name": "Naveen Andrews",
+          "photo": null
+        },
+        {
+          "name": "Daniel Dae Kim",
+          "photo": null
+        },
+        {
+          "name": "Michael Emerson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -506,7 +1111,47 @@
       "episodes": 92,
       "runtime": 47,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Matthew Weiner"
+      ],
+      "cast": [
+        {
+          "name": "Jon Hamm",
+          "photo": null
+        },
+        {
+          "name": "Elisabeth Moss",
+          "photo": null
+        },
+        {
+          "name": "January Jones",
+          "photo": null
+        },
+        {
+          "name": "John Slattery",
+          "photo": null
+        },
+        {
+          "name": "Christina Hendricks",
+          "photo": null
+        },
+        {
+          "name": "Vincent Kartheiser",
+          "photo": null
+        },
+        {
+          "name": "Robert Morse",
+          "photo": null
+        },
+        {
+          "name": "Jessica Paré",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -539,7 +1184,35 @@
       "episodes": 9,
       "runtime": 55,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan"
+      ],
+      "cast": [
+        {
+          "name": "Rhea Seehorn",
+          "photo": null
+        },
+        {
+          "name": "Karolina Wydra",
+          "photo": null
+        },
+        {
+          "name": "Carlos-Manuel Vesga",
+          "photo": null
+        },
+        {
+          "name": "Miriam Shor",
+          "photo": null
+        },
+        {
+          "name": "Samba Schutte",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -569,7 +1242,47 @@
       "episodes": 20,
       "runtime": 50,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Graham Yost"
+      ],
+      "cast": [
+        {
+          "name": "Rebecca Ferguson",
+          "photo": null
+        },
+        {
+          "name": "Tim Robbins",
+          "photo": null
+        },
+        {
+          "name": "Common",
+          "photo": null
+        },
+        {
+          "name": "Rashida Jones",
+          "photo": null
+        },
+        {
+          "name": "Harriet Walter",
+          "photo": null
+        },
+        {
+          "name": "Chinaza Uche",
+          "photo": null
+        },
+        {
+          "name": "Avi Nash",
+          "photo": null
+        },
+        {
+          "name": "Will Patton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -602,7 +1315,47 @@
       "episodes": 96,
       "runtime": 52,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "James Manos Jr."
+      ],
+      "cast": [
+        {
+          "name": "Michael C. Hall",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Carpenter",
+          "photo": null
+        },
+        {
+          "name": "Julie Benz",
+          "photo": null
+        },
+        {
+          "name": "David Zayas",
+          "photo": null
+        },
+        {
+          "name": "James Remar",
+          "photo": null
+        },
+        {
+          "name": "C. S. Lee",
+          "photo": null
+        },
+        {
+          "name": "Lauren Vélez",
+          "photo": null
+        },
+        {
+          "name": "Desmond Harrington",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -636,7 +1389,47 @@
       "episodes": 60,
       "runtime": 55,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Peter Morgan"
+      ],
+      "cast": [
+        {
+          "name": "Claire Foy",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Imelda Staunton",
+          "photo": null
+        },
+        {
+          "name": "Matt Smith",
+          "photo": null
+        },
+        {
+          "name": "Vanessa Kirby",
+          "photo": null
+        },
+        {
+          "name": "Tobias Menzies",
+          "photo": null
+        },
+        {
+          "name": "Josh O'Connor",
+          "photo": null
+        },
+        {
+          "name": "Gillian Anderson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -670,7 +1463,47 @@
       "episodes": 177,
       "runtime": 44,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Shore"
+      ],
+      "cast": [
+        {
+          "name": "Hugh Laurie",
+          "photo": null
+        },
+        {
+          "name": "Lisa Edelstein",
+          "photo": null
+        },
+        {
+          "name": "Omar Epps",
+          "photo": null
+        },
+        {
+          "name": "Robert Sean Leonard",
+          "photo": null
+        },
+        {
+          "name": "Jesse Spencer",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Morrison",
+          "photo": null
+        },
+        {
+          "name": "Peter Jacobson",
+          "photo": null
+        },
+        {
+          "name": "Olivia Wilde",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -705,7 +1538,63 @@
       "episodes": 22,
       "runtime": 60,
       "imdb": 7.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Mike White"
+      ],
+      "cast": [
+        {
+          "name": "Jennifer Coolidge",
+          "photo": null
+        },
+        {
+          "name": "Sydney Sweeney",
+          "photo": null
+        },
+        {
+          "name": "Murray Bartlett",
+          "photo": null
+        },
+        {
+          "name": "Alexandra Daddario",
+          "photo": null
+        },
+        {
+          "name": "Aubrey Plaza",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "Natasha Rothwell",
+          "photo": null
+        },
+        {
+          "name": "Connie Britton",
+          "photo": null
+        },
+        {
+          "name": "Theo James",
+          "photo": null
+        },
+        {
+          "name": "Parker Posey",
+          "photo": null
+        },
+        {
+          "name": "Jason Isaacs",
+          "photo": null
+        },
+        {
+          "name": "Michelle Monaghan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -737,7 +1626,56 @@
       "episodes": 16,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Craig Mazin",
+        "Neil Druckmann"
+      ],
+      "cast": [
+        {
+          "name": "Pedro Pascal",
+          "photo": null
+        },
+        {
+          "name": "Bella Ramsey",
+          "photo": null
+        },
+        {
+          "name": "Anna Torv",
+          "photo": null
+        },
+        {
+          "name": "Nick Offerman",
+          "photo": null
+        },
+        {
+          "name": "Gabriel Luna",
+          "photo": null
+        },
+        {
+          "name": "Merle Dandridge",
+          "photo": null
+        },
+        {
+          "name": "Murray Bartlett",
+          "photo": null
+        },
+        {
+          "name": "Melanie Lynskey",
+          "photo": null
+        },
+        {
+          "name": "Isabela Merced",
+          "photo": null
+        },
+        {
+          "name": "Kaitlyn Dever",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -770,7 +1708,52 @@
       "episodes": 44,
       "runtime": 55,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Bill Dubuque",
+        "Mark Williams"
+      ],
+      "cast": [
+        {
+          "name": "Jason Bateman",
+          "photo": null
+        },
+        {
+          "name": "Laura Linney",
+          "photo": null
+        },
+        {
+          "name": "Julia Garner",
+          "photo": null
+        },
+        {
+          "name": "Sofia Hublitz",
+          "photo": null
+        },
+        {
+          "name": "Skylar Gaertner",
+          "photo": null
+        },
+        {
+          "name": "Peter Mullan",
+          "photo": null
+        },
+        {
+          "name": "Janet McTeer",
+          "photo": null
+        },
+        {
+          "name": "Tom Pelphrey",
+          "photo": null
+        },
+        {
+          "name": "Lisa Emery",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -797,7 +1780,47 @@
       "episodes": 56,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Tom Fontana"
+      ],
+      "cast": [
+        {
+          "name": "Ernie Hudson",
+          "photo": null
+        },
+        {
+          "name": "J. K. Simmons",
+          "photo": null
+        },
+        {
+          "name": "Lee Tergesen",
+          "photo": null
+        },
+        {
+          "name": "Dean Winters",
+          "photo": null
+        },
+        {
+          "name": "Eamonn Walker",
+          "photo": null
+        },
+        {
+          "name": "Christopher Meloni",
+          "photo": null
+        },
+        {
+          "name": "Harold Perrineau",
+          "photo": null
+        },
+        {
+          "name": "Kirk Acevedo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -831,7 +1854,47 @@
       "episodes": 75,
       "runtime": 50,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Joe Weisberg"
+      ],
+      "cast": [
+        {
+          "name": "Keri Russell",
+          "photo": null
+        },
+        {
+          "name": "Matthew Rhys",
+          "photo": null
+        },
+        {
+          "name": "Noah Emmerich",
+          "photo": null
+        },
+        {
+          "name": "Holly Taylor",
+          "photo": null
+        },
+        {
+          "name": "Margo Martindale",
+          "photo": null
+        },
+        {
+          "name": "Alison Wright",
+          "photo": null
+        },
+        {
+          "name": "Costa Ronin",
+          "photo": null
+        },
+        {
+          "name": "Brandon J. Dirden",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -865,7 +1928,52 @@
       "episodes": 66,
       "runtime": 55,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Bruce Miller (פיתוח)",
+        "Margaret Atwood (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Elisabeth Moss",
+          "photo": null
+        },
+        {
+          "name": "Yvonne Strahovski",
+          "photo": null
+        },
+        {
+          "name": "Joseph Fiennes",
+          "photo": null
+        },
+        {
+          "name": "Samira Wiley",
+          "photo": null
+        },
+        {
+          "name": "Alexis Bledel",
+          "photo": null
+        },
+        {
+          "name": "Ann Dowd",
+          "photo": null
+        },
+        {
+          "name": "Max Minghella",
+          "photo": null
+        },
+        {
+          "name": "O-T Fagbenle",
+          "photo": null
+        },
+        {
+          "name": "Madeline Brewer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -893,7 +2001,48 @@
       "episodes": 36,
       "runtime": 60,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jonathan Nolan",
+        "Lisa Joy"
+      ],
+      "cast": [
+        {
+          "name": "Evan Rachel Wood",
+          "photo": null
+        },
+        {
+          "name": "Thandiwe Newton",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Wright",
+          "photo": null
+        },
+        {
+          "name": "Ed Harris",
+          "photo": null
+        },
+        {
+          "name": "Anthony Hopkins",
+          "photo": null
+        },
+        {
+          "name": "James Marsden",
+          "photo": null
+        },
+        {
+          "name": "Tessa Thompson",
+          "photo": null
+        },
+        {
+          "name": "Ben Barnes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -927,7 +2076,47 @@
       "episodes": 73,
       "runtime": 51,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Beau Willimon"
+      ],
+      "cast": [
+        {
+          "name": "Kevin Spacey",
+          "photo": null
+        },
+        {
+          "name": "Robin Wright",
+          "photo": null
+        },
+        {
+          "name": "Michael Kelly",
+          "photo": null
+        },
+        {
+          "name": "Kate Mara",
+          "photo": null
+        },
+        {
+          "name": "Corey Stoll",
+          "photo": null
+        },
+        {
+          "name": "Molly Parker",
+          "photo": null
+        },
+        {
+          "name": "Mahershala Ali",
+          "photo": null
+        },
+        {
+          "name": "Constance Zimmer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -960,7 +2149,55 @@
       "episodes": 30,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "R. Scott Gemmill"
+      ],
+      "cast": [
+        {
+          "name": "Noah Wyle",
+          "photo": null
+        },
+        {
+          "name": "Tracy Ifeachor",
+          "photo": null
+        },
+        {
+          "name": "Katherine LaNasa",
+          "photo": null
+        },
+        {
+          "name": "Patrick Ball",
+          "photo": null
+        },
+        {
+          "name": "Taylor Dearden",
+          "photo": null
+        },
+        {
+          "name": "Supriya Ganesh",
+          "photo": null
+        },
+        {
+          "name": "Fiona Dourif",
+          "photo": null
+        },
+        {
+          "name": "Isa Briones",
+          "photo": null
+        },
+        {
+          "name": "Gerran Howell",
+          "photo": null
+        },
+        {
+          "name": "Sepideh Moafi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -989,7 +2226,52 @@
       "episodes": 18,
       "runtime": 60,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Ryan Condal",
+        "George R. R. Martin"
+      ],
+      "cast": [
+        {
+          "name": "Matt Smith",
+          "photo": null
+        },
+        {
+          "name": "Emma D'Arcy",
+          "photo": null
+        },
+        {
+          "name": "Olivia Cooke",
+          "photo": null
+        },
+        {
+          "name": "Paddy Considine",
+          "photo": null
+        },
+        {
+          "name": "Rhys Ifans",
+          "photo": null
+        },
+        {
+          "name": "Steve Toussaint",
+          "photo": null
+        },
+        {
+          "name": "Eve Best",
+          "photo": null
+        },
+        {
+          "name": "Fabien Frankel",
+          "photo": null
+        },
+        {
+          "name": "Ewan Mitchell",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1021,7 +2303,48 @@
       "episodes": 96,
       "runtime": 52,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Howard Gordon",
+        "Alex Gansa"
+      ],
+      "cast": [
+        {
+          "name": "Claire Danes",
+          "photo": null
+        },
+        {
+          "name": "Mandy Patinkin",
+          "photo": null
+        },
+        {
+          "name": "Damian Lewis",
+          "photo": null
+        },
+        {
+          "name": "Rupert Friend",
+          "photo": null
+        },
+        {
+          "name": "Morena Baccarin",
+          "photo": null
+        },
+        {
+          "name": "David Harewood",
+          "photo": null
+        },
+        {
+          "name": "Nazanin Boniadi",
+          "photo": null
+        },
+        {
+          "name": "Morgan Saylor",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1054,7 +2377,55 @@
       "episodes": 51,
       "runtime": 55,
       "imdb": 8.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Noah Hawley"
+      ],
+      "cast": [
+        {
+          "name": "Billy Bob Thornton",
+          "photo": null
+        },
+        {
+          "name": "Martin Freeman",
+          "photo": null
+        },
+        {
+          "name": "Allison Tolman",
+          "photo": null
+        },
+        {
+          "name": "Kirsten Dunst",
+          "photo": null
+        },
+        {
+          "name": "Colin Hanks",
+          "photo": null
+        },
+        {
+          "name": "Ewan McGregor",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Carrie Coon",
+          "photo": null
+        },
+        {
+          "name": "Jon Hamm",
+          "photo": null
+        },
+        {
+          "name": "Juno Temple",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -1086,7 +2457,47 @@
       "episodes": 56,
       "runtime": 55,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Terence Winter"
+      ],
+      "cast": [
+        {
+          "name": "Steve Buscemi",
+          "photo": null
+        },
+        {
+          "name": "Kelly Macdonald",
+          "photo": null
+        },
+        {
+          "name": "Michael Shannon",
+          "photo": null
+        },
+        {
+          "name": "Shea Whigham",
+          "photo": null
+        },
+        {
+          "name": "Michael Stuhlbarg",
+          "photo": null
+        },
+        {
+          "name": "Stephen Graham",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Bobby Cannavale",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1116,7 +2527,43 @@
       "episodes": 77,
       "runtime": 26,
       "imdb": 8.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Raphael Bob-Waksberg"
+      ],
+      "cast": [
+        {
+          "name": "Will Arnett",
+          "photo": null
+        },
+        {
+          "name": "Amy Sedaris",
+          "photo": null
+        },
+        {
+          "name": "Alison Brie",
+          "photo": null
+        },
+        {
+          "name": "Paul F. Tompkins",
+          "photo": null
+        },
+        {
+          "name": "Aaron Paul",
+          "photo": null
+        },
+        {
+          "name": "Stephanie Beatriz",
+          "photo": null
+        },
+        {
+          "name": "Kristen Schaal",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1146,7 +2593,51 @@
       "episodes": 10,
       "runtime": 55,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Patrick Somerville"
+      ],
+      "cast": [
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Himesh Patel",
+          "photo": null
+        },
+        {
+          "name": "Gael García Bernal",
+          "photo": null
+        },
+        {
+          "name": "Danielle Deadwyler",
+          "photo": null
+        },
+        {
+          "name": "Matilda Lawler",
+          "photo": null
+        },
+        {
+          "name": "Lori Petty",
+          "photo": null
+        },
+        {
+          "name": "Daniel Zovatto",
+          "photo": null
+        },
+        {
+          "name": "David Wilmot",
+          "photo": null
+        },
+        {
+          "name": "Nabhaan Rizwan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1179,7 +2670,47 @@
       "episodes": 30,
       "runtime": 45,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Will Smith (מפתח ומחבר התסריטים)"
+      ],
+      "cast": [
+        {
+          "name": "Gary Oldman",
+          "photo": null
+        },
+        {
+          "name": "Jack Lowden",
+          "photo": null
+        },
+        {
+          "name": "Kristin Scott Thomas",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Pryce",
+          "photo": null
+        },
+        {
+          "name": "Olivia Cooke",
+          "photo": null
+        },
+        {
+          "name": "Christopher Chung",
+          "photo": null
+        },
+        {
+          "name": "Rosalind Eleazar",
+          "photo": null
+        },
+        {
+          "name": "Aimee-Ffion Edwards",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -1208,7 +2739,48 @@
       "episodes": 204,
       "runtime": 43,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Joel Surnow",
+        "Robert Cochran"
+      ],
+      "cast": [
+        {
+          "name": "Kiefer Sutherland",
+          "photo": null
+        },
+        {
+          "name": "Mary Lynn Rajskub",
+          "photo": null
+        },
+        {
+          "name": "Carlos Bernard",
+          "photo": null
+        },
+        {
+          "name": "Dennis Haysbert",
+          "photo": null
+        },
+        {
+          "name": "Elisha Cuthbert",
+          "photo": null
+        },
+        {
+          "name": "Kim Raver",
+          "photo": null
+        },
+        {
+          "name": "Reiko Aylesworth",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1241,7 +2813,43 @@
       "episodes": 5,
       "runtime": 65,
       "imdb": 9.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Craig Mazin"
+      ],
+      "cast": [
+        {
+          "name": "Jared Harris",
+          "photo": null
+        },
+        {
+          "name": "Stellan Skarsgård",
+          "photo": null
+        },
+        {
+          "name": "Emily Watson",
+          "photo": null
+        },
+        {
+          "name": "Jessie Buckley",
+          "photo": null
+        },
+        {
+          "name": "Paul Ritter",
+          "photo": null
+        },
+        {
+          "name": "Con O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Adam Nagaitis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1275,7 +2883,51 @@
       "episodes": 34,
       "runtime": 60,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Charlie Brooker"
+      ],
+      "cast": [
+        {
+          "name": "Bryce Dallas Howard",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Daniel Kaluuya",
+          "photo": null
+        },
+        {
+          "name": "Domhnall Gleeson",
+          "photo": null
+        },
+        {
+          "name": "Hayley Atwell",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Anthony Mackie",
+          "photo": null
+        },
+        {
+          "name": "Cristin Milioti",
+          "photo": null
+        },
+        {
+          "name": "Miley Cyrus",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1308,7 +2960,50 @@
       "episodes": 34,
       "runtime": 40,
       "imdb": 8.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jason Sudeikis",
+        "Bill Lawrence",
+        "Brendan Hunt",
+        "Joe Kelly"
+      ],
+      "cast": [
+        {
+          "name": "Jason Sudeikis",
+          "photo": null
+        },
+        {
+          "name": "Hannah Waddingham",
+          "photo": null
+        },
+        {
+          "name": "Brett Goldstein",
+          "photo": null
+        },
+        {
+          "name": "Juno Temple",
+          "photo": null
+        },
+        {
+          "name": "Brendan Hunt",
+          "photo": null
+        },
+        {
+          "name": "Phil Dunster",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Swift",
+          "photo": null
+        },
+        {
+          "name": "Nick Mohammed",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -1336,7 +3031,49 @@
       "episodes": 22,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Bruno Heller",
+        "John Milius",
+        "William J. MacDonald"
+      ],
+      "cast": [
+        {
+          "name": "Kevin McKidd",
+          "photo": null
+        },
+        {
+          "name": "Ray Stevenson",
+          "photo": null
+        },
+        {
+          "name": "Polly Walker",
+          "photo": null
+        },
+        {
+          "name": "Ciarán Hinds",
+          "photo": null
+        },
+        {
+          "name": "James Purefoy",
+          "photo": null
+        },
+        {
+          "name": "Lindsay Duncan",
+          "photo": null
+        },
+        {
+          "name": "Tobias Menzies",
+          "photo": null
+        },
+        {
+          "name": "Kerry Condon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1364,7 +3101,39 @@
       "episodes": 29,
       "runtime": 30,
       "imdb": 7.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Greg Daniels"
+      ],
+      "cast": [
+        {
+          "name": "Robbie Amell",
+          "photo": null
+        },
+        {
+          "name": "Andy Allo",
+          "photo": null
+        },
+        {
+          "name": "Allegra Edwards",
+          "photo": null
+        },
+        {
+          "name": "Kevin Bigley",
+          "photo": null
+        },
+        {
+          "name": "Zainab Johnson",
+          "photo": null
+        },
+        {
+          "name": "Owen Daniels",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
     }
   },
   {
@@ -1392,7 +3161,43 @@
       "episodes": 24,
       "runtime": 55,
       "imdb": 6.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Steven Knight"
+      ],
+      "cast": [
+        {
+          "name": "Jason Momoa",
+          "photo": null
+        },
+        {
+          "name": "Alfre Woodard",
+          "photo": null
+        },
+        {
+          "name": "Hera Hilmar",
+          "photo": null
+        },
+        {
+          "name": "Sylvia Hoeks",
+          "photo": null
+        },
+        {
+          "name": "Christian Camargo",
+          "photo": null
+        },
+        {
+          "name": "Archie Madekwe",
+          "photo": null
+        },
+        {
+          "name": "Nesta Cooper",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -1420,7 +3225,49 @@
       "episodes": 30,
       "runtime": 50,
       "imdb": 8.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Chris Brancato",
+        "Carlo Bernard",
+        "Doug Miro"
+      ],
+      "cast": [
+        {
+          "name": "Wagner Moura",
+          "photo": null
+        },
+        {
+          "name": "Boyd Holbrook",
+          "photo": null
+        },
+        {
+          "name": "Pedro Pascal",
+          "photo": null
+        },
+        {
+          "name": "Alberto Ammann",
+          "photo": null
+        },
+        {
+          "name": "Joanna Christie",
+          "photo": null
+        },
+        {
+          "name": "Maurice Compte",
+          "photo": null
+        },
+        {
+          "name": "Paulina Gaitán",
+          "photo": null
+        },
+        {
+          "name": "Damián Alcázar",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1447,7 +3294,47 @@
       "episodes": 90,
       "runtime": 43,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Paul Scheuring"
+      ],
+      "cast": [
+        {
+          "name": "Wentworth Miller",
+          "photo": null
+        },
+        {
+          "name": "Dominic Purcell",
+          "photo": null
+        },
+        {
+          "name": "Sarah Wayne Callies",
+          "photo": null
+        },
+        {
+          "name": "Robert Knepper",
+          "photo": null
+        },
+        {
+          "name": "Amaury Nolasco",
+          "photo": null
+        },
+        {
+          "name": "Wade Williams",
+          "photo": null
+        },
+        {
+          "name": "Peter Stormare",
+          "photo": null
+        },
+        {
+          "name": "William Fichtner",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1478,7 +3365,47 @@
       "episodes": 82,
       "runtime": 55,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Ann Biderman"
+      ],
+      "cast": [
+        {
+          "name": "Liev Schreiber",
+          "photo": null
+        },
+        {
+          "name": "Jon Voight",
+          "photo": null
+        },
+        {
+          "name": "Paula Malcomson",
+          "photo": null
+        },
+        {
+          "name": "Eddie Marsan",
+          "photo": null
+        },
+        {
+          "name": "Dash Mihok",
+          "photo": null
+        },
+        {
+          "name": "Pooch Hall",
+          "photo": null
+        },
+        {
+          "name": "Katherine Moennig",
+          "photo": null
+        },
+        {
+          "name": "Kerris Dorsey",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1507,7 +3434,43 @@
       "episodes": 19,
       "runtime": 55,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Joe Penhall"
+      ],
+      "cast": [
+        {
+          "name": "Jonathan Groff",
+          "photo": null
+        },
+        {
+          "name": "Holt McCallany",
+          "photo": null
+        },
+        {
+          "name": "Anna Torv",
+          "photo": null
+        },
+        {
+          "name": "Cameron Britton",
+          "photo": null
+        },
+        {
+          "name": "Hannah Gross",
+          "photo": null
+        },
+        {
+          "name": "Sonny Valicenti",
+          "photo": null
+        },
+        {
+          "name": "Michael Cerveris",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1541,7 +3504,47 @@
       "episodes": 24,
       "runtime": 50,
       "imdb": 7.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Debora Cahn"
+      ],
+      "cast": [
+        {
+          "name": "Keri Russell",
+          "photo": null
+        },
+        {
+          "name": "Rufus Sewell",
+          "photo": null
+        },
+        {
+          "name": "David Gyasi",
+          "photo": null
+        },
+        {
+          "name": "Ali Ahn",
+          "photo": null
+        },
+        {
+          "name": "Rory Kinnear",
+          "photo": null
+        },
+        {
+          "name": "Ato Essandoh",
+          "photo": null
+        },
+        {
+          "name": "Nana Mensah",
+          "photo": null
+        },
+        {
+          "name": "Michael McKean",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1576,7 +3579,55 @@
       "episodes": 42,
       "runtime": 60,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "האחים Duffer"
+      ],
+      "cast": [
+        {
+          "name": "Millie Bobby Brown",
+          "photo": null
+        },
+        {
+          "name": "Winona Ryder",
+          "photo": null
+        },
+        {
+          "name": "David Harbour",
+          "photo": null
+        },
+        {
+          "name": "Finn Wolfhard",
+          "photo": null
+        },
+        {
+          "name": "Gaten Matarazzo",
+          "photo": null
+        },
+        {
+          "name": "Caleb McLaughlin",
+          "photo": null
+        },
+        {
+          "name": "Noah Schnapp",
+          "photo": null
+        },
+        {
+          "name": "Sadie Sink",
+          "photo": null
+        },
+        {
+          "name": "Joe Keery",
+          "photo": null
+        },
+        {
+          "name": "Natalia Dyer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1605,7 +3656,43 @@
       "episodes": 9,
       "runtime": 50,
       "imdb": 7.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Blake Crouch"
+      ],
+      "cast": [
+        {
+          "name": "Joel Edgerton",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Connelly",
+          "photo": null
+        },
+        {
+          "name": "Alice Braga",
+          "photo": null
+        },
+        {
+          "name": "Jimmi Simpson",
+          "photo": null
+        },
+        {
+          "name": "Dayo Okeniyi",
+          "photo": null
+        },
+        {
+          "name": "Oakes Fegley",
+          "photo": null
+        },
+        {
+          "name": "Lee Shorten",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
     }
   },
   {
@@ -1636,7 +3723,43 @@
       "episodes": 218,
       "runtime": 45,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Chris Carter"
+      ],
+      "cast": [
+        {
+          "name": "David Duchovny",
+          "photo": null
+        },
+        {
+          "name": "Gillian Anderson",
+          "photo": null
+        },
+        {
+          "name": "Mitch Pileggi",
+          "photo": null
+        },
+        {
+          "name": "William B. Davis",
+          "photo": null
+        },
+        {
+          "name": "Robert Patrick",
+          "photo": null
+        },
+        {
+          "name": "Annabeth Gish",
+          "photo": null
+        },
+        {
+          "name": "Nicholas Lea",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1668,7 +3791,47 @@
       "episodes": 91,
       "runtime": 55,
       "imdb": 8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jenji Kohan"
+      ],
+      "cast": [
+        {
+          "name": "Taylor Schilling",
+          "photo": null
+        },
+        {
+          "name": "Laura Prepon",
+          "photo": null
+        },
+        {
+          "name": "Uzo Aduba",
+          "photo": null
+        },
+        {
+          "name": "Danielle Brooks",
+          "photo": null
+        },
+        {
+          "name": "Kate Mulgrew",
+          "photo": null
+        },
+        {
+          "name": "Natasha Lyonne",
+          "photo": null
+        },
+        {
+          "name": "Samira Wiley",
+          "photo": null
+        },
+        {
+          "name": "Taryn Manning",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1702,7 +3865,48 @@
       "episodes": 48,
       "runtime": 55,
       "imdb": 8.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Lynch",
+        "Mark Frost"
+      ],
+      "cast": [
+        {
+          "name": "Kyle MacLachlan",
+          "photo": null
+        },
+        {
+          "name": "Sheryl Lee",
+          "photo": null
+        },
+        {
+          "name": "Laura Dern",
+          "photo": null
+        },
+        {
+          "name": "Sherilyn Fenn",
+          "photo": null
+        },
+        {
+          "name": "Ray Wise",
+          "photo": null
+        },
+        {
+          "name": "Piper Laurie",
+          "photo": null
+        },
+        {
+          "name": "Michael Ontkean",
+          "photo": null
+        },
+        {
+          "name": "Lara Flynn Boyle",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1728,7 +3932,52 @@
       "episodes": 16,
       "runtime": 60,
       "imdb": 6.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "J. D. Payne",
+        "Patrick McKay"
+      ],
+      "cast": [
+        {
+          "name": "Morfydd Clark",
+          "photo": null
+        },
+        {
+          "name": "Robert Aramayo",
+          "photo": null
+        },
+        {
+          "name": "Charlie Vickers",
+          "photo": null
+        },
+        {
+          "name": "Markella Kavenagh",
+          "photo": null
+        },
+        {
+          "name": "Ismael Cruz Córdova",
+          "photo": null
+        },
+        {
+          "name": "Owain Arthur",
+          "photo": null
+        },
+        {
+          "name": "Sophia Nomvete",
+          "photo": null
+        },
+        {
+          "name": "Charles Edwards",
+          "photo": null
+        },
+        {
+          "name": "Nazanin Boniadi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
     }
   },
   {
@@ -1757,7 +4006,40 @@
       "episodes": 36,
       "runtime": 50,
       "imdb": 8.7,
-      "lang": "he"
+      "lang": "he",
+      "creators": [
+        "אורי אלון",
+        "יהונתן אינדורסקי"
+      ],
+      "cast": [
+        {
+          "name": "דב גליקמן",
+          "photo": null
+        },
+        {
+          "name": "מיכאל אלוני",
+          "photo": null
+        },
+        {
+          "name": "נטע ריסקין",
+          "photo": null
+        },
+        {
+          "name": "שירה האס",
+          "photo": null
+        },
+        {
+          "name": "זוהר שטראוס",
+          "photo": null
+        },
+        {
+          "name": "שרה פון שוורצה",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "israel"
+      ]
     }
   },
   {
@@ -1785,7 +4067,44 @@
       "episodes": 48,
       "runtime": 45,
       "imdb": 8.3,
-      "lang": "he"
+      "lang": "he",
+      "creators": [
+        "ליאור רז",
+        "אבי יששכרוף"
+      ],
+      "cast": [
+        {
+          "name": "ליאור רז",
+          "photo": null
+        },
+        {
+          "name": "חישאם סולימאן",
+          "photo": null
+        },
+        {
+          "name": "שדי מרעי",
+          "photo": null
+        },
+        {
+          "name": "יעקב זדה דניאל",
+          "photo": null
+        },
+        {
+          "name": "רונה-לי שמעון",
+          "photo": null
+        },
+        {
+          "name": "צחי הלוי",
+          "photo": null
+        },
+        {
+          "name": "איציק כהן",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "israel"
+      ]
     }
   },
   {
@@ -1814,7 +4133,48 @@
       "episodes": 40,
       "runtime": 55,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Frank Spotnitz (פיתוח)",
+        "Philip K. Dick (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Alexa Davalos",
+          "photo": null
+        },
+        {
+          "name": "Rupert Evans",
+          "photo": null
+        },
+        {
+          "name": "Luke Kleintank",
+          "photo": null
+        },
+        {
+          "name": "Rufus Sewell",
+          "photo": null
+        },
+        {
+          "name": "DJ Qualls",
+          "photo": null
+        },
+        {
+          "name": "Joel de la Fuente",
+          "photo": null
+        },
+        {
+          "name": "Cary-Hiroyuki Tagawa",
+          "photo": null
+        },
+        {
+          "name": "Jason O'Mara",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
     }
   },
   {
@@ -1845,7 +4205,43 @@
       "episodes": 53,
       "runtime": 25,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Michael Schur"
+      ],
+      "cast": [
+        {
+          "name": "Kristen Bell",
+          "photo": null
+        },
+        {
+          "name": "Ted Danson",
+          "photo": null
+        },
+        {
+          "name": "William Jackson Harper",
+          "photo": null
+        },
+        {
+          "name": "Jameela Jamil",
+          "photo": null
+        },
+        {
+          "name": "Manny Jacinto",
+          "photo": null
+        },
+        {
+          "name": "D'Arcy Carden",
+          "photo": null
+        },
+        {
+          "name": "Marc Evan Jackson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1877,7 +4273,47 @@
       "episodes": 22,
       "runtime": 55,
       "imdb": 8,
-      "lang": "ko"
+      "lang": "ko",
+      "creators": [
+        "Hwang Dong-hyuk"
+      ],
+      "cast": [
+        {
+          "name": "Lee Jung-jae",
+          "photo": null
+        },
+        {
+          "name": "Park Hae-soo",
+          "photo": null
+        },
+        {
+          "name": "Wi Ha-jun",
+          "photo": null
+        },
+        {
+          "name": "Jung Ho-yeon",
+          "photo": null
+        },
+        {
+          "name": "Oh Yeong-su",
+          "photo": null
+        },
+        {
+          "name": "Heo Sung-tae",
+          "photo": null
+        },
+        {
+          "name": "Anupam Tripathi",
+          "photo": null
+        },
+        {
+          "name": "Gong Yoo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -1909,7 +4345,43 @@
       "episodes": 12,
       "runtime": 27,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Phoebe Waller-Bridge"
+      ],
+      "cast": [
+        {
+          "name": "Phoebe Waller-Bridge",
+          "photo": null
+        },
+        {
+          "name": "Sian Clifford",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Andrew Scott",
+          "photo": null
+        },
+        {
+          "name": "Bill Paterson",
+          "photo": null
+        },
+        {
+          "name": "Brett Gelman",
+          "photo": null
+        },
+        {
+          "name": "Hugh Skinner",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1939,7 +4411,51 @@
       "episodes": 65,
       "runtime": 28,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Armando Iannucci"
+      ],
+      "cast": [
+        {
+          "name": "Julia Louis-Dreyfus",
+          "photo": null
+        },
+        {
+          "name": "Tony Hale",
+          "photo": null
+        },
+        {
+          "name": "Anna Chlumsky",
+          "photo": null
+        },
+        {
+          "name": "Timothy Simons",
+          "photo": null
+        },
+        {
+          "name": "Reid Scott",
+          "photo": null
+        },
+        {
+          "name": "Matt Walsh",
+          "photo": null
+        },
+        {
+          "name": "Kevin Dunn",
+          "photo": null
+        },
+        {
+          "name": "Gary Cole",
+          "photo": null
+        },
+        {
+          "name": "Sam Richardson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -1969,7 +4485,47 @@
       "episodes": 138,
       "runtime": 22,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Tina Fey"
+      ],
+      "cast": [
+        {
+          "name": "Tina Fey",
+          "photo": null
+        },
+        {
+          "name": "Alec Baldwin",
+          "photo": null
+        },
+        {
+          "name": "Tracy Morgan",
+          "photo": null
+        },
+        {
+          "name": "Jane Krakowski",
+          "photo": null
+        },
+        {
+          "name": "Jack McBrayer",
+          "photo": null
+        },
+        {
+          "name": "Scott Adsit",
+          "photo": null
+        },
+        {
+          "name": "Judah Friedlander",
+          "photo": null
+        },
+        {
+          "name": "Keith Powell",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -1996,7 +4552,43 @@
       "episodes": 120,
       "runtime": 30,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Larry David"
+      ],
+      "cast": [
+        {
+          "name": "Larry David",
+          "photo": null
+        },
+        {
+          "name": "Jeff Garlin",
+          "photo": null
+        },
+        {
+          "name": "Cheryl Hines",
+          "photo": null
+        },
+        {
+          "name": "Susie Essman",
+          "photo": null
+        },
+        {
+          "name": "J. B. Smoove",
+          "photo": null
+        },
+        {
+          "name": "Richard Lewis",
+          "photo": null
+        },
+        {
+          "name": "Ted Danson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2028,7 +4620,35 @@
       "episodes": 41,
       "runtime": 30,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Donald Glover"
+      ],
+      "cast": [
+        {
+          "name": "Donald Glover",
+          "photo": null
+        },
+        {
+          "name": "Brian Tyree Henry",
+          "photo": null
+        },
+        {
+          "name": "Lakeith Stanfield",
+          "photo": null
+        },
+        {
+          "name": "Zazie Beetz",
+          "photo": null
+        },
+        {
+          "name": "Isiah Whitlock Jr.",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -2058,7 +4678,55 @@
       "episodes": 201,
       "runtime": 22,
       "imdb": 9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Greg Daniels"
+      ],
+      "cast": [
+        {
+          "name": "Steve Carell",
+          "photo": null
+        },
+        {
+          "name": "Rainn Wilson",
+          "photo": null
+        },
+        {
+          "name": "John Krasinski",
+          "photo": null
+        },
+        {
+          "name": "Jenna Fischer",
+          "photo": null
+        },
+        {
+          "name": "Ed Helms",
+          "photo": null
+        },
+        {
+          "name": "B. J. Novak",
+          "photo": null
+        },
+        {
+          "name": "Mindy Kaling",
+          "photo": null
+        },
+        {
+          "name": "Angela Kinsey",
+          "photo": null
+        },
+        {
+          "name": "Brian Baumgartner",
+          "photo": null
+        },
+        {
+          "name": "Oscar Nuñez",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2088,7 +4756,51 @@
       "episodes": 84,
       "runtime": 22,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Mitchell Hurwitz"
+      ],
+      "cast": [
+        {
+          "name": "Jason Bateman",
+          "photo": null
+        },
+        {
+          "name": "Portia de Rossi",
+          "photo": null
+        },
+        {
+          "name": "Will Arnett",
+          "photo": null
+        },
+        {
+          "name": "Michael Cera",
+          "photo": null
+        },
+        {
+          "name": "David Cross",
+          "photo": null
+        },
+        {
+          "name": "Tony Hale",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Tambor",
+          "photo": null
+        },
+        {
+          "name": "Alia Shawkat",
+          "photo": null
+        },
+        {
+          "name": "Jessica Walter",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -2120,7 +4832,47 @@
       "episodes": 62,
       "runtime": 28,
       "imdb": 7.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Lena Dunham"
+      ],
+      "cast": [
+        {
+          "name": "Lena Dunham",
+          "photo": null
+        },
+        {
+          "name": "Allison Williams",
+          "photo": null
+        },
+        {
+          "name": "Jemima Kirke",
+          "photo": null
+        },
+        {
+          "name": "Zosia Mamet",
+          "photo": null
+        },
+        {
+          "name": "Adam Driver",
+          "photo": null
+        },
+        {
+          "name": "Alex Karpovsky",
+          "photo": null
+        },
+        {
+          "name": "Andrew Rannells",
+          "photo": null
+        },
+        {
+          "name": "Ray Romano",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2150,7 +4902,55 @@
       "episodes": 76,
       "runtime": 43,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Peter Berg (פיתוח)"
+      ],
+      "cast": [
+        {
+          "name": "Kyle Chandler",
+          "photo": null
+        },
+        {
+          "name": "Connie Britton",
+          "photo": null
+        },
+        {
+          "name": "Taylor Kitsch",
+          "photo": null
+        },
+        {
+          "name": "Zach Gilford",
+          "photo": null
+        },
+        {
+          "name": "Aimee Teegarden",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Michael B. Jordan",
+          "photo": null
+        },
+        {
+          "name": "Adrianne Palicki",
+          "photo": null
+        },
+        {
+          "name": "Minka Kelly",
+          "photo": null
+        },
+        {
+          "name": "Scott Porter",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2180,7 +4980,44 @@
       "episodes": 14,
       "runtime": 29,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Ricky Gervais",
+        "Stephen Merchant"
+      ],
+      "cast": [
+        {
+          "name": "Ricky Gervais",
+          "photo": null
+        },
+        {
+          "name": "Martin Freeman",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Crook",
+          "photo": null
+        },
+        {
+          "name": "Lucy Davis",
+          "photo": null
+        },
+        {
+          "name": "Ralph Ineson",
+          "photo": null
+        },
+        {
+          "name": "Oliver Chris",
+          "photo": null
+        },
+        {
+          "name": "Ewen MacIntosh",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2212,7 +5049,39 @@
       "episodes": 12,
       "runtime": 30,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Michaela Coel"
+      ],
+      "cast": [
+        {
+          "name": "Michaela Coel",
+          "photo": null
+        },
+        {
+          "name": "Paapa Essiedu",
+          "photo": null
+        },
+        {
+          "name": "Weruche Opia",
+          "photo": null
+        },
+        {
+          "name": "Karla-Simone Spence",
+          "photo": null
+        },
+        {
+          "name": "Stephen Wight",
+          "photo": null
+        },
+        {
+          "name": "Harriet Webb",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2240,7 +5109,44 @@
       "episodes": 21,
       "runtime": 30,
       "imdb": 7.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Lisa Kudrow",
+        "Michael Patrick King"
+      ],
+      "cast": [
+        {
+          "name": "Lisa Kudrow",
+          "photo": null
+        },
+        {
+          "name": "Damian Young",
+          "photo": null
+        },
+        {
+          "name": "Laura Silverman",
+          "photo": null
+        },
+        {
+          "name": "Robert Michael Morris",
+          "photo": null
+        },
+        {
+          "name": "Malin Åkerman",
+          "photo": null
+        },
+        {
+          "name": "Dan Bucatinsky",
+          "photo": null
+        },
+        {
+          "name": "Lance Barber",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2273,7 +5179,51 @@
       "episodes": 36,
       "runtime": 55,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "David Milch"
+      ],
+      "cast": [
+        {
+          "name": "Ian McShane",
+          "photo": null
+        },
+        {
+          "name": "Timothy Olyphant",
+          "photo": null
+        },
+        {
+          "name": "Molly Parker",
+          "photo": null
+        },
+        {
+          "name": "Brad Dourif",
+          "photo": null
+        },
+        {
+          "name": "Paula Malcomson",
+          "photo": null
+        },
+        {
+          "name": "W. Earl Brown",
+          "photo": null
+        },
+        {
+          "name": "John Hawkes",
+          "photo": null
+        },
+        {
+          "name": "Robin Weigert",
+          "photo": null
+        },
+        {
+          "name": "Kim Dickens",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2305,7 +5255,47 @@
       "episodes": 10,
       "runtime": 60,
       "imdb": 9.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "בהפקת Tom Hanks ו-Steven Spielberg"
+      ],
+      "cast": [
+        {
+          "name": "Damian Lewis",
+          "photo": null
+        },
+        {
+          "name": "Ron Livingston",
+          "photo": null
+        },
+        {
+          "name": "Donnie Wahlberg",
+          "photo": null
+        },
+        {
+          "name": "Scott Grimes",
+          "photo": null
+        },
+        {
+          "name": "Matthew Settle",
+          "photo": null
+        },
+        {
+          "name": "Neal McDonough",
+          "photo": null
+        },
+        {
+          "name": "Michael Cudlitz",
+          "photo": null
+        },
+        {
+          "name": "Dexter Fletcher",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2335,7 +5325,24 @@
       "episodes": 53,
       "runtime": 22,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Keegan-Michael Key",
+        "Jordan Peele"
+      ],
+      "cast": [
+        {
+          "name": "Keegan-Michael Key",
+          "photo": null
+        },
+        {
+          "name": "Jordan Peele",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2364,7 +5371,20 @@
       "episodes": 700,
       "runtime": 60,
       "imdb": 7.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Charlie Parsons (הפורמט)",
+        "Mark Burnett (הגרסה האמריקאית)"
+      ],
+      "cast": [
+        {
+          "name": "Jeff Probst",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2394,7 +5414,55 @@
       "episodes": 24,
       "runtime": 50,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Tony Gilroy"
+      ],
+      "cast": [
+        {
+          "name": "Diego Luna",
+          "photo": null
+        },
+        {
+          "name": "Stellan Skarsgård",
+          "photo": null
+        },
+        {
+          "name": "Genevieve O'Reilly",
+          "photo": null
+        },
+        {
+          "name": "Denise Gough",
+          "photo": null
+        },
+        {
+          "name": "Adria Arjona",
+          "photo": null
+        },
+        {
+          "name": "Fiona Shaw",
+          "photo": null
+        },
+        {
+          "name": "Kyle Soller",
+          "photo": null
+        },
+        {
+          "name": "Faye Marsay",
+          "photo": null
+        },
+        {
+          "name": "Andy Serkis",
+          "photo": null
+        },
+        {
+          "name": "Forest Whitaker",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -2426,7 +5494,44 @@
       "episodes": 18,
       "runtime": 28,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Mike White",
+        "Laura Dern"
+      ],
+      "cast": [
+        {
+          "name": "Laura Dern",
+          "photo": null
+        },
+        {
+          "name": "Luke Wilson",
+          "photo": null
+        },
+        {
+          "name": "Diane Ladd",
+          "photo": null
+        },
+        {
+          "name": "Mike White",
+          "photo": null
+        },
+        {
+          "name": "Timm Sharp",
+          "photo": null
+        },
+        {
+          "name": "Sarah Burns",
+          "photo": null
+        },
+        {
+          "name": "Molly Shannon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2457,7 +5562,52 @@
       "episodes": 80,
       "runtime": 22,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Eugene Levy",
+        "Dan Levy"
+      ],
+      "cast": [
+        {
+          "name": "Eugene Levy",
+          "photo": null
+        },
+        {
+          "name": "Catherine O'Hara",
+          "photo": null
+        },
+        {
+          "name": "Dan Levy",
+          "photo": null
+        },
+        {
+          "name": "Annie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Chris Elliott",
+          "photo": null
+        },
+        {
+          "name": "Emily Hampshire",
+          "photo": null
+        },
+        {
+          "name": "Noah Reid",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Robertson",
+          "photo": null
+        },
+        {
+          "name": "Tim Rozon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -2490,7 +5640,59 @@
       "episodes": 32,
       "runtime": 60,
       "imdb": 8.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Nic Pizzolatto"
+      ],
+      "cast": [
+        {
+          "name": "Matthew McConaughey",
+          "photo": null
+        },
+        {
+          "name": "Woody Harrelson",
+          "photo": null
+        },
+        {
+          "name": "Colin Farrell",
+          "photo": null
+        },
+        {
+          "name": "Mahershala Ali",
+          "photo": null
+        },
+        {
+          "name": "Jodie Foster",
+          "photo": null
+        },
+        {
+          "name": "Rachel McAdams",
+          "photo": null
+        },
+        {
+          "name": "Vince Vaughn",
+          "photo": null
+        },
+        {
+          "name": "Kelly Reilly",
+          "photo": null
+        },
+        {
+          "name": "Carmen Ejogo",
+          "photo": null
+        },
+        {
+          "name": "Stephen Dorff",
+          "photo": null
+        },
+        {
+          "name": "Michelle Monaghan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2524,7 +5726,51 @@
       "episodes": 75,
       "runtime": 45,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Ronald D. Moore"
+      ],
+      "cast": [
+        {
+          "name": "Edward James Olmos",
+          "photo": null
+        },
+        {
+          "name": "Mary McDonnell",
+          "photo": null
+        },
+        {
+          "name": "Katee Sackhoff",
+          "photo": null
+        },
+        {
+          "name": "Jamie Bamber",
+          "photo": null
+        },
+        {
+          "name": "James Callis",
+          "photo": null
+        },
+        {
+          "name": "Tricia Helfer",
+          "photo": null
+        },
+        {
+          "name": "Grace Park",
+          "photo": null
+        },
+        {
+          "name": "Michael Hogan",
+          "photo": null
+        },
+        {
+          "name": "Aaron Douglas",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2556,7 +5802,44 @@
       "episodes": 4,
       "runtime": 60,
       "imdb": 8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jack Thorne",
+        "Stephen Graham"
+      ],
+      "cast": [
+        {
+          "name": "Stephen Graham",
+          "photo": null
+        },
+        {
+          "name": "Owen Cooper",
+          "photo": null
+        },
+        {
+          "name": "Ashley Walters",
+          "photo": null
+        },
+        {
+          "name": "Erin Doherty",
+          "photo": null
+        },
+        {
+          "name": "Faye Marsay",
+          "photo": null
+        },
+        {
+          "name": "Christine Tremarco",
+          "photo": null
+        },
+        {
+          "name": "Mark Stanley",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -2588,7 +5871,35 @@
       "episodes": 61,
       "runtime": 22,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Louis C.K."
+      ],
+      "cast": [
+        {
+          "name": "Louis C.K.",
+          "photo": null
+        },
+        {
+          "name": "Pamela Adlon",
+          "photo": null
+        },
+        {
+          "name": "Hadley Delany",
+          "photo": null
+        },
+        {
+          "name": "Ursula Parker",
+          "photo": null
+        },
+        {
+          "name": "Robert Kelly",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -2621,7 +5932,53 @@
       "episodes": 40,
       "runtime": 35,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Lucia Aniello",
+        "Paul W. Downs",
+        "Jen Statsky"
+      ],
+      "cast": [
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Hannah Einbinder",
+          "photo": null
+        },
+        {
+          "name": "Carl Clemons-Hopkins",
+          "photo": null
+        },
+        {
+          "name": "Paul W. Downs",
+          "photo": null
+        },
+        {
+          "name": "Megan Stalter",
+          "photo": null
+        },
+        {
+          "name": "Christopher McDonald",
+          "photo": null
+        },
+        {
+          "name": "Poppy Liu",
+          "photo": null
+        },
+        {
+          "name": "Mark Indelicato",
+          "photo": null
+        },
+        {
+          "name": "Kaitlin Olson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2650,7 +6007,55 @@
       "episodes": 36,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Steven Knight"
+      ],
+      "cast": [
+        {
+          "name": "Cillian Murphy",
+          "photo": null
+        },
+        {
+          "name": "Paul Anderson",
+          "photo": null
+        },
+        {
+          "name": "Helen McCrory",
+          "photo": null
+        },
+        {
+          "name": "Tom Hardy",
+          "photo": null
+        },
+        {
+          "name": "Sophie Rundle",
+          "photo": null
+        },
+        {
+          "name": "Joe Cole",
+          "photo": null
+        },
+        {
+          "name": "Finn Cole",
+          "photo": null
+        },
+        {
+          "name": "Natasha O'Keeffe",
+          "photo": null
+        },
+        {
+          "name": "Anya Taylor-Joy",
+          "photo": null
+        },
+        {
+          "name": "Sam Neill",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -2683,7 +6088,47 @@
       "episodes": 18,
       "runtime": 55,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Sally Wainwright"
+      ],
+      "cast": [
+        {
+          "name": "Sarah Lancashire",
+          "photo": null
+        },
+        {
+          "name": "James Norton",
+          "photo": null
+        },
+        {
+          "name": "Siobhan Finneran",
+          "photo": null
+        },
+        {
+          "name": "Charlie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Steve Pemberton",
+          "photo": null
+        },
+        {
+          "name": "George Costigan",
+          "photo": null
+        },
+        {
+          "name": "Con O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Rhys Connah",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2710,7 +6155,44 @@
       "episodes": 50,
       "runtime": 22,
       "imdb": 7.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Abbi Jacobson",
+        "Ilana Glazer"
+      ],
+      "cast": [
+        {
+          "name": "Abbi Jacobson",
+          "photo": null
+        },
+        {
+          "name": "Ilana Glazer",
+          "photo": null
+        },
+        {
+          "name": "Paul W. Downs",
+          "photo": null
+        },
+        {
+          "name": "Arturo Castro",
+          "photo": null
+        },
+        {
+          "name": "Hannibal Buress",
+          "photo": null
+        },
+        {
+          "name": "Stephen Schneider",
+          "photo": null
+        },
+        {
+          "name": "Jon Glaser",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2737,7 +6219,48 @@
       "episodes": 12,
       "runtime": 30,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Alice Birch (עיבוד)",
+        "Sally Rooney (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Daisy Edgar-Jones",
+          "photo": null
+        },
+        {
+          "name": "Paul Mescal",
+          "photo": null
+        },
+        {
+          "name": "Sarah Greene",
+          "photo": null
+        },
+        {
+          "name": "Desmond Eastwood",
+          "photo": null
+        },
+        {
+          "name": "Aislín McGuckin",
+          "photo": null
+        },
+        {
+          "name": "India Mullen",
+          "photo": null
+        },
+        {
+          "name": "Eanna Hardwicke",
+          "photo": null
+        },
+        {
+          "name": "Fionn O'Shea",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2765,7 +6288,56 @@
       "episodes": 125,
       "runtime": 22,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Greg Daniels",
+        "Michael Schur"
+      ],
+      "cast": [
+        {
+          "name": "Amy Poehler",
+          "photo": null
+        },
+        {
+          "name": "Nick Offerman",
+          "photo": null
+        },
+        {
+          "name": "Aziz Ansari",
+          "photo": null
+        },
+        {
+          "name": "Chris Pratt",
+          "photo": null
+        },
+        {
+          "name": "Rashida Jones",
+          "photo": null
+        },
+        {
+          "name": "Aubrey Plaza",
+          "photo": null
+        },
+        {
+          "name": "Adam Scott",
+          "photo": null
+        },
+        {
+          "name": "Retta",
+          "photo": null
+        },
+        {
+          "name": "Rob Lowe",
+          "photo": null
+        },
+        {
+          "name": "Jim O'Heir",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2797,7 +6369,55 @@
       "episodes": 52,
       "runtime": 55,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Julian Fellowes"
+      ],
+      "cast": [
+        {
+          "name": "Hugh Bonneville",
+          "photo": null
+        },
+        {
+          "name": "Michelle Dockery",
+          "photo": null
+        },
+        {
+          "name": "Maggie Smith",
+          "photo": null
+        },
+        {
+          "name": "Elizabeth McGovern",
+          "photo": null
+        },
+        {
+          "name": "Laura Carmichael",
+          "photo": null
+        },
+        {
+          "name": "Jim Carter",
+          "photo": null
+        },
+        {
+          "name": "Joanne Froggatt",
+          "photo": null
+        },
+        {
+          "name": "Dan Stevens",
+          "photo": null
+        },
+        {
+          "name": "Phyllis Logan",
+          "photo": null
+        },
+        {
+          "name": "Allen Leech",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2826,7 +6446,43 @@
       "episodes": 50,
       "runtime": 52,
       "imdb": 8.6,
-      "lang": "fr"
+      "lang": "fr",
+      "creators": [
+        "Éric Rochant"
+      ],
+      "cast": [
+        {
+          "name": "Mathieu Kassovitz",
+          "photo": null
+        },
+        {
+          "name": "Jean-Pierre Darroussin",
+          "photo": null
+        },
+        {
+          "name": "Florence Loiret-Caille",
+          "photo": null
+        },
+        {
+          "name": "Sara Giraudeau",
+          "photo": null
+        },
+        {
+          "name": "Zineb Triki",
+          "photo": null
+        },
+        {
+          "name": "Léa Drucker",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Lambert",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2855,7 +6511,48 @@
       "episodes": 46,
       "runtime": 30,
       "imdb": 7.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Issa Rae",
+        "Larry Wilmore"
+      ],
+      "cast": [
+        {
+          "name": "Issa Rae",
+          "photo": null
+        },
+        {
+          "name": "Yvonne Orji",
+          "photo": null
+        },
+        {
+          "name": "Jay Ellis",
+          "photo": null
+        },
+        {
+          "name": "Y'lan Noel",
+          "photo": null
+        },
+        {
+          "name": "Natasha Rothwell",
+          "photo": null
+        },
+        {
+          "name": "Amanda Seales",
+          "photo": null
+        },
+        {
+          "name": "Alexander Hodge",
+          "photo": null
+        },
+        {
+          "name": "Kendrick Sampson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -2883,7 +6580,20 @@
       "episodes": 32,
       "runtime": 22,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Nathan Fielder",
+        "Michael Koman"
+      ],
+      "cast": [
+        {
+          "name": "Nathan Fielder",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2910,7 +6620,40 @@
       "episodes": 24,
       "runtime": 17,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Tim Robinson",
+        "Zach Kanin"
+      ],
+      "cast": [
+        {
+          "name": "Tim Robinson",
+          "photo": null
+        },
+        {
+          "name": "Sam Richardson",
+          "photo": null
+        },
+        {
+          "name": "Tim Heidecker",
+          "photo": null
+        },
+        {
+          "name": "Will Forte",
+          "photo": null
+        },
+        {
+          "name": "Patti Harrison",
+          "photo": null
+        },
+        {
+          "name": "Conner O'Malley",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -2937,7 +6680,28 @@
       "episodes": 28,
       "runtime": 22,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Dave Chappelle",
+        "Neal Brennan"
+      ],
+      "cast": [
+        {
+          "name": "Dave Chappelle",
+          "photo": null
+        },
+        {
+          "name": "Charlie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Donnell Rawlings",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -2965,7 +6729,25 @@
       "episodes": 26,
       "runtime": 25,
       "imdb": 7.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Maya Erskine",
+        "Anna Konkle",
+        "Sam Zvibleman"
+      ],
+      "cast": [
+        {
+          "name": "Maya Erskine",
+          "photo": null
+        },
+        {
+          "name": "Anna Konkle",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -2992,7 +6774,48 @@
       "episodes": 54,
       "runtime": 25,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Jesse Armstrong",
+        "Sam Bain"
+      ],
+      "cast": [
+        {
+          "name": "David Mitchell",
+          "photo": null
+        },
+        {
+          "name": "Robert Webb",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Matt King",
+          "photo": null
+        },
+        {
+          "name": "Paterson Joseph",
+          "photo": null
+        },
+        {
+          "name": "Isy Suttie",
+          "photo": null
+        },
+        {
+          "name": "Sophie Winkleman",
+          "photo": null
+        },
+        {
+          "name": "Jessica Hynes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3023,7 +6846,33 @@
       "episodes": 240,
       "runtime": 60,
       "imdb": 7.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "RuPaul Charles",
+        "Fenton Bailey",
+        "Randy Barbato"
+      ],
+      "cast": [
+        {
+          "name": "RuPaul",
+          "photo": null
+        },
+        {
+          "name": "Michelle Visage",
+          "photo": null
+        },
+        {
+          "name": "Carson Kressley",
+          "photo": null
+        },
+        {
+          "name": "Ross Mathews",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3050,7 +6899,47 @@
       "episodes": 24,
       "runtime": 30,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Armando Iannucci"
+      ],
+      "cast": [
+        {
+          "name": "Peter Capaldi",
+          "photo": null
+        },
+        {
+          "name": "Chris Addison",
+          "photo": null
+        },
+        {
+          "name": "Rebecca Front",
+          "photo": null
+        },
+        {
+          "name": "Joanna Scanlan",
+          "photo": null
+        },
+        {
+          "name": "James Smith",
+          "photo": null
+        },
+        {
+          "name": "Paul Higgins",
+          "photo": null
+        },
+        {
+          "name": "Chris Langham",
+          "photo": null
+        },
+        {
+          "name": "Roger Allam",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3083,7 +6972,19 @@
       "episodes": 118,
       "runtime": 45,
       "imdb": 8.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Anthony Bourdain"
+      ],
+      "cast": [
+        {
+          "name": "Anthony Bourdain",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3116,7 +7017,47 @@
       "episodes": 7,
       "runtime": 60,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Brad Ingelsby"
+      ],
+      "cast": [
+        {
+          "name": "Kate Winslet",
+          "photo": null
+        },
+        {
+          "name": "Julianne Nicholson",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Evan Peters",
+          "photo": null
+        },
+        {
+          "name": "Angourie Rice",
+          "photo": null
+        },
+        {
+          "name": "Guy Pearce",
+          "photo": null
+        },
+        {
+          "name": "David Denman",
+          "photo": null
+        },
+        {
+          "name": "Cailee Spaeny",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3145,7 +7086,20 @@
       "episodes": 12,
       "runtime": 30,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Nathan Fielder",
+        "Eric Notarnicola"
+      ],
+      "cast": [
+        {
+          "name": "Nathan Fielder",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3174,7 +7128,19 @@
       "episodes": 142,
       "runtime": 45,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Anthony Bourdain"
+      ],
+      "cast": [
+        {
+          "name": "Anthony Bourdain",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3206,7 +7172,51 @@
       "episodes": 88,
       "runtime": 45,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Shawn Ryan"
+      ],
+      "cast": [
+        {
+          "name": "Michael Chiklis",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "CCH Pounder",
+          "photo": null
+        },
+        {
+          "name": "Michael Jace",
+          "photo": null
+        },
+        {
+          "name": "Jay Karnes",
+          "photo": null
+        },
+        {
+          "name": "Catherine Dent",
+          "photo": null
+        },
+        {
+          "name": "Benito Martinez",
+          "photo": null
+        },
+        {
+          "name": "Glenn Close",
+          "photo": null
+        },
+        {
+          "name": "Forest Whitaker",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3239,7 +7249,55 @@
       "episodes": 18,
       "runtime": 35,
       "imdb": 8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Lee Sung Jin"
+      ],
+      "cast": [
+        {
+          "name": "Steven Yeun",
+          "photo": null
+        },
+        {
+          "name": "Ali Wong",
+          "photo": null
+        },
+        {
+          "name": "Joseph Lee",
+          "photo": null
+        },
+        {
+          "name": "Young Mazino",
+          "photo": null
+        },
+        {
+          "name": "Maria Bello",
+          "photo": null
+        },
+        {
+          "name": "David Choe",
+          "photo": null
+        },
+        {
+          "name": "Oscar Isaac",
+          "photo": null
+        },
+        {
+          "name": "Carey Mulligan",
+          "photo": null
+        },
+        {
+          "name": "Charles Melton",
+          "photo": null
+        },
+        {
+          "name": "Cailee Spaeny",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -3272,7 +7330,48 @@
       "episodes": 32,
       "runtime": 30,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Alec Berg",
+        "Bill Hader"
+      ],
+      "cast": [
+        {
+          "name": "Bill Hader",
+          "photo": null
+        },
+        {
+          "name": "Sarah Goldberg",
+          "photo": null
+        },
+        {
+          "name": "Stephen Root",
+          "photo": null
+        },
+        {
+          "name": "Henry Winkler",
+          "photo": null
+        },
+        {
+          "name": "Anthony Carrigan",
+          "photo": null
+        },
+        {
+          "name": "D'Arcy Carden",
+          "photo": null
+        },
+        {
+          "name": "Darrell Britt-Gibson",
+          "photo": null
+        },
+        {
+          "name": "Michael Irby",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3305,7 +7404,55 @@
       "episodes": 38,
       "runtime": 35,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Christopher Storer"
+      ],
+      "cast": [
+        {
+          "name": "Jeremy Allen White",
+          "photo": null
+        },
+        {
+          "name": "Ayo Edebiri",
+          "photo": null
+        },
+        {
+          "name": "Ebon Moss-Bachrach",
+          "photo": null
+        },
+        {
+          "name": "Liza Colón-Zayas",
+          "photo": null
+        },
+        {
+          "name": "Lionel Boyce",
+          "photo": null
+        },
+        {
+          "name": "Abby Elliott",
+          "photo": null
+        },
+        {
+          "name": "Matty Matheson",
+          "photo": null
+        },
+        {
+          "name": "Edwin Lee Gibson",
+          "photo": null
+        },
+        {
+          "name": "Oliver Platt",
+          "photo": null
+        },
+        {
+          "name": "Jamie Lee Curtis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3334,7 +7481,37 @@
       "episodes": 21,
       "runtime": 30,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Bridget Everett",
+        "Hannah Bos",
+        "Paul Thureen"
+      ],
+      "cast": [
+        {
+          "name": "Bridget Everett",
+          "photo": null
+        },
+        {
+          "name": "Jeff Hiller",
+          "photo": null
+        },
+        {
+          "name": "Mary Catherine Garrison",
+          "photo": null
+        },
+        {
+          "name": "Murray Hill",
+          "photo": null
+        },
+        {
+          "name": "Danny McCarthy",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3364,7 +7541,56 @@
       "episodes": 250,
       "runtime": 22,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Christopher Lloyd",
+        "Steven Levitan"
+      ],
+      "cast": [
+        {
+          "name": "Ed O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Sofía Vergara",
+          "photo": null
+        },
+        {
+          "name": "Julie Bowen",
+          "photo": null
+        },
+        {
+          "name": "Ty Burrell",
+          "photo": null
+        },
+        {
+          "name": "Jesse Tyler Ferguson",
+          "photo": null
+        },
+        {
+          "name": "Eric Stonestreet",
+          "photo": null
+        },
+        {
+          "name": "Sarah Hyland",
+          "photo": null
+        },
+        {
+          "name": "Ariel Winter",
+          "photo": null
+        },
+        {
+          "name": "Nolan Gould",
+          "photo": null
+        },
+        {
+          "name": "Rico Rodriguez",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3391,7 +7617,39 @@
       "episodes": 170,
       "runtime": 22,
       "imdb": 8.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Rob McElhenney"
+      ],
+      "cast": [
+        {
+          "name": "Charlie Day",
+          "photo": null
+        },
+        {
+          "name": "Glenn Howerton",
+          "photo": null
+        },
+        {
+          "name": "Rob McElhenney",
+          "photo": null
+        },
+        {
+          "name": "Kaitlin Olson",
+          "photo": null
+        },
+        {
+          "name": "Danny DeVito",
+          "photo": null
+        },
+        {
+          "name": "Mary Elizabeth Ellis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3423,7 +7681,52 @@
       "episodes": 156,
       "runtime": 43,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Robert King",
+        "Michelle King"
+      ],
+      "cast": [
+        {
+          "name": "Julianna Margulies",
+          "photo": null
+        },
+        {
+          "name": "Josh Charles",
+          "photo": null
+        },
+        {
+          "name": "Christine Baranski",
+          "photo": null
+        },
+        {
+          "name": "Archie Panjabi",
+          "photo": null
+        },
+        {
+          "name": "Alan Cumming",
+          "photo": null
+        },
+        {
+          "name": "Matt Czuchry",
+          "photo": null
+        },
+        {
+          "name": "Chris Noth",
+          "photo": null
+        },
+        {
+          "name": "Matthew Goode",
+          "photo": null
+        },
+        {
+          "name": "Zach Grenier",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3452,7 +7755,19 @@
       "episodes": 18,
       "runtime": 28,
       "imdb": 8.3,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "John Wilson"
+      ],
+      "cast": [
+        {
+          "name": "John Wilson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3483,7 +7798,52 @@
       "episodes": 7,
       "runtime": 60,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Scott Frank",
+        "Allan Scott"
+      ],
+      "cast": [
+        {
+          "name": "Anya Taylor-Joy",
+          "photo": null
+        },
+        {
+          "name": "Bill Camp",
+          "photo": null
+        },
+        {
+          "name": "Thomas Brodie-Sangster",
+          "photo": null
+        },
+        {
+          "name": "Marielle Heller",
+          "photo": null
+        },
+        {
+          "name": "Harry Melling",
+          "photo": null
+        },
+        {
+          "name": "Moses Ingram",
+          "photo": null
+        },
+        {
+          "name": "Isla Johnston",
+          "photo": null
+        },
+        {
+          "name": "Jacob Fortune-Lloyd",
+          "photo": null
+        },
+        {
+          "name": "Marcin Dorociński",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -3512,7 +7872,40 @@
       "episodes": 52,
       "runtime": 30,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Pamela Adlon",
+        "Louis C.K."
+      ],
+      "cast": [
+        {
+          "name": "Pamela Adlon",
+          "photo": null
+        },
+        {
+          "name": "Mikey Madison",
+          "photo": null
+        },
+        {
+          "name": "Hannah Alligood",
+          "photo": null
+        },
+        {
+          "name": "Olivia Edward",
+          "photo": null
+        },
+        {
+          "name": "Celia Imrie",
+          "photo": null
+        },
+        {
+          "name": "Diedrich Bader",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3545,7 +7938,51 @@
       "episodes": 78,
       "runtime": 45,
       "imdb": 8.6,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Graham Yost"
+      ],
+      "cast": [
+        {
+          "name": "Timothy Olyphant",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "Nick Searcy",
+          "photo": null
+        },
+        {
+          "name": "Joelle Carter",
+          "photo": null
+        },
+        {
+          "name": "Erica Tazel",
+          "photo": null
+        },
+        {
+          "name": "Jacob Pitts",
+          "photo": null
+        },
+        {
+          "name": "Jere Burns",
+          "photo": null
+        },
+        {
+          "name": "Margo Martindale",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Davies",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3576,7 +8013,19 @@
       "episodes": 25,
       "runtime": 50,
       "imdb": 9.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Alastair Fothergill"
+      ],
+      "cast": [
+        {
+          "name": "David Attenborough",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3605,7 +8054,47 @@
       "episodes": 150,
       "runtime": 60,
       "imdb": 8.1,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Love Productions (הפורמט)"
+      ],
+      "cast": [
+        {
+          "name": "Mary Berry",
+          "photo": null
+        },
+        {
+          "name": "Paul Hollywood",
+          "photo": null
+        },
+        {
+          "name": "Mel Giedroyc",
+          "photo": null
+        },
+        {
+          "name": "Sue Perkins",
+          "photo": null
+        },
+        {
+          "name": "Noel Fielding",
+          "photo": null
+        },
+        {
+          "name": "Matt Lucas",
+          "photo": null
+        },
+        {
+          "name": "Prue Leith",
+          "photo": null
+        },
+        {
+          "name": "Sandi Toksvig",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3637,7 +8126,52 @@
       "episodes": 10,
       "runtime": 60,
       "imdb": 8.6,
-      "lang": "ja"
+      "lang": "ja",
+      "creators": [
+        "Rachel Kondo",
+        "Justin Marks"
+      ],
+      "cast": [
+        {
+          "name": "Hiroyuki Sanada",
+          "photo": null
+        },
+        {
+          "name": "Cosmo Jarvis",
+          "photo": null
+        },
+        {
+          "name": "Anna Sawai",
+          "photo": null
+        },
+        {
+          "name": "Tadanobu Asano",
+          "photo": null
+        },
+        {
+          "name": "Takehiro Hira",
+          "photo": null
+        },
+        {
+          "name": "Tokuma Nishioka",
+          "photo": null
+        },
+        {
+          "name": "Moeka Hoshi",
+          "photo": null
+        },
+        {
+          "name": "Yuki Kura",
+          "photo": null
+        },
+        {
+          "name": "Fumi Nikaido",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3666,7 +8200,48 @@
       "episodes": 28,
       "runtime": 28,
       "imdb": 8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Sterlin Harjo",
+        "Taika Waititi"
+      ],
+      "cast": [
+        {
+          "name": "Devery Jacobs",
+          "photo": null
+        },
+        {
+          "name": "Paulina Alexis",
+          "photo": null
+        },
+        {
+          "name": "D'Pharaoh Woon-A-Tai",
+          "photo": null
+        },
+        {
+          "name": "Lane Factor",
+          "photo": null
+        },
+        {
+          "name": "Zahn McClarnon",
+          "photo": null
+        },
+        {
+          "name": "Sarah Podemski",
+          "photo": null
+        },
+        {
+          "name": "Gary Farmer",
+          "photo": null
+        },
+        {
+          "name": "Kaniehtiio Horn",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
     }
   },
   {
@@ -3698,7 +8273,39 @@
       "episodes": 7,
       "runtime": 30,
       "imdb": 7.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Richard Gadd"
+      ],
+      "cast": [
+        {
+          "name": "Richard Gadd",
+          "photo": null
+        },
+        {
+          "name": "Jessica Gunning",
+          "photo": null
+        },
+        {
+          "name": "Nava Mau",
+          "photo": null
+        },
+        {
+          "name": "Tom Goodman-Hill",
+          "photo": null
+        },
+        {
+          "name": "Shalom Brune-Franklin",
+          "photo": null
+        },
+        {
+          "name": "Danny Kirrane",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -3725,7 +8332,45 @@
       "episodes": 29,
       "runtime": 28,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Danny McBride",
+        "Jody Hill",
+        "Ben Best"
+      ],
+      "cast": [
+        {
+          "name": "Danny McBride",
+          "photo": null
+        },
+        {
+          "name": "Steve Little",
+          "photo": null
+        },
+        {
+          "name": "Katy Mixon",
+          "photo": null
+        },
+        {
+          "name": "John Hawkes",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Irwin",
+          "photo": null
+        },
+        {
+          "name": "Andrew Daly",
+          "photo": null
+        },
+        {
+          "name": "Ben Best",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3753,7 +8398,44 @@
       "episodes": 24,
       "runtime": 25,
       "imdb": 7.9,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Rob Delaney",
+        "Sharon Horgan"
+      ],
+      "cast": [
+        {
+          "name": "Rob Delaney",
+          "photo": null
+        },
+        {
+          "name": "Sharon Horgan",
+          "photo": null
+        },
+        {
+          "name": "Carrie Fisher",
+          "photo": null
+        },
+        {
+          "name": "Ashley Jensen",
+          "photo": null
+        },
+        {
+          "name": "Mark Bonnar",
+          "photo": null
+        },
+        {
+          "name": "Daniel Lapaine",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Forbes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
     }
   },
   {
@@ -3786,7 +8468,48 @@
       "episodes": 8,
       "runtime": 60,
       "imdb": 8.4,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Richard Price",
+        "Steven Zaillian"
+      ],
+      "cast": [
+        {
+          "name": "Riz Ahmed",
+          "photo": null
+        },
+        {
+          "name": "John Turturro",
+          "photo": null
+        },
+        {
+          "name": "Bill Camp",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Jeannie Berlin",
+          "photo": null
+        },
+        {
+          "name": "Amara Karan",
+          "photo": null
+        },
+        {
+          "name": "Poorna Jagannathan",
+          "photo": null
+        },
+        {
+          "name": "Paulo Costanzo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
     }
   },
   {
@@ -3815,7 +8538,48 @@
       "episodes": 40,
       "runtime": 45,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Christopher Cantwell",
+        "Christopher C. Rogers"
+      ],
+      "cast": [
+        {
+          "name": "Lee Pace",
+          "photo": null
+        },
+        {
+          "name": "Scoot McNairy",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Kerry Bishé",
+          "photo": null
+        },
+        {
+          "name": "Toby Huss",
+          "photo": null
+        },
+        {
+          "name": "Mark O'Brien",
+          "photo": null
+        },
+        {
+          "name": "Manish Dayal",
+          "photo": null
+        },
+        {
+          "name": "Annabeth Gish",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3842,7 +8606,55 @@
       "episodes": 110,
       "runtime": 22,
       "imdb": 8.5,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Dan Harmon"
+      ],
+      "cast": [
+        {
+          "name": "Joel McHale",
+          "photo": null
+        },
+        {
+          "name": "Gillian Jacobs",
+          "photo": null
+        },
+        {
+          "name": "Danny Pudi",
+          "photo": null
+        },
+        {
+          "name": "Alison Brie",
+          "photo": null
+        },
+        {
+          "name": "Donald Glover",
+          "photo": null
+        },
+        {
+          "name": "Yvette Nicole Brown",
+          "photo": null
+        },
+        {
+          "name": "Ken Jeong",
+          "photo": null
+        },
+        {
+          "name": "Chevy Chase",
+          "photo": null
+        },
+        {
+          "name": "Jim Rash",
+          "photo": null
+        },
+        {
+          "name": "Paget Brewster",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3872,7 +8684,56 @@
       "episodes": 16,
       "runtime": 50,
       "imdb": 7.8,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Brit Marling",
+        "Zal Batmanglij"
+      ],
+      "cast": [
+        {
+          "name": "Brit Marling",
+          "photo": null
+        },
+        {
+          "name": "Jason Isaacs",
+          "photo": null
+        },
+        {
+          "name": "Emory Cohen",
+          "photo": null
+        },
+        {
+          "name": "Phyllis Smith",
+          "photo": null
+        },
+        {
+          "name": "Patrick Gibson",
+          "photo": null
+        },
+        {
+          "name": "Brendan Meyer",
+          "photo": null
+        },
+        {
+          "name": "Ian Alexander",
+          "photo": null
+        },
+        {
+          "name": "Alice Krige",
+          "photo": null
+        },
+        {
+          "name": "Riz Ahmed",
+          "photo": null
+        },
+        {
+          "name": "Kingsley Ben-Adir",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
     }
   },
   {
@@ -3901,7 +8762,59 @@
       "episodes": 153,
       "runtime": 43,
       "imdb": 8.2,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Amy Sherman-Palladino"
+      ],
+      "cast": [
+        {
+          "name": "Lauren Graham",
+          "photo": null
+        },
+        {
+          "name": "Alexis Bledel",
+          "photo": null
+        },
+        {
+          "name": "Kelly Bishop",
+          "photo": null
+        },
+        {
+          "name": "Scott Patterson",
+          "photo": null
+        },
+        {
+          "name": "Melissa McCarthy",
+          "photo": null
+        },
+        {
+          "name": "Keiko Agena",
+          "photo": null
+        },
+        {
+          "name": "Yanic Truesdale",
+          "photo": null
+        },
+        {
+          "name": "Jared Padalecki",
+          "photo": null
+        },
+        {
+          "name": "Milo Ventimiglia",
+          "photo": null
+        },
+        {
+          "name": "Matt Czuchry",
+          "photo": null
+        },
+        {
+          "name": "Liza Weil",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   },
   {
@@ -3929,7 +8842,59 @@
       "episodes": 124,
       "runtime": 43,
       "imdb": 7.7,
-      "lang": "en"
+      "lang": "en",
+      "creators": [
+        "Shonda Rhimes"
+      ],
+      "cast": [
+        {
+          "name": "Kerry Washington",
+          "photo": null
+        },
+        {
+          "name": "Tony Goldwyn",
+          "photo": null
+        },
+        {
+          "name": "Columbus Short",
+          "photo": null
+        },
+        {
+          "name": "Jeff Perry",
+          "photo": null
+        },
+        {
+          "name": "Guillermo Díaz",
+          "photo": null
+        },
+        {
+          "name": "Darby Stanchfield",
+          "photo": null
+        },
+        {
+          "name": "Katie Lowes",
+          "photo": null
+        },
+        {
+          "name": "Joshua Malina",
+          "photo": null
+        },
+        {
+          "name": "Bellamy Young",
+          "photo": null
+        },
+        {
+          "name": "Scott Foley",
+          "photo": null
+        },
+        {
+          "name": "Portia de Rossi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
     }
   }
 ]

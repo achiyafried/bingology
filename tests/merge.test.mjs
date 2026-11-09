@@ -87,3 +87,21 @@ test("validateData allows a missing IMDb score but rejects a non-number", () => 
   assert.deepEqual(validateData({ series: [s] }, 1), []);
   assert.ok(validateData({ series: [{ ...s, imdb: "9.1" }] }, 1).some(e => e.includes("imdb")));
 });
+
+test("cast and creators fall back to the legacy lists when nothing better exists", () => {
+  const fb = { ...entry.fallback, cast: [{ name: "Bryan Cranston", photo: null }], creators: ["Vince Gilligan"] };
+  const e2 = { ...entry, fallback: fb };
+  assert.deepEqual(mergeEntry(e2, null, null, null, NOW).cast, fb.cast);
+  assert.deepEqual(mergeEntry(e2, null, null, { ...prev, cast: [], creators: [] }, NOW).creators, ["Vince Gilligan"]);
+  assert.deepEqual(mergeEntry(e2, { ...live, cast: [] }, 9.5, null, NOW).cast, fb.cast);
+  assert.deepEqual(mergeEntry(e2, live, 9.5, null, NOW).cast, live.cast);
+  assert.deepEqual(mergeEntry(e2, { ...live, providers: [] }, 9.5, prev, NOW).providers, []);
+});
+
+test("providers fall back to the legacy platform only when never fetched", () => {
+  const e2 = { ...entry, fallback: { ...entry.fallback, providers: ["netflix"] } };
+  assert.deepEqual(mergeEntry(e2, null, null, null, NOW).providers, ["netflix"]);
+  assert.deepEqual(mergeEntry(e2, null, null, { ...prev, providers: [], fetchedAt: null }, NOW).providers, ["netflix"]);
+  assert.deepEqual(mergeEntry(e2, null, null, { ...prev, providers: [], fetchedAt: "2026-11-09T03:00:00Z" }, NOW).providers, []);
+  assert.deepEqual(mergeEntry(e2, { ...live, providers: [] }, 9.5, null, NOW).providers, []);
+});

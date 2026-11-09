@@ -198,7 +198,7 @@ function rank(surprise) {
 }
 
 
-const crew = i => S[i].creators;
+const crew = i => S[i].creators.map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean);
 function similar(i, n) {
   const s = S[i], mine = crew(i);
   return S.map((o, j) => {
