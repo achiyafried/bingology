@@ -1,0 +1,16 @@
+{
+  "id": 1396, "name": "שובר שורות", "original_name": "Breaking Bad", "original_language": "en",
+  "overview": "מורה לכימיה שמאובחן בסרטן הופך ליצרן סמים.",
+  "first_air_date": "2008-01-20", "in_production": false,
+  "number_of_seasons": 5, "number_of_episodes": 62,
+  "episode_run_time": [45, 47, 58],
+  "poster_path": "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+  "created_by": [{ "name": "Vince Gilligan" }],
+  "aggregate_credits": { "cast": [
+    { "name": "Aaron Paul", "order": 1, "profile_path": "/aaron.jpg" },
+    { "name": "Bryan Cranston", "order": 0, "profile_path": "/bryan.jpg" },
+    { "name": "Anna Gunn", "order": 2, "profile_path": null }
+  ] },
+  "watch/providers": { "results": { "IL": { "flatrate": [{ "provider_name": "Netflix" }], "buy": [{ "provider_name": "Apple TV" }] }, "US": { "flatrate": [{ "provider_name": "AMC+" }] } } },
+  "external_ids": { "imdb_id": "tt0903747" }
+}

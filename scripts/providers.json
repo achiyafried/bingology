@@ -1,0 +1,8 @@
+{
+  "netflix": ["Netflix", "Netflix basic with Ads"],
+  "hbo": ["Max", "HBO Max"],
+  "apple": ["Apple TV+", "Apple TV Plus"],
+  "prime": ["Amazon Prime Video", "Amazon Prime Video with Ads"],
+  "disney": ["Disney Plus", "Disney+"],
+  "israel": ["yes", "Yes TV", "STINGTV", "HOT", "Next TV", "Partner TV", "Cellcom TV", "Kan", "Kan Box"]
+}
