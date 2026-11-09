@@ -37,3 +37,29 @@ export function parseLegacy(html) {
   const script = html.slice(s + 8, e);
   return Object.fromEntries(TABLES.map(t => [t, evalConst(script, t)]));
 }
+
+const MINE_N = 60;
+
+/** Legacy tables → curated series entries (order preserved; tmdbId to be matched later). */
+export function legacyToSeries(d) {
+  return d.RAW.map((r, i) => {
+    const [name, year, seasons, episodes, runtime, genres, moods, weight, solo, blurb] = r;
+    const [imdb, rt, lang] = d.META[i];
+    const more = d.MORE[i] || [];
+    const lists = [];
+    if (i < MINE_N) lists.push("mine");
+    if (d.NYTR[i]) lists.push("nyt");
+    const e = {
+      tmdbId: null, name, year, lists,
+      genres: genres.split(" "), moods: moods.split(" "),
+      weight, solo: !!solo, blurb,
+    };
+    if (d.NYTR[i]) e.nytRank = d.NYTR[i];
+    if (d.PRAISE[i]) e.praise = d.PRAISE[i];
+    if (more[2] && more[2].length) e.awards = more[2];
+    if (more[3]) e.castLabel = more[3];
+    e.rt = rt ?? null;
+    e.fallback = { year, seasons, episodes, runtime, imdb, lang };
+    return e;
+  });
+}
