@@ -21,3 +21,32 @@ export async function tmdbGet(path, params = {}, fetchImpl = fetch) {
     return res.json();
   }
 }
+
+/** IMDb rating via OMDb, or null when unavailable. Never throws. */
+export async function omdbRating(imdbId, fetchImpl = fetch) {
+  if (!imdbId) return null;
+  try {
+    const url = `https://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&apikey=${encodeURIComponent(process.env.OMDB_KEY ?? "")}`;
+    const res = await fetchImpl(url);
+    if (!res.ok) return null;
+    const j = await res.json();
+    const n = Number(j.imdbRating);
+    return j.Response === "False" || !Number.isFinite(n) ? null : n;
+  } catch {
+    return null;
+  }
+}
+
+/** Map `items` through async `fn` with at most `limit` in flight; results keep input order. */
+export async function pool(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i], i);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
+}
