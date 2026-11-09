@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bingology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #EFECF8;
+  --surface: #FFFFFF;
+  --surface2: #E3DEF3;
+  --ink: #1A1640;
+  --muted: #5A5580;
+  --line: #CFC8E6;
+  --accent: #3B2FD0;
+  --accent-ink: #FFFFFF;
+  --ticket: #FFF6E3;
+  --ticket-ink: #1A1640;
+  --ticket-accent: #3B2FD0;
+  --ticket-muted: #5E5878;
+  --shadow: 0 10px 30px rgba(26, 22, 64, .16);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12102B;
+    --surface: #1D1A40;
+    --surface2: #2A2655;
+    --ink: #F4F0FF;
+    --muted: #ABA5D3;
+    --line: #38336B;
+    --accent: #FFC933;
+    --accent-ink: #1A1640;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12102B;
+  --surface: #1D1A40;
+  --surface2: #2A2655;
+  --ink: #F4F0FF;
+  --muted: #ABA5D3;
+  --line: #38336B;
+  --accent: #FFC933;
+  --accent-ink: #1A1640;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Assistant", system-ui, "Segoe UI", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+[tabindex="-1"]:focus { outline: none; }
+.app { max-width: 560px; margin: 0 auto; padding: 16px 16px 56px; }
+h1, h2, h3 { font-family: "Secular One", "Assistant", system-ui, sans-serif; font-weight: 400; margin: 0; line-height: 1.15; }
+
+/* header */
+.top { margin-bottom: 20px; }
+.brand { display: flex; direction: ltr; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--ink); }
+.brand .ic { width: 44px; height: 44px; flex: none; }
+.brand .wm { height: 36px; width: auto; }
+.wm .acc { fill: var(--accent); }
+.wm .accs { stroke: var(--accent); }
+.tabs { display: flex; background: var(--surface); border-radius: 999px; padding: 4px; gap: 2px; }
+.tab { flex: 1; text-align: center; border: 0; background: transparent; padding: 8px 6px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.av { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(150deg, hsl(var(--h) 50% 38%), hsl(calc(var(--h) + 50) 55% 20%)); color: #fff; font-family: "Secular One", "Assistant", sans-serif; font-size: 17px; direction: ltr; }
+.av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.phadd { padding: 8px 18px 6px; }
+.phadd ol { margin: 6px 0 10px; padding-inline-start: 20px; font-size: 14.5px; color: var(--ticket-muted); }
+.phadd a { color: var(--ticket-accent); font-weight: 700; }
+.phadd small { display: block; color: var(--ticket-muted); font-size: 13px; margin-top: 6px; }
+.pastezone { min-height: 56px; border: 2px dashed rgba(26, 22, 64, .3); border-radius: 12px; padding: 14px 12px; margin-bottom: 10px; color: var(--ticket-muted); text-align: center; cursor: text; caret-color: transparent; }
+.pastezone:empty::before { content: attr(data-ph); }
+.pastezone:focus { border-color: var(--ticket-accent); outline: none; }
+#phMsg { font-size: 14.5px; margin-top: 8px; min-height: 1.2em; }
+.phpanel { background: var(--surface); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; }
+.phpanel p { margin: 6px 0 10px; color: var(--muted); font-size: 14.5px; }
+.phpanel #phStatus { margin-top: 10px; font-size: 14.5px; }
+.av.big { width: 68px; height: 68px; font-size: 26px; }
+.arow { display: flex; align-items: center; gap: 12px; width: 100%; text-align: start; padding: 10px 12px; border-radius: 14px; background: var(--surface); border: 2px solid transparent; margin-bottom: 8px; }
+.arow:hover { border-color: var(--line); }
+.ainfo { flex: 1; min-width: 0; }
+.ainfo b { display: block; font-size: 17px; font-weight: 700; }
+.ainfo small { display: block; color: var(--muted); font-size: 14px; line-height: 1.3; }
+.acount { flex: none; background: var(--surface2); border-radius: 999px; padding: 2px 11px; font-weight: 700; font-size: 14px; }
+.search { width: 100%; padding: 13px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; margin-bottom: 12px; }
+.nm { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline dotted; text-underline-offset: 3px; white-space: nowrap; }
+.alinks { display: flex; flex-wrap: wrap; gap: 8px; }
+.alinks a { padding: 7px 14px; font-size: 15px; }
+.a-head { display: flex; align-items: center; gap: 14px; padding: 20px 18px 8px; }
+.a-grid { padding: 8px 18px 4px; }
+dialog .nm { color: var(--ticket-accent); }
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid transparent; border-radius: 14px; padding: 13px 20px; font-weight: 700; font-size: 17px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn.block { width: 100%; }
+.linkbtn { background: none; border: 0; padding: 6px 2px; color: var(--muted); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* intro */
+.hero { text-align: center; padding-top: 6px; }
+.fan { --w: min(116px, 26vw); position: relative; height: calc(var(--w) * 0.9 + 28px); margin: 6px auto 26px; }
+.fan .fcard { position: absolute; top: 12px; left: 50%; width: var(--w); transform: translateX(calc(-50% + var(--k) * var(--w) * 0.62)) rotate(var(--r)); }
+.fan .fcard .poster { border: 3px solid var(--ticket); box-shadow: var(--shadow); }
+.hero h1 { font-size: clamp(40px, 11vw, 56px); margin-bottom: 12px; }
+.hero p { color: var(--muted); max-width: 34ch; margin: 0 auto 26px; }
+.hero .stack { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.hero .btn.primary { min-width: 230px; }
+
+/* quiz */
+.qhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; min-height: 36px; }
+.bulbs { display: flex; gap: 8px; }
+.bulb { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
+.bulb.on { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.count { color: var(--muted); font-size: 15px; min-width: 60px; text-align: end; }
+.qbody h2 { font-size: clamp(27px, 7vw, 34px); margin-bottom: 8px; }
+.qbody .sub { color: var(--muted); margin: 0 0 20px; }
+.opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: start; padding: 15px 18px; border-radius: 16px; background: var(--surface); border: 2px solid transparent; margin-bottom: 10px; }
+.opt:hover { border-color: var(--line); }
+.opt[aria-pressed="true"] { border-color: var(--accent); }
+.opt .em { font-size: 26px; width: 34px; text-align: center; flex: none; }
+.opt b { display: block; font-size: 18px; line-height: 1.25; }
+.opt small { display: block; color: var(--muted); font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+.chip { border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 9px 16px; font-weight: 600; font-size: 16px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+@media (prefers-reduced-motion: no-preference) {
+  .qbody { animation: slidein .22s ease-out; }
+  @keyframes slidein { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+}
+
+/* poster grid */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile { position: relative; padding: 0; border: 0; background: none; border-radius: 12px; overflow: hidden; text-align: start; }
+.tile img { display: block; width: 100%; aspect-ratio: 240 / 216; object-fit: cover; border-radius: 12px; }
+.tile.seen img { opacity: .3; filter: grayscale(.9); }
+.tile .badge { position: absolute; top: 6px; inset-inline-start: 6px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: none; align-items: center; justify-content: center; }
+.tile.seen .badge { display: flex; }
+.listbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.listbar h2 { font-size: 26px; }
+.note { color: var(--muted); font-size: 14px; margin-top: 22px; }
+.sticky-cta { margin-top: 22px; display: flex; gap: 10px; flex-direction: column; }
+
+/* ticket */
+.ticket { position: relative; background: var(--ticket); color: var(--ticket-ink); border-radius: 20px; box-shadow: var(--shadow); }
+.t-top { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding: 18px 18px 6px; align-items: start; }
+.t-poster { width: 150px; aspect-ratio: 240 / 216; object-fit: cover; border-radius: 12px; display: block; }
+.t-title { font-size: 28px; margin-bottom: 8px; word-break: break-word; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 14px; color: var(--ticket-muted); margin-bottom: 10px; }
+.meta span { padding-inline-end: 9px; margin-inline-end: 9px; border-inline-end: 1px solid rgba(26, 22, 64, .25); }
+.meta span:last-child { border: 0; margin: 0; padding: 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: rgba(59, 47, 208, .1); color: var(--ticket-accent); }
+.t-line { padding: 6px 18px 0; margin: 0; font-size: 17px; }
+.why { list-style: none; padding: 12px 18px 16px; margin: 0; display: grid; gap: 7px; }
+.why li { display: flex; gap: 9px; align-items: flex-start; font-size: 15px; color: var(--ticket-muted); }
+.why svg { flex: none; margin-top: 3px; color: var(--ticket-accent); }
+.perf { position: relative; height: 22px; }
+.perf::before, .perf::after { content: ""; position: absolute; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
+.perf::before { right: -11px; }
+.perf::after { left: -11px; }
+.perf i { position: absolute; top: 10px; left: 18px; right: 18px; border-top: 2px dashed rgba(26, 22, 64, .28); }
+.stub { display: flex; gap: 16px; align-items: center; padding: 10px 18px 20px; }
+.match { text-align: center; min-width: 86px; }
+.match strong { display: block; font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 46px; line-height: 1; color: var(--ticket-accent); }
+.match span { font-size: 14px; color: var(--ticket-muted); font-weight: 600; }
+.acts { flex: 1; display: grid; gap: 8px; }
+.ticket .btn.primary { background: var(--ticket-ink); color: var(--ticket); }
+.ticket .btn.ghost { border-color: rgba(26, 22, 64, .25); color: var(--ticket-ink); }
+.ticket .btn { padding: 11px 14px; font-size: 16px; }
+.ticket .linkbtn { color: var(--ticket-muted); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.chosen { background: rgba(30, 142, 90, .14); color: #14673F; border-radius: 12px; padding: 10px 12px; font-weight: 700; text-align: center; }
+.alts h3 { font-size: 20px; margin: 26px 0 12px; }
+.alts .grid { grid-template-columns: repeat(3, 1fr); }
+.alts .tile .cap { display: block; font-size: 13px; font-weight: 600; padding-top: 5px; color: var(--muted); }
+.foot { margin-top: 22px; display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
+.empty { background: var(--surface); border-radius: 18px; padding: 24px; text-align: center; }
+.empty h2 { font-size: 26px; margin-bottom: 8px; }
+.empty p { color: var(--muted); margin: 0 0 18px; }
+.empty .btn { margin: 4px; }
+
+.rtitle { font-size: clamp(28px, 7vw, 34px); text-align: center; margin: 2px 0 18px; }
+.rates { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 18px 2px; }
+.rate { font-size: 13px; background: rgba(26, 22, 64, .08); border-radius: 8px; padding: 2px 8px; color: var(--ticket-ink); }
+.rate b { font-weight: 700; color: var(--ticket-muted); }
+.why li.miss { color: #8F3730; }
+.why li.miss svg { color: #B3261E; }
+.ph { display: flex; align-items: flex-end; width: 100%; aspect-ratio: 240 / 216; padding: 10px; border-radius: 12px; overflow: hidden; background: linear-gradient(150deg, hsl(var(--h) 48% 34%), hsl(calc(var(--h) + 50) 55% 15%)); color: #fff; font-family: "Secular One", "Assistant", system-ui, sans-serif; font-size: clamp(14px, 4vw, 19px); line-height: 1.1; word-break: break-word; }
+.t-poster.ph { width: 150px; font-size: 17px; }
+.tile.seen .ph { opacity: .3; filter: grayscale(.9); }
+.poster { display: block; width: 100%; height: auto; aspect-ratio: 240 / 216; border-radius: 12px; }
+.t-poster.poster { width: 150px; }
+.tile.seen .poster { opacity: .3; filter: grayscale(.9); }
+.tile .cap { display: block; font-size: 13px; font-weight: 600; padding-top: 5px; color: var(--muted); }
+.praise { margin: 12px 18px 0; padding: 4px 12px; border-inline-start: 3px solid var(--ticket-accent); color: var(--ticket-muted); font-size: 15px; }
+.praise b { display: block; color: var(--ticket-ink); font-size: 14px; }
+.trail { padding: 12px 18px 2px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.trail .linkbtn { color: var(--ticket-muted); font-size: 15px; }
+.toast { position: fixed; inset-inline: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 2147483000; background: var(--ink); color: var(--bg); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); font-size: 15px; }
+.toast p { margin: 0 0 8px; }
+.toast input { width: 100%; font: inherit; font-size: 13px; direction: ltr; padding: 8px 10px; border-radius: 8px; border: 0; background: rgba(128, 128, 160, .3); color: inherit; }
+.trail a { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--ticket-accent); text-decoration: none; border: 2px solid rgba(59, 47, 208, .28); border-radius: 999px; padding: 8px 16px; }
+.trail a:hover { background: rgba(59, 47, 208, .08); }
+.more { background: var(--surface); border-radius: 18px; padding: 18px; margin-top: 18px; }
+.more h3 { font-size: 20px; margin: 0 0 10px; }
+.more .sec { margin-bottom: 20px; }
+.more .sec:last-of-type { margin-bottom: 8px; }
+.more bdi { white-space: nowrap; }
+.more dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
+.more dt { color: var(--muted); font-weight: 700; }
+.more dd { margin: 0; }
+.more .aw { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.more .aw li { display: flex; gap: 10px; align-items: flex-start; }
+.more .note { margin: 6px 0 0; }
+.sim { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 12px; }
+.sim .tile { text-align: start; }
+.why2 { display: block; font-size: 13px; line-height: 1.3; color: var(--muted); padding-top: 2px; }
+/* dialog */
+dialog .more { background: transparent; color: var(--ticket-ink); margin: 0; padding: 4px 18px 20px; }
+dialog .more dt, dialog .why2, dialog .more .note, dialog .tile .cap { color: var(--ticket-muted); }
+dialog { border: 0; padding: 0; border-radius: 22px; width: calc(100% - 32px); max-width: 460px; background: var(--ticket); color: var(--ticket-ink); box-shadow: var(--shadow); }
+dialog::backdrop { background: rgba(10, 8, 30, .62); }
+dialog .t-top { padding-top: 20px; }
+dialog .btn.primary { background: var(--ticket-ink); color: var(--ticket); }
+dialog .btn.ghost { border-color: rgba(26, 22, 64, .25); color: var(--ticket-ink); }
+.d-acts { display: grid; gap: 8px; padding: 6px 18px 20px; }
+.d-line { padding: 4px 18px 14px; margin: 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 380px) {
+  .t-top { grid-template-columns: 1fr; }
+  .t-poster, .t-poster.ph, .t-poster.poster { width: 100%; max-width: 220px; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<dialog id="dlg" aria-label="פרטי סדרה"></dialog>
+
+<script>
+const P = [];
+
+/* [שם, שנה, עונות, פרקים, דקות לפרק, ז׳אנרים, מצבי רוח, כובד 1-3, עדיף לבד, תיאור] */
+const RAW = [
+["The Leftovers",2014,3,28,60,"drama mystery","feel think",3,1,"שניים אחוז מהעולם נעלמו ברגע אחד. מה עושים עם האבל ועם השאלות שנשארו? דרמה עמוקה ומטלטלת."],
+["The Sopranos",1999,6,86,55,"crime drama","think feel",3,0,"ראש מאפיה בניו ג׳רזי הולך לטיפול פסיכולוגי. אבן הפינה של הדרמה הטלוויזיונית."],
+["Breaking Bad",2008,5,62,47,"crime thriller drama","tense think",3,0,"מורה לכימיה חולה הופך ליצרן סמים. מתח שלא מרפה עד הפרק האחרון."],
+["Better Call Saul",2015,6,63,47,"crime drama","feel think",2,0,"הסיפור של עורך הדין שמאחורי הסיפור. איטית ואנושית יותר, וגאונית באותה מידה."],
+["Severance",2022,2,19,50,"scifi mystery thriller","think tense",2,0,"עובדים שהזיכרון שלהם חצוי בין העבודה לבית. מסתורין מוזר ומרתק על משרד מבהיל."],
+["Succession",2018,4,39,60,"drama comedy","think laugh",2,0,"משפחת מולטי-מיליארדרים נלחמת על הכס. סאטירה חדה ודיאלוגים שנשארים בראש."],
+["Watchmen",2019,1,9,60,"scifi mystery drama","think tense",2,0,"המשך חופשי לקומיקס האגדי, על גזענות, זיכרון וגיבורי על במסכות. נועזת ומטורפת."],
+["The Wire",2002,5,60,58,"crime drama","think",3,0,"בולטימור דרך עיני שוטרים, סוחרי סמים, פוליטיקאים ומורים. התיאור המקיף ביותר של עיר."],
+["The Boys",2019,5,40,60,"scifi comedy thriller","laugh tense escape",3,1,"גיבורי על שהם בעצם תאגיד מושחת. שחורה, מצחיקה, אלימה ובלי פילטרים."],
+["Game of Thrones",2011,8,73,57,"fantasy history drama","escape tense",3,0,"אפוס של שושלות, בגידות ודרקונים. עולם שלם שאפשר לטבוע בו."],
+["Six Feet Under",2001,5,63,55,"drama comedy","feel think",3,0,"משפחה שמנהלת בית לוויות. על מוות, אהבה ואיך חיים באמצע."],
+["Foundation",2021,3,30,55,"scifi","escape think",2,0,"אימפריה גלקטית מתפרקת ומנסים להציל את הציוויליזציה לאורך אלפי שנים. מדע בדיוני בקנה מידה ענק."],
+["The Walking Dead",2010,11,177,45,"apoc drama thriller","tense escape",3,0,"הישרדות באפוקליפסת זומבים, והאנשים מסוכנים יותר מהם."],
+["For All Mankind",2019,4,40,55,"scifi history drama","escape think feel",2,0,"מה אם הרוסים נחתו ראשונים על הירח? היסטוריה חלופית של מירוץ החלל."],
+["Lost",2004,6,121,43,"mystery drama scifi","tense think escape",2,0,"ניצולי התרסקות על אי מסתורי. עשרות תעלומות שמחזיקות מול המסך."],
+["Mad Men",2007,7,92,47,"drama history","think feel",2,0,"עולם הפרסום בניו יורק של שנות ה-60. אלגנטית, איטית ומלאת שכבות."],
+["Pluribus",2025,1,9,55,"scifi mystery drama","think escape",2,0,"הסדרה החדשה של יוצר “שובר שורות”: מדע בדיוני שקט ומוזר על עולם שמשתנה לגמרי."],
+["Silo",2023,2,20,50,"scifi mystery thriller","tense think escape",2,0,"האנושות חיה במקלט תת-קרקעי עצום ואסור לשאול שאלות. מתח דיסטופי."],
+["Dexter",2006,8,96,52,"crime thriller drama","tense",3,0,"רופא פלילי ביום, רוצח סדרתי בלילה, אבל רק של רעים."],
+["The Crown",2016,6,60,55,"history drama","feel escape",1,0,"עשורים של המשפחה המלכותית הבריטית. הפקה מושקעת ומשחק מצוין."],
+["House M.D.",2004,8,177,44,"drama mystery comedy","think laugh",1,0,"רופא מרושע ומבריק פותר תעלומות רפואיות. כמעט כל פרק עומד בפני עצמו."],
+["The White Lotus",2021,3,22,60,"comedy drama mystery","laugh think escape",2,0,"מלון יוקרה, תיירים עשירים ורצח באופק. קומדיה שחורה על חופשה."],
+["The Last of Us",2023,2,16,55,"apoc drama thriller","feel tense",3,0,"מסע הישרדות בעולם שנכבש על ידי פטרייה. דרמה אנושית עם זומבים."],
+["Ozark",2017,4,44,55,"crime thriller drama","tense",3,0,"יועץ פיננסי מלבין כספי קרטל באגם באמצע ארה״ב. מתח שלא נותן לנשום."],
+["Oz",1997,6,56,55,"crime drama","tense",3,1,"הכלא הכי אכזרי על המסך. ברוטלית, מזעזעת ובלתי מתפשרת."],
+["The Americans",2013,6,75,50,"thriller drama history","tense feel",2,0,"זוג מרגלים סובייטים בפרברי וושינגטון של שנות ה-80. דרמה זוגית בתוך סיפור ריגול."],
+["The Handmaid’s Tale",2017,6,66,55,"drama scifi thriller","tense feel",3,1,"דיסטופיה על חברה שבה נשים נלקחות לשירות. קשה, חזקה ונוגעת ללב."],
+["Westworld",2016,4,36,60,"scifi mystery","think escape",2,0,"פארק שעשועים של רובוטים שמתחילים להבין שהם רובוטים. פאזל פילוסופי."],
+["House of Cards",2013,6,73,51,"history drama thriller","tense think",2,0,"פוליטיקאי חסר מצפון בדרך לבית הלבן. חכם, רע ומפתה."],
+["The Pitt",2025,2,30,55,"drama","tense feel",2,0,"משמרת אחת בחדר מיון, שעה אחר שעה. אנושית, מתוחה ואמיתית."],
+["House of the Dragon",2022,2,18,60,"fantasy drama history","escape tense",3,0,"מלחמת אחים על כס הברזל, מאתיים שנה לפני “משחקי הכס”."],
+["Homeland",2011,8,96,52,"thriller drama","tense",3,0,"קצינת CIA עם הפרעה דו-קוטבית מחפשת את הבוגד. מתח פוליטי וריגולי."],
+["Fargo",2014,5,51,55,"crime comedy drama","laugh tense think",2,0,"אנתולוגיה של פשעים קטנים, אנשים מוזרים וקומדיה שחורה בשלג."],
+["Boardwalk Empire",2010,5,56,55,"crime history drama","tense escape",3,0,"אטלנטיק סיטי של שנות ה-20: מאפיה, פוליטיקה ואלכוהול."],
+["BoJack Horseman",2014,6,77,26,"comedy drama","laugh feel",3,1,"סוס שהיה כוכב טלוויזיה ושקוע בדיכאון. אנימציה מצחיקה וכואבת."],
+["Station Eleven",2021,1,10,55,"apoc drama","feel escape",2,0,"אחרי מגפה, להקת תיאטרון נודדת בין שרידי העולם. קצרה, יפה ומרגשת."],
+["Slow Horses",2022,5,30,45,"thriller comedy","tense laugh",2,0,"מרגלים כושלים שנשלחו למחלקה “הפח” של MI5, בראשות גארי אולדמן. מתח עם הומור בריטי יבש."],
+["24",2001,9,204,43,"thriller","tense",2,0,"יום אחד, שעה אחר שעה, ג׳ק באואר מציל את העולם. ממכרת ומטורפת."],
+["Chernobyl",2019,1,5,65,"history drama","feel tense",3,0,"מיני-סדרה של חמישה פרקים על האסון הגרעיני. מצמררת ומושלמת."],
+["Black Mirror",2011,7,34,60,"scifi thriller","think tense",2,0,"פרקים עצמאיים על הצד האפל של הטכנולוגיה. אפשר לצפות בכל סדר."],
+["Ted Lasso",2020,3,34,40,"comedy drama","laugh feel",1,0,"מאמן פוטבול אמריקאי מאמן קבוצת כדורגל אנגלית ומפיץ אופטימיות. חיבוק בצורת סדרה."],
+["Rome",2005,2,22,55,"history drama","escape tense",3,0,"רומא העתיקה של קיסר ופומפיוס דרך עיני שני חיילים. אפית, אלימה ומפתה."],
+["Upload",2020,4,29,30,"scifi comedy","laugh escape",1,0,"החיים שאחרי המוות מנוהלים כמו מלון יוקרה דיגיטלי. קומדיה קלילה עם נקודות למחשבה."],
+["See",2019,3,24,55,"scifi fantasy","escape tense",2,0,"עולם שבו כולם עיוורים וגבר אחד מגדל ילדים שרואים. אקשן ופנטזיה."],
+["Narcos",2015,3,30,50,"crime history thriller","tense",3,0,"עלייתו ונפילתו של פאבלו אסקובר. מהירה, ממכרת וגם מלמדת."],
+["Prison Break",2005,5,90,43,"thriller crime","tense",2,0,"אח שמתכנן לפרוץ מהכלא כדי להציל את אחיו. מתח, פיתולים והמון הגזמה אהובה."],
+["Ray Donovan",2013,7,82,55,"crime drama","tense feel",3,0,"מתקן הבעיות של הוליווד ושל המשפחה שלו. דרמת פשע קודרת."],
+["Mindhunter",2017,2,19,55,"crime thriller mystery","think tense",3,1,"סוכני FBI מראיינים רוצחים סדרתיים בשנות ה-70. איטית ומצמררת."],
+["The Diplomat",2023,3,24,50,"thriller history drama","tense think",1,0,"שגרירה אמריקאית בלונדון נקלעת למשבר בינלאומי ולנישואים מורכבים. מתח פוליטי חכם ומהיר."],
+["Stranger Things",2016,5,42,60,"scifi mystery fantasy","escape tense feel",2,0,"ילדים בפרבר אמריקאי, כוחות על ועולם הפוך. נוסטלגיה של שנות ה-80."],
+["Dark Matter",2024,1,9,50,"scifi thriller mystery","tense think",2,0,"פיזיקאי נחטף ומוצא את עצמו בגרסה אחרת של חייו. מתח ביקום מקביל."],
+["The X-Files",1993,11,218,45,"mystery scifi","think tense",2,0,"סוכני FBI חוקרים תיקים פרנורמליים. האמת נמצאת בחוץ."],
+["Orange Is the New Black",2013,7,91,55,"comedy drama crime","laugh feel",2,0,"אישה מהמעמד הבינוני בכלא נשים. קומדיה-דרמה צבעונית עם עשרות דמויות."],
+["Twin Peaks",1990,3,48,55,"mystery drama fantasy","think escape",2,0,"מי הרג את לורה פלמר? דיוויד לינץ׳ מגיש תעלומה מוזרה וחלומית."],
+["The Rings of Power",2022,2,16,60,"fantasy","escape",2,0,"הרקע ל״שר הטבעות״: ממלכות, אלפים וכוח אפל שמתעורר."],
+["שטיסל",2013,3,36,50,"drama comedy israeli","feel laugh",1,0,"משפחה חרדית בירושלים: אהבה, אבות ובנים וחיבוטי נפש. דרמה ישראלית חמה."],
+["פאודה",2015,4,48,45,"thriller drama israeli","tense",3,0,"יחידת מסתערבים ישראלית מול חמאס. מתח, אקשן וקונפליקט אנושי."],
+["The Man in the High Castle",2015,4,40,55,"scifi history thriller","tense think",3,0,"מה אם הנאצים ניצחו במלחמה? היסטוריה חלופית ומחרידה."],
+["The Good Place",2016,4,53,25,"comedy fantasy","laugh think feel",1,0,"היא מתה ונמצאת בגן עדן, אבל היא לא אמורה להיות שם. קומדיה פילוסופית מבריקה."],
+["Squid Game",2021,3,22,55,"thriller drama","tense",3,0,"אנשים בחובות מתחרים במשחקי ילדים קטלניים. ממכרת ומטלטלת."],
+["Fleabag",2016,2,12,27,"comedy drama","laugh feel",2,0,"אישה לונדונית חדה ושבורה פונה ישר אל המצלמה. קומדיה שחורה שמסתירה כאב אמיתי."],
+["Veep",2012,7,65,28,"comedy","laugh",1,0,"סגנית נשיא אמריקאית וצוות עסקנים כושל. סאטירה פוליטית בקצב מטורף."],
+["30 Rock",2006,7,138,22,"comedy","laugh",1,0,"מאחורי הקלעים של תוכנית סאטירה בניו יורק. הומור מהיר עם בדיחה כמעט בכל שנייה."],
+["Curb Your Enthusiasm",2000,12,120,30,"comedy","laugh",1,0,"לארי דיוויד מסתבך בכל אינטראקציה חברתית אפשרית. קומדיית מבוכה בלי רחמים."],
+["Atlanta",2016,4,41,30,"comedy drama","laugh think",2,0,"שני בני דודים מנסים לפרוץ בסצנת ההיפ-הופ של אטלנטה. קומדיה סוריאליסטית על החיים באמריקה."],
+["The Office (US)",2005,9,201,22,"comedy","laugh",1,0,"יום-יום במשרד נייר בפנסילבניה, בסגנון דוקומנטרי. קומדיה חמה שאפשר לראות שוב ושוב."],
+["Arrested Development",2003,5,84,22,"comedy","laugh",1,0,"משפחה עשירה ומטורפת שהאבא שלה בכלא. בדיחות שמתחברות רק בצפייה חוזרת."],
+["Girls",2012,6,62,28,"comedy drama","laugh feel",2,0,"ארבע חברות בניו יורק בשנות ה-20 שלהן. מביכה, כנה ואנושית."],
+["Friday Night Lights",2006,5,76,43,"drama","feel",2,0,"קבוצת פוטבול בעיירה בטקסס, והעיר כולה נושמת אותה. דרמה אנושית שמרגשת גם מי שלא מבין בספורט."],
+["The Office (UK)",2001,2,14,29,"comedy","laugh",1,0,"המקור הבריטי: שתי עונות קצרות ומושלמות של מבוכה במשרד."],
+["I May Destroy You",2020,1,12,30,"drama comedy","feel think",3,1,"סופרת צעירה מנסה להבין מה קרה לה בלילה אחד ולהחזיר לעצמה שליטה. כואבת, שנונה ומקורית."],
+["The Comeback",2005,2,21,30,"comedy","laugh feel",2,0,"שחקנית שנשכחה חוזרת לטלוויזיה עם צוות צילום שעוקב אחריה. קומדיית מבוכה עם עומק מפתיע."],
+["Deadwood",2004,3,36,55,"crime history drama","tense think",3,0,"עיירת מכרות באמריקה של המאה ה-19, בלי חוק ובלי סדר. מערבון פיוטי וגס בשפה."],
+["Band of Brothers",2001,1,10,60,"history drama","feel tense",3,0,"פלוגה אחת של צנחנים אמריקאים במלחמת העולם השנייה. מיני-סדרה גדולה ומרגשת."],
+["Key & Peele",2012,5,53,22,"comedy","laugh",1,0,"מערכוני קומדיה של שני קומיקאים, עם דמויות שנשארות בראש. כל פרק עומד בפני עצמו."],
+["Survivor",2000,49,700,60,"doc","tense laugh",1,0,"תחרות הישרדות על אי נידח: בריתות, בגידות ומיליון דולר בסוף. ריאליטי שחי כבר עשרות שנים."],
+["Andor",2022,2,24,50,"scifi thriller drama","tense think",2,0,"סיפורו של מורד לפני ״מלחמת הכוכבים״. מתח פוליטי בוגר ומשובח בעולם מוכר."],
+["Enlightened",2011,2,18,28,"comedy drama","feel think",2,0,"אישה אחרי התמוטטות חוזרת לעבודה עם משימה לשנות את העולם. סדרה קטנה, נוגה ואמיצה."],
+["Schitt’s Creek",2015,6,80,22,"comedy","laugh feel",1,0,"משפחה עשירה מאבדת הכול וגרה בעיירה מצחיקה. הסדרה הכי חמה ומחבקת ברשימה."],
+["True Detective",2014,4,32,60,"crime mystery thriller","think tense",3,0,"אנתולוגיית חקירות קודרות. העונה הראשונה, עם מתיו מקונוהיי ווודי הרלסון, היא זו שנכנסה לרשימה."],
+["Battlestar Galactica",2004,4,75,45,"scifi drama thriller","tense think escape",3,0,"שרידי האנושות בורחים מרובוטים בחלל. מדע בדיוני פוליטי ואפל."],
+["Adolescence",2025,1,4,60,"drama crime","feel tense",3,1,"נער בן 13 נעצר והמשפחה שלו מתפרקת. ארבעה פרקים שצולמו כל אחד בלקיחה אחת."],
+["Louie",2010,5,61,22,"comedy drama","laugh feel",2,0,"קומיקאי גרוש בניו יורק ואירועי חיים מוזרים. קומדיה אישית וחצי-חלומית."],
+["Hacks",2021,4,40,35,"comedy drama","laugh feel",1,0,"קומיקאית ותיקה וכותבת צעירה בדיוק הפוכה. חברות מצחיקה ונוקבת."],
+["Peaky Blinders",2013,6,36,55,"crime drama history","tense",3,0,"כנופיית משפחה בבירמינגהם שאחרי מלחמת העולם הראשונה. סגנון, אלימות ומוזיקה."],
+["Happy Valley",2014,3,18,55,"crime drama thriller","tense feel",3,0,"סמלת משטרה ביורקשייר מתמודדת עם פושע שחזר מהכלא. דרמה בריטית חזקה."],
+["Broad City",2014,5,50,22,"comedy","laugh",1,0,"שתי חברות בניו יורק ומאבק יומיומי בשטויות. קומדיה מטורפת וחמה."],
+["Normal People",2020,1,12,30,"drama","feel",2,0,"שני צעירים אירים בדרך ארוכה של קרבה והתרחקות. דרמה אינטימית ועדינה."],
+["Parks and Recreation",2009,7,125,22,"comedy","laugh feel",1,0,"פקידה אופטימית בעירייה של עיירה באינדיאנה. קומדיה חמה על אנשים שאכפת להם."],
+["Downton Abbey",2010,6,52,55,"drama history","feel escape",1,0,"אחוזה בריטית וצוות משרתיה בתחילת המאה ה-20. דרמה נעימה ומפנקת."],
+["The Bureau",2015,5,50,52,"thriller drama","tense think",2,0,"סוכני מודיעין צרפתים וחיים כפולים. דרמת ריגול איטית וחכמה."],
+["Insecure",2016,5,46,30,"comedy drama","laugh feel",1,0,"אישה שחורה בלוס אנג׳לס ומערכות יחסים מבולבלות. מצחיקה ואמיתית."],
+["Nathan for You",2013,4,32,22,"comedy doc","laugh",1,0,"קומיקאי ״עוזר״ לעסקים קטנים ברעיונות מופרכים. קומדיית מבוכה דוקומנטרית."],
+["I Think You Should Leave",2019,4,24,17,"comedy","laugh",1,0,"מערכונים קצרים וביזאריים שנשארים בראש. פרקים קצרצרים וטירוף מוחלט."],
+["Chappelle’s Show",2003,2,28,22,"comedy","laugh",1,0,"מערכוני סטנד-אפ וסאטירה של דייב שאפל. קלאסיקה של שנות ה-2000."],
+["PEN15",2019,2,26,25,"comedy","laugh feel",1,0,"שתי נשים בנות 30 משחקות בנות 13 בכיתה ז׳. מביכה, מצחיקה ונוגעת ללב."],
+["Peep Show",2003,9,54,25,"comedy","laugh",1,0,"שני שותפים לדירה בלונדון, מצולמים דרך עיניהם. קומדיה בריטית מביכה."],
+["RuPaul’s Drag Race",2009,17,240,60,"doc","laugh",1,0,"תחרות של דראג קווינס: איפור, ריקוד וקצת דרמה. ריאליטי צבעוני ומצחיק."],
+["The Thick of It",2005,4,24,30,"comedy","laugh",1,0,"פוליטיקאים ויועצי תקשורת בממשלה הבריטית, בלי פילטר. סאטירה חדה ומלאת קללות."],
+["Anthony Bourdain: Parts Unknown",2013,12,118,45,"doc","escape feel think",1,0,"השף אנתוני בורדיין מטייל בעולם ואוכל עם מקומיים. דוקו על אוכל ואנשים."],
+["Mare of Easttown",2021,1,7,60,"crime drama mystery","feel tense",3,0,"בלשית בעיירה בפנסילבניה חוקרת רצח ומתמודדת עם משפחה. מתח נוגע ללב."],
+["The Rehearsal",2022,2,12,30,"comedy doc","laugh think",2,0,"נתן פילדר בונה חזרות לשיחות קשות בחיים האמיתיים. ניסוי חברתי מצחיק ומוזר."],
+["Anthony Bourdain: No Reservations",2005,9,142,45,"doc","escape think",1,0,"בורדיין לפני ״אתרים לא ידועים״: אוכל, תרבות וטיולים. תוכנית מסעות אהובה."],
+["The Shield",2002,7,88,45,"crime drama thriller","tense",3,0,"שוטרי יחידה מיוחדת בלוס אנג׳לס שעושים הכול כדי להצליח. קודרת וחזקה."],
+["Beef",2023,2,18,35,"comedy drama thriller","tense laugh",2,0,"כעס בכביש מתדרדר למלחמה בין שני זרים. אנתולוגיה קומית וכואבת."],
+["Barry",2018,4,32,30,"comedy crime drama","laugh tense",2,0,"רוצח שכיר מחליט להיות שחקן. קומדיה שחורה שהופכת לאפלה."],
+["The Bear",2022,4,38,35,"comedy drama","tense feel laugh",2,0,"שף צעיר חוזר לנהל מסעדה משפחתית בשיקגו. מטבח חם, עמוס ונוגע ללב."],
+["Somebody Somewhere",2022,3,21,30,"comedy drama","feel laugh",1,0,"אישה מקנזס מוצאת קהילה אחרי אובדן. סדרה קטנה, חמה ושקטה."],
+["Modern Family",2009,11,250,22,"comedy","laugh",1,0,"שלוש משפחות שקשורות זו לזו, בסגנון דוקומנטרי. קומדיה משפחתית קלילה."],
+["It’s Always Sunny in Philadelphia",2005,17,170,22,"comedy","laugh",1,0,"חבורה של אנשים נוראיים מנהלת בר בפילדלפיה. קומדיה גסה וממושכת."],
+["The Good Wife",2009,7,156,43,"drama crime","think tense",1,0,"אישה חוזרת לעבוד כעורכת דין אחרי שערוריית בעלה. דרמה משפטית חכמה."],
+["How To with John Wilson",2020,3,18,28,"comedy doc","laugh think",1,0,"סרטי ״הדרכה״ שמסתעפים לעולם המוזר של ניו יורק. דוקו מצחיק ומרגש."],
+["The Queen’s Gambit",2020,1,7,60,"drama","feel tense",2,0,"ילדה יתומה ושחמט בשנות ה-60. מיני-סדרה מרהיבה על גאונות והתמכרות."],
+["Better Things",2016,5,52,30,"comedy drama","feel laugh",2,0,"אמא חד-הורית לשלוש בנות מנסה לחיות ולהתפרנס. קומדיה-דרמה כנה."],
+["Justified",2010,6,78,45,"crime drama thriller","tense laugh",2,0,"מרשל אמריקאי בכובע לבן מול פושעים בקנטקי. דיאלוגים ושנינות."],
+["Planet Earth",2006,3,25,50,"doc","escape",1,0,"מסע מרהיב בטבע הפראי של כדור הארץ. כדאי לראות במסך הכי גדול שיש."],
+["The Great British Baking Show",2010,16,150,60,"doc","laugh escape",1,0,"אופים חובבים מתחרים באוהל בכפר הבריטי. ריאליטי נעים ושלֵו."],
+["Shōgun",2024,1,10,60,"history drama","escape tense",3,0,"ספינה אנגלית מגיעה ליפן של ימי הסמוראים. דרמה פוליטית מרהיבה ואלימה."],
+["Reservation Dogs",2021,3,28,28,"comedy drama","laugh feel",1,0,"ארבעה נערים בשמורת אינדיאנים באוקלהומה. קומדיה מקורית וחמה."],
+["Baby Reindeer",2024,1,7,30,"drama thriller","feel tense",3,1,"קומיקאי מתחיל נקלע ליחסים עם מי שמתעללת בו. סיפור אמיתי, כואב ובלתי נעים."],
+["Eastbound & Down",2009,4,29,28,"comedy","laugh",1,0,"מגיש בייסבול לשעבר חוזר לעיירה ולא מוותר על האגו. קומדיה גסה ומצחיקה."],
+["Catastrophe",2015,4,24,25,"comedy","laugh feel",1,0,"אמריקאי ובריטית נכנסים להריון אחרי שבוע. קומדיה רומנטית כנה וקצרה."],
+["The Night Of",2016,1,8,60,"crime drama thriller","tense think",3,0,"סטודנט נעצר אחרי רצח ומערכת המשפט מתחילה לטחון. מתח משפטי ומאופק."],
+["Halt and Catch Fire",2014,4,40,45,"drama history","think feel",2,0,"עולם המחשבים בשנות ה-80 ובתחילת האינטרנט. חיבור אנושי לטכנולוגיה."],
+["Community",2009,6,110,22,"comedy","laugh",1,0,"קבוצת לימוד במכללה קהילתית. קומדיה מטא עם כבוד מוחלט לז׳אנר."],
+["The OA",2016,2,16,50,"mystery scifi drama","think escape",2,0,"אישה שנעלמה חוזרת עם סיפור מוזר ועיניים שרואות שוב. תעלומה מיסטית."],
+["Gilmore Girls",2000,7,153,43,"comedy drama","feel laugh",1,0,"אם ובת שגדלו כחברות בעיירה קטנה בקונטיקט. דיאלוגים מהירים ונעימים."],
+["Scandal",2012,7,124,43,"drama thriller","tense",2,0,"מטפלת במשברי יחסי ציבור בוושינגטון. דרמה פוליטית מהירה ומתפתלת."]
+];
+/* [IMDb, רוטן טומייטו (מבקרים) או null, שפת מקור] — ציונים מקורבים */
+const META = [
+[8.2,86,"en"],[9.2,92,"en"],[9.5,96,"en"],[9.0,97,"en"],[8.7,97,"en"],[8.8,95,"en"],
+[7.6,96,"en"],[9.3,94,"en"],[8.7,93,"en"],[9.2,89,"en"],[8.7,90,"en"],[7.5,84,"en"],
+[8.1,81,"en"],[8.0,93,"en"],[8.3,86,"en"],[8.7,93,"en"],[8.3,97,"en"],[8.1,92,"en"],
+[8.6,82,"en"],[8.6,87,"en"],[8.7,84,"en"],[7.9,88,"en"],[8.7,96,"en"],[8.5,84,"en"],
+[8.7,85,"en"],[8.3,97,"en"],[8.1,84,"en"],[8.5,82,"en"],[8.7,84,"en"],[8.7,97,"en"],
+[8.4,84,"en"],[8.2,86,"en"],[8.9,94,"en"],[8.5,88,"en"],[8.8,92,"en"],[8.1,93,"en"],
+[8.2,98,"en"],[8.3,80,"en"],[9.3,96,"en"],[8.7,86,"en"],[8.8,92,"en"],[8.7,89,"en"],
+[7.9,84,"en"],[6.9,60,"en"],[8.8,87,"en"],[8.3,70,"en"],[8.3,80,"en"],[8.6,97,"en"],
+[7.9,91,"en"],[8.6,91,"en"],[7.6,84,"en"],[8.6,85,"en"],[8.0,90,"en"],[8.8,90,"en"],
+[6.9,83,"en"],[8.7,null,"he"],[8.3,null,"he"],[8.1,78,"en"],[8.2,95,"en"],[8.0,90,"ko"],
+[8.7,100,"en"],[8.3,90,"en"],[8.2,88,"en"],[8.7,92,"en"],[8.6,95,"en"],[9.0,81,"en"],[8.7,85,"en"],[7.8,83,"en"],[8.5,90,"en"],[8.5,95,"en"],
+[8.2,97,"en"],[7.7,88,"en"],[8.6,92,"en"],[9.4,95,"en"],[8.2,95,"en"],[7.5,null,"en"],[8.4,96,"en"],[8.2,91,"en"],[8.5,93,"en"],[8.9,85,"en"],
+[8.7,88,"en"],[8.0,97,"en"],[8.3,90,"en"],[8.2,98,"en"],[8.7,92,"en"],[8.5,98,"en"],[7.7,93,"en"],[8.1,97,"en"],[8.6,88,"en"],[8.7,91,"en"],
+[8.6,null,"fr"],[7.9,93,"en"],[8.5,93,"en"],[8.4,96,"en"],[8.5,null,"en"],[7.7,98,"en"],[8.5,null,"en"],[7.3,null,"en"],[8.6,null,"en"],[8.9,null,"en"],
+[8.4,97,"en"],[8.5,95,"en"],[8.4,null,"en"],[8.5,90,"en"],[8.0,98,"en"],[8.3,94,"en"],[8.3,95,"en"],[8.3,98,"en"],[8.5,85,"en"],[8.7,87,"en"],
+[8.3,90,"en"],[8.3,95,"en"],[8.6,96,"en"],[8.1,96,"en"],[8.6,91,"en"],[9.4,98,"en"],[8.1,null,"en"],[8.6,99,"ja"],[8.0,99,"en"],[7.7,94,"en"],
+[8.2,85,"en"],[7.9,96,"en"],[8.4,94,"en"],[8.2,93,"en"],[8.5,87,"en"],[7.8,85,"en"],[8.2,85,"en"],[7.7,70,"en"]
+];
+const LNAME = { en: "אנגלית", he: "עברית", ko: "קוריאנית", fr: "צרפתית", ja: "יפנית" };
+const MINE_N = 60;
+const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO / Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+ / Hulu / FX", paramount: "Paramount+ / Showtime", amc: "AMC+", uk: "BBC / ITV / Channel 4", israel: "ישראל (yes, HOT, כאן)", network: "ערוצי רשת וכבלים", other: "אחר" };
+const PCODE = { n: "netflix", h: "hbo", a: "apple", p: "prime", d: "disney", c: "paramount", m: "amc", u: "uk", i: "israel", t: "network", o: "other" };
+/* הבית העיקרי של כל סדרה, לפי אינדקס */
+const PLAT = ("hhmmahhhph" + "hamatmaacn" + "thhnhddhnh" + "hcdhnhathn" + "ahpantcnnn" + "atncpiiptn" + "uhthdtnhtu" + "hhhhctdhnh" + "tndhnucutu" + "ohcncducuo" + "hhodnhdhtd" + "thnddduuddn".slice(0,0) + "thndduuddn" + "hphmtntt").split("").map(c => PCODE[c]);
+/* מקום ברשימת 100 הסדרות הטובות של המאה ה-21, הניו יורק טיימס, ספטמבר 2026 */
+const NYTR = {0:25,2:1,3:27,4:30,5:4,6:39,7:2,9:6,10:15,14:22,15:3,18:88,19:20,20:95,21:21,23:68,25:17,26:67,28:48,29:36,31:38,34:44,35:93,36:62,38:19,39:26,40:75,48:94,49:53,53:47,58:51,59:72,
+60:5,61:7,62:8,63:9,64:10,65:11,66:12,67:13,68:14,69:16,70:18,71:23,72:24,73:28,74:29,75:31,76:32,77:33,78:34,79:35,80:37,81:40,82:41,83:42,84:43,85:45,86:46,87:49,88:50,89:52,90:54,91:55,92:56,93:57,94:58,95:59,96:60,97:61,98:63,99:64,100:65,101:66,102:69,103:70,104:71,105:73,106:74,107:76,108:77,109:78,110:79,111:80,112:81,113:82,114:83,115:84,116:85,117:86,118:87,119:89,120:90,121:91,122:92,123:96,124:97,125:98,126:99,127:100};
+const LOGO = "<svg class=\"ic\" viewBox=\"0 0 512 512\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <linearGradient id=\"bgh\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3B2FD0\"/><stop offset=\"1\" stop-color=\"#12102B\"/></linearGradient>\n    <linearGradient id=\"scrh\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5B4EF0\"/><stop offset=\"1\" stop-color=\"#12102B\"/></linearGradient>\n  </defs>\n  <rect width=\"512\" height=\"512\" rx=\"116\" fill=\"url(#bgh)\"/>\n  <g transform=\"translate(0 14)\">\n    <g stroke=\"#FFF6E3\" stroke-width=\"14\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M256 132 L196 66\"/><path d=\"M256 132 L316 66\"/></g>\n    <circle cx=\"196\" cy=\"62\" r=\"14\" fill=\"#FFC933\"/><circle cx=\"316\" cy=\"62\" r=\"14\" fill=\"#FFC933\"/>\n    <rect x=\"64\" y=\"128\" width=\"384\" height=\"280\" rx=\"60\" fill=\"#FFF6E3\"/>\n    <rect x=\"94\" y=\"158\" width=\"262\" height=\"220\" rx=\"40\" fill=\"url(#scrh)\"/>\n    <path d=\"M120 198 Q124 178 148 174\" stroke=\"#fff\" stroke-opacity=\".38\" stroke-width=\"8\" stroke-linecap=\"round\" fill=\"none\"/>\n    <path d=\"M206 218 L206 318 L292 268 Z\" fill=\"#FFF6E3\" stroke=\"#FFF6E3\" stroke-width=\"22\" stroke-linejoin=\"round\"/>\n    <circle cx=\"400\" cy=\"200\" r=\"22\" fill=\"#3B2FD0\"/>\n    <circle cx=\"400\" cy=\"262\" r=\"22\" fill=\"#FFC933\"/>\n    <g stroke=\"#3B2FD0\" stroke-width=\"8\" stroke-linecap=\"round\"><path d=\"M382 322 H418\"/><path d=\"M382 340 H418\"/><path d=\"M382 358 H418\"/></g>\n    <rect x=\"120\" y=\"408\" width=\"52\" height=\"30\" rx=\"10\" fill=\"#FFF6E3\"/><rect x=\"340\" y=\"408\" width=\"52\" height=\"30\" rx=\"10\" fill=\"#FFF6E3\"/>\n  </g></svg><svg class=\"wm\" viewBox=\"-40 -784 5014 1007\" role=\"img\" aria-label=\"Bingology\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"currentColor\"><path transform=\"translate(0 0)\" d=\"M73 0V-660H347Q408 -660 456.0 -649.5Q504 -639 538.5 -618.0Q573 -597 591.5 -563.5Q610 -530 610 -484Q610 -445 593.5 -416.0Q577 -387 542.5 -369.0Q508 -351 452 -344V-329Q547 -322 591.5 -281.5Q636 -241 636 -173Q636 -116 606.5 -77.5Q577 -39 518.0 -19.5Q459 0 372 0ZM210 -116H370Q434 -116 465.0 -135.5Q496 -155 496 -196Q496 -243 457.0 -266.5Q418 -290 339 -290H210ZM210 -380H318Q396 -380 432.5 -401.5Q469 -423 469 -465Q469 -507 436.0 -526.5Q403 -546 335 -546H210Z\"/><path transform=\"translate(689 0)\" d=\"M66 0V-525H210V0Z\"/><path transform=\"translate(971 0)\" d=\"M66 0V-318V-525H184L183 -368H203Q216 -425 240.0 -463.0Q264 -501 300.5 -520.0Q337 -539 387 -539Q478 -539 525.5 -475.0Q573 -411 573 -274V0H428V-258Q428 -342 403.5 -380.5Q379 -419 332 -419Q292 -419 265.0 -394.0Q238 -369 224.5 -328.5Q211 -288 210 -238V0Z\"/><path transform=\"translate(1608 0)\" d=\"M274 183Q188 183 132.5 169.5Q77 156 51.0 130.0Q25 104 25 65Q25 19 61.5 -10.0Q98 -39 169 -45V-65Q115 -65 86.0 -76.5Q57 -88 57 -117Q57 -145 85.5 -167.0Q114 -189 180 -202V-222Q118 -226 83.0 -262.0Q48 -298 48 -355Q48 -405 76.0 -444.5Q104 -484 159.5 -507.5Q215 -531 296 -531H562V-421L397 -444V-421Q461 -412 489.5 -389.0Q518 -366 518 -325Q518 -284 491.0 -253.0Q464 -222 414.5 -204.5Q365 -187 296 -187Q283 -187 268.0 -188.0Q253 -189 218 -193Q199 -179 188.5 -168.5Q178 -158 178 -149Q178 -142 185.5 -137.0Q193 -132 205.5 -130.0Q218 -128 231 -128H381Q401 -128 433.0 -125.5Q465 -123 497.0 -110.0Q529 -97 551.0 -68.5Q573 -40 573 13Q573 71 540.5 109.0Q508 147 441.5 165.0Q375 183 274 183ZM290 68Q351 68 385.0 61.5Q419 55 433.5 40.5Q448 26 448 4Q448 -16 439.5 -27.0Q431 -38 417.5 -42.5Q404 -47 390.5 -48.5Q377 -50 367 -50H241Q199 -46 180.5 -27.5Q162 -9 162 15Q162 37 176.0 48.0Q190 59 218.5 63.5Q247 68 290 68ZM288 -262Q336 -262 360.0 -285.5Q384 -309 384 -347Q384 -387 359.5 -413.0Q335 -439 288 -439Q242 -439 216.0 -413.5Q190 -388 190 -348Q190 -323 201.5 -303.5Q213 -284 235.0 -273.0Q257 -262 288 -262Z\"/><path transform=\"translate(2215 0)\" d=\"M304 14Q225 14 165.0 -17.5Q105 -49 71.0 -110.5Q37 -172 37 -264Q37 -356 71.5 -417.0Q106 -478 166.5 -508.5Q227 -539 304 -539Q383 -539 443.5 -508.0Q504 -477 538.5 -415.5Q573 -354 573 -262Q573 -169 537.5 -107.5Q502 -46 441.5 -16.0Q381 14 304 14ZM309 -93Q348 -93 374.5 -111.0Q401 -129 414.5 -165.5Q428 -202 428 -254Q428 -309 413.5 -347.5Q399 -386 371.0 -406.5Q343 -427 300 -427Q263 -427 236.0 -409.5Q209 -392 195.0 -355.5Q181 -319 181 -266Q181 -181 215.0 -137.0Q249 -93 309 -93Z\"/><path transform=\"translate(2830 0)\" d=\"M66 0V-715H208V0Z\"/><path transform=\"translate(3110 0)\" d=\"M304 14Q225 14 165.0 -17.5Q105 -49 71.0 -110.5Q37 -172 37 -264Q37 -356 71.5 -417.0Q106 -478 166.5 -508.5Q227 -539 304 -539Q383 -539 443.5 -508.0Q504 -477 538.5 -415.5Q573 -354 573 -262Q573 -169 537.5 -107.5Q502 -46 441.5 -16.0Q381 14 304 14ZM309 -93Q348 -93 374.5 -111.0Q401 -129 414.5 -165.5Q428 -202 428 -254Q428 -309 413.5 -347.5Q399 -386 371.0 -406.5Q343 -427 300 -427Q263 -427 236.0 -409.5Q209 -392 195.0 -355.5Q181 -319 181 -266Q181 -181 215.0 -137.0Q249 -93 309 -93Z\"/><path transform=\"translate(3725 0)\" d=\"M274 183Q188 183 132.5 169.5Q77 156 51.0 130.0Q25 104 25 65Q25 19 61.5 -10.0Q98 -39 169 -45V-65Q115 -65 86.0 -76.5Q57 -88 57 -117Q57 -145 85.5 -167.0Q114 -189 180 -202V-222Q118 -226 83.0 -262.0Q48 -298 48 -355Q48 -405 76.0 -444.5Q104 -484 159.5 -507.5Q215 -531 296 -531H562V-421L397 -444V-421Q461 -412 489.5 -389.0Q518 -366 518 -325Q518 -284 491.0 -253.0Q464 -222 414.5 -204.5Q365 -187 296 -187Q283 -187 268.0 -188.0Q253 -189 218 -193Q199 -179 188.5 -168.5Q178 -158 178 -149Q178 -142 185.5 -137.0Q193 -132 205.5 -130.0Q218 -128 231 -128H381Q401 -128 433.0 -125.5Q465 -123 497.0 -110.0Q529 -97 551.0 -68.5Q573 -40 573 13Q573 71 540.5 109.0Q508 147 441.5 165.0Q375 183 274 183ZM290 68Q351 68 385.0 61.5Q419 55 433.5 40.5Q448 26 448 4Q448 -16 439.5 -27.0Q431 -38 417.5 -42.5Q404 -47 390.5 -48.5Q377 -50 367 -50H241Q199 -46 180.5 -27.5Q162 -9 162 15Q162 37 176.0 48.0Q190 59 218.5 63.5Q247 68 290 68ZM288 -262Q336 -262 360.0 -285.5Q384 -309 384 -347Q384 -387 359.5 -413.0Q335 -439 288 -439Q242 -439 216.0 -413.5Q190 -388 190 -348Q190 -323 201.5 -303.5Q213 -284 235.0 -273.0Q257 -262 288 -262Z\"/><path transform=\"translate(4332 0)\" d=\"M265 182Q225 182 183.5 174.5Q142 167 105.5 151.5Q69 136 43 112L84 -11Q116 22 164.0 38.5Q212 55 259 55Q312 55 347.5 33.5Q383 12 401.5 -32.5Q420 -77 423 -144L429 -235H407Q397 -169 374.5 -127.0Q352 -85 317.5 -65.5Q283 -46 236 -46Q179 -46 140.0 -75.0Q101 -104 81.5 -162.0Q62 -220 62 -305V-525H206V-340Q206 -247 227.0 -206.0Q248 -165 291 -165Q314 -165 333.0 -177.5Q352 -190 365.5 -214.0Q379 -238 386.5 -272.5Q394 -307 394 -351V-525H538V-139Q538 -76 527.0 -24.5Q516 27 494.5 65.5Q473 104 440.0 130.0Q407 156 363.5 169.0Q320 182 265 182Z\"/></g><circle class=\"acc\" cx=\"827.0\" cy=\"-651.8\" r=\"92.2\"/></svg>";
+const S = RAW.map((r, i) => ({ id: i, n: r[0], y: r[1], s: r[2], e: r[3], m: r[4], g: r[5].split(" "), mo: r[6].split(" "), h: r[7], solo: !!r[8], l: r[9], imdb: META[i][0], rt: META[i][1], lang: META[i][2], nyt: NYTR[i] || null, plat: PLAT[i] }));
+
+const GENRES = { crime: "פשע ועולם תחתון", drama: "דרמה", thriller: "מתח וריגול", scifi: "מדע בדיוני", fantasy: "פנטזיה ואפוס", comedy: "קומדיה", history: "היסטוריה ופוליטיקה", apoc: "אפוקליפסה והישרדות", mystery: "תעלומה", israeli: "ישראלית", doc: "דוקו וריאליטי" };
+const MOODS = { laugh: "לצחוק ולהרים", feel: "להתרגש", tense: "מתח ואדרנלין", think: "להעסיק את המוח", escape: "בריחה לעולם אחר" };
+const WEIGHT_WHY = { 1: "קלילה, אפשר לצפות בלי להתאמץ", 2: "עומק בינוני, בלי להכביד", 3: "כבדה ומטלטלת, כמו שביקשתם" };
+
+const QS = [
+  { id: "src", t: "מאיפה לבחור?", d: "מאגר הסדרות שמהן נבחר.", o: [
+    ["any", "🌐", "כל הסדרות", "הרשימה האישית והניו יורק טיימס יחד"],
+    ["mine", "⭐", "הרשימה האישית שלי", "60 הסדרות המובילות שלכם"],
+    ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"] ] },
+  { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "מוצגים לפי הבית העיקרי של כל סדרה. אפשר לבחור כמה או לדלג. הזמינות בפועל משתנה בין מדינות." },
+  { id: "genres", multi: true, t: "איזה ז׳אנר מתחשק?", d: "אפשר לבחור כמה, או לדלג." },
+  { id: "mood", t: "איזה מצב רוח אתם מחפשים הערב?", d: "מה הסדרה צריכה לעשות לכם?", o: [
+    ["laugh", "😄", "שתצחיק ותרים", "משהו שמשאיר חיוך"],
+    ["feel", "🥹", "שתרגש", "דרמה שנוגעת בלב"],
+    ["tense", "⚡", "מתח ואדרנלין", "כזו שקשה ללחוץ בה על עצור"],
+    ["think", "🧠", "שתעסיק את המוח", "תעלומות, רעיונות ושאלות גדולות"],
+    ["escape", "🚀", "בריחה לעולם אחר", "ממלכות, חלל או עתיד רחוק"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "weight", t: "כמה כבד מותר להיות?", d: "העומס הרגשי של הסדרה.", o: [
+    [1, "🛋️", "קליל", "אפשר לצפות בלי להתאמץ"],
+    [2, "⚖️", "באמצע", "קצת עומק, בלי להכביד"],
+    [3, "🌧️", "כבד ומטלטל", "מוכנים לצאת מזה עם משהו על הלב"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "imdb", t: "ציון מינימלי ב-IMDb?", d: "דירוג הקהל באתר IMDb, מתוך 10.", o: [
+    [8, "⭐", "8.0 ומעלה", "סדרות טובות"],
+    [8.5, "🌟", "8.5 ומעלה", "סדרות מצוינות"],
+    [9, "🏆", "9.0 ומעלה", "רק הטובות ביותר"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "rt", t: "ציון מבקרים ברוטן טומייטו?", d: "אחוז הביקורות החיוביות מהמבקרים.", o: [
+    [80, "🍅", "80% ומעלה", "המבקרים בדרך כלל אוהבים"],
+    [90, "🍅", "90% ומעלה", "מומלצת מאוד"],
+    [95, "🍅", "95% ומעלה", "כמעט פה אחד"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "len", t: "מה אורך הפרק הנוח?", d: "כמה זמן יש לכם בערב.", o: [
+    ["s", "⏱️", "עד חצי שעה", "פרק קצר לפני השינה"],
+    ["m", "🕐", "בערך 45 דקות", "הסטנדרט הטלוויזיוני"],
+    ["l", "🎬", "שעה ומעלה", "כמעט סרט בכל פרק"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "seasons", t: "כמה עונות?", d: "אורך הסדרה לאורך השנים.", o: [
+    ["one", "🏁", "עונה אחת", "מיני-סדרה, מסיימים מהר"],
+    ["few", "📺", "2–3 עונות", "מחויבות סבירה"],
+    ["mid", "📚", "4–6 עונות", "סדרה מלאה"],
+    ["many", "🏔️", "7 עונות ומעלה", "יש מה לראות חודשים"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "lang", t: "באיזו שפה?", d: "שפת המקור של הסדרה.", o: [
+    ["en", "🗽", "אנגלית", ""],
+    ["he", "🇮🇱", "עברית", "סדרות ישראליות"],
+    ["other", "🌍", "שפה אחרת", "קוריאנית, צרפתית או יפנית, עם כתוביות"],
+    ["any", "🤷", "לא משנה", ""] ] }
+];
+const TOTAL_STEPS = QS.length + 1;
+
+/* state */
+const st = { tab: "pick", screen: "intro", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
+function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, imdb: null, rt: null, len: null, seasons: null, lang: null }; }
+
+try {
+  const raw = localStorage.getItem("tvpick:v1");
+  if (raw) { const d = JSON.parse(raw); if (Array.isArray(d.seen)) st.seen = new Set(d.seen.filter(n => Number.isInteger(n) && n >= 0 && n < S.length)); }
+} catch (e) {}
+function save() { try { localStorage.setItem("tvpick:v1", JSON.stringify({ seen: [...st.seen] })); } catch (e) {} }
+
+const $ = (s, r = document) => r.querySelector(s);
+const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+const ART = {
+0:["#4a4f57","#0e1013","#e6e1d6","#b36a3a","stars"],1:["#7a1212","#1a0404","#e8d9b5","#c9a24b","house"],2:["#2e7d32","#0b1f0d","#d7ff6b","#f4f1c8","flask"],3:["#d9822b","#2a1405","#fff0c9","#1f6f78","sun"],
+4:["#2c6f8f","#06131b","#e8f4f8","#8ad0e0","split"],5:["#1f2a44","#080b14","#d4af37","#e6ecf5","bars"],6:["#e8c500","#3a3000","#111111","#fff7c2","clock"],7:["#3b4a55","#0b1014","#d9d9d9","#e84a3a","target"],
+8:["#c81e2b","#1a0306","#f4f4f4","#2a6df4","bolt"],9:["#2b3a4a","#080c10","#d8dde3","#a8b3be","sword"],10:["#2f4f4f","#0b1515","#e8efe9","#b7d7c9","house"],11:["#1d3b6b","#050c1c","#9bd0ff","#f2d16b","hex"],
+12:["#4b5d3a","#0e140a","#a9b78f","#d9d4b0","skyline"],13:["#27324b","#05070d","#e8eaf0","#d9552b","moon"],14:["#1f8a70","#06241c","#f2ffe0","#ffcf5a","mountain"],15:["#2b3f5c","#0a111c","#f0e2c2","#e08a3a","window"],
+16:["#f2b705","#4a3200","#fff5cc","#1f1f1f","sun"],17:["#59606b","#0d1014","#f0f2f5","#e07b39","rings"],18:["#a30f1b","#1a0204","#f4f4f4","#ff6b6b","diag"],19:["#3a1f5c","#0c0618","#d4af37","#f3e6b3","crown"],
+20:["#1f5f6b","#041a1f","#f5f5f5","#7fe0d0","cross"],21:["#2aa5a0","#05302d","#fff6e6","#ffb3c1","lotus"],22:["#3f6b3a","#0a140a","#e8f2d9","#d9822b","mountain"],23:["#1f4e5f","#050f14","#cfe3ea","#e8a33d","waves"],
+24:["#4a4a4a","#0c0c0c","#ff8a00","#e8e8e8","bars"],25:["#1d3f7a","#08142a","#e63946","#f1f5f9","split"],26:["#a30f1b","#1a0204","#ffffff","#7a0a12","eye"],27:["#c98a4b","#2b1a0c","#f6e7c9","#2b3a4a","sun"],
+28:["#7a1f2e","#1a060a","#f4f4f4","#b8b8b8","cards"],29:["#0f5b6b","#021c22","#e8fbff","#ff5a5f","pulse"],30:["#8a1c1c","#1a0505","#ffb347","#ffe0a3","flame"],31:["#2b3f55","#0a121a","#d9e4ee","#e84a3a","globe"],
+32:["#6f8faa","#13202b","#f2f7fb","#d9482b","mountain"],33:["#1f4f5f","#071a21","#f0e2b8","#c9a24b","stripes"],34:["#ff7aa2","#4a1230","#fff0c9","#3fd0c9","sun"],35:["#2c3e50","#080c10","#e8d7a0","#c0572b","tent"],
+36:["#4a4f3a","#0e100a","#e8e4c9","#c9a24b","keyhole"],37:["#0f2b4a","#030a14","#ffffff","#e63946","clock"],38:["#3a4a2b","#0a0f06","#f2d230","#1a1a1a","radiation"],39:["#1a1a1f","#000000","#d9d9e0","#6a6a78","crack"],
+40:["#1f7a3a","#062a12","#fff7c2","#1d4ed8","stripes"],41:["#8c2f1b","#240a05","#f1dfb5","#c9a24b","bars"],42:["#3aa0ff","#06223f","#ffffff","#b6e0ff","cloud"],43:["#6b4a2b","#160d05","#e8c89a","#c0572b","diag"],
+44:["#2b7a3d","#06210f","#f4e8b0","#d9822b","mountain"],45:["#3a3a3a","#0a0a0a","#e8e8e8","#ff8a00","keyhole"],46:["#2a2a3a","#08080f","#f0f0f0","#e0a03a","skyline"],47:["#4a5a4a","#0c120c","#e8ecdc","#c9a24b","reels"],
+48:["#1b3a6b","#060f20","#f0f4fa","#c0272d","chevron"],49:["#7a0f2a","#12020a","#ff5a6e","#ffd2d9","stars"],50:["#0f3d5c","#030c14","#7fd6ff","#ff8a5c","split"],51:["#16261f","#030806","#cfe8d8","#7fdc9a","spot"],
+52:["#e86a1c","#3a1503","#ffffff","#ffd1a8","stripes"],53:["#7a1f1f","#150404","#f4f4f4","#1a1a1a","chevron"],54:["#1f3b2a","#050f09","#d4af37","#f3e6b3","rings"],55:["#3a3a5a","#0c0c1a","#f2d9a0","#c9a24b","window"],
+56:["#6b5a3a","#140f08","#e8dcc0","#c0392b","diag"],57:["#6a1b1b","#120404","#e8e8e8","#2b2b2b","stripes"],58:["#ffd6a5","#b5651d","#ffffff","#a0d8ef","cloud"],59:["#e0245e","#2a0414","#ffffff","#16a085","shapes"],
+60:["#7a1f4d","#220a1a","#ff5fa2","#ffd1e3","eye"],61:["#14305f","#0a1428","#e63946","#f1f5f9","stripes"],62:["#f08a24","#7a2a0a","#fff3d6","#ffd166","skyline"],63:["#1f5f4a","#0a2219","#f2d16b","#a6e3c2","spot"],
+64:["#5b3a8c","#1b0f33","#ffb38a","#ffd9c2","skyline"],65:["#2f6aa3","#10253d","#cfe6ff","#f5c542","window"],66:["#e8b923","#5a3a07","#2a5db0","#fff4c2","house"],67:["#f08fb4","#5b1d3a","#fff0f6","#ffd54a","window"],
+68:["#0f3d6e","#06182c","#ffb000","#ffe29a","spot"],69:["#3c6e71","#122a2b","#e9f1f1","#f2c14e","window"],70:["#5a1fa8","#1a0a33","#ff3d7f","#ffe03d","split"],71:["#2a2a2a","#050505","#f5c542","#fff2c0","spot"],
+72:["#8a4b1e","#2b1507","#f2b36b","#ffe0b3","mountain"],73:["#4b5d2a","#151c0c","#d9e4b0","#f2d16b","chevron"],74:["#1e5fd6","#0a1e4d","#ffd23f","#ffffff","split"],75:["#0f8a8a","#04302f","#ff9a3d","#ffe0b0","waves"],
+76:["#1b3b3d","#050f10","#e0a63a","#cfe9e5","stars"],77:["#6aa84f","#1b3310","#fff0a8","#c9e8b0","sun"],78:["#7d1f3a","#26080f","#f7e6c4","#e0a458","house"],79:["#3d4a2a","#0b0f06","#d9822b","#e8d9a0","rings"],
+80:["#102a5c","#050c1f","#ff4d3d","#9ec5ff","stars"],81:["#2a4b6b","#08121c","#9fd0ff","#ffffff","split"],82:["#555b63","#14161a","#f2c94c","#ffffff","spot"],83:["#7b2cbf","#1a0733","#ffd166","#f8e1ff","spot"],
+84:["#3a3a3a","#0b0b0b","#c05a2b","#e0d7c3","diag"],85:["#5d7a91","#1a2630","#ffd23f","#e8f0f6","mountain"],86:["#12a39a","#053a37","#ffe24d","#ffffff","skyline"],87:["#2b5d9c","#0b1d38","#fbeed7","#ff8f6b","pair"],
+88:["#2f8f4e","#0c3318","#ffd23f","#e8ffd0","sun"],89:["#1a2748","#080d1a","#d4af37","#f3e6b3","house"],90:["#27333f","#0a0e12","#e04848","#c8d4df","globe"],91:["#ff7a59","#5c1f4a","#fff1e6","#ffd23f","window"],
+92:["#0b2a4a","#030d18","#b5f23d","#ffffff","bars"],93:["#ff3d8b","#4a0a29","#ffe14d","#ffffff","diag"],94:["#b3121f","#2a0206","#ffffff","#ffd23f","spot"],95:["#8e7dff","#241a66","#ffe14d","#7ae0d0","stripes"],
+96:["#2a5fb0","#0a1a38","#ff8a3d","#ffffff","eye"],97:["#c2188f","#3a0530","#ffd700","#fff0fa","stars"],98:["#8a1c1c","#260606","#e8e8e8","#c4c4c4","bars"],99:["#c4561e","#2c0f06","#f7d9a8","#1f6f78","globe"],
+100:["#4f6d8f","#10192a","#eaf4ff","#9bb8d6","mountain"],101:["#e09f1f","#2a1a04","#0e2a4f","#fff1c9","grid"],102:["#b8231a","#2d0805","#fbe9c9","#e8b24a","plate"],103:["#12284a","#050c18","#d4af37","#e6ecf5","chevron"],
+104:["#c4161c","#1a0204","#ffffff","#ffb400","split"],105:["#2d2d3a","#0a0a10","#f2c14e","#e2e2ee","target"],106:["#222222","#050505","#ff6b1a","#ffd9b8","plate"],107:["#5aa9e6","#143252","#ffd6e8","#fff6b8","sun"],
+108:["#ff9f43","#6a2f05","#fff4e0","#4a90d9","house"],109:["#f5c518","#4a3a00","#1c5bbf","#fff7cc","sun"],110:["#6b1f2e","#1f080d","#f1e3d0","#d4af37","bars"],111:["#4a4a4f","#101012","#ff5a47","#f2f2f2","window"],
+112:["#6b4a2f","#1c120b","#f4e4c1","#b5651d","grid"],113:["#f2a65a","#5a2d0c","#fff3e0","#7a1f5c","pair"],114:["#c79a5a","#2f1f0a","#1a1a1a","#fff1d6","target"],115:["#0e4a7a","#021a2e","#4cd18a","#bfe9ff","globe"],
+116:["#f6b8d0","#6b2a45","#fff7e6","#74c69d","tent"],117:["#8c1c1c","#1a0505","#f4e3c1","#d9a441","sun"],118:["#e8742c","#4a1a05","#1f7a8c","#ffe8cc","mountain"],119:["#5a1414","#150303","#ff6b6b","#ffe0e0","heart"],
+120:["#1f4e8c","#07172e","#e63946","#ffffff","diag"],121:["#e2557a","#47112a","#fff0d9","#7ad0e0","pair"],122:["#0f1a3d","#02040f","#f0e6b8","#8fa5ff","stars"],123:["#0f3d1f","#020a05","#4cff7a","#b5ffcc","grid"],
+124:["#2f6fe0","#0a1a42","#ffd23f","#ffffff","grid"],125:["#5b3ea8","#140a33","#d9c8ff","#ffe08a","eye"],126:["#c4622d","#3d1a09","#fff0d4","#7a3b1a","house"],127:["#6b1d1d","#150404","#f5f5f5","#c8a24a","chevron"]
+};
+const MOTIF = {
+  crown: (a, b) => `<path d="M64 128 L58 62 L92 92 L120 52 L148 92 L182 62 L176 128 Z" fill="${a}"/><rect x="64" y="132" width="112" height="14" rx="4" fill="${b}"/><circle cx="58" cy="58" r="8" fill="${b}"/><circle cx="120" cy="48" r="8" fill="${b}"/><circle cx="182" cy="58" r="8" fill="${b}"/>`,
+  flask: (a, b) => `<path d="M104 36 H136 V72 L172 132 Q180 146 164 146 H76 Q60 146 68 132 L104 72 Z" fill="none" stroke="${a}" stroke-width="7" stroke-linejoin="round"/><path d="M88 112 H152 L170 138 Q172 142 166 142 H74 Q68 142 70 138 Z" fill="${b}" opacity=".9"/><rect x="98" y="28" width="44" height="10" rx="4" fill="${a}"/><circle cx="116" cy="96" r="5" fill="${b}"/><circle cx="132" cy="84" r="4" fill="${b}"/>`,
+  cross: (a, b) => `<rect x="96" y="40" width="48" height="104" rx="10" fill="${a}"/><rect x="68" y="68" width="104" height="48" rx="10" fill="${a}"/><circle cx="120" cy="92" r="12" fill="${b}"/>`,
+  hex: (a, b) => [58, 42, 26].map((r, k) => `<polygon points="${[0, 1, 2, 3, 4, 5].map(i => { const t = Math.PI / 180 * (60 * i - 30); return (120 + r * Math.cos(t)).toFixed(1) + "," + (86 + r * Math.sin(t)).toFixed(1); }).join(" ")}" fill="none" stroke="${k % 2 ? b : a}" stroke-width="7" stroke-linejoin="round"/>`).join(""),
+  sword: (a, b) => `<polygon points="120,28 131,100 109,100" fill="${a}"/><rect x="80" y="100" width="80" height="10" rx="4" fill="${b}"/><rect x="114" y="110" width="12" height="30" fill="${b}"/><circle cx="120" cy="146" r="8" fill="${a}"/>`,
+  cards: (a, b, bg) => `<g transform="rotate(-16 120 90)"><rect x="70" y="40" width="70" height="98" rx="8" fill="${b}"/></g><rect x="85" y="36" width="70" height="98" rx="8" fill="${a}"/><g transform="rotate(16 120 90)"><rect x="100" y="40" width="70" height="98" rx="8" fill="${b}" opacity=".85"/></g><path d="M120 70 l12 18 -12 18 -12 -18z" fill="${bg}"/>`,
+  radiation: (a, b, bg) => [90, 210, 330].map(c => { const q = ang => [120 + 56 * Math.cos(ang * Math.PI / 180), 86 - 56 * Math.sin(ang * Math.PI / 180)], [x1, y1] = q(c - 30), [x2, y2] = q(c + 30); return `<path d="M120 86 L${x1.toFixed(1)} ${y1.toFixed(1)} A56 56 0 0 0 ${x2.toFixed(1)} ${y2.toFixed(1)} Z" fill="${a}"/>`; }).join("") + `<circle cx="120" cy="86" r="12" fill="${a}"/><circle cx="120" cy="86" r="5" fill="${bg}"/>`,
+  shapes: (a, b) => `<circle cx="72" cy="86" r="26" fill="none" stroke="${a}" stroke-width="8"/><polygon points="120,56 148,112 92,112" fill="none" stroke="${b}" stroke-width="8" stroke-linejoin="round"/><rect x="164" y="62" width="48" height="48" fill="none" stroke="${a}" stroke-width="8"/>`,
+  lotus: (a, b) => `<g transform="translate(120 132)">${[-62, -31, 31, 62, 0].map((r, k) => `<ellipse cx="0" cy="-34" rx="16" ry="40" transform="rotate(${r})" fill="${k === 4 ? a : b}" opacity="${k === 4 ? 1 : .88}" stroke="${a}" stroke-width="2"/>`).join("")}</g><rect x="40" y="134" width="160" height="4" rx="2" fill="${b}"/>`,
+  bolt: (a, b) => `<polygon points="136,28 84,96 114,96 100,148 158,76 126,76" fill="${a}" stroke="${b}" stroke-width="6" stroke-linejoin="round"/>`,
+  moon: (a, b, bg) => `<circle cx="120" cy="86" r="52" fill="${a}"/>${[[100, 66, 10], [140, 98, 13], [112, 108, 7], [138, 64, 6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${bg}" opacity=".35"/>`).join("")}${[[40, 40], [190, 36], [200, 120], [34, 120], [60, 70]].map(([x, y], k) => `<circle cx="${x}" cy="${y}" r="${k % 2 ? 2 : 3}" fill="${b}"/>`).join("")}`,
+  keyhole: (a, b, bg) => `<rect x="54" y="30" width="132" height="124" rx="30" fill="${a}" opacity=".9"/><circle cx="120" cy="82" r="22" fill="${bg}"/><path d="M108 94 L102 130 H138 L132 94 Z" fill="${bg}"/>`,
+  reels: (a, b) => `<circle cx="78" cy="84" r="34" fill="none" stroke="${a}" stroke-width="7"/><circle cx="162" cy="84" r="34" fill="none" stroke="${a}" stroke-width="7"/>${[78, 162].map(x => [0, 120, 240].map(r => `<circle cx="${x}" cy="84" r="5" fill="${b}" transform="rotate(${r} ${x} 84) translate(0 -18)"/>`).join("")).join("")}<rect x="78" y="124" width="84" height="12" rx="4" fill="${b}"/>`,
+  clock: (a, b) => `<circle cx="120" cy="86" r="54" fill="none" stroke="${a}" stroke-width="8"/>${[...Array(12)].map((_, i) => `<line x1="120" y1="40" x2="120" y2="${i % 3 ? 46 : 52}" stroke="${b}" stroke-width="${i % 3 ? 3 : 5}" transform="rotate(${i * 30} 120 86)"/>`).join("")}<path d="M120 86 V54 M120 86 L146 100" stroke="${a}" stroke-width="7" stroke-linecap="round"/><circle cx="120" cy="86" r="6" fill="${b}"/>`,
+  crack: (a, b) => `<rect x="50" y="30" width="140" height="122" rx="8" fill="none" stroke="${a}" stroke-width="5" opacity=".7"/><path d="M168 30 L136 72 L156 80 L118 118 L132 126 L98 152" fill="none" stroke="${b}" stroke-width="5" stroke-linejoin="round"/><path d="M136 72 L100 66 M118 118 L84 112" stroke="${a}" stroke-width="3" opacity=".7"/>`,
+  pulse: (a, b) => `<path d="M24 92 H78 L92 60 L108 120 L122 44 L138 108 L148 92 H216" fill="none" stroke="${a}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="216" cy="92" r="7" fill="${b}"/>`,
+  flame: (a, b) => `<path d="M120 28 C132 56 168 70 160 112 C156 134 138 148 120 148 C100 148 82 134 80 114 C78 94 96 84 100 64 C110 78 112 56 120 28 Z" fill="${a}"/><path d="M120 76 C128 92 146 98 142 118 C140 130 130 138 120 138 C110 138 100 130 100 118 C100 104 114 100 120 76 Z" fill="${b}"/>`,
+  cloud: (a, b) => `<g fill="${a}"><circle cx="86" cy="96" r="28"/><circle cx="122" cy="80" r="36"/><circle cx="162" cy="98" r="26"/><rect x="62" y="96" width="126" height="28" rx="14"/></g><circle cx="196" cy="42" r="12" fill="${b}"/>`,
+  sun: (a, b, bg) => `<circle cx="120" cy="82" r="48" fill="${a}"/>${[0, 1, 2, 3].map(k => `<rect x="60" y="${94 + k * 11}" width="120" height="${3 + k * 2}" fill="${bg}"/>`).join("")}<rect x="40" y="148" width="160" height="3" fill="${b}" opacity=".8"/>`,
+  stripes: (a, b) => `<g transform="rotate(-16 120 90)">${[0, 1, 2, 3, 4, 5].map(k => `<rect x="-40" y="${-10 + k * 28}" width="320" height="14" fill="${k % 2 ? b : a}" opacity=".9"/>`).join("")}</g>`,
+  rings: (a, b) => [56, 44, 32, 20, 8].map((r, k) => `<circle cx="120" cy="84" r="${r}" fill="none" stroke="${k % 2 ? b : a}" stroke-width="7"/>`).join(""),
+  skyline: (a, b) => `<circle cx="178" cy="40" r="17" fill="${b}"/>${[[18, 28, 48], [48, 22, 78], [72, 30, 58], [104, 26, 96], [132, 24, 66], [158, 30, 84], [190, 28, 46]].map(([x, w, h]) => `<rect x="${x}" y="${150 - h}" width="${w}" height="${h}" fill="${a}" opacity=".92"/>${[0, 1, 2].map(r => `<rect x="${x + 5}" y="${158 - h + r * 14}" width="4" height="6" fill="${b}"/><rect x="${x + w - 10}" y="${158 - h + r * 14}" width="4" height="6" fill="${b}"/>`).join("")}`).join("")}<rect x="0" y="150" width="240" height="4" fill="${a}"/>`,
+  mountain: (a, b) => `<circle cx="190" cy="38" r="15" fill="${b}"/><polygon points="0,150 80,56 128,118 170,48 240,150" fill="${a}" opacity=".9"/><polygon points="0,150 60,100 120,150" fill="${b}" opacity=".55"/>`,
+  waves: (a, b) => `<circle cx="170" cy="48" r="24" fill="${a}"/>${[0, 1, 2, 3].map(k => `<path d="M0 ${88 + k * 18} Q30 ${74 + k * 18} 60 ${88 + k * 18} T120 ${88 + k * 18} T180 ${88 + k * 18} T240 ${88 + k * 18} V160 H0Z" fill="${k % 2 ? b : a}" opacity="${0.55 + k * 0.1}"/>`).join("")}`,
+  grid: (a, b) => `${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5, 6, 7].map(c => (r + c) % 2 ? "" : `<rect x="${c * 30}" y="${30 + r * 30}" width="30" height="30" fill="${a}" opacity=".85"/>`).join("")).join("")}<rect x="0" y="28" width="240" height="2" fill="${b}"/><rect x="0" y="150" width="240" height="2" fill="${b}"/>`,
+  stars: (a, b, bg) => `<circle cx="140" cy="62" r="32" fill="${a}"/><circle cx="154" cy="54" r="28" fill="${bg}"/>${[[30, 34], [62, 92], [200, 118], [40, 126], [92, 40], [206, 30], [180, 138], [70, 60]].map(([x, y], k) => `<circle cx="${x}" cy="${y}" r="${k % 3 ? 1.8 : 2.8}" fill="${b}"/>`).join("")}`,
+  bars: (a, b) => [40, 70, 55, 92, 60, 100, 50, 80, 45].map((h, k) => `<rect x="${24 + k * 22}" y="${150 - h}" width="14" height="${h}" rx="2" fill="${k % 2 ? b : a}" opacity=".92"/>`).join(""),
+  spot: (a, b) => `<polygon points="120,0 52,150 188,150" fill="${a}" opacity=".28"/><ellipse cx="120" cy="150" rx="68" ry="12" fill="${a}" opacity=".5"/><circle cx="120" cy="104" r="12" fill="${b}"/><rect x="108" y="116" width="24" height="30" rx="8" fill="${b}"/>`,
+  split: (a, b) => `<path d="M114 34A50 50 0 0 0 114 134Z" fill="${a}"/><path d="M126 34A50 50 0 0 1 126 134Z" fill="${b}"/>`,
+  plate: (a, b) => `<circle cx="120" cy="84" r="50" fill="none" stroke="${a}" stroke-width="6"/><circle cx="120" cy="84" r="34" fill="${b}" opacity=".3"/><g stroke="${a}" stroke-width="4" stroke-linecap="round" fill="none"><path d="M38 36v32M46 36v32M54 36v32M46 68v54"/><path d="M202 36c-12 16-12 40 0 52v36"/></g>`,
+  tent: (a, b) => `<polygon points="14,150 120,34 226,150" fill="${a}"/><polygon points="120,34 96,150 144,150" fill="${b}"/>${[0, 1, 2, 3, 4, 5, 6].map(k => `<polygon points="${22 + k * 32},24 ${42 + k * 32},24 ${32 + k * 32},40" fill="${k % 2 ? a : b}"/>`).join("")}`,
+  window: (a, b, bg) => [0, 1].map(r => [0, 1, 2].map(c => { const lit = (r + c * 2) % 3 === 0; return `<rect x="${34 + c * 62}" y="${34 + r * 58}" width="52" height="46" rx="4" fill="${lit ? b : a}" opacity="${lit ? 1 : 0.5}"/><path d="M${60 + c * 62} ${34 + r * 58}v46M${34 + c * 62} ${57 + r * 58}h52" stroke="${bg}" stroke-width="2"/>`; }).join("")).join(""),
+  diag: (a, b) => [0, 1, 2].map(k => `<polygon points="${20 + k * 72},150 ${58 + k * 72},24 ${84 + k * 72},24 ${46 + k * 72},150" fill="${k === 1 ? b : a}" opacity=".9"/>`).join(""),
+  globe: (a, b) => `<circle cx="120" cy="84" r="52" fill="none" stroke="${a}" stroke-width="4"/><ellipse cx="120" cy="84" rx="22" ry="52" fill="none" stroke="${a}" stroke-width="3"/><ellipse cx="120" cy="84" rx="40" ry="52" fill="none" stroke="${a}" stroke-width="2" opacity=".6"/><path d="M68 84h104M76 58h88M76 110h88" stroke="${a}" stroke-width="3"/><circle cx="150" cy="62" r="7" fill="${b}"/>`,
+  target: (a, b) => `<circle cx="120" cy="84" r="52" fill="none" stroke="${a}" stroke-width="5"/><circle cx="120" cy="84" r="34" fill="none" stroke="${b}" stroke-width="5"/><circle cx="120" cy="84" r="16" fill="${a}"/><path d="M120 22v124M58 84h124" stroke="${b}" stroke-width="2"/>`,
+  eye: (a, b, bg) => `<path d="M34 84Q120 14 206 84Q120 154 34 84Z" fill="none" stroke="${a}" stroke-width="6"/><circle cx="120" cy="84" r="27" fill="${b}"/><circle cx="120" cy="84" r="11" fill="${bg}"/><circle cx="130" cy="74" r="5" fill="${a}"/>`,
+  heart: (a, b, bg) => `<path d="M120 138C58 98 66 40 100 46C112 48 120 60 120 60C120 60 128 48 140 46C174 40 182 98 120 138Z" fill="${a}"/><path d="M120 60L110 84L128 98L116 120" fill="none" stroke="${bg}" stroke-width="4" stroke-linejoin="round"/>`,
+  pair: (a, b) => `<circle cx="96" cy="84" r="42" fill="${a}" opacity=".9"/><circle cx="146" cy="84" r="42" fill="${b}" opacity=".85"/>`,
+  house: (a, b) => `<polygon points="46,150 46,92 120,38 194,92 194,150" fill="${a}"/><polygon points="34,98 120,30 206,98" fill="none" stroke="${b}" stroke-width="6" stroke-linejoin="round"/><rect x="106" y="108" width="28" height="42" rx="3" fill="${b}"/><rect x="62" y="102" width="24" height="22" fill="${b}"/><rect x="154" y="102" width="24" height="22" fill="${b}"/>`,
+  chevron: (a, b) => `<path d="M48 64L120 28L192 64" fill="none" stroke="${a}" stroke-width="16"/><path d="M48 96L120 60L192 96" fill="none" stroke="${b}" stroke-width="16"/><path d="M48 128L120 92L192 128" fill="none" stroke="${a}" stroke-width="16"/>`
+};
+function mix(c1, c2, t) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = p(c1), y = p(c2);
+  return "#" + x.map((v, k) => Math.round(v + (y[k] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+function wrapTitle(n) {
+  const lines = []; let cur = "";
+  for (const w of n.split(" ")) {
+    if (cur && (cur + " " + w).length > 13) { lines.push(cur); cur = w; } else cur = cur ? cur + " " + w : w;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+let _gid = 0;
+function art(i, cls) {
+  const s = S[i], [c1, c2, a, b, m] = ART[i] || ["#333333", "#111111", "#dddddd", "#ffffff", "rings"];
+  const id = "pg" + (++_gid), esc = x => x.replace(/&/g, "&amp;");
+  const lines = wrapTitle(s.n), long = Math.max(...lines.map(l => l.length));
+  const fs = lines.length > 3 || long > 13 ? 20 : long > 10 ? 25 : 30, lh = Math.round(fs * 1.1), y0 = 204 - (lines.length - 1) * lh;
+  const txt = lines.map((l, k) => `<tspan x="14" y="${y0 + k * lh}">${esc(l)}</tspan>`).join("");
+  return `<svg class="poster ${cls}" viewBox="0 0 240 216" role="img" aria-label="${esc(s.n)}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${id}a" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></linearGradient></defs><rect width="240" height="216" fill="url(#${id}a)"/><g transform="translate(12 -8) scale(.9)">${MOTIF[m](a, b, mix(c1, c2, .42))}</g><rect width="240" height="216" fill="url(#${id}b)"/><text fill="#fff" font-family="'Secular One','Assistant',system-ui,sans-serif" font-size="${fs}" direction="ltr" style="unicode-bidi:isolate">${txt}</text></svg>`;
+}
+function poolIds(src, plats) {
+  let ids = S.map((_, i) => i);
+  if (src === "mine") ids = ids.filter(i => i < MINE_N);
+  if (src === "nyt") ids = ids.filter(i => S[i].nyt).sort((x, y) => S[x].nyt - S[y].nyt);
+  if (plats && plats.length) ids = ids.filter(i => plats.includes(S[i].plat));
+  return ids;
+}
+function poster(i, cls) {
+  if (P[i]) return `<img class="${cls || ""}" src="${P[i]}" alt="">`;
+  return art(i, cls || "");
+}
+
+/* ranking */
+const CROSS = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+const bL = m => m <= 32 ? 0 : m <= 52 ? 1 : 2;
+const bS = n => n === 1 ? 0 : n <= 3 ? 1 : n <= 6 ? 2 : 3;
+const LEN_IDX = { s: 0, m: 1, l: 2 };
+const SEAS_IDX = { one: 0, few: 1, mid: 2, many: 3 };
+const LEN_TXT = { s: "עד חצי שעה", m: "כ-45 דקות", l: "שעה ומעלה" };
+const SEAS_TXT = { one: "עונה אחת", few: "2–3 עונות", mid: "4–6 עונות", many: "7 עונות ומעלה" };
+
+function rank(surprise) {
+  const rnd = mulberry(Math.floor(Math.random() * 1e9));
+  const a = st.ans;
+  const answered = a.genres.length || a.mood || a.weight || a.imdb || a.rt || a.len || a.seasons || a.lang;
+  const out = [];
+  const pool = new Set(poolIds(a.src, a.platforms));
+  S.forEach((s, i) => {
+    if (st.seen.has(i) || !pool.has(i)) return;
+    if (surprise || !answered) { out.push({ i, sc: rnd(), pct: null, why: [{ ok: true, t: "נבחרה באקראי מתוך הרשימה" }] }); return; }
+    let sc = 0, max = 0; const items = [];
+    const add = (w, got, okT, noT) => { max += w; sc += got; const ok = got >= w * 0.5; items.push({ ok, w, t: ok ? okT : noT }); };
+    if (a.genres.length) {
+      const hit = s.g.filter(x => a.genres.includes(x));
+      const got = hit.length ? 3 * Math.min(1, Math.max(0.6, hit.length / Math.min(a.genres.length, 2))) : 0;
+      add(3, got, "בז׳אנר שבחרתם: " + hit.map(x => GENRES[x]).join(", "), "לא בדיוק בז׳אנרים שבחרתם");
+    }
+    if (a.lang) {
+      const match = a.lang === "other" ? !["en", "he"].includes(s.lang) : s.lang === a.lang;
+      add(3, match ? 3 : 0, "שפת מקור: " + LNAME[s.lang], "שפת המקור היא " + LNAME[s.lang]);
+    }
+    if (a.imdb) {
+      const got = s.imdb >= a.imdb ? 2.5 : s.imdb >= a.imdb - 0.3 ? 1 : 0;
+      add(2.5, got, `ציון IMDb ${s.imdb.toFixed(1)}`, `ציון IMDb ${s.imdb.toFixed(1)} (ביקשתם ${a.imdb.toFixed(1)}+)`);
+    }
+    if (a.rt && s.rt != null) {
+      const got = s.rt >= a.rt ? 2 : s.rt >= a.rt - 5 ? 0.8 : 0;
+      add(2, got, `${s.rt}% ממבקרי רוטן טומייטו`, `${s.rt}% ברוטן טומייטו (ביקשתם ${a.rt}%+)`);
+    }
+    if (a.mood) {
+      const got = s.mo.includes(a.mood) ? (s.mo[0] === a.mood ? 2 : 1.6) : 0;
+      add(2, got, "מתאימה למצב הרוח: " + MOODS[a.mood], "פחות מתאימה למצב הרוח שבחרתם");
+    }
+    if (a.seasons) {
+      const d = Math.abs(bS(s.s) - SEAS_IDX[a.seasons]);
+      add(2, [2, 0.7, 0, 0][d], `${s.s === 1 ? "עונה אחת" : s.s + " עונות"}, ${s.e} פרקים`, `${s.s === 1 ? "עונה אחת" : s.s + " עונות"} (ביקשתם ${SEAS_TXT[a.seasons]})`);
+    }
+    if (a.len) {
+      const d = Math.abs(bL(s.m) - LEN_IDX[a.len]);
+      add(1.5, [1.5, 0.5, 0][d], `פרקים של כ-${s.m} דקות`, `פרקים של כ-${s.m} דקות (ביקשתם ${LEN_TXT[a.len]})`);
+    }
+    if (a.weight) {
+      const d = Math.abs(s.h - a.weight);
+      add(1.5, [1.5, 0.6, 0][d], WEIGHT_WHY[s.h], s.h > a.weight ? "כבדה יותר ממה שביקשתם" : "קלילה יותר ממה שביקשתם");
+    }
+    const norm = max ? sc / max : 1;
+    const pct = Math.min(100, Math.round(100 * norm));
+    const hits = items.filter(x => x.ok).sort((x, y) => y.w - x.w).slice(0, 5);
+    const misses = items.filter(x => !x.ok).sort((x, y) => y.w - x.w).slice(0, 2);
+    out.push({ i, sc: norm + s.imdb / 10 * 0.04 + rnd() * 0.02, pct, why: hits.concat(misses) });
+  });
+  out.sort((x, y) => y.sc - x.sc);
+  st.ranked = out; st.idx = 0; st.chosen = false; st.surprise = surprise || !answered;
+}
+
+
+/* [יוצרים, שחקנים, פרסים בולטים, תווית לשחקנים] */
+const MORE = {
+0:["Damon Lindelof, Tom Perrotta","Justin Theroux, Carrie Coon, Amy Brenneman, Christopher Eccleston, Liv Tyler, Margaret Qualley, Ann Dowd, Scott Glenn"],
+1:["David Chase","James Gandolfini, Edie Falco, Lorraine Bracco, Michael Imperioli, Steven Van Zandt, Tony Sirico, Dominic Chianese, Jamie-Lynn Sigler",["זכתה בפרס אמי לסדרת דרמה (2004, 2007) ובגלובוס הזהב"]],
+2:["Vince Gilligan","Bryan Cranston, Aaron Paul, Anna Gunn, Bob Odenkirk, Dean Norris, Betsy Brandt, RJ Mitte, Giancarlo Esposito",["זכתה בפרס אמי לסדרת דרמה פעמיים (2013, 2014)","Bryan Cranston זכה בארבעה פרסי אמי על התפקיד הראשי"]],
+3:["Vince Gilligan, Peter Gould","Bob Odenkirk, Rhea Seehorn, Jonathan Banks, Michael McKean, Patrick Fabian, Giancarlo Esposito, Michael Mando, Tony Dalton"],
+4:["Dan Erickson (יוצר), Ben Stiller (במאי ומפיק)","Adam Scott, Britt Lower, Tramell Tillman, Patricia Arquette, John Turturro, Christopher Walken, Zach Cherry, Dichen Lachman",["Tramell Tillman זכה בפרס אמי לשחקן משנה בדרמה (2025)"]],
+5:["Jesse Armstrong","Brian Cox, Jeremy Strong, Sarah Snook, Kieran Culkin, Alan Ruck, Matthew Macfadyen, Nicholas Braun, J. Smith-Cameron",["זכתה בפרס אמי לסדרת דרמה שלוש פעמים"]],
+6:["Damon Lindelof","Regina King, Jeremy Irons, Don Johnson, Jean Smart, Tim Blake Nelson, Yahya Abdul-Mateen II, Louis Gossett Jr., Hong Chau",["זכתה בפרס אמי לסדרה מוגבלת (2020)"]],
+7:["David Simon","Dominic West, Idris Elba, Sonja Sohn, Wendell Pierce, Lance Reddick, Michael K. Williams, Clarke Peters, Aidan Gillen",["מעולם לא זכתה בפרס אמי, ועדיין מוזכרת שוב ושוב כאחת הסדרות הגדולות אי פעם"]],
+8:["Eric Kripke","Karl Urban, Jack Quaid, Antony Starr, Erin Moriarty, Laz Alonso, Chace Crawford, Karen Fukuhara, Jessie T. Usher"],
+9:["David Benioff, D. B. Weiss","Emilia Clarke, Kit Harington, Peter Dinklage, Lena Headey, Sophie Turner, Maisie Williams, Nikolaj Coster-Waldau, Sean Bean",["זכתה בפרס אמי לסדרת דרמה ארבע פעמים"]],
+10:["Alan Ball","Peter Krause, Michael C. Hall, Frances Conroy, Lauren Ambrose, Rachel Griffiths, Freddy Rodriguez, Mathew St. Patrick, Justina Machado",["זכתה בגלובוס הזהב לסדרת דרמה"]],
+11:["David S. Goyer","Lee Pace, Jared Harris, Lou Llobell, Leah Harvey, Laura Birn, Terrence Mann, Cassian Bilton"],
+12:["Frank Darabont (פיתוח), Robert Kirkman (הקומיקס)","Andrew Lincoln, Norman Reedus, Melissa McBride, Danai Gurira, Steven Yeun, Lauren Cohan, Chandler Riggs, Jeffrey Dean Morgan"],
+13:["Ronald D. Moore, Matt Wolpert, Ben Nedivi","Joel Kinnaman, Michael Dorman, Sarah Jones, Wrenn Schmidt, Shantel VanSanten, Krys Marshall, Jodi Balfour, Cynthy Wu"],
+14:["J. J. Abrams, Jeffrey Lieber, Damon Lindelof","Matthew Fox, Evangeline Lilly, Jorge Garcia, Terry O'Quinn, Josh Holloway, Naveen Andrews, Daniel Dae Kim, Michael Emerson",["זכתה בפרס אמי לסדרת דרמה (2005)"]],
+15:["Matthew Weiner","Jon Hamm, Elisabeth Moss, January Jones, John Slattery, Christina Hendricks, Vincent Kartheiser, Robert Morse, Jessica Paré",["זכתה בפרס אמי לסדרת דרמה ארבע שנים ברציפות (2008 עד 2011)"]],
+16:["Vince Gilligan","Rhea Seehorn, Karolina Wydra, Carlos-Manuel Vesga, Miriam Shor, Samba Schutte",["Rhea Seehorn זכתה בפרס אמי על התפקיד הראשי בדרמה (2026)","זכתה בפרס אמי על הכתיבה לסדרת דרמה (2026)"]],
+17:["Graham Yost","Rebecca Ferguson, Tim Robbins, Common, Rashida Jones, Harriet Walter, Chinaza Uche, Avi Nash, Will Patton"],
+18:["James Manos Jr.","Michael C. Hall, Jennifer Carpenter, Julie Benz, David Zayas, James Remar, C. S. Lee, Lauren Vélez, Desmond Harrington",["Michael C. Hall זכה בגלובוס הזהב על התפקיד הראשי"]],
+19:["Peter Morgan","Claire Foy, Olivia Colman, Imelda Staunton, Matt Smith, Vanessa Kirby, Tobias Menzies, Josh O'Connor, Gillian Anderson",["זכתה בפרס אמי לסדרת דרמה (2021)","זכתה בגלובוס הזהב לסדרת דרמה"]],
+20:["David Shore","Hugh Laurie, Lisa Edelstein, Omar Epps, Robert Sean Leonard, Jesse Spencer, Jennifer Morrison, Peter Jacobson, Olivia Wilde",["Hugh Laurie זכה בגלובוס הזהב פעמיים"]],
+21:["Mike White","Jennifer Coolidge, Sydney Sweeney, Murray Bartlett, Alexandra Daddario, Aubrey Plaza, Walton Goggins, Natasha Rothwell, Connie Britton, Theo James, Parker Posey, Jason Isaacs, Michelle Monaghan",["העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2022)"]],
+22:["Craig Mazin, Neil Druckmann","Pedro Pascal, Bella Ramsey, Anna Torv, Nick Offerman, Gabriel Luna, Merle Dandridge, Murray Bartlett, Melanie Lynskey, Isabela Merced, Kaitlyn Dever",["Nick Offerman זכה בפרס אמי על הופעת אורח (2023)"]],
+23:["Bill Dubuque, Mark Williams","Jason Bateman, Laura Linney, Julia Garner, Sofia Hublitz, Skylar Gaertner, Peter Mullan, Janet McTeer, Tom Pelphrey, Lisa Emery",["Julia Garner זכתה בפרס אמי כשחקנית משנה בדרמה פעמיים"]],
+24:["Tom Fontana","Ernie Hudson, J. K. Simmons, Lee Tergesen, Dean Winters, Eamonn Walker, Christopher Meloni, Harold Perrineau, Kirk Acevedo"],
+25:["Joe Weisberg","Keri Russell, Matthew Rhys, Noah Emmerich, Holly Taylor, Margo Martindale, Alison Wright, Costa Ronin, Brandon J. Dirden",["Matthew Rhys זכה בפרס אמי על התפקיד הראשי בדרמה (2018)"]],
+26:["Bruce Miller (פיתוח), Margaret Atwood (הספר)","Elisabeth Moss, Yvonne Strahovski, Joseph Fiennes, Samira Wiley, Alexis Bledel, Ann Dowd, Max Minghella, O-T Fagbenle, Madeline Brewer",["הסדרה הראשונה בסטרימינג שזכתה באמי לסדרת דרמה (2017)"]],
+27:["Jonathan Nolan, Lisa Joy","Evan Rachel Wood, Thandiwe Newton, Jeffrey Wright, Ed Harris, Anthony Hopkins, James Marsden, Tessa Thompson, Ben Barnes"],
+28:["Beau Willimon","Kevin Spacey, Robin Wright, Michael Kelly, Kate Mara, Corey Stoll, Molly Parker, Mahershala Ali, Constance Zimmer",["Robin Wright זכתה בגלובוס הזהב על התפקיד הראשי"]],
+29:["R. Scott Gemmill","Noah Wyle, Tracy Ifeachor, Katherine LaNasa, Patrick Ball, Taylor Dearden, Supriya Ganesh, Fiona Dourif, Isa Briones, Gerran Howell, Sepideh Moafi",["זכתה בפרס אמי לסדרת דרמה פעמיים ברציפות (2025, 2026)","Noah Wyle זכה בפרס אמי על התפקיד הראשי בדרמה (2026)"]],
+30:["Ryan Condal, George R. R. Martin","Matt Smith, Emma D'Arcy, Olivia Cooke, Paddy Considine, Rhys Ifans, Steve Toussaint, Eve Best, Fabien Frankel, Ewan Mitchell"],
+31:["Howard Gordon, Alex Gansa","Claire Danes, Mandy Patinkin, Damian Lewis, Rupert Friend, Morena Baccarin, David Harewood, Nazanin Boniadi, Morgan Saylor",["זכתה בפרס אמי לסדרת דרמה (2012)"]],
+32:["Noah Hawley","Billy Bob Thornton, Martin Freeman, Allison Tolman, Kirsten Dunst, Colin Hanks, Ewan McGregor, Jesse Plemons, Carrie Coon, Jon Hamm, Juno Temple",["העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2014)"]],
+33:["Terence Winter","Steve Buscemi, Kelly Macdonald, Michael Shannon, Shea Whigham, Michael Stuhlbarg, Stephen Graham, Michael K. Williams, Bobby Cannavale",["Steve Buscemi זכה בגלובוס הזהב על התפקיד הראשי"]],
+34:["Raphael Bob-Waksberg","Will Arnett, Amy Sedaris, Alison Brie, Paul F. Tompkins, Aaron Paul, Stephanie Beatriz, Kristen Schaal"],
+35:["Patrick Somerville","Mackenzie Davis, Himesh Patel, Gael García Bernal, Danielle Deadwyler, Matilda Lawler, Lori Petty, Daniel Zovatto, David Wilmot, Nabhaan Rizwan"],
+36:["Will Smith (מפתח ומחבר התסריטים)","Gary Oldman, Jack Lowden, Kristin Scott Thomas, Jonathan Pryce, Olivia Cooke, Christopher Chung, Rosalind Eleazar, Aimee-Ffion Edwards",["מועמדת לפרס אמי לסדרת דרמה (2026)"]],
+37:["Joel Surnow, Robert Cochran","Kiefer Sutherland, Mary Lynn Rajskub, Carlos Bernard, Dennis Haysbert, Elisha Cuthbert, Kim Raver, Reiko Aylesworth, Jean Smart",["זכתה בפרס אמי לסדרת דרמה (2006)"]],
+38:["Craig Mazin","Jared Harris, Stellan Skarsgård, Emily Watson, Jessie Buckley, Paul Ritter, Con O'Neill, Adam Nagaitis",["זכתה בפרס אמי לסדרה מוגבלת (2019)"]],
+39:["Charlie Brooker","Bryce Dallas Howard, Jesse Plemons, Daniel Kaluuya, Domhnall Gleeson, Hayley Atwell, Mackenzie Davis, Anthony Mackie, Cristin Milioti, Miley Cyrus",["הפרק San Junipero זכה בפרס אמי לסרט טלוויזיה (2017)"],"שחקנים בולטים (אנתולוגיה)"],
+40:["Jason Sudeikis, Bill Lawrence, Brendan Hunt, Joe Kelly","Jason Sudeikis, Hannah Waddingham, Brett Goldstein, Juno Temple, Brendan Hunt, Phil Dunster, Jeremy Swift, Nick Mohammed",["זכתה בפרס אמי לסדרת קומדיה פעמיים (2021, 2022)"]],
+41:["Bruno Heller, John Milius, William J. MacDonald","Kevin McKidd, Ray Stevenson, Polly Walker, Ciarán Hinds, James Purefoy, Lindsay Duncan, Tobias Menzies, Kerry Condon"],
+42:["Greg Daniels","Robbie Amell, Andy Allo, Allegra Edwards, Kevin Bigley, Zainab Johnson, Owen Daniels"],
+43:["Steven Knight","Jason Momoa, Alfre Woodard, Hera Hilmar, Sylvia Hoeks, Christian Camargo, Archie Madekwe, Nesta Cooper"],
+44:["Chris Brancato, Carlo Bernard, Doug Miro","Wagner Moura, Boyd Holbrook, Pedro Pascal, Alberto Ammann, Joanna Christie, Maurice Compte, Paulina Gaitán, Damián Alcázar"],
+45:["Paul Scheuring","Wentworth Miller, Dominic Purcell, Sarah Wayne Callies, Robert Knepper, Amaury Nolasco, Wade Williams, Peter Stormare, William Fichtner"],
+46:["Ann Biderman","Liev Schreiber, Jon Voight, Paula Malcomson, Eddie Marsan, Dash Mihok, Pooch Hall, Katherine Moennig, Kerris Dorsey",["Jon Voight זכה בגלובוס הזהב על תפקיד המשנה"]],
+47:["Joe Penhall","Jonathan Groff, Holt McCallany, Anna Torv, Cameron Britton, Hannah Gross, Sonny Valicenti, Michael Cerveris"],
+48:["Debora Cahn","Keri Russell, Rufus Sewell, David Gyasi, Ali Ahn, Rory Kinnear, Ato Essandoh, Nana Mensah, Michael McKean",["מועמדת לפרס אמי לסדרת דרמה (2026)"]],
+49:["האחים Duffer","Millie Bobby Brown, Winona Ryder, David Harbour, Finn Wolfhard, Gaten Matarazzo, Caleb McLaughlin, Noah Schnapp, Sadie Sink, Joe Keery, Natalia Dyer",["זכתה בפרס SAG לצוות השחקנים הטוב בסדרת דרמה (2017)"]],
+50:["Blake Crouch","Joel Edgerton, Jennifer Connelly, Alice Braga, Jimmi Simpson, Dayo Okeniyi, Oakes Fegley, Lee Shorten"],
+51:["Chris Carter","David Duchovny, Gillian Anderson, Mitch Pileggi, William B. Davis, Robert Patrick, Annabeth Gish, Nicholas Lea",["זכתה בגלובוס הזהב לסדרת דרמה"]],
+52:["Jenji Kohan","Taylor Schilling, Laura Prepon, Uzo Aduba, Danielle Brooks, Kate Mulgrew, Natasha Lyonne, Samira Wiley, Taryn Manning",["זכתה בפרס SAG לצוות השחקנים הטוב בסדרת קומדיה"]],
+53:["David Lynch, Mark Frost","Kyle MacLachlan, Sheryl Lee, Laura Dern, Sherilyn Fenn, Ray Wise, Piper Laurie, Michael Ontkean, Lara Flynn Boyle",["זכתה בגלובוס הזהב לסדרת דרמה"]],
+54:["J. D. Payne, Patrick McKay","Morfydd Clark, Robert Aramayo, Charlie Vickers, Markella Kavenagh, Ismael Cruz Córdova, Owain Arthur, Sophia Nomvete, Charles Edwards, Nazanin Boniadi"],
+55:["אורי אלון, יהונתן אינדורסקי","דב גליקמן, מיכאל אלוני, נטע ריסקין, שירה האס, זוהר שטראוס, שרה פון שוורצה"],
+56:["ליאור רז, אבי יששכרוף","ליאור רז, חישאם סולימאן, שדי מרעי, יעקב זדה דניאל, רונה-לי שמעון, צחי הלוי, איציק כהן"],
+57:["Frank Spotnitz (פיתוח), Philip K. Dick (הספר)","Alexa Davalos, Rupert Evans, Luke Kleintank, Rufus Sewell, DJ Qualls, Joel de la Fuente, Cary-Hiroyuki Tagawa, Jason O'Mara"],
+58:["Michael Schur","Kristen Bell, Ted Danson, William Jackson Harper, Jameela Jamil, Manny Jacinto, D'Arcy Carden, Marc Evan Jackson"],
+59:["Hwang Dong-hyuk","Lee Jung-jae, Park Hae-soo, Wi Ha-jun, Jung Ho-yeon, Oh Yeong-su, Heo Sung-tae, Anupam Tripathi, Gong Yoo",["Lee Jung-jae זכה בפרס אמי על התפקיד הראשי בדרמה (2022)"]],
+60:["Phoebe Waller-Bridge","Phoebe Waller-Bridge, Sian Clifford, Olivia Colman, Andrew Scott, Bill Paterson, Brett Gelman, Hugh Skinner",["זכתה בפרס אמי לסדרת קומדיה (2019)"]],
+61:["Armando Iannucci","Julia Louis-Dreyfus, Tony Hale, Anna Chlumsky, Timothy Simons, Reid Scott, Matt Walsh, Kevin Dunn, Gary Cole, Sam Richardson",["זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2015 עד 2017)"]],
+62:["Tina Fey","Tina Fey, Alec Baldwin, Tracy Morgan, Jane Krakowski, Jack McBrayer, Scott Adsit, Judah Friedlander, Keith Powell",["זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2007 עד 2009)"]],
+63:["Larry David","Larry David, Jeff Garlin, Cheryl Hines, Susie Essman, J. B. Smoove, Richard Lewis, Ted Danson"],
+64:["Donald Glover","Donald Glover, Brian Tyree Henry, Lakeith Stanfield, Zazie Beetz, Isiah Whitlock Jr.",["Donald Glover זכה בפרס אמי על התפקיד הראשי ועל הבימוי (2017)"]],
+65:["Greg Daniels","Steve Carell, Rainn Wilson, John Krasinski, Jenna Fischer, Ed Helms, B. J. Novak, Mindy Kaling, Angela Kinsey, Brian Baumgartner, Oscar Nuñez",["זכתה בפרס אמי לסדרת קומדיה (2006)"]],
+66:["Mitchell Hurwitz","Jason Bateman, Portia de Rossi, Will Arnett, Michael Cera, David Cross, Tony Hale, Jeffrey Tambor, Alia Shawkat, Jessica Walter",["זכתה בפרס אמי לסדרת קומדיה (2004)"]],
+67:["Lena Dunham","Lena Dunham, Allison Williams, Jemima Kirke, Zosia Mamet, Adam Driver, Alex Karpovsky, Andrew Rannells, Ray Romano",["זכתה בגלובוס הזהב לסדרת קומדיה (2013)"]],
+68:["Peter Berg (פיתוח)","Kyle Chandler, Connie Britton, Taylor Kitsch, Zach Gilford, Aimee Teegarden, Jesse Plemons, Michael B. Jordan, Adrianne Palicki, Minka Kelly, Scott Porter",["Kyle Chandler זכה בפרס אמי על התפקיד הראשי בדרמה (2011)"]],
+69:["Ricky Gervais, Stephen Merchant","Ricky Gervais, Martin Freeman, Mackenzie Crook, Lucy Davis, Ralph Ineson, Oliver Chris, Ewen MacIntosh",["זכתה בגלובוס הזהב לסדרת קומדיה (2004)"]],
+70:["Michaela Coel","Michaela Coel, Paapa Essiedu, Weruche Opia, Karla-Simone Spence, Stephen Wight, Harriet Webb",["Michaela Coel זכתה בפרס אמי על הכתיבה (2021)"]],
+71:["Lisa Kudrow, Michael Patrick King","Lisa Kudrow, Damian Young, Laura Silverman, Robert Michael Morris, Malin Åkerman, Dan Bucatinsky, Lance Barber"],
+72:["David Milch","Ian McShane, Timothy Olyphant, Molly Parker, Brad Dourif, Paula Malcomson, W. Earl Brown, John Hawkes, Robin Weigert, Kim Dickens",["Ian McShane זכה בגלובוס הזהב על תפקיד המשנה"]],
+73:["בהפקת Tom Hanks ו-Steven Spielberg","Damian Lewis, Ron Livingston, Donnie Wahlberg, Scott Grimes, Matthew Settle, Neal McDonough, Michael Cudlitz, Dexter Fletcher",["זכתה בפרס אמי לסדרה מוגבלת (2002)"]],
+74:["Keegan-Michael Key, Jordan Peele","Keegan-Michael Key, Jordan Peele",["זכתה בפרס פיבודי"]],
+75:["Charlie Parsons (הפורמט), Mark Burnett (הגרסה האמריקאית)","Jeff Probst","","מגיש"],
+76:["Tony Gilroy","Diego Luna, Stellan Skarsgård, Genevieve O'Reilly, Denise Gough, Adria Arjona, Fiona Shaw, Kyle Soller, Faye Marsay, Andy Serkis, Forest Whitaker"],
+77:["Mike White, Laura Dern","Laura Dern, Luke Wilson, Diane Ladd, Mike White, Timm Sharp, Sarah Burns, Molly Shannon",["Laura Dern זכתה בגלובוס הזהב על התפקיד הראשי בקומדיה"]],
+78:["Eugene Levy, Dan Levy","Eugene Levy, Catherine O'Hara, Dan Levy, Annie Murphy, Chris Elliott, Emily Hampshire, Noah Reid, Jennifer Robertson, Tim Rozon",["טאטאה את פרסי האמי של 2020: זכתה בכל שבע הקטגוריות המרכזיות של הקומדיה"]],
+79:["Nic Pizzolatto","Matthew McConaughey, Woody Harrelson, Colin Farrell, Mahershala Ali, Jodie Foster, Rachel McAdams, Vince Vaughn, Kelly Reilly, Carmen Ejogo, Stephen Dorff, Michelle Monaghan",["Cary Joji Fukunaga זכה בפרס אמי על הבימוי של העונה הראשונה (2014)"]],
+80:["Ronald D. Moore","Edward James Olmos, Mary McDonnell, Katee Sackhoff, Jamie Bamber, James Callis, Tricia Helfer, Grace Park, Michael Hogan, Aaron Douglas",["זכתה בפרס פיבודי"]],
+81:["Jack Thorne, Stephen Graham","Stephen Graham, Owen Cooper, Ashley Walters, Erin Doherty, Faye Marsay, Christine Tremarco, Mark Stanley",["זכתה בפרס אמי לסדרה מוגבלת (2025)"]],
+82:["Louis C.K.","Louis C.K., Pamela Adlon, Hadley Delany, Ursula Parker, Robert Kelly",["זכתה בפרס אמי על כתיבה לסדרת קומדיה (2012)"]],
+83:["Lucia Aniello, Paul W. Downs, Jen Statsky","Jean Smart, Hannah Einbinder, Carl Clemons-Hopkins, Paul W. Downs, Megan Stalter, Christopher McDonald, Poppy Liu, Mark Indelicato, Kaitlin Olson",["זכתה בפרס אמי לסדרת קומדיה (2024)","Jean Smart זכתה בפרס אמי על התפקיד הראשי כמה פעמים"]],
+84:["Steven Knight","Cillian Murphy, Paul Anderson, Helen McCrory, Tom Hardy, Sophie Rundle, Joe Cole, Finn Cole, Natasha O'Keeffe, Anya Taylor-Joy, Sam Neill"],
+85:["Sally Wainwright","Sarah Lancashire, James Norton, Siobhan Finneran, Charlie Murphy, Steve Pemberton, George Costigan, Con O'Neill, Rhys Connah",["Sarah Lancashire זכתה בפרס BAFTA על התפקיד הראשי"]],
+86:["Abbi Jacobson, Ilana Glazer","Abbi Jacobson, Ilana Glazer, Paul W. Downs, Arturo Castro, Hannibal Buress, Stephen Schneider, Jon Glaser"],
+87:["Alice Birch (עיבוד), Sally Rooney (הספר)","Daisy Edgar-Jones, Paul Mescal, Sarah Greene, Desmond Eastwood, Aislín McGuckin, India Mullen, Eanna Hardwicke, Fionn O'Shea"],
+88:["Greg Daniels, Michael Schur","Amy Poehler, Nick Offerman, Aziz Ansari, Chris Pratt, Rashida Jones, Aubrey Plaza, Adam Scott, Retta, Rob Lowe, Jim O'Heir"],
+89:["Julian Fellowes","Hugh Bonneville, Michelle Dockery, Maggie Smith, Elizabeth McGovern, Laura Carmichael, Jim Carter, Joanne Froggatt, Dan Stevens, Phyllis Logan, Allen Leech",["העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2011)"]],
+90:["Éric Rochant","Mathieu Kassovitz, Jean-Pierre Darroussin, Florence Loiret-Caille, Sara Giraudeau, Zineb Triki, Léa Drucker, Jonathan Lambert"],
+91:["Issa Rae, Larry Wilmore","Issa Rae, Yvonne Orji, Jay Ellis, Y'lan Noel, Natasha Rothwell, Amanda Seales, Alexander Hodge, Kendrick Sampson"],
+92:["Nathan Fielder, Michael Koman","Nathan Fielder"],
+93:["Tim Robinson, Zach Kanin","Tim Robinson, Sam Richardson, Tim Heidecker, Will Forte, Patti Harrison, Conner O'Malley"],
+94:["Dave Chappelle, Neal Brennan","Dave Chappelle, Charlie Murphy, Donnell Rawlings"],
+95:["Maya Erskine, Anna Konkle, Sam Zvibleman","Maya Erskine, Anna Konkle"],
+96:["Jesse Armstrong, Sam Bain","David Mitchell, Robert Webb, Olivia Colman, Matt King, Paterson Joseph, Isy Suttie, Sophie Winkleman, Jessica Hynes"],
+97:["RuPaul Charles, Fenton Bailey, Randy Barbato","RuPaul, Michelle Visage, Carson Kressley, Ross Mathews",["זכתה בפרס אמי לתוכנית ריאליטי תחרותית פעמים רבות"],"מגישים"],
+98:["Armando Iannucci","Peter Capaldi, Chris Addison, Rebecca Front, Joanna Scanlan, James Smith, Paul Higgins, Chris Langham, Roger Allam"],
+99:["Anthony Bourdain","Anthony Bourdain",["זכתה בפרסי אמי ופיבודי"],"מגיש"],
+100:["Brad Ingelsby","Kate Winslet, Julianne Nicholson, Jean Smart, Evan Peters, Angourie Rice, Guy Pearce, David Denman, Cailee Spaeny",["Kate Winslet זכתה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2021)"]],
+101:["Nathan Fielder, Eric Notarnicola","Nathan Fielder"],
+102:["Anthony Bourdain","Anthony Bourdain",[],"מגיש"],
+103:["Shawn Ryan","Michael Chiklis, Walton Goggins, CCH Pounder, Michael Jace, Jay Karnes, Catherine Dent, Benito Martinez, Glenn Close, Forest Whitaker",["Michael Chiklis זכה בפרס אמי על התפקיד הראשי בדרמה (2002)"]],
+104:["Lee Sung Jin","Steven Yeun, Ali Wong, Joseph Lee, Young Mazino, Maria Bello, David Choe, Oscar Isaac, Carey Mulligan, Charles Melton, Cailee Spaeny",["זכתה בפרס אמי לסדרה מוגבלת"]],
+105:["Alec Berg, Bill Hader","Bill Hader, Sarah Goldberg, Stephen Root, Henry Winkler, Anthony Carrigan, D'Arcy Carden, Darrell Britt-Gibson, Michael Irby",["Bill Hader זכה בפרס אמי על התפקיד הראשי בקומדיה (2018, 2019)"]],
+106:["Christopher Storer","Jeremy Allen White, Ayo Edebiri, Ebon Moss-Bachrach, Liza Colón-Zayas, Lionel Boyce, Abby Elliott, Matty Matheson, Edwin Lee Gibson, Oliver Platt, Jamie Lee Curtis",["זכתה בפרס אמי לסדרת קומדיה (2023)"]],
+107:["Bridget Everett, Hannah Bos, Paul Thureen","Bridget Everett, Jeff Hiller, Mary Catherine Garrison, Murray Hill, Danny McCarthy"],
+108:["Christopher Lloyd, Steven Levitan","Ed O'Neill, Sofía Vergara, Julie Bowen, Ty Burrell, Jesse Tyler Ferguson, Eric Stonestreet, Sarah Hyland, Ariel Winter, Nolan Gould, Rico Rodriguez",["זכתה בפרס אמי לסדרת קומדיה חמש שנים ברציפות (2010 עד 2014)"]],
+109:["Rob McElhenney","Charlie Day, Glenn Howerton, Rob McElhenney, Kaitlin Olson, Danny DeVito, Mary Elizabeth Ellis"],
+110:["Robert King, Michelle King","Julianna Margulies, Josh Charles, Christine Baranski, Archie Panjabi, Alan Cumming, Matt Czuchry, Chris Noth, Matthew Goode, Zach Grenier",["Julianna Margulies זכתה בפרס אמי על התפקיד הראשי בדרמה (2011)"]],
+111:["John Wilson","John Wilson"],
+112:["Scott Frank, Allan Scott","Anya Taylor-Joy, Bill Camp, Thomas Brodie-Sangster, Marielle Heller, Harry Melling, Moses Ingram, Isla Johnston, Jacob Fortune-Lloyd, Marcin Dorociński",["זכתה בפרס אמי לסדרה מוגבלת (2021)"]],
+113:["Pamela Adlon, Louis C.K.","Pamela Adlon, Mikey Madison, Hannah Alligood, Olivia Edward, Celia Imrie, Diedrich Bader"],
+114:["Graham Yost","Timothy Olyphant, Walton Goggins, Nick Searcy, Joelle Carter, Erica Tazel, Jacob Pitts, Jere Burns, Margo Martindale, Jeremy Davies",["Margo Martindale זכתה בפרס אמי כשחקנית משנה בדרמה (2011)"]],
+115:["Alastair Fothergill","David Attenborough",["זכתה בפרסי אמי"],"מספר"],
+116:["Love Productions (הפורמט)","Mary Berry, Paul Hollywood, Mel Giedroyc, Sue Perkins, Noel Fielding, Matt Lucas, Prue Leith, Sandi Toksvig",[],"מגישים ושופטים"],
+117:["Rachel Kondo, Justin Marks","Hiroyuki Sanada, Cosmo Jarvis, Anna Sawai, Tadanobu Asano, Takehiro Hira, Tokuma Nishioka, Moeka Hoshi, Yuki Kura, Fumi Nikaido",["זכתה בפרס אמי לסדרת דרמה (2024), עם 18 זכיות באמי בעונה אחת, שיא"]],
+118:["Sterlin Harjo, Taika Waititi","Devery Jacobs, Paulina Alexis, D'Pharaoh Woon-A-Tai, Lane Factor, Zahn McClarnon, Sarah Podemski, Gary Farmer, Kaniehtiio Horn"],
+119:["Richard Gadd","Richard Gadd, Jessica Gunning, Nava Mau, Tom Goodman-Hill, Shalom Brune-Franklin, Danny Kirrane",["זכתה בפרס אמי לסדרה מוגבלת (2024)"]],
+120:["Danny McBride, Jody Hill, Ben Best","Danny McBride, Steve Little, Katy Mixon, John Hawkes, Jennifer Irwin, Andrew Daly, Ben Best"],
+121:["Rob Delaney, Sharon Horgan","Rob Delaney, Sharon Horgan, Carrie Fisher, Ashley Jensen, Mark Bonnar, Daniel Lapaine, Jonathan Forbes"],
+122:["Richard Price, Steven Zaillian","Riz Ahmed, John Turturro, Bill Camp, Michael K. Williams, Jeannie Berlin, Amara Karan, Poorna Jagannathan, Paulo Costanzo",["Riz Ahmed זכה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2017)"]],
+123:["Christopher Cantwell, Christopher C. Rogers","Lee Pace, Scoot McNairy, Mackenzie Davis, Kerry Bishé, Toby Huss, Mark O'Brien, Manish Dayal, Annabeth Gish"],
+124:["Dan Harmon","Joel McHale, Gillian Jacobs, Danny Pudi, Alison Brie, Donald Glover, Yvette Nicole Brown, Ken Jeong, Chevy Chase, Jim Rash, Paget Brewster"],
+125:["Brit Marling, Zal Batmanglij","Brit Marling, Jason Isaacs, Emory Cohen, Phyllis Smith, Patrick Gibson, Brendan Meyer, Ian Alexander, Alice Krige, Riz Ahmed, Kingsley Ben-Adir"],
+126:["Amy Sherman-Palladino","Lauren Graham, Alexis Bledel, Kelly Bishop, Scott Patterson, Melissa McCarthy, Keiko Agena, Yanic Truesdale, Jared Padalecki, Milo Ventimiglia, Matt Czuchry, Liza Weil"],
+127:["Shonda Rhimes","Kerry Washington, Tony Goldwyn, Columbus Short, Jeff Perry, Guillermo Díaz, Darby Stanchfield, Katie Lowes, Joshua Malina, Bellamy Young, Scott Foley, Portia de Rossi"]
+};
+const crew = i => ((MORE[i] || [])[0] || "").split(", ").map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean);
+function similar(i, n) {
+  const s = S[i], mine = crew(i);
+  return S.map((o, j) => {
+    if (j === i) return null;
+    const g = o.g.filter(x => s.g.includes(x)), m = o.mo.filter(x => s.mo.includes(x));
+    const shared = crew(j).filter(x => mine.includes(x));
+    const sc = (shared.length ? 4 : 0) + 2 * g.length + 1.2 * m.length + (o.h === s.h ? 1 : Math.abs(o.h - s.h) === 1 ? 0.3 : -0.5) + (o.lang === s.lang ? 0.3 : 0) + (o.plat === s.plat ? 0.2 : 0) + (Math.abs(o.y - s.y) <= 5 ? 0.3 : 0) + o.imdb / 20;
+    const why = shared.length ? `מאותם יוצרים (${shared[0]})` : g.length ? "גם " + g.slice(0, 2).map(x => GENRES[x]).join(" ו") + (m.length ? ", באותו מצב רוח" : "") : "באותו מצב רוח";
+    return { j, sc, why };
+  }).filter(Boolean).sort((a, b) => b.sc - a.sc).slice(0, n || 4);
+}
+function moreHTML(i) {
+  const m = MORE[i] || [], s = S[i];
+  const names = x => x.split(", ").map(n => `<bdi>${n}</bdi>`).join(", ");
+  const rows = [];
+  if (m[0]) rows.push(`<dt>יוצרים</dt><dd>${names(m[0])}</dd>`);
+  if (m[1]) rows.push(`<dt>${m[3] || "בכיכוב"}</dt><dd>${actorLinks(m[1])}</dd>`);
+  const aw = (s.nyt ? [["📰", `מקום ${s.nyt} ברשימת 100 הסדרות הטובות של המאה ה-21 של הניו יורק טיימס (2026)`]] : []).concat((m[2] || []).map(a => ["🏆", a]));
+  return `<section class="more" aria-label="עוד על הסדרה">
+    ${rows.length ? `<div class="sec"><h3>מי עומד מאחורי הסדרה</h3><dl>${rows.join("")}</dl></div>` : ""}
+    ${aw.length ? `<div class="sec"><h3>פרסים והכרה</h3><ul class="aw">${aw.map(a => `<li><span aria-hidden="true">${a[0]}</span><span>${a[1]}</span></li>`).join("")}</ul></div>` : ""}
+    <div class="sec"><h3>אם אהבתם, אולי גם</h3><div class="sim">${similar(i).map(x => `<button class="tile${st.seen.has(x.j) ? " seen" : ""}" data-a="detail" data-i="${x.j}" aria-label="${S[x.j].n}">${poster(x.j, "")}<span class="badge">${CHECK}</span><span class="cap"><bdi>${S[x.j].n}</bdi></span><span class="why2">${x.why}</span></button>`).join("")}</div></div>
+    <p class="note">מוצגים הפרסים הבולטים בלבד, לא רשימה מלאה.</p>
+  </section>`;
+}
+
+
+/* סיכום במילים שלנו: במה המבקרים מפרגנים (לא ציטוטים) */
+const PRAISE = [
+"מבקרים משבחים את הדרך שבה היא הופכת אבל וחוסר ודאות לדרמה עמוקה, בעיקר בעונה השלישית.",
+"מבקרים רואים בה את הסדרה שהפכה את הטלוויזיה לאמנות, בזכות דמות שהיא גם פושע וגם אדם מסובך.",
+"מבקרים מפרגנים להתפתחות הדמות הראשית ולתסריט הדוק שבו כל פרק מוביל לבא אחריו.",
+"מבקרים משבחים את הקצב המדוד ואת פיתוח הדמויות, ורבים רואים בה שווה ערך לסדרת האם.",
+"מבקרים אוהבים את הרעיון המקורי, את העיצוב הקר ואת הכתיבה שמשאירה אותך מנחש.",
+"מבקרים מפרגנים לדיאלוגים החדים ולסאטירה שהיא גם אכזרית וגם מצחיקה על משפחת מיליארדרים.",
+"מבקרים משבחים את התעוזה שבה היא משתמשת בקומיקס המקורי כדי לדבר על גזענות וזיכרון.",
+"מבקרים רואים בה את התיאור המקיף והכן ביותר של עיר אמריקאית ושל המוסדות שלה.",
+"מבקרים אוהבים את הסאטירה החדה על תרבות הסלבס והתאגידים, גם כשהיא אלימה בכוונה.",
+"מבקרים מפרגנים לעולם המפורט, לעלילות הרבות ולנכונות להרוג דמויות מרכזיות.",
+"מבקרים משבחים את הכנות שבה היא עוסקת במוות ובחיים של משפחה רגילה.",
+"מבקרים מפרגנים לקנה המידה הגדול ולנכונות להתמודד עם הרעיונות של הספרים.",
+"מבקרים משבחים בעיקר את הפרקים הראשונים ואת הדרמה האנושית סביב איום הזומבים.",
+"מבקרים אוהבים את ההיסטוריה החלופית ואת האופן שבו היא נבנית עשור אחר עשור.",
+"מבקרים מפרגנים למסתורין הממכר ולדרך שבה הסדרה שינתה את הצפייה בטלוויזיה.",
+"מבקרים משבחים את הדיוק הסגנוני ואת הדרך השקטה שבה היא מציגה דמויות מסובכות.",
+"מבקרים מפרגנים לרעיון המקורי ולביצוע המרשים של השחקנית הראשית.",
+"מבקרים אוהבים את העולם הסגור והמתוח ואת התעלומה שמתפתחת בתוכו.",
+"מבקרים משבחים את הרעיון המקורי ואת הכריזמה של הדמות הראשית, בעיקר בעונות הראשונות.",
+"מבקרים מפרגנים להפקה המפוארת ולמשחק, ובעיקר לשחקניות שמגלמות את המלכה.",
+"מבקרים אוהבים את הדמות הראשית הציניקנית ואת פרקי התעלומה הרפואית המהירים.",
+"מבקרים משבחים את הסאטירה על העשירים ואת הכתיבה המצחיקה והמרירה.",
+"מבקרים משבחים את הרגש האמיתי בין שתי הדמויות המרכזיות ואת נאמנות העיבוד למשחק.",
+"מבקרים מפרגנים לאווירה הקודרת ולמתח, ולמשחק של הכוכבים.",
+"מבקרים רואים בה סדרה חלוצית בתיאור הכלא, אלימה ובלתי מתפשרת.",
+"מבקרים משבחים את הדרמה הזוגית בתוך סיפור הריגול ואת הכתיבה המדויקת.",
+"מבקרים משבחים את העונה הראשונה, את העיצוב החזק ואת המשחק של השחקנית הראשית.",
+"מבקרים אוהבים את השאיפה הפילוסופית ואת הפאזל הנרטיבי, במיוחד בעונה הראשונה.",
+"מבקרים משבחים את הכוכבים ואת האופן שבו היא הציגה פוליטיקה מאחורי הקלעים.",
+"מבקרים משבחים את הקצב ההדוק, את הריאליזם ואת האנושיות של הצוות הרפואי.",
+"מבקרים אוהבים את העומק הפוליטי ואת הדרמה המשפחתית שמאחורי הדרקונים.",
+"מבקרים משבחים בעיקר את העונה הראשונה ואת הדמות הראשית המורכבת.",
+"מבקרים מפרגנים לטון המיוחד שמשלב אלימות, הומור ואנשים רגילים.",
+"מבקרים משבחים את ההפקה המפוארת ואת הדמויות שמחזיקות את העולם הפוליטי.",
+"מבקרים משבחים את האיזון בין קומדיה לדרמה כואבת על דיכאון והתמכרות.",
+"מבקרים אוהבים את הגישה הרכה לסיפור שאחרי המגפה ואת מבנה הזמנים.",
+"מבקרים מפרגנים לגארי אולדמן ולהומור היבש של סדרת ריגול שמורכבת מכישלונות.",
+"מבקרים משבחים את רעיון הזמן האמיתי ואת הקצב הממכר.",
+"מבקרים משבחים את הדיוק, את האווירה ואת התיאור של מחיר השקר.",
+"מבקרים משבחים את הרעיונות החדים על טכנולוגיה, בעיקר בפרקים הטובים ביותר.",
+"מבקרים אוהבים את החום, האופטימיות והכתיבה שמצליחה להיות רגישה בלי להתחנחן.",
+"מבקרים משבחים את התיאור המפורט והאנושי של רומא דרך שני חיילים פשוטים.",
+"מבקרים מפרגנים לרעיון המצחיק על החיים שאחרי המוות כשירות דיגיטלי.",
+"מבקרים משבחים את העולם הוויזואלי הייחודי ואת הסצנות הגדולות.",
+"מבקרים משבחים את הקצב ואת הדרך שבה היא מציגה את פאבלו אסקובר ואת הרודפים אחריו.",
+"מבקרים אוהבים את הרעיון הממכר של בריחה שתוכננה בפרטי פרטים.",
+"מבקרים משבחים את המשחק של הכוכבים ואת האווירה הקודרת.",
+"מבקרים משבחים את הדיאלוגים המתוחים בראיונות ואת הבימוי הקפדני.",
+"מבקרים אוהבים את הקצב המהיר ואת הכימיה בין הזוג הראשי.",
+"מבקרים משבחים את הנוסטלגיה ואת הכימיה בין הילדים בעונה הראשונה.",
+"מבקרים מפרגנים לרעיון של יקומים מקבילים ולמתח האישי.",
+"מבקרים רואים בה סדרת מסתורין מכוננת, ופרקי המפלצות הטובים שלה אהובים במיוחד.",
+"מבקרים משבחים את הליהוק המגוון ואת הדמויות הרבות שמקבלות סיפור משלהן.",
+"מבקרים מפרגנים לסגנון הייחודי של לינץ׳ ולאווירה החלומית.",
+"מבקרים משבחים את ההפקה המפוארת ואת המראה של עולם ״שר הטבעות״.",
+"מבקרים אוהבים את החום, ההומור והפרטים האותנטיים של העולם החרדי.",
+"מבקרים משבחים את המתח והאקשן ואת העובדה שהיא מראה את שני הצדדים.",
+"מבקרים משבחים את הרעיון ואת העיצוב של עולם שבו הנאצים ניצחו.",
+"מבקרים אוהבים את ההיפוכים החכמים ואת השילוב של קומדיה ופילוסופיה.",
+"מבקרים משבחים את העיצוב החזותי ואת הסאטירה החברתית שמאחורי המשחקים.",
+"מבקרים משבחים את הכתיבה החדה ואת המשחק הרגיש שמאחורי ההומור.",
+"מבקרים מפרגנים לקללות המדויקות, לקצב ולשחקנית הראשית.",
+"מבקרים אוהבים את צפיפות הבדיחות ואת הכתיבה המבריקה של טינה פיי.",
+"מבקרים משבחים את האלתור ואת הדרך שבה מצבים קטנים הופכים לפיצוצים.",
+"מבקרים אוהבים את הסגנון הסוריאליסטי ואת האומץ לעשות פרקים שונים לגמרי.",
+"מבקרים משבחים את החום ואת הדמויות שנהיות אהובות עם הזמן.",
+"מבקרים אוהבים את הבדיחות שמסתדרות על פני עונות שלמות.",
+"מבקרים משבחים את הכנות והחשיפה של חיי צעירות בניו יורק.",
+"מבקרים משבחים את הריאליזם ואת הדרך שבה היא מציגה קהילה שלמה.",
+"מבקרים רואים בה קומדיית מבוכה מושלמת בגלל הקצרות והדיוק.",
+"מבקרים משבחים את הכנות ואת האומץ לגעת בנושא קשה בהומור ובכאב.",
+"מבקרים רואים בה סדרה שהקדימה את זמנה בבדיקת עולם הריאליטי והסלבס.",
+"מבקרים משבחים את הכתיבה הפיוטית ואת הדיאלוגים הייחודיים.",
+"מבקרים משבחים את התיאור האנושי של המלחמה דרך חיילים מסוימים.",
+"מבקרים אוהבים את הדמויות ואת המערכונים שהפכו לוויראליים.",
+"מבקרים מפרגנים לפורמט שהפך למודל של משחק ריאליטי ושרד עשרות שנים.",
+"מבקרים משבחים את הכתיבה הבוגרת ואת המתח הפוליטי, ורבים רואים בה את הסדרה הטובה ביותר בעולם הזה.",
+"מבקרים משבחים את המשחק של לורה דרן ואת הגישה האמיצה והכואבת.",
+"מבקרים אוהבים את החום ואת האופן שבו הסדרה מתפתחת מקומדיה לסיפור אהבה.",
+"מבקרים משבחים בעיקר את העונה הראשונה: האווירה והמשחק.",
+"מבקרים רואים בה סדרת מדע בדיוני בוגרת שנוגעת בפוליטיקה ובמוסר.",
+"מבקרים משבחים את הבימוי בלקיחה אחת ואת המשחק של הצעיר.",
+"מבקרים אוהבים את הסגנון האישי והחצי-קולנועי.",
+"מבקרים משבחים את הכימיה בין שתי הדמויות ואת הכתיבה השנונה.",
+"מבקרים אוהבים את הסגנון המצולם ואת המוזיקה.",
+"מבקרים משבחים את הדמות הראשית ואת המשחק של השחקנית.",
+"מבקרים אוהבים את האנרגיה ואת החברות המצחיקה.",
+"מבקרים משבחים את האינטימיות ואת המשחק העדין.",
+"מבקרים אוהבים את האופטימיות ואת צוות השחקנים החם.",
+"מבקרים משבחים את ההפקה המפוארת ואת המשחק של השחקנים הוותיקים.",
+"מבקרים משבחים את הריאליזם של עולם הריגול ואת הקצב הסבלני.",
+"מבקרים אוהבים את הקול הייחודי של יוצרת הסדרה.",
+"מבקרים משבחים את המבוכה המדויקת ואת הרעיונות המופרכים.",
+"מבקרים אוהבים את הביזאריות ואת המערכונים שנשארים בראש.",
+"מבקרים מפרגנים לחדות של הסאטירה על גזע וחברה.",
+"מבקרים משבחים את הכנות של גיל ההתבגרות ואת הרעיון הנועז.",
+"מבקרים אוהבים את הרעיון של הצפייה דרך עיני הדמויות.",
+"מבקרים משבחים את האנרגיה ואת התרומה לתרבות הפופולרית.",
+"מבקרים אוהבים את הסאטירה הפוליטית המהירה והקללות הממוקדות.",
+"מבקרים משבחים את הצילום ואת הסקרנות, ואת הדרך שבה אוכל מוביל לסיפורים.",
+"מבקרים משבחים את המשחק של השחקנית הראשית ואת הדרמה של העיירה.",
+"מבקרים משבחים את הרעיון המקורי ואת השאלות שהוא מעורר.",
+"מבקרים אוהבים את הסגנון הישיר ואת המסעות.",
+"מבקרים רואים בה סדרה חלוצית על שוטרים מושחתים.",
+"מבקרים משבחים את המשחק ואת הדרך שבה סכסוך קטן מתפוצץ.",
+"מבקרים אוהבים את השילוב בין קומדיה לאלימות ואת המשחק של השחקן הראשי.",
+"מבקרים משבחים את האנרגיה, הצילום הצפוף והדמויות.",
+"מבקרים משבחים את החום והאמינות של סיפור קטן.",
+"מבקרים אוהבים את האנסמבל ואת הצורה המצחיקה והחמה.",
+"מבקרים משבחים את הנכונות להיות מרושעים ומצחיקים לאורך שנים.",
+"מבקרים משבחים את הכתיבה המשפטית ואת השחקנית הראשית.",
+"מבקרים אוהבים את החיפוש האישי והמוזר אחר רגעים אנושיים.",
+"מבקרים משבחים את ההפקה היפה ואת המשחק של השחקנית הראשית.",
+"מבקרים אוהבים את הכנות של סיפור על אמהות.",
+"מבקרים משבחים את הדיאלוגים ואת הכריזמה של הכוכב.",
+"מבקרים משבחים את הצילום המרהיב ואת התמונות שלא נראו קודם.",
+"מבקרים אוהבים את האווירה הנעימה ואת היעדר הרוע בריאליטי.",
+"מבקרים משבחים את ההפקה המרהיבה ואת הדיוק התרבותי.",
+"מבקרים משבחים את הייצוג האותנטי ואת ההומור המקורי.",
+"מבקרים משבחים את הכנות ואת המשחק של היוצר.",
+"מבקרים אוהבים את ההומור הגס ואת הדמות הראשית.",
+"מבקרים משבחים את הכנות ואת המהירות של הקומדיה.",
+"מבקרים משבחים את המשחק ואת הדרך שבה היא חושפת את מערכת המשפט.",
+"מבקרים משבחים אותה כסדרה שהשתפרה מעונה לעונה.",
+"מבקרים אוהבים את הרעיונות המטא ואת הפרקים הנושאיים.",
+"מבקרים משבחים את האומץ ואת האווירה המסתורית.",
+"מבקרים אוהבים את הדיאלוגים המהירים ואת היחסים בין אם לבת.",
+"מבקרים אוהבים את הקצב המהיר ואת הדרמה הפוליטית."
+];
+function praiseHTML(s) {
+  const p = PRAISE[s.id];
+  return p ? `<p class="praise"><b>המבקרים בקצרה</b>${p}</p>` : "";
+}
+
+/* helpers */
+function trailerHTML(s) {
+  const q = (/[\u0590-\u05FF]/.test(s.n) ? s.n + " טריילר רשמי" : s.n + " TV series official trailer");
+  const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+  return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
+}
+function metaHTML(s) {
+  return `<div class="meta"><span>${s.y}</span><span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span></div>`;
+}
+function ratesHTML(s) {
+  return `<div class="rates"><span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>פלטפורמה</b> ${PLAT_LABEL[s.plat]}</span><span class="rate"><b>שפה</b> ${LNAME[s.lang]}</span></div>`;
+}
+function tagsHTML(s) { return `<div class="tags">${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
+function bulbs(n) { let h = ""; for (let i = 0; i < TOTAL_STEPS; i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${TOTAL_STEPS}">${h}</div>`; }
+function tile(i, mode, cap) {
+  const s = S[i], seen = st.seen.has(i);
+  const pre = st.tab === "list" && st.listSrc === "nyt" && s.nyt ? s.nyt + ". " : "";
+  return `<button class="tile${seen ? " seen" : ""}" data-a="${mode}" data-i="${i}" ${mode === "toggle" ? `aria-pressed="${seen}"` : ""} aria-label="${s.n}${seen ? ", סומנה כנצפתה" : ""}">${poster(i, "")}<span class="badge">${CHECK}</span>${cap ? `<span class="cap">${pre}<bdi>${s.n}</bdi></span>` : ""}</button>`;
+}
+
+/* screens */
+function header() {
+  return `<header class="top"><div class="brand">${LOGO}</div>
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button></div></header>`;
+}
+
+function introHTML() {
+  const fan = [[59, -2, "-9deg"], [4, -1, "-4deg"], [40, 0, "0deg"], [2, 1, "4deg"], [34, 2, "9deg"]];
+  return `<section class="hero">
+    <div class="fan" aria-hidden="true">${fan.map(f => `<div class="fcard" style="--k:${f[1]};--r:${f[2]}">${poster(f[0], "")}</div>`).join("")}</div>
+    <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
+    <p>${QS.length} שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות.</p>
+    <div class="stack"><button class="btn primary" data-a="start">מתחילים</button><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
+  </section>`;
+}
+
+function qHTML() {
+  const step = st.step;
+  const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : "אחרון"}</span></div>`;
+  if (step === QS.length) {
+    return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
+    <div class="grid">${poolIds(st.ans.src, st.ans.platforms).map(i => tile(i, "toggle", false)).join("")}</div>
+    <div class="sticky-cta"><button class="btn primary block" data-a="finish">הראו לי את ההמלצה</button></div></div>`;
+  }
+  const q = QS[step];
+  if (q.multi) {
+    const chips = q.id === "genres" ? GENRES : PLAT_LABEL, sel = st.ans[q.id];
+    return head + `<div class="qbody"><h2 data-focus tabindex="-1">${q.t}</h2><p class="sub">${q.d}</p>
+    <div class="chips">${Object.keys(chips).map(g => `<button class="chip" data-a="chip" data-q="${q.id}" data-v="${g}" aria-pressed="${sel.includes(g)}">${chips[g]}</button>`).join("")}</div>
+    <button class="btn primary block" data-a="next">${sel.length ? "המשך" : "דלגו על השאלה"}</button></div>`;
+  }
+  const cur = st.ans[q.id];
+  return head + `<div class="qbody"><h2 data-focus tabindex="-1">${q.t}</h2><p class="sub">${q.d}</p>
+  ${q.o.map(o => `<button class="opt" data-a="opt" data-q="${q.id}" data-v="${o[0]}" aria-pressed="${!!(cur === o[0] || (o[0] === "any" && cur === null && st.touched && st.touched[q.id]))}"><span class="em" aria-hidden="true">${o[1]}</span><span><b>${o[2]}</b>${o[3] ? `<small>${o[3]}</small>` : ""}</span></button>`).join("")}</div>`;
+}
+
+function ticketHTML(r) {
+  const s = S[r.i];
+  const stub = st.chosen
+    ? `<div class="stub"><div class="acts"><div class="chosen">נבחרה לערב הזה. צפייה נעימה!</div><button class="btn ghost" data-a="unchoose">בעצם, הראו עוד אחת</button></div></div>`
+    : `<div class="stub"><div class="match">${r.pct === null ? `<strong aria-hidden="true">🎲</strong><span>הפתעה</span>` : `<strong>${r.pct}%</strong><span>התאמה</span>`}</div>
+       <div class="acts"><button class="btn primary" data-a="choose">בחרתי את זו</button>
+       <div class="row2"><button class="btn ghost" data-a="another">הציגו אחרת</button><button class="btn ghost" data-a="markseen" data-i="${r.i}">כבר ראיתי</button></div></div></div>`;
+  return `<article class="ticket" aria-live="polite">
+    <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
+    ${ratesHTML(s)}
+    <p class="t-line">${s.l}</p>
+    ${praiseHTML(s)}
+    ${trailerHTML(s)}
+    <ul class="why">${r.why.map(w => `<li class="${w.ok ? "" : "miss"}">${w.ok ? CHECK : CROSS}<span>${w.t}</span></li>`).join("")}</ul>
+    <div class="perf"><i></i></div>${stub}</article>`;
+}
+
+function resultHTML() {
+  if (!st.ranked.length || st.idx >= st.ranked.length) {
+    const none = st.seen.size >= S.length;
+    return `<div class="empty"><h2>${none ? "ראיתם הכול!" : "אין עוד המלצות"}</h2><p>${none ? `כל ${S.length} הסדרות מסומנות כנצפו.` : "לא נשארו סדרות שמתאימות לבחירות. אפשר לשנות את התשובות או לאפס את מה שסימנתם כנצפה."}</p>
+    <button class="btn primary" data-a="edit">שינוי התשובות</button><button class="btn ghost" data-a="resetseen">איפוס הנצפו</button></div>`;
+  }
+  const r = st.ranked[st.idx];
+  const alts = st.ranked.slice(st.idx + 1, st.idx + 4);
+  return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + ticketHTML(r) + moreHTML(r.i) +
+    (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${S[x.i].n}">${poster(x.i, "")}<span class="cap"><bdi>${S[x.i].n}</bdi></span></button>`).join("")}</div></section>` : "") +
+    `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
+}
+
+function listHTML() {
+  const ids = poolIds(st.listSrc === "all" ? null : st.listSrc, st.listPlat ? [st.listPlat] : null).filter(i => !(st.hideSeen && st.seen.has(i)));
+  const srcs = [["all", "הכול"], ["mine", "הרשימה שלי"], ["nyt", "ניו יורק טיימס"]];
+  const plats = [["all", "כל הפלטפורמות"]].concat(Object.keys(PLAT_LABEL).map(k => [k, PLAT_LABEL[k]]));
+  return `<div class="listbar"><h2>הרשימה</h2><span class="count">ראיתם ${st.seen.size} מתוך ${S.length}</span></div>
+  <div class="chips">${srcs.map(x => `<button class="chip" data-a="lsrc" data-v="${x[0]}" aria-pressed="${st.listSrc === x[0]}">${x[1]}</button>`).join("")}<button class="chip" data-a="hideseen" aria-pressed="${st.hideSeen}">הסתרת מה שכבר ראיתי</button></div>
+  <div class="chips">${plats.map(x => `<button class="chip" data-a="lplat" data-v="${x[0]}" aria-pressed="${(st.listPlat || "all") === x[0]}">${x[1]}</button>`).join("")}</div>
+  ${ids.length ? `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div>` : `<div class="empty"><h2>אין סדרות להצגה</h2><p>נסו פלטפורמה אחרת או בטלו את הסתרת הנצפו.</p></div>`}
+  <p class="note">הקשה על סדרה פותחת את הפרטים ומאפשרת לסמן אותה כנצפתה. הדירוג של הניו יורק טיימס הוא ״100 הסדרות הטובות של המאה ה-21״ (ספטמבר 2026). הפלטפורמה היא הבית העיקרי של הסדרה, והזמינות בפועל משתנה בין מדינות. הפוסטרים של הסדרות שלא מהרשימה האישית עוצבו במיוחד לאפליקציה. מספר העונות והפרקים והציונים (IMDb ורוטן טומייטו) מקורבים ועשויים להשתנות.</p>`;
+}
+
+function render(top) {
+  const y = window.scrollY;
+  let body;
+  if (st.tab === "list") body = listHTML();
+  else if (st.tab === "actors") body = actorsHTML();
+  else if (st.screen === "intro") body = introHTML();
+  else if (st.screen === "q") body = qHTML();
+  else body = resultHTML();
+  $("#app").innerHTML = header() + body;
+  if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
+  else window.scrollTo(0, y);
+}
+
+/* actors */
+let ACT = null, ACTMAP = null;
+function actorIndex() {
+  if (ACT) return ACT;
+  const m = new Map();
+  S.forEach((s, i) => {
+    const c = (MORE[i] || [])[1]; if (!c) return;
+    c.split(", ").forEach(raw => { const n = raw.trim(); if (!n) return; if (!m.has(n)) m.set(n, []); if (!m.get(n).includes(i)) m.get(n).push(i); });
+  });
+  ACT = [...m.entries()].map(([n, ids]) => ({ n, ids }));
+  ACTMAP = new Map(ACT.map((a, k) => [a.n, k]));
+  ACT.forEach(a => { a.kw = /[\u0590-\u05FF]/.test(a.n) ? hebKey(a.n) : latKey(a.n); a.kf = a.kw.join(""); });
+  return ACT;
+}
+function actorLinks(x) {
+  actorIndex();
+  return x.split(", ").map(n => { const k = ACTMAP.get(n.trim()); return k === undefined ? `<bdi>${n}</bdi>` : `<button class="nm" data-a="actor" data-k="${k}"><bdi>${n}</bdi></button>`; }).join(", ");
+}
+function avatar(n, big) {
+  const parts = n.split(" ").filter(Boolean), ini = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
+  const h = [...n].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
+  const img = PH[n] ? `<img src="/_blob/${PH[n]}" alt="">` : "";
+  return `<span class="av${big ? " big" : ""}" style="--h:${h}" aria-hidden="true">${ini}${img}</span>`;
+}
+/* Hebrew name search by pronunciation: both the Latin name and the Hebrew query are reduced to a consonant skeleton */
+const HMAP = { "ב": "B", "ג": "G", "ד": "D", "ז": "S", "ט": "T", "כ": "K", "ך": "K", "ק": "K", "ל": "L", "מ": "M", "ם": "M", "נ": "N", "ן": "N", "ס": "S", "פ": "P", "ף": "P", "ר": "R", "ש": "S", "ת": "T" };
+const collapseKey = s => s.replace(/(.)\1+/g, "$1");
+function hebKey(s) {
+  return s.replace(/[\u0591-\u05C7]/g, "").split(/[\s\-]+/).filter(Boolean).map(w => {
+    let out = "";
+    for (let i = 0; i < w.length; i++) {
+      const c = w[i], n = w[i + 1];
+      if ("'׳’\"״".includes(c)) continue;
+      if (c === "ו") { if (n === "ו") { out += "B"; i++; } else if (i === 0) out += "B"; continue; }
+      if (c === "צ" || c === "ץ") { out += (n === "'" || n === "׳") ? "K" : "S"; continue; }
+      out += HMAP[c] || "";
+    }
+    return collapseKey(out);
+  }).filter(Boolean);
+}
+function latKey(s) {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean).map(w => {
+    w = w.replace(/sch/g, "S").replace(/tch/g, "K").replace(/ch/g, "K").replace(/sh/g, "S").replace(/th/g, "T").replace(/ph/g, "P").replace(/ck/g, "K").replace(/qu/g, "KB").replace(/gh/g, "").replace(/x/g, "KS");
+    let out = "";
+    for (let i = 0; i < w.length; i++) {
+      const c = w[i], n = w[i + 1] || "";
+      if (c >= "A" && c <= "Z") { out += c; continue; }
+      if ("bvw".includes(c)) out += "B";
+      else if (c === "c") out += "eiy".includes(n) ? "S" : "K";
+      else if ("kq".includes(c)) out += "K";
+      else if ("gj".includes(c)) out += "G";
+      else if ("sz".includes(c)) out += "S";
+      else if ("fp".includes(c)) out += "P";
+      else if ("dlmnrt".includes(c)) out += c.toUpperCase();
+    }
+    return collapseKey(out);
+  }).filter(Boolean);
+}
+function keyMatch(a, q) {
+  const qf = q.join("");
+  if (qf.length < 2) return false;
+  return qf.length >= 3 ? a.kf.includes(qf) : a.kw.some(w => w.startsWith(qf));
+}
+function actorRows() {
+  const q = st.actQuery.trim().toLowerCase();
+  let a = actorIndex();
+  if (q) {
+    const heb = /[\u0590-\u05FF]/.test(q), qk = heb ? hebKey(q) : [], qf = qk.join("");
+    return a.map(x => {
+      let s = 9;
+      if (x.n.toLowerCase().includes(q)) s = 0;
+      else if (heb && keyMatch(x, qk)) s = x.kf === qf ? 1 : x.kf.startsWith(qf) ? 2 : x.kw.some(w => w === qf || w.startsWith(qf)) ? 3 : 4;
+      return { x, s };
+    }).filter(o => o.s < 9).sort((p, r) => p.s - r.s || r.x.ids.length - p.x.ids.length || p.x.n.localeCompare(r.x.n)).map(o => o.x);
+  }
+  if (st.actMulti) a = a.filter(x => x.ids.length > 1);
+  return a.slice().sort((x, y) => y.ids.length - x.ids.length || x.n.localeCompare(y.n));
+}
+function actListHTML() {
+  const rows = actorRows(), shown = rows.slice(0, st.actLimit);
+  if (!rows.length) return `<div class="empty"><h2>לא נמצא שחקן</h2><p>נסו חלק מהשם, באנגלית או בעברית. בעברית החיפוש מבוסס על הגייה, ולכן הכתיב לא חייב להיות מדויק. הרשימה כוללת רק את השחקנים המרכזיים בכל סדרה, ולכן ייתכן ששחקן מוכר חסר.</p></div>`;
+  return shown.map(a => {
+    const k = ACTMAP.get(a.n), names = a.ids.slice(0, 3).map(i => `<bdi>${S[i].n}</bdi>`).join(", "), more = a.ids.length - 3;
+    return `<button class="arow" data-a="actor" data-k="${k}">${avatar(a.n)}<span class="ainfo"><b><bdi>${a.n}</bdi></b><small>${names}${more > 0 ? " ועוד " + more : ""}</small></span><span class="acount">${a.ids.length}</span></button>`;
+  }).join("") + (rows.length > shown.length ? `<button class="btn ghost block" data-a="actmore">הצגת עוד (${rows.length - shown.length})</button>` : "");
+}
+function actorsHTML() {
+  actorIndex();
+  return `<div class="listbar"><h2>שחקנים/ניות</h2><span class="count">${ACT.length} שמות</span></div>
+  <div id="phPanel">${phPanelHTML()}</div>
+  <input id="actq" class="search" type="search" dir="auto" placeholder="חיפוש לפי שם, גם בעברית" aria-label="חיפוש שחקן או שחקנית" value="${st.actQuery.replace(/"/g, "&quot;")}" autocomplete="off">
+  <div class="chips"><button class="chip" data-a="actall" aria-pressed="${st.actMulti}">רק מי שמופיע ביותר מסדרה אחת</button></div>
+  <div id="actList">${actListHTML()}</div>
+  <p class="note">הרשימה מבוססת על השחקנים המרכזיים בכל סדרה, ולא על כל צוות השחקנים, וכוללת גם מגישים ומספרים בסדרות דוקו וריאליטי. לשחקנים שעדיין אין להם תמונה מוצגות ראשי תיבות.</p>`;
+}
+
+/* dialog */
+function seriesDlgHTML(i) {
+  const s = S[i], seen = st.seen.has(i); st.dlgId = i;
+  return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
+  ${ratesHTML(s)}
+  <p class="d-line">${s.l}</p>
+  ${praiseHTML(s)}
+  ${trailerHTML(s)}
+  <div class="d-acts"><button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
+}
+function actorLinksHTML(n) {
+  const e = encodeURIComponent, he = /[\u0590-\u05FF]/.test(n);
+  const link = (u, t) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${t}<span class="sr"> (נפתח בלשונית חדשה)</span></a>`;
+  return `<div class="trail alinks">${link("https://www.google.com/search?tbm=isch&amp;q=" + e(he ? n : n + " actor"), "תמונות")}${link("https://www.imdb.com/find/?s=nm&amp;q=" + e(n), "IMDb")}${link("https://" + (he ? "he" : "en") + ".wikipedia.org/w/index.php?search=" + e(n), "ויקיפדיה")}</div>`;
+}
+function actorDlgHTML(k) {
+  const a = actorIndex()[k], unseen = a.ids.filter(i => !st.seen.has(i));
+  return `<div class="a-head">${avatar(a.n, true)}<div><h2 class="t-title"><bdi>${a.n}</bdi></h2><div class="meta"><span>${a.ids.length} סדרות באפליקציה</span><span>${unseen.length} שעוד לא ראיתם</span></div></div></div>
+  ${actorLinksHTML(a.n)}
+  <div class="grid a-grid">${a.ids.map(i => tile(i, "detail", true)).join("")}</div>
+  ${CAN_UPLOAD ? phAddHTML(a, k) : ""}
+  <div class="d-acts">${unseen.length ? `<button class="btn primary" data-a="actpick" data-k="${k}">תפתיעו אותי עם <bdi>${a.n}</bdi></button>` : ""}${CAN_UPLOAD ? `<label class="btn ghost"><input type="file" id="phone" data-k="${k}" accept="image/*" hidden>העלאה מהמחשב</label>${PH[a.n] ? `<button class="btn ghost" data-a="phdel" data-k="${k}">הסרת תמונה</button>` : ""}` : ""}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>`;
+}
+function paintDlg(keep) {
+  const d = $("#dlg"), v = st.dlgCur, sc = d.scrollTop;
+  d.innerHTML = v.t === "s" ? seriesDlgHTML(v.v) : actorDlgHTML(v.v);
+  d.scrollTop = keep ? sc : 0;
+  if (!d.open) d.showModal();
+}
+function dlgGo(view) {
+  const d = $("#dlg");
+  if (d.open && st.dlgCur) st.dlgStack.push(st.dlgCur); else st.dlgStack = [];
+  st.dlgCur = view; st.phMsg = ""; paintDlg(false);
+}
+function dlgBack() { const v = st.dlgStack.pop(); if (v) { st.dlgCur = v; paintDlg(false); } }
+function openDlg(i) { dlgGo({ t: "s", v: i }); }
+
+/* actions */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-a]"); if (!el) return;
+  const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
+  switch (a) {
+    case "tab": st.tab = v; render(true); break;
+    case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
+    case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
+    case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
+    case "opt": {
+      if (st.advancing) break; st.advancing = true;
+      const q = el.dataset.q; st.touched = st.touched || {}; st.touched[q] = true;
+      const val = v === "any" ? null : (isNaN(+v) ? v : +v);
+      st.ans[q] = val; render(false);
+      setTimeout(() => { st.advancing = false; st.step++; render(true); }, 180);
+      break; }
+    case "chip": { const g = st.ans[el.dataset.q], k = g.indexOf(v); if (k >= 0) g.splice(k, 1); else g.push(v); render(false); break; }
+    case "lplat": st.listPlat = v === "all" ? null : v; render(false); break;
+    case "next": st.step++; render(true); break;
+    case "toggle": if (st.seen.has(i)) st.seen.delete(i); else st.seen.add(i); save(); render(false); break;
+    case "finish": rank(false); st.screen = "result"; render(true); break;
+    case "another": st.idx++; st.chosen = false; render(true); break;
+    case "alt": st.idx = +el.dataset.k; st.chosen = false; render(true); break;
+    case "choose": st.chosen = true; render(false); break;
+    case "unchoose": st.chosen = false; st.idx++; render(true); break;
+    case "markseen": st.seen.add(i); save(); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
+    case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;
+    case "resetseen": st.seen.clear(); save(); rank(false); render(true); break;
+    case "lsrc": st.listSrc = v; render(false); break;
+    case "hideseen": st.hideSeen = !st.hideSeen; render(false); break;
+    case "detail": openDlg(i); break;
+    case "dseen": { const k = st.dlgId; if (st.seen.has(k)) st.seen.delete(k); else st.seen.add(k); save(); paintDlg(true); render(false); break; }
+    case "dback": dlgBack(); break;
+    case "actor": dlgGo({ t: "a", v: +el.dataset.k }); break;
+    case "actpick": { const a = actorIndex()[+el.dataset.k], un = a.ids.filter(x => !st.seen.has(x)); if (un.length) dlgGo({ t: "s", v: un[Math.floor(Math.random() * un.length)] }); break; }
+    case "phpaste": { (async () => { try { const items = await navigator.clipboard.read(); for (const it of items) { const ty = it.types.find(x => x.startsWith("image/")); if (ty) { const b = await it.getType(ty); await addFromFile(+el.dataset.k, new File([b], "pasted", { type: ty })); return; } } phMsg(NO_IMG); } catch (err) { phMsg("הדפדפן לא מאפשר קריאה מהלוח. לחצו על האזור המקווקו והדביקו בקיצור המקלדת להדבקה."); } })(); break; }
+    case "copylink": copyText(el.dataset.u).then(ok => showToast(ok ? "הקישור הועתק. הדביקו אותו בדפדפן או באפליקציית יוטיוב." : "אי אפשר להעתיק מהמסך הזה. סמנו את הכתובת והעתיקו אותה ידנית.", el.dataset.u)); break;
+    case "phdel": { const a = actorIndex()[+el.dataset.k], old = PH[a.n]; delete PH[a.n]; savePH().then(() => old && ASSETS.delete(old)).catch(() => {}); refreshActors(); break; }
+    case "actall": st.actMulti = !st.actMulti; st.actLimit = 60; render(false); break;
+    case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
+    case "dclose": $("#dlg").close(); break;
+  }
+});
+$("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+$("#dlg").addEventListener("close", () => { st.dlgStack = []; st.dlgCur = null; });
+document.addEventListener("input", e => { if (e.target && e.target.id === "actq") { st.actQuery = e.target.value; st.actLimit = 60; $("#actList").innerHTML = actListHTML(); } });
+
+/* photos: managed by the people who can edit the page (assets + db capabilities) */
+let PH = {}, DBH = null, ASSETS = null, CAN_UPLOAD = false, saveChain = Promise.resolve();
+const normName = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\u0590-\u05FF]/g, "");
+function matchActor(fileName) {
+  const f = normName(fileName.replace(/\.[^.]+$/, "")); let best = null, bl = 0;
+  for (const a of actorIndex()) { const n = normName(a.n); if (n && f.includes(n) && n.length > bl) { best = a; bl = n.length; } }
+  return best;
+}
+async function toAvatarBlob(file) {
+  const bmp = await createImageBitmap(file), side = Math.min(bmp.width, bmp.height);
+  const c = document.createElement("canvas"); c.width = c.height = 256;
+  c.getContext("2d").drawImage(bmp, (bmp.width - side) / 2, (bmp.height - side) * 0.2, side, side, 0, 0, 256, 256);
+  return await new Promise(r => c.toBlob(r, "image/jpeg", 0.85));
+}
+function savePH() { const p = saveChain.then(() => DBH.doc("photos/actors").set({ map: { ...PH } })); saveChain = p.catch(() => {}); return p; }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function setPhoto(name, file) {
+  const blob = await toAvatarBlob(file);
+  let res;
+  try { res = await ASSETS.upload(blob, { type: "image/jpeg" }); }
+  catch (e) { if (e && e.code === "rate_limited") { await sleep(3000); res = await ASSETS.upload(blob, { type: "image/jpeg" }); } else throw e; }
+  const old = PH[name]; PH[name] = res.id;
+  await savePH();
+  if (old && old !== res.id) { try { await ASSETS.delete(old); } catch (e) {} }
+  refreshActors();
+}
+function setStatus(msg) { st.phStatus = msg; const el = $("#phStatus"); if (el) el.textContent = msg; }
+async function bulkPhotos(files) {
+  const list = [...files], miss = [], fail = []; let ok = 0;
+  for (let i = 0; i < list.length; i++) {
+    const f = list[i], a = matchActor(f.name);
+    setStatus(`מעלה ${i + 1} מתוך ${list.length}...`);
+    if (!a) { miss.push(f.name); continue; }
+    try { await setPhoto(a.n, f); ok++; } catch (e) { fail.push(f.name + (e && e.code ? " (" + e.code + ")" : "")); }
+  }
+  setStatus(`הועלו ${ok} תמונות.` + (miss.length ? ` לא זוהה שם שחקן ב-${miss.length} קבצים: ${miss.slice(0, 6).join(", ")}${miss.length > 6 ? "..." : ""}.` : "") + (fail.length ? ` נכשלו: ${fail.slice(0, 4).join(", ")}.` : ""));
+}
+function phPanelHTML() {
+  if (!CAN_UPLOAD) return "";
+  const have = actorIndex().filter(a => PH[a.n]).length;
+  return `<div class="phpanel"><b>ניהול תמונות</b><p>יש תמונות ל-${have} מתוך ${ACT.length} שחקנים. אפשר להעלות כמה קבצים בבת אחת: שם הקובץ צריך להכיל את שם השחקן באנגלית, למשל Pedro Pascal.jpg. השתמשו רק בתמונות שמותר לכם להשתמש בהן, למשל תמונות ברישיון חופשי מוויקימדיה קומונס.</p><label class="btn ghost"><input id="phfiles" type="file" accept="image/*" multiple hidden>העלאת תמונות</label><div id="phStatus" role="status">${st.phStatus || ""}</div></div>`;
+}
+function refreshActors() {
+  const l = $("#actList"); if (l) l.innerHTML = actListHTML();
+  const pn = $("#phPanel"); if (pn) pn.innerHTML = phPanelHTML();
+  if (st.dlgCur && st.dlgCur.t === "a" && $("#dlg").open) paintDlg(true);
+}
+document.addEventListener("change", async e => {
+  const t = e.target;
+  if (!t || !t.files || !t.files.length) return;
+  if (t.id === "phfiles") { const fs = [...t.files]; t.value = ""; await bulkPhotos(fs); }
+  else if (t.id === "phone") {
+    const a = actorIndex()[+t.dataset.k], f = t.files[0]; t.value = "";
+    try { await setPhoto(a.n, f); } catch (err) { /* the dialog keeps showing the initials */ }
+  }
+});
+/* add a photo found with a search engine: copy the image, then paste it here */
+function phMsg(m) { st.phMsg = m; const el = $("#phMsg"); if (el) el.textContent = m; }
+function phAddHTML(a, k) {
+  const q = encodeURIComponent(/[\u0590-\u05FF]/.test(a.n) ? a.n : a.n + " actor");
+  return `<div class="phadd"><b>הוספת תמונה מחיפוש</b>
+    <ol><li><a href="https://www.google.com/search?tbm=isch&amp;q=${q}" target="_blank" rel="noopener noreferrer">חיפוש תמונות בגוגל</a> (נפתח בלשונית חדשה)</li><li>קליק ימני על תמונה, ואז ״העתק תמונה״</li><li>חזרו לכאן והדביקו: <bdi>⌘V</bdi> או <bdi>Ctrl+V</bdi></li></ol>
+    <div class="pastezone" id="pz" contenteditable="true" role="textbox" aria-label="אזור הדבקת תמונה" data-ph="לחצו כאן והדביקו תמונה"></div>
+    <button class="btn ghost" data-a="phpaste" data-k="${k}">הדבקה מהלוח</button>
+    <div id="phMsg" role="status">${st.phMsg || ""}</div>
+    <small>השתמשו רק בתמונות שמותר לכם להשתמש בהן.</small></div>`;
+}
+async function addFromFile(k, file) {
+  const a = actorIndex()[k]; phMsg("שומר תמונה...");
+  try { await setPhoto(a.n, file); phMsg("התמונה נוספה."); }
+  catch (err) { phMsg("לא הצלחתי לשמור את התמונה" + (err && err.code ? " (" + err.code + ")" : "") + ". נסו תמונה בפורמט JPG או PNG."); }
+}
+function imageFromDT(dt) {
+  if (!dt) return null;
+  for (const it of dt.items || []) if (it.kind === "file" && it.type.startsWith("image/")) return it.getAsFile();
+  return [...(dt.files || [])].find(f => f.type.startsWith("image/")) || null;
+}
+const NO_IMG = "לא נמצאה תמונה. בתוצאות החיפוש לחצו קליק ימני ובחרו ״העתק תמונה״ (לא ״העתק כתובת תמונה״), או שמרו אותה במחשב והעלו אותה.";
+document.addEventListener("paste", e => {
+  const d = $("#dlg"); if (!CAN_UPLOAD || !d.open || !st.dlgCur || st.dlgCur.t !== "a") return;
+  e.preventDefault(); const f = imageFromDT(e.clipboardData);
+  if (!f) { phMsg(NO_IMG); return; }
+  addFromFile(st.dlgCur.v, f);
+});
+document.addEventListener("dragover", e => { if (e.target.closest && e.target.closest("#pz")) e.preventDefault(); });
+document.addEventListener("drop", e => {
+  if (!(e.target.closest && e.target.closest("#pz")) || !st.dlgCur || st.dlgCur.t !== "a") return;
+  e.preventDefault(); const f = imageFromDT(e.dataTransfer);
+  if (!f) { phMsg(NO_IMG); return; }
+  addFromFile(st.dlgCur.v, f);
+});
+document.addEventListener("keydown", e => { if (e.target && e.target.id === "pz" && !(e.metaKey || e.ctrlKey) && e.key.length === 1) e.preventDefault(); });
+/* external links: some viewers (for example in-app webviews) block new windows, so fall back to copying the address */
+function legacyCopy(txt) {
+  const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;opacity:0";
+  document.body.appendChild(ta); ta.select(); let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove(); return ok;
+}
+function copyText(txt) {
+  try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt).then(() => true, () => legacyCopy(txt)); } catch (e) {}
+  return Promise.resolve(legacyCopy(txt));
+}
+let toastTimer = null;
+function showToast(msg, url) {
+  const old = document.getElementById("toast"); if (old) old.remove();
+  const d = $("#dlg"), host = d && d.open ? d : document.body, el = document.createElement("div");
+  el.id = "toast"; el.className = "toast"; el.setAttribute("role", "status");
+  el.innerHTML = `<p></p>${url ? '<input readonly aria-label="כתובת הקישור">' : ""}`;
+  el.querySelector("p").textContent = msg;
+  if (url) { const inp = el.querySelector("input"); inp.value = url; inp.addEventListener("focus", () => inp.select()); }
+  host.appendChild(el);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 12000);
+}
+async function linkFallback(url) {
+  const ok = await copyText(url);
+  showToast(ok ? "אי אפשר לפתוח קישורים מהמסך הזה, ולכן הקישור הועתק. הדביקו אותו בדפדפן או באפליקציית יוטיוב." : "אי אפשר לפתוח קישורים מהמסך הזה. העתיקו את הכתובת ופתחו אותה בדפדפן.", url);
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest('a[target="_blank"]'); if (!a) return;
+  e.preventDefault();
+  let w = null; try { w = window.open(a.href, "_blank"); } catch (err) {}
+  if (w) { try { w.opener = null; } catch (err) {} } else linkFallback(a.href);
+});
+document.addEventListener("error", e => { if (e.target && e.target.tagName === "IMG" && e.target.closest && e.target.closest(".av")) e.target.remove(); }, true);
+(async () => {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    DBH = await window.claude.use("db"); ASSETS = await window.claude.use("assets");
+    if (DBH) DBH.doc("photos/actors").onSnapshot(s => { const d = s.exists ? s.data() : null; PH = d && d.map ? { ...d.map } : {}; refreshActors(); }, () => {});
+    CAN_UPLOAD = !!(DBH && ASSETS); refreshActors();
+  } catch (e) {}
+})();
+
+render(false);
+</script>
+</body>
+</html>
