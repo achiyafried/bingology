@@ -1,0 +1,30 @@
+/** data.json → the series shape the app code has always used (short keys, index ids). */
+export function fromData(json) {
+  return json.series.map((x, i) => ({
+    id: i,
+    tmdbId: x.tmdbId,
+    n: x.name,
+    y: x.year,
+    s: x.seasons,
+    e: x.episodes,
+    m: x.runtime,
+    g: x.genres,
+    mo: x.moods,
+    h: x.weight,
+    solo: !!x.solo,
+    l: x.blurb || x.overviewHe || "",
+    imdb: x.imdb,
+    rt: x.rt ?? null,
+    lang: x.lang,
+    nyt: x.nytRank ?? null,
+    lists: x.lists,
+    providers: x.providers ?? [],
+    poster: x.poster ?? null,
+    cast: x.cast ?? [],
+    creators: x.creators ?? [],
+    airing: x.status === "airing",
+    praise: x.praise ?? null,
+    awards: x.awards ?? [],
+    castLabel: x.castLabel ?? null,
+  }));
+}
