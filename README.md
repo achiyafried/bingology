@@ -31,7 +31,7 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
    - `TMDB_TOKEN` — ה-Read Access Token מ-TMDB
    - `OMDB_KEY` — המפתח מ-OMDb
 3. **Settings → Pages → Source:** בוחרים **GitHub Actions**.
-4. **Actions → Update data → Run workflow** — הרצה ראשונה ידנית.
+4. **Actions → Update data → Run workflow** — הרצה ראשונה ידנית. הרצה ידנית תמיד מפרסמת את האתר, גם אם הנתונים לא השתנו.
 
 האתר יהיה בכתובת `https://<שם-המשתמש>.github.io/bingology`.
 

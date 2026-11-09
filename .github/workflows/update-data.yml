@@ -40,9 +40,10 @@ jobs:
           fi
 
   # A push made with GITHUB_TOKEN does not trigger deploy.yml, so deploy from here.
+  # Manual runs always deploy, so the very first run publishes the site even if data is unchanged.
   deploy:
     needs: update
-    if: needs.update.outputs.changed == 'true'
+    if: needs.update.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       pages: write
