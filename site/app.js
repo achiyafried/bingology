@@ -4,7 +4,12 @@ import { loadSeen, saveSeen } from "./lib/seen.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
-function save() { saveSeen(localStorage, st.seen, S); }
+const store = (() => { try { return window.localStorage; } catch (e) { return null; } })();
+function save() { saveSeen(store, st.seen, S); }
+const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", israel: "yes / HOT / סלקום / פרטנר / כאן", other: "אחר" };
+const platsInUse = () => Object.keys(PLAT_LABEL).filter(k => S.some(s => s.providers.includes(k)));
+const platLine = s => s.providers.length ? "זמין ב: " + s.providers.map(p => PLAT_LABEL[p]).join(", ") : "לא זמינה כרגע בסטרימינג בישראל";
+const PHOTO = new Map();
 
 const LOGO = "<svg class=\"ic\" viewBox=\"0 0 512 512\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <linearGradient id=\"bgh\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3B2FD0\"/><stop offset=\"1\" stop-color=\"#12102B\"/></linearGradient>\n    <linearGradient id=\"scrh\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5B4EF0\"/><stop offset=\"1\" stop-color=\"#12102B\"/></linearGradient>\n  </defs>\n  <rect width=\"512\" height=\"512\" rx=\"116\" fill=\"url(#bgh)\"/>\n  <g transform=\"translate(0 14)\">\n    <g stroke=\"#FFF6E3\" stroke-width=\"14\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M256 132 L196 66\"/><path d=\"M256 132 L316 66\"/></g>\n    <circle cx=\"196\" cy=\"62\" r=\"14\" fill=\"#FFC933\"/><circle cx=\"316\" cy=\"62\" r=\"14\" fill=\"#FFC933\"/>\n    <rect x=\"64\" y=\"128\" width=\"384\" height=\"280\" rx=\"60\" fill=\"#FFF6E3\"/>\n    <rect x=\"94\" y=\"158\" width=\"262\" height=\"220\" rx=\"40\" fill=\"url(#scrh)\"/>\n    <path d=\"M120 198 Q124 178 148 174\" stroke=\"#fff\" stroke-opacity=\".38\" stroke-width=\"8\" stroke-linecap=\"round\" fill=\"none\"/>\n    <path d=\"M206 218 L206 318 L292 268 Z\" fill=\"#FFF6E3\" stroke=\"#FFF6E3\" stroke-width=\"22\" stroke-linejoin=\"round\"/>\n    <circle cx=\"400\" cy=\"200\" r=\"22\" fill=\"#3B2FD0\"/>\n    <circle cx=\"400\" cy=\"262\" r=\"22\" fill=\"#FFC933\"/>\n    <g stroke=\"#3B2FD0\" stroke-width=\"8\" stroke-linecap=\"round\"><path d=\"M382 322 H418\"/><path d=\"M382 340 H418\"/><path d=\"M382 358 H418\"/></g>\n    <rect x=\"120\" y=\"408\" width=\"52\" height=\"30\" rx=\"10\" fill=\"#FFF6E3\"/><rect x=\"340\" y=\"408\" width=\"52\" height=\"30\" rx=\"10\" fill=\"#FFF6E3\"/>\n  </g></svg><svg class=\"wm\" viewBox=\"-40 -784 5014 1007\" role=\"img\" aria-label=\"Bingology\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"currentColor\"><path transform=\"translate(0 0)\" d=\"M73 0V-660H347Q408 -660 456.0 -649.5Q504 -639 538.5 -618.0Q573 -597 591.5 -563.5Q610 -530 610 -484Q610 -445 593.5 -416.0Q577 -387 542.5 -369.0Q508 -351 452 -344V-329Q547 -322 591.5 -281.5Q636 -241 636 -173Q636 -116 606.5 -77.5Q577 -39 518.0 -19.5Q459 0 372 0ZM210 -116H370Q434 -116 465.0 -135.5Q496 -155 496 -196Q496 -243 457.0 -266.5Q418 -290 339 -290H210ZM210 -380H318Q396 -380 432.5 -401.5Q469 -423 469 -465Q469 -507 436.0 -526.5Q403 -546 335 -546H210Z\"/><path transform=\"translate(689 0)\" d=\"M66 0V-525H210V0Z\"/><path transform=\"translate(971 0)\" d=\"M66 0V-318V-525H184L183 -368H203Q216 -425 240.0 -463.0Q264 -501 300.5 -520.0Q337 -539 387 -539Q478 -539 525.5 -475.0Q573 -411 573 -274V0H428V-258Q428 -342 403.5 -380.5Q379 -419 332 -419Q292 -419 265.0 -394.0Q238 -369 224.5 -328.5Q211 -288 210 -238V0Z\"/><path transform=\"translate(1608 0)\" d=\"M274 183Q188 183 132.5 169.5Q77 156 51.0 130.0Q25 104 25 65Q25 19 61.5 -10.0Q98 -39 169 -45V-65Q115 -65 86.0 -76.5Q57 -88 57 -117Q57 -145 85.5 -167.0Q114 -189 180 -202V-222Q118 -226 83.0 -262.0Q48 -298 48 -355Q48 -405 76.0 -444.5Q104 -484 159.5 -507.5Q215 -531 296 -531H562V-421L397 -444V-421Q461 -412 489.5 -389.0Q518 -366 518 -325Q518 -284 491.0 -253.0Q464 -222 414.5 -204.5Q365 -187 296 -187Q283 -187 268.0 -188.0Q253 -189 218 -193Q199 -179 188.5 -168.5Q178 -158 178 -149Q178 -142 185.5 -137.0Q193 -132 205.5 -130.0Q218 -128 231 -128H381Q401 -128 433.0 -125.5Q465 -123 497.0 -110.0Q529 -97 551.0 -68.5Q573 -40 573 13Q573 71 540.5 109.0Q508 147 441.5 165.0Q375 183 274 183ZM290 68Q351 68 385.0 61.5Q419 55 433.5 40.5Q448 26 448 4Q448 -16 439.5 -27.0Q431 -38 417.5 -42.5Q404 -47 390.5 -48.5Q377 -50 367 -50H241Q199 -46 180.5 -27.5Q162 -9 162 15Q162 37 176.0 48.0Q190 59 218.5 63.5Q247 68 290 68ZM288 -262Q336 -262 360.0 -285.5Q384 -309 384 -347Q384 -387 359.5 -413.0Q335 -439 288 -439Q242 -439 216.0 -413.5Q190 -388 190 -348Q190 -323 201.5 -303.5Q213 -284 235.0 -273.0Q257 -262 288 -262Z\"/><path transform=\"translate(2215 0)\" d=\"M304 14Q225 14 165.0 -17.5Q105 -49 71.0 -110.5Q37 -172 37 -264Q37 -356 71.5 -417.0Q106 -478 166.5 -508.5Q227 -539 304 -539Q383 -539 443.5 -508.0Q504 -477 538.5 -415.5Q573 -354 573 -262Q573 -169 537.5 -107.5Q502 -46 441.5 -16.0Q381 14 304 14ZM309 -93Q348 -93 374.5 -111.0Q401 -129 414.5 -165.5Q428 -202 428 -254Q428 -309 413.5 -347.5Q399 -386 371.0 -406.5Q343 -427 300 -427Q263 -427 236.0 -409.5Q209 -392 195.0 -355.5Q181 -319 181 -266Q181 -181 215.0 -137.0Q249 -93 309 -93Z\"/><path transform=\"translate(2830 0)\" d=\"M66 0V-715H208V0Z\"/><path transform=\"translate(3110 0)\" d=\"M304 14Q225 14 165.0 -17.5Q105 -49 71.0 -110.5Q37 -172 37 -264Q37 -356 71.5 -417.0Q106 -478 166.5 -508.5Q227 -539 304 -539Q383 -539 443.5 -508.0Q504 -477 538.5 -415.5Q573 -354 573 -262Q573 -169 537.5 -107.5Q502 -46 441.5 -16.0Q381 14 304 14ZM309 -93Q348 -93 374.5 -111.0Q401 -129 414.5 -165.5Q428 -202 428 -254Q428 -309 413.5 -347.5Q399 -386 371.0 -406.5Q343 -427 300 -427Q263 -427 236.0 -409.5Q209 -392 195.0 -355.5Q181 -319 181 -266Q181 -181 215.0 -137.0Q249 -93 309 -93Z\"/><path transform=\"translate(3725 0)\" d=\"M274 183Q188 183 132.5 169.5Q77 156 51.0 130.0Q25 104 25 65Q25 19 61.5 -10.0Q98 -39 169 -45V-65Q115 -65 86.0 -76.5Q57 -88 57 -117Q57 -145 85.5 -167.0Q114 -189 180 -202V-222Q118 -226 83.0 -262.0Q48 -298 48 -355Q48 -405 76.0 -444.5Q104 -484 159.5 -507.5Q215 -531 296 -531H562V-421L397 -444V-421Q461 -412 489.5 -389.0Q518 -366 518 -325Q518 -284 491.0 -253.0Q464 -222 414.5 -204.5Q365 -187 296 -187Q283 -187 268.0 -188.0Q253 -189 218 -193Q199 -179 188.5 -168.5Q178 -158 178 -149Q178 -142 185.5 -137.0Q193 -132 205.5 -130.0Q218 -128 231 -128H381Q401 -128 433.0 -125.5Q465 -123 497.0 -110.0Q529 -97 551.0 -68.5Q573 -40 573 13Q573 71 540.5 109.0Q508 147 441.5 165.0Q375 183 274 183ZM290 68Q351 68 385.0 61.5Q419 55 433.5 40.5Q448 26 448 4Q448 -16 439.5 -27.0Q431 -38 417.5 -42.5Q404 -47 390.5 -48.5Q377 -50 367 -50H241Q199 -46 180.5 -27.5Q162 -9 162 15Q162 37 176.0 48.0Q190 59 218.5 63.5Q247 68 290 68ZM288 -262Q336 -262 360.0 -285.5Q384 -309 384 -347Q384 -387 359.5 -413.0Q335 -439 288 -439Q242 -439 216.0 -413.5Q190 -388 190 -348Q190 -323 201.5 -303.5Q213 -284 235.0 -273.0Q257 -262 288 -262Z\"/><path transform=\"translate(4332 0)\" d=\"M265 182Q225 182 183.5 174.5Q142 167 105.5 151.5Q69 136 43 112L84 -11Q116 22 164.0 38.5Q212 55 259 55Q312 55 347.5 33.5Q383 12 401.5 -32.5Q420 -77 423 -144L429 -235H407Q397 -169 374.5 -127.0Q352 -85 317.5 -65.5Q283 -46 236 -46Q179 -46 140.0 -75.0Q101 -104 81.5 -162.0Q62 -220 62 -305V-525H206V-340Q206 -247 227.0 -206.0Q248 -165 291 -165Q314 -165 333.0 -177.5Q352 -190 365.5 -214.0Q379 -238 386.5 -272.5Q394 -307 394 -351V-525H538V-139Q538 -76 527.0 -24.5Q516 27 494.5 65.5Q473 104 440.0 130.0Q407 156 363.5 169.0Q320 182 265 182Z\"/></g><circle class=\"acc\" cx=\"827.0\" cy=\"-651.8\" r=\"92.2\"/></svg>";
 
@@ -14,7 +19,7 @@ const QS = [
     ["any", "🌐", "כל הסדרות", "הרשימה האישית והניו יורק טיימס יחד"],
     ["mine", "⭐", "הרשימה האישית שלי", "60 הסדרות המובילות שלכם"],
     ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"] ] },
-  { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "מוצגים לפי הבית העיקרי של כל סדרה. אפשר לבחור כמה או לדלג. הזמינות בפועל משתנה בין מדינות." },
+  { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. אפשר לבחור כמה או לדלג." },
   { id: "genres", multi: true, t: "איזה ז׳אנר מתחשק?", d: "אפשר לבחור כמה, או לדלג." },
   { id: "mood", t: "איזה מצב רוח אתם מחפשים הערב?", d: "מה הסדרה צריכה לעשות לכם?", o: [
     ["laugh", "😄", "שתצחיק ותרים", "משהו שמשאיר חיוך"],
@@ -164,7 +169,7 @@ function art(i, cls) {
   return `<svg class="poster ${cls}" viewBox="0 0 240 216" role="img" aria-label="${esc(s.n)}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${id}a" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></linearGradient></defs><rect width="240" height="216" fill="url(#${id}a)"/><g transform="translate(12 -8) scale(.9)">${MOTIF[m](a, b, mix(c1, c2, .42))}</g><rect width="240" height="216" fill="url(#${id}b)"/><text fill="#fff" font-family="'Secular One','Assistant',system-ui,sans-serif" font-size="${fs}" direction="ltr" style="unicode-bidi:isolate">${txt}</text></svg>`;
 }
 function poster(i, cls) {
-  if (P[i]) return `<img class="${cls || ""}" src="${P[i]}" alt="">`;
+  if (S[i].poster) return `<img class="poster ${cls || ""}" src="${S[i].poster}" alt="" loading="lazy" data-pi="${i}" data-pc="${cls || ""}">`;
   return art(i, cls || "");
 }
 
@@ -190,25 +195,24 @@ function rank(surprise) {
 }
 
 
-const crew = i => ((MORE[i] || [])[0] || "").split(", ").map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean);
+const crew = i => S[i].creators;
 function similar(i, n) {
   const s = S[i], mine = crew(i);
   return S.map((o, j) => {
     if (j === i) return null;
     const g = o.g.filter(x => s.g.includes(x)), m = o.mo.filter(x => s.mo.includes(x));
     const shared = crew(j).filter(x => mine.includes(x));
-    const sc = (shared.length ? 4 : 0) + 2 * g.length + 1.2 * m.length + (o.h === s.h ? 1 : Math.abs(o.h - s.h) === 1 ? 0.3 : -0.5) + (o.lang === s.lang ? 0.3 : 0) + (o.plat === s.plat ? 0.2 : 0) + (Math.abs(o.y - s.y) <= 5 ? 0.3 : 0) + o.imdb / 20;
+    const sc = (shared.length ? 4 : 0) + 2 * g.length + 1.2 * m.length + (o.h === s.h ? 1 : Math.abs(o.h - s.h) === 1 ? 0.3 : -0.5) + (o.lang === s.lang ? 0.3 : 0) + (o.providers.some(p => s.providers.includes(p)) ? 0.2 : 0) + (Math.abs(o.y - s.y) <= 5 ? 0.3 : 0) + o.imdb / 20;
     const why = shared.length ? `מאותם יוצרים (${shared[0]})` : g.length ? "גם " + g.slice(0, 2).map(x => GENRES[x]).join(" ו") + (m.length ? ", באותו מצב רוח" : "") : "באותו מצב רוח";
     return { j, sc, why };
   }).filter(Boolean).sort((a, b) => b.sc - a.sc).slice(0, n || 4);
 }
 function moreHTML(i) {
-  const m = MORE[i] || [], s = S[i];
-  const names = x => x.split(", ").map(n => `<bdi>${n}</bdi>`).join(", ");
+  const s = S[i];
   const rows = [];
-  if (m[0]) rows.push(`<dt>יוצרים</dt><dd>${names(m[0])}</dd>`);
-  if (m[1]) rows.push(`<dt>${m[3] || "בכיכוב"}</dt><dd>${actorLinks(m[1])}</dd>`);
-  const aw = (s.nyt ? [["📰", `מקום ${s.nyt} ברשימת 100 הסדרות הטובות של המאה ה-21 של הניו יורק טיימס (2026)`]] : []).concat((m[2] || []).map(a => ["🏆", a]));
+  if (s.creators.length) rows.push(`<dt>יוצרים</dt><dd>${s.creators.map(n => `<bdi>${n}</bdi>`).join(", ")}</dd>`);
+  if (s.cast.length) rows.push(`<dt>${s.castLabel || "בכיכוב"}</dt><dd>${actorLinks(s.cast.map(c => c.name).join(", "))}</dd>`);
+  const aw = (s.nyt ? [["📰", `מקום ${s.nyt} ברשימת 100 הסדרות הטובות של המאה ה-21 של הניו יורק טיימס (2026)`]] : []).concat(s.awards.map(a => ["🏆", a]));
   return `<section class="more" aria-label="עוד על הסדרה">
     ${rows.length ? `<div class="sec"><h3>מי עומד מאחורי הסדרה</h3><dl>${rows.join("")}</dl></div>` : ""}
     ${aw.length ? `<div class="sec"><h3>פרסים והכרה</h3><ul class="aw">${aw.map(a => `<li><span aria-hidden="true">${a[0]}</span><span>${a[1]}</span></li>`).join("")}</ul></div>` : ""}
@@ -219,7 +223,7 @@ function moreHTML(i) {
 
 
 function praiseHTML(s) {
-  const p = PRAISE[s.id];
+  const p = s.praise;
   return p ? `<p class="praise"><b>המבקרים בקצרה</b>${p}</p>` : "";
 }
 
@@ -230,10 +234,10 @@ function trailerHTML(s) {
   return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
 }
 function metaHTML(s) {
-  return `<div class="meta"><span>${s.y}</span><span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span></div>`;
+  return `<div class="meta"><span>${s.y}</span><span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${s.airing ? "<span>עדיין משודרת</span>" : ""}</div>`;
 }
 function ratesHTML(s) {
-  return `<div class="rates"><span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>פלטפורמה</b> ${PLAT_LABEL[s.plat]}</span><span class="rate"><b>שפה</b> ${LNAME[s.lang]}</span></div>`;
+  return `<div class="rates"><span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
 }
 function tagsHTML(s) { return `<div class="tags">${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
 function bulbs(n) { let h = ""; for (let i = 0; i < TOTAL_STEPS; i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${TOTAL_STEPS}">${h}</div>`; }
@@ -269,9 +273,9 @@ function qHTML() {
   }
   const q = QS[step];
   if (q.multi) {
-    const chips = q.id === "genres" ? GENRES : PLAT_LABEL, sel = st.ans[q.id];
+    const chips = q.id === "genres" ? GENRES : PLAT_LABEL, keys = q.id === "genres" ? Object.keys(GENRES) : platsInUse(), sel = st.ans[q.id];
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">${q.t}</h2><p class="sub">${q.d}</p>
-    <div class="chips">${Object.keys(chips).map(g => `<button class="chip" data-a="chip" data-q="${q.id}" data-v="${g}" aria-pressed="${sel.includes(g)}">${chips[g]}</button>`).join("")}</div>
+    <div class="chips">${keys.map(g => `<button class="chip" data-a="chip" data-q="${q.id}" data-v="${g}" aria-pressed="${sel.includes(g)}">${chips[g]}</button>`).join("")}</div>
     <button class="btn primary block" data-a="next">${sel.length ? "המשך" : "דלגו על השאלה"}</button></div>`;
   }
   const cur = st.ans[q.id];
@@ -289,6 +293,7 @@ function ticketHTML(r) {
   return `<article class="ticket" aria-live="polite">
     <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
     ${ratesHTML(s)}
+    <p class="avail">${platLine(s)}</p>
     <p class="t-line">${s.l}</p>
     ${praiseHTML(s)}
     ${trailerHTML(s)}
@@ -312,12 +317,12 @@ function resultHTML() {
 function listHTML() {
   const ids = poolIds(st.listSrc === "all" ? null : st.listSrc, st.listPlat ? [st.listPlat] : null).filter(i => !(st.hideSeen && st.seen.has(i)));
   const srcs = [["all", "הכול"], ["mine", "הרשימה שלי"], ["nyt", "ניו יורק טיימס"]];
-  const plats = [["all", "כל הפלטפורמות"]].concat(Object.keys(PLAT_LABEL).map(k => [k, PLAT_LABEL[k]]));
+  const plats = [["all", "כל הפלטפורמות"]].concat(platsInUse().map(k => [k, PLAT_LABEL[k]]));
   return `<div class="listbar"><h2>הרשימה</h2><span class="count">ראיתם ${st.seen.size} מתוך ${S.length}</span></div>
   <div class="chips">${srcs.map(x => `<button class="chip" data-a="lsrc" data-v="${x[0]}" aria-pressed="${st.listSrc === x[0]}">${x[1]}</button>`).join("")}<button class="chip" data-a="hideseen" aria-pressed="${st.hideSeen}">הסתרת מה שכבר ראיתי</button></div>
   <div class="chips">${plats.map(x => `<button class="chip" data-a="lplat" data-v="${x[0]}" aria-pressed="${(st.listPlat || "all") === x[0]}">${x[1]}</button>`).join("")}</div>
   ${ids.length ? `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div>` : `<div class="empty"><h2>אין סדרות להצגה</h2><p>נסו פלטפורמה אחרת או בטלו את הסתרת הנצפו.</p></div>`}
-  <p class="note">הקשה על סדרה פותחת את הפרטים ומאפשרת לסמן אותה כנצפתה. הדירוג של הניו יורק טיימס הוא ״100 הסדרות הטובות של המאה ה-21״ (ספטמבר 2026). הפלטפורמה היא הבית העיקרי של הסדרה, והזמינות בפועל משתנה בין מדינות. הפוסטרים של הסדרות שלא מהרשימה האישית עוצבו במיוחד לאפליקציה. מספר העונות והפרקים והציונים (IMDb ורוטן טומייטו) מקורבים ועשויים להשתנות.</p>`;
+  <p class="note">הקשה על סדרה פותחת את הפרטים ומאפשרת לסמן אותה כנצפתה. הדירוג של הניו יורק טיימס הוא ״100 הסדרות הטובות של המאה ה-21״ (ספטמבר 2026). הזמינות היא לפי שירותי הסטרימינג בישראל. מספר העונות והפרקים, הפוסטרים וציון IMDb מתעדכנים כל יום; ציון רוטן טומייטו קבוע.</p>`;
 }
 
 function render(top) {
@@ -328,7 +333,7 @@ function render(top) {
   else if (st.screen === "intro") body = introHTML();
   else if (st.screen === "q") body = qHTML();
   else body = resultHTML();
-  $("#app").innerHTML = header() + body;
+  $("#app").innerHTML = header() + body + footerHTML();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -339,8 +344,7 @@ function actorIndex() {
   if (ACT) return ACT;
   const m = new Map();
   S.forEach((s, i) => {
-    const c = (MORE[i] || [])[1]; if (!c) return;
-    c.split(", ").forEach(raw => { const n = raw.trim(); if (!n) return; if (!m.has(n)) m.set(n, []); if (!m.get(n).includes(i)) m.get(n).push(i); });
+    s.cast.forEach(c => { const n = c.name; if (!n) return; if (c.photo && !PHOTO.has(n)) PHOTO.set(n, c.photo); if (!m.has(n)) m.set(n, []); if (!m.get(n).includes(i)) m.get(n).push(i); });
   });
   ACT = [...m.entries()].map(([n, ids]) => ({ n, ids }));
   ACTMAP = new Map(ACT.map((a, k) => [a.n, k]));
@@ -354,7 +358,7 @@ function actorLinks(x) {
 function avatar(n, big) {
   const parts = n.split(" ").filter(Boolean), ini = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
   const h = [...n].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
-  const img = PH[n] ? `<img src="/_blob/${PH[n]}" alt="">` : "";
+  const img = PHOTO.has(n) ? `<img src="${PHOTO.get(n)}" alt="" loading="lazy">` : "";
   return `<span class="av${big ? " big" : ""}" style="--h:${h}" aria-hidden="true">${ini}${img}</span>`;
 }
 /* Hebrew name search by pronunciation: both the Latin name and the Hebrew query are reduced to a consonant skeleton */
@@ -422,7 +426,6 @@ function actListHTML() {
 function actorsHTML() {
   actorIndex();
   return `<div class="listbar"><h2>שחקנים/ניות</h2><span class="count">${ACT.length} שמות</span></div>
-  <div id="phPanel">${phPanelHTML()}</div>
   <input id="actq" class="search" type="search" dir="auto" placeholder="חיפוש לפי שם, גם בעברית" aria-label="חיפוש שחקן או שחקנית" value="${st.actQuery.replace(/"/g, "&quot;")}" autocomplete="off">
   <div class="chips"><button class="chip" data-a="actall" aria-pressed="${st.actMulti}">רק מי שמופיע ביותר מסדרה אחת</button></div>
   <div id="actList">${actListHTML()}</div>
@@ -434,6 +437,7 @@ function seriesDlgHTML(i) {
   const s = S[i], seen = st.seen.has(i); st.dlgId = i;
   return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
   ${ratesHTML(s)}
+  <p class="avail">${platLine(s)}</p>
   <p class="d-line">${s.l}</p>
   ${praiseHTML(s)}
   ${trailerHTML(s)}
@@ -449,8 +453,7 @@ function actorDlgHTML(k) {
   return `<div class="a-head">${avatar(a.n, true)}<div><h2 class="t-title"><bdi>${a.n}</bdi></h2><div class="meta"><span>${a.ids.length} סדרות באפליקציה</span><span>${unseen.length} שעוד לא ראיתם</span></div></div></div>
   ${actorLinksHTML(a.n)}
   <div class="grid a-grid">${a.ids.map(i => tile(i, "detail", true)).join("")}</div>
-  ${CAN_UPLOAD ? phAddHTML(a, k) : ""}
-  <div class="d-acts">${unseen.length ? `<button class="btn primary" data-a="actpick" data-k="${k}">תפתיעו אותי עם <bdi>${a.n}</bdi></button>` : ""}${CAN_UPLOAD ? `<label class="btn ghost"><input type="file" id="phone" data-k="${k}" accept="image/*" hidden>העלאה מהמחשב</label>${PH[a.n] ? `<button class="btn ghost" data-a="phdel" data-k="${k}">הסרת תמונה</button>` : ""}` : ""}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>`;
+  <div class="d-acts">${unseen.length ? `<button class="btn primary" data-a="actpick" data-k="${k}">תפתיעו אותי עם <bdi>${a.n}</bdi></button>` : ""}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>`;
 }
 function paintDlg(keep) {
   const d = $("#dlg"), v = st.dlgCur, sc = d.scrollTop;
@@ -501,12 +504,11 @@ document.addEventListener("click", e => {
     case "dback": dlgBack(); break;
     case "actor": dlgGo({ t: "a", v: +el.dataset.k }); break;
     case "actpick": { const a = actorIndex()[+el.dataset.k], un = a.ids.filter(x => !st.seen.has(x)); if (un.length) dlgGo({ t: "s", v: un[Math.floor(Math.random() * un.length)] }); break; }
-    case "phpaste": { (async () => { try { const items = await navigator.clipboard.read(); for (const it of items) { const ty = it.types.find(x => x.startsWith("image/")); if (ty) { const b = await it.getType(ty); await addFromFile(+el.dataset.k, new File([b], "pasted", { type: ty })); return; } } phMsg(NO_IMG); } catch (err) { phMsg("הדפדפן לא מאפשר קריאה מהלוח. לחצו על האזור המקווקו והדביקו בקיצור המקלדת להדבקה."); } })(); break; }
     case "copylink": copyText(el.dataset.u).then(ok => showToast(ok ? "הקישור הועתק. הדביקו אותו בדפדפן או באפליקציית יוטיוב." : "אי אפשר להעתיק מהמסך הזה. סמנו את הכתובת והעתיקו אותה ידנית.", el.dataset.u)); break;
-    case "phdel": { const a = actorIndex()[+el.dataset.k], old = PH[a.n]; delete PH[a.n]; savePH().then(() => old && ASSETS.delete(old)).catch(() => {}); refreshActors(); break; }
     case "actall": st.actMulti = !st.actMulti; st.actLimit = 60; render(false); break;
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
     case "dclose": $("#dlg").close(); break;
+    case "retry": boot(); break;
   }
 });
 $("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
@@ -545,6 +547,33 @@ document.addEventListener("click", e => {
   let w = null; try { w = window.open(a.href, "_blank"); } catch (err) {}
   if (w) { try { w.opener = null; } catch (err) {} } else linkFallback(a.href);
 });
-document.addEventListener("error", e => { if (e.target && e.target.tagName === "IMG" && e.target.closest && e.target.closest(".av")) e.target.remove(); }, true);
+document.addEventListener("error", e => {
+  const t = e.target; if (!t || t.tagName !== "IMG") return;
+  if (t.closest && t.closest(".av")) t.remove();
+  else if (t.dataset.pi) t.outerHTML = art(+t.dataset.pi, t.dataset.pc || "");
+}, true);
 
-render(false);
+function footerHTML() {
+  const d = st.updatedAt ? new Date(st.updatedAt).toLocaleDateString("he-IL", { day: "numeric", month: "long", year: "numeric" }) : "";
+  return `<footer class="credits">${d ? `<p>הנתונים עודכנו ב-${d}</p>` : ""}
+  <p dir="ltr"><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" height="12"> This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+  <p>נתוני זמינות: JustWatch</p></footer>`;
+}
+
+async function boot() {
+  $("#app").innerHTML = `<div class="empty loading" role="status"><p>טוענים את הסדרות…</p></div>`;
+  try {
+    const res = await fetch("data.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const json = await res.json();
+    S = fromData(json);
+    st.updatedAt = json.updatedAt;
+    st.seen = loadSeen(store, S);
+    ACT = null; PHOTO.clear();
+    render(false);
+  } catch (e) {
+    $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;
+  }
+}
+
+boot();

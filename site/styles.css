@@ -225,3 +225,9 @@ dialog .btn.ghost { border-color: rgba(26, 22, 64, .25); color: var(--ticket-ink
   .t-top { grid-template-columns: 1fr; }
   .t-poster, .t-poster.ph, .t-poster.poster { width: 100%; max-width: 220px; }
 }
+img.poster { object-fit: cover; }
+.avail { padding: 6px 18px 0; margin: 0; font-size: 14px; font-weight: 600; color: var(--ticket-muted); }
+.loading { margin-top: 48px; }
+.credits { margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; text-align: center; }
+.credits p { margin: 4px 0; }
+.credits img { vertical-align: middle; margin-inline-end: 4px; }
