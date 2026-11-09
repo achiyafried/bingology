@@ -1,8 +1,8 @@
 // One-time: find the TMDB id for every series in series.json (or the legacy data on first run).
-// Needs TMDB_TOKEN. Re-running only touches entries whose tmdbId is still null.
+// Needs TMDB_TOKEN. Re-running only touches entries without a real (positive) tmdbId.
 import { existsSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { parseLegacy, legacyToSeries } from "./lib/legacy.mjs";
-import { pickMatch } from "./lib/match.mjs";
+import { pickMatch, needsMatch } from "./lib/match.mjs";
 import { tmdbGet } from "./lib/api.mjs";
 
 if (!process.env.TMDB_TOKEN) { console.error("TMDB_TOKEN is not set"); process.exit(1); }
@@ -13,7 +13,7 @@ const entries = existsSync("series.json")
 
 const review = [];
 for (const e of entries) {
-  if (e.tmdbId != null) continue;
+  if (!needsMatch(e)) continue;
   const year = e.year ?? e.fallback.year;
   let res = (await tmdbGet("/search/tv", { query: e.name, first_air_date_year: year, language: "en-US" })).results;
   if (!res.length) res = (await tmdbGet("/search/tv", { query: e.name, language: "en-US" })).results;

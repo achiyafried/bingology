@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pickMatch } from "../scripts/lib/match.mjs";
+import { pickMatch, needsMatch } from "../scripts/lib/match.mjs";
 import { tmdbGet } from "../scripts/lib/api.mjs";
 
 const r = (id, name, date, original_name = name) => ({ id, name, original_name, first_air_date: date });
@@ -43,4 +43,10 @@ test("tmdbGet retries once after 429", async () => {
   const fake = async () => (++n === 1 ? new Response("{}", { status: 429, headers: { "Retry-After": "0" } }) : new Response('{"x":1}', { status: 200 }));
   assert.deepEqual(await tmdbGet("/tv/1", {}, fake), { x: 1 });
   assert.equal(n, 2);
+});
+
+test("placeholder (negative) and missing ids still need matching", () => {
+  assert.equal(needsMatch({ tmdbId: null }), true);
+  assert.equal(needsMatch({ tmdbId: -3 }), true);
+  assert.equal(needsMatch({ tmdbId: 1396 }), false);
 });

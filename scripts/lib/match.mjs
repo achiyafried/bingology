@@ -14,3 +14,6 @@ export function pickMatch(results, want) {
   if (sameYear.length > 1) return { candidates: sameYear.map(cand) };
   return { candidates: results.slice(0, 5).map(cand) };
 }
+
+/** Entries still without a real TMDB id (null, or the negative placeholders of the offline dev dataset). */
+export const needsMatch = e => !(Number.isInteger(e.tmdbId) && e.tmdbId > 0);
