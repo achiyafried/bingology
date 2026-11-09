@@ -231,3 +231,8 @@ img.poster { object-fit: cover; }
 .credits { margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; text-align: center; }
 .credits p { margin: 4px 0; }
 .credits img { vertical-align: middle; margin-inline-end: 4px; }
+.meta .stat { font-weight: 700; border: 0; margin: 0; padding: 1px 9px; border-radius: 999px; }
+.st-air { background: rgba(30, 142, 90, .15); color: #14673F; }
+.st-end { background: rgba(26, 22, 64, .09); color: var(--ticket-muted); }
+.st-cxl { background: rgba(179, 38, 30, .12); color: #8F3730; }
+.sortnote { text-align: center; color: var(--muted); font-size: 14.5px; margin: -10px 0 16px; }

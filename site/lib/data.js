@@ -22,6 +22,7 @@ export function fromData(json) {
     poster: x.poster ?? null,
     cast: x.cast ?? [],
     creators: x.creators ?? [],
+    status: x.status ?? null,
     airing: x.status === "airing",
     praise: x.praise ?? null,
     awards: x.awards ?? [],

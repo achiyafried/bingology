@@ -37,3 +37,9 @@ test("blocked storage gives an empty set and saving does not throw", () => {
   assert.equal(loadSeen(blocked, S).size, 0);
   assert.doesNotThrow(() => saveSeen(blocked, new Set([0]), S));
 });
+
+test("fromData passes the series status through", () => {
+  assert.equal(S[0].status, "ended");
+  assert.equal(S[1].status, "airing");
+  assert.equal(fromData({ series: [{ name: "X", lists: [] }] })[0].status, null);
+});

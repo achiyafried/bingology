@@ -2,7 +2,7 @@ import { GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, S
 import { fromData } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
-import { quizSteps, resetQuiz } from "./lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults } from "./lib/quiz.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -63,11 +63,18 @@ const ALL_QS = [
     ["any", "🤷", "לא משנה", ""] ] }
 ];
 let QS = ALL_QS; // set per dataset in boot()
-const totalSteps = () => QS.length + 1;
+// questions + "what have you seen" + "how to sort"
+const totalSteps = () => QS.length + 2;
+const SORTS = [
+  ["match", "🎯", "הכי מתאימות קודם", "לפי אחוז ההתאמה לתשובות שלכם"],
+  ["old", "📼", "הוותיקות קודם", "מבין ההתאמות הכי טובות, מהסדרה הוותיקה לחדשה"],
+  ["new", "✨", "החדשות קודם", "מבין ההתאמות הכי טובות, מהסדרה החדשה לוותיקה"] ];
+const SORT_NOTE = { old: "מסודרות מהוותיקה לחדשה, מבין ההתאמות הטובות ביותר", new: "מסודרות מהחדשה לוותיקה, מבין ההתאמות הטובות ביותר" };
+const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסתיימה", "st-end"], canceled: ["בוטלה", "st-cxl"] };
 
 /* state */
 const st = { tab: "pick", screen: "intro", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
-function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, imdb: null, rt: null, len: null, seasons: null, lang: null }; }
+function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, imdb: null, rt: null, len: null, seasons: null, lang: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
 const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -237,7 +244,7 @@ function trailerHTML(s) {
   return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
 }
 function metaHTML(s) {
-  return `<div class="meta">${s.y ? `<span>${s.y}</span>` : ""}<span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${s.airing ? "<span>עדיין משודרת</span>" : ""}</div>`;
+  return `<div class="meta">${s.y ? `<span>${s.y}</span>` : ""}<span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${STATUS[s.status] ? `<span class="stat ${STATUS[s.status][1]}">${STATUS[s.status][0]}</span>` : ""}</div>`;
 }
 function ratesHTML(s) {
   return `<div class="rates">${s.imdb != null ? `<span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>` : ""}${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
@@ -268,11 +275,15 @@ function introHTML() {
 
 function qHTML() {
   const step = st.step;
-  const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : "אחרון"}</span></div>`;
+  const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : step === QS.length ? "כמעט שם" : "אחרון"}</span></div>`;
   if (step === QS.length) {
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
     <div class="grid">${poolIds(st.ans.src, st.ans.platforms).map(i => tile(i, "toggle", false)).join("")}</div>
-    <div class="sticky-cta"><button class="btn primary block" data-a="finish">הראו לי את ההמלצה</button></div></div>`;
+    <div class="sticky-cta"><button class="btn primary block" data-a="next">הראו לי את ההמלצה</button></div></div>`;
+  }
+  if (step === QS.length + 1) {
+    return head + `<div class="qbody"><h2 data-focus tabindex="-1">שנייה לפני התוצאות</h2><p class="sub">לפי מה לסדר את ההמלצות?</p>
+    ${SORTS.map(o => `<button class="opt" data-a="sortpick" data-v="${o[0]}" aria-pressed="${st.ans.sort === o[0]}"><span class="em" aria-hidden="true">${o[1]}</span><span><b>${o[2]}</b><small>${o[3]}</small></span></button>`).join("")}</div>`;
   }
   const q = QS[step];
   if (q.multi) {
@@ -312,7 +323,7 @@ function resultHTML() {
   }
   const r = st.ranked[st.idx];
   const alts = st.ranked.slice(st.idx + 1, st.idx + 4);
-  return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + ticketHTML(r) + moreHTML(r.i) +
+  return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + (!st.surprise && SORT_NOTE[st.ans.sort] ? `<p class="sortnote">${SORT_NOTE[st.ans.sort]}</p>` : "") + ticketHTML(r) + moreHTML(r.i) +
     (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${S[x.i].n}">${poster(x.i, "")}<span class="cap"><bdi>${S[x.i].n}</bdi></span></button>`).join("")}</div></section>` : "") +
     `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button><button class="linkbtn" data-a="restart">התחלה מחדש</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
 }
@@ -512,6 +523,7 @@ document.addEventListener("click", e => {
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
     case "dclose": $("#dlg").close(); break;
     case "retry": boot(); break;
+    case "sortpick": st.ans.sort = v; rank(false); st.ranked = orderResults(st.ranked, S, v); st.screen = "result"; render(true); break;
     case "restart": resetQuiz(st, blankAns()); render(true); break;
   }
 });

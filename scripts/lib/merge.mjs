@@ -11,6 +11,8 @@ const pick = (...vals) => vals.find(v => v !== null && v !== undefined) ?? null;
  * and creators).
  */
 export function mergeEntry(entry, live, imdb, prev, now) {
+  // A previous entry that never came from a real fetch (offline/dev build) holds nothing live.
+  if (prev && !prev.fetchedAt) prev = null;
   const { fallback = {}, ...manual } = entry;
   const s = { ...manual };
   for (const f of FALLBACK_FIELDS) s[f] = pick(live?.[f], prev?.[f], fallback[f]);
@@ -18,8 +20,7 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   for (const f of PEOPLE_FIELDS) s[f] = [live?.[f], prev?.[f], fallback[f]].find(v => v && v.length) ?? [];
   // Providers: when fetched, live wins even if empty (the series left Israeli streaming).
   // Not fetched: last real fetch if there was one, else the legacy main platform.
-  s.providers = live ? live.providers ?? [] : prev?.fetchedAt ? prev.providers ?? [] : fallback.providers ?? [];
-  s.status ??= "ended";
+  s.providers = live ? live.providers ?? [] : prev ? prev.providers ?? [] : fallback.providers ?? [];
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
   return s;

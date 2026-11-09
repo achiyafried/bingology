@@ -105,3 +105,15 @@ test("providers fall back to the legacy platform only when never fetched", () =>
   assert.deepEqual(mergeEntry(e2, null, null, { ...prev, providers: [], fetchedAt: "2026-11-09T03:00:00Z" }, NOW).providers, []);
   assert.deepEqual(mergeEntry(e2, { ...live, providers: [] }, 9.5, null, NOW).providers, []);
 });
+
+test("status is null when unknown (never fetched), not guessed as ended", () => {
+  assert.equal(mergeEntry(entry, null, null, null, NOW).status, null);
+});
+
+test("a previous entry that was never fetched carries no live information", () => {
+  const stale = { ...prev, status: "ended", poster: "https://x", fetchedAt: null };
+  const s = mergeEntry(entry, null, null, stale, NOW);
+  assert.equal(s.status, null);
+  assert.equal(s.poster, null);
+  assert.equal(s.runtime, 47);
+});

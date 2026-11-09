@@ -11,6 +11,14 @@ export function medianRuntime(tv) {
   return tv.last_episode_to_air?.runtime || null;
 }
 
+/** TMDB status → "airing" | "ended" | "canceled" (falls back to in_production). */
+export function statusOf(tv) {
+  if (tv.status === "Ended") return "ended";
+  if (tv.status === "Canceled") return "canceled";
+  if (tv.status) return "airing"; // Returning Series, In Production, Planned, Pilot
+  return tv.in_production ? "airing" : "ended";
+}
+
 /** IL flatrate providers → our categories, in providers.json order, "other" last. */
 export function mapProviders(flatrate, map) {
   const byName = new Map();
@@ -41,7 +49,7 @@ export function transformTv(tv, { map } = {}) {
     seasons: tv.number_of_seasons || null,
     episodes: tv.number_of_episodes || null,
     runtime: medianRuntime(tv),
-    status: tv.in_production ? "airing" : "ended",
+    status: statusOf(tv),
     lang: tv.original_language || null,
     poster: tv.poster_path ? `${IMG}w342${tv.poster_path}` : null,
     creators: (tv.created_by ?? []).map(c => c.name),

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T16:06:36.823Z",
+  "updatedAt": "2026-11-09T16:15:45.603Z",
   "series": [
     {
       "tmdbId": -1,
@@ -27,7 +27,7 @@
       "episodes": 28,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -101,7 +101,7 @@
       "episodes": 86,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -178,7 +178,7 @@
       "episodes": 62,
       "runtime": 47,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -250,7 +250,7 @@
       "episodes": 63,
       "runtime": 47,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -327,7 +327,7 @@
       "episodes": 19,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -403,7 +403,7 @@
       "episodes": 39,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -479,7 +479,7 @@
       "episodes": 9,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -553,7 +553,7 @@
       "episodes": 60,
       "runtime": 58,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -625,7 +625,7 @@
       "episodes": 40,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -701,7 +701,7 @@
       "episodes": 73,
       "runtime": 57,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -777,7 +777,7 @@
       "episodes": 63,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -846,7 +846,7 @@
       "episodes": 30,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -913,7 +913,7 @@
       "episodes": 177,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -986,7 +986,7 @@
       "episodes": 40,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1065,7 +1065,7 @@
       "episodes": 121,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1142,7 +1142,7 @@
       "episodes": 92,
       "runtime": 47,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1217,7 +1217,7 @@
       "episodes": 9,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1277,7 +1277,7 @@
       "episodes": 20,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1352,7 +1352,7 @@
       "episodes": 96,
       "runtime": 52,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1428,7 +1428,7 @@
       "episodes": 60,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1504,7 +1504,7 @@
       "episodes": 177,
       "runtime": 44,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1581,7 +1581,7 @@
       "episodes": 22,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1671,7 +1671,7 @@
       "episodes": 16,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1755,7 +1755,7 @@
       "episodes": 44,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1829,7 +1829,7 @@
       "episodes": 56,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1905,7 +1905,7 @@
       "episodes": 75,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -1981,7 +1981,7 @@
       "episodes": 66,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2056,7 +2056,7 @@
       "episodes": 36,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2133,7 +2133,7 @@
       "episodes": 73,
       "runtime": 51,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2208,7 +2208,7 @@
       "episodes": 30,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2287,7 +2287,7 @@
       "episodes": 18,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2366,7 +2366,7 @@
       "episodes": 96,
       "runtime": 52,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2442,7 +2442,7 @@
       "episodes": 51,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2524,7 +2524,7 @@
       "episodes": 56,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2596,7 +2596,7 @@
       "episodes": 77,
       "runtime": 26,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2664,7 +2664,7 @@
       "episodes": 10,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2743,7 +2743,7 @@
       "episodes": 30,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2814,7 +2814,7 @@
       "episodes": 204,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2890,7 +2890,7 @@
       "episodes": 5,
       "runtime": 65,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -2962,7 +2962,7 @@
       "episodes": 34,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3041,7 +3041,7 @@
       "episodes": 34,
       "runtime": 40,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3114,7 +3114,7 @@
       "episodes": 22,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3186,7 +3186,7 @@
       "episodes": 29,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3248,7 +3248,7 @@
       "episodes": 24,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3314,7 +3314,7 @@
       "episodes": 30,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3385,7 +3385,7 @@
       "episodes": 90,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3458,7 +3458,7 @@
       "episodes": 82,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3529,7 +3529,7 @@
       "episodes": 19,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3601,7 +3601,7 @@
       "episodes": 24,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3678,7 +3678,7 @@
       "episodes": 42,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3757,7 +3757,7 @@
       "episodes": 9,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3826,7 +3826,7 @@
       "episodes": 218,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3896,7 +3896,7 @@
       "episodes": 91,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -3972,7 +3972,7 @@
       "episodes": 48,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4041,7 +4041,7 @@
       "episodes": 16,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4117,7 +4117,7 @@
       "episodes": 36,
       "runtime": 50,
       "lang": "he",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4180,7 +4180,7 @@
       "episodes": 48,
       "runtime": 45,
       "lang": "he",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4248,7 +4248,7 @@
       "episodes": 40,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4322,7 +4322,7 @@
       "episodes": 53,
       "runtime": 25,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4392,7 +4392,7 @@
       "episodes": 22,
       "runtime": 55,
       "lang": "ko",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4466,7 +4466,7 @@
       "episodes": 12,
       "runtime": 27,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4534,7 +4534,7 @@
       "episodes": 65,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4610,7 +4610,7 @@
       "episodes": 138,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4679,7 +4679,7 @@
       "episodes": 120,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4749,7 +4749,7 @@
       "episodes": 41,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4809,7 +4809,7 @@
       "episodes": 201,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4889,7 +4889,7 @@
       "episodes": 84,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -4967,7 +4967,7 @@
       "episodes": 62,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5039,7 +5039,7 @@
       "episodes": 76,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5119,7 +5119,7 @@
       "episodes": 14,
       "runtime": 29,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5190,7 +5190,7 @@
       "episodes": 12,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5252,7 +5252,7 @@
       "episodes": 21,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5324,7 +5324,7 @@
       "episodes": 36,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5402,7 +5402,7 @@
       "episodes": 10,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5474,7 +5474,7 @@
       "episodes": 53,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5522,7 +5522,7 @@
       "episodes": 700,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5567,7 +5567,7 @@
       "episodes": 24,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5649,7 +5649,7 @@
       "episodes": 18,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5719,7 +5719,7 @@
       "episodes": 80,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5799,7 +5799,7 @@
       "episodes": 32,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5887,7 +5887,7 @@
       "episodes": 75,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -5965,7 +5965,7 @@
       "episodes": 4,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6036,7 +6036,7 @@
       "episodes": 61,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6099,7 +6099,7 @@
       "episodes": 40,
       "runtime": 35,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6176,7 +6176,7 @@
       "episodes": 36,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6259,7 +6259,7 @@
       "episodes": 18,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6328,7 +6328,7 @@
       "episodes": 50,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6394,7 +6394,7 @@
       "episodes": 12,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6465,7 +6465,7 @@
       "episodes": 125,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6548,7 +6548,7 @@
       "episodes": 52,
       "runtime": 55,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6627,7 +6627,7 @@
       "episodes": 50,
       "runtime": 52,
       "lang": "fr",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6694,7 +6694,7 @@
       "episodes": 46,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6765,7 +6765,7 @@
       "episodes": 32,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6807,7 +6807,7 @@
       "episodes": 24,
       "runtime": 17,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6869,7 +6869,7 @@
       "episodes": 28,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6920,7 +6920,7 @@
       "episodes": 26,
       "runtime": 25,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -6967,7 +6967,7 @@
       "episodes": 54,
       "runtime": 25,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7041,7 +7041,7 @@
       "episodes": 240,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7096,7 +7096,7 @@
       "episodes": 24,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7171,7 +7171,7 @@
       "episodes": 118,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7218,7 +7218,7 @@
       "episodes": 7,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7289,7 +7289,7 @@
       "episodes": 12,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7333,7 +7333,7 @@
       "episodes": 142,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7379,7 +7379,7 @@
       "episodes": 88,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7458,7 +7458,7 @@
       "episodes": 18,
       "runtime": 35,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7541,7 +7541,7 @@
       "episodes": 32,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7617,7 +7617,7 @@
       "episodes": 38,
       "runtime": 35,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7696,7 +7696,7 @@
       "episodes": 21,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7758,7 +7758,7 @@
       "episodes": 250,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7836,7 +7836,7 @@
       "episodes": 170,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7902,7 +7902,7 @@
       "episodes": 156,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -7978,7 +7978,7 @@
       "episodes": 18,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8023,7 +8023,7 @@
       "episodes": 7,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8099,7 +8099,7 @@
       "episodes": 52,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8167,7 +8167,7 @@
       "episodes": 78,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8244,7 +8244,7 @@
       "episodes": 25,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8287,7 +8287,7 @@
       "episodes": 150,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8361,7 +8361,7 @@
       "episodes": 10,
       "runtime": 60,
       "lang": "ja",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8437,7 +8437,7 @@
       "episodes": 28,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8512,7 +8512,7 @@
       "episodes": 7,
       "runtime": 30,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8573,7 +8573,7 @@
       "episodes": 29,
       "runtime": 28,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8641,7 +8641,7 @@
       "episodes": 24,
       "runtime": 25,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8713,7 +8713,7 @@
       "episodes": 8,
       "runtime": 60,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8785,7 +8785,7 @@
       "episodes": 40,
       "runtime": 45,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8855,7 +8855,7 @@
       "episodes": 110,
       "runtime": 22,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -8935,7 +8935,7 @@
       "episodes": 16,
       "runtime": 50,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -9015,7 +9015,7 @@
       "episodes": 153,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [
@@ -9097,7 +9097,7 @@
       "episodes": 124,
       "runtime": 43,
       "lang": "en",
-      "status": "ended",
+      "status": null,
       "poster": null,
       "overviewHe": null,
       "creators": [

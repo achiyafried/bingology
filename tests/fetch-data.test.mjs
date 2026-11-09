@@ -70,7 +70,7 @@ test("offline mode uses fallback and never calls the network", async () => {
 
 test("OMDb N/A keeps the previous rating", async () => {
   const series = [entry(1, "A")];
-  const prev = { series: [{ tmdbId: 1, imdb: 8.8 }] };
+  const prev = { series: [{ tmdbId: 1, imdb: 8.8, fetchedAt: "2026-11-09T03:00:00Z" }] };
   const r = await run({ series, prev, fetchImpl: fakeFetch({ imdb: "N/A" }), now: NOW });
   assert.equal(r.data.series[0].imdb, 8.8);
 });

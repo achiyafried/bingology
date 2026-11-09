@@ -61,3 +61,13 @@ test("cast is capped at 10", () => {
   const cast = Array.from({ length: 14 }, (_, i) => ({ name: "A" + i, order: i, profile_path: null }));
   assert.equal(transformTv({ ...bb, aggregate_credits: { cast } }, { map }).live.cast.length, 10);
 });
+
+test("transformTv maps TMDB status to airing / ended / canceled", () => {
+  const st = (status, in_production = false) => transformTv({ ...bb, status, in_production }, { map }).live.status;
+  assert.equal(st("Returning Series"), "airing");
+  assert.equal(st("In Production"), "airing");
+  assert.equal(st("Ended"), "ended");
+  assert.equal(st("Canceled"), "canceled");
+  assert.equal(st(undefined, true), "airing");
+  assert.equal(st(undefined, false), "ended");
+});
