@@ -1,6 +1,7 @@
 import { GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries } from "./lib/score.js";
 import { fromData } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
+import { esc, safeImg } from "./lib/esc.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -169,7 +170,7 @@ function art(i, cls) {
   return `<svg class="poster ${cls}" viewBox="0 0 240 216" role="img" aria-label="${esc(s.n)}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${id}a" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient><linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></linearGradient></defs><rect width="240" height="216" fill="url(#${id}a)"/><g transform="translate(12 -8) scale(.9)">${MOTIF[m](a, b, mix(c1, c2, .42))}</g><rect width="240" height="216" fill="url(#${id}b)"/><text fill="#fff" font-family="'Secular One','Assistant',system-ui,sans-serif" font-size="${fs}" direction="ltr" style="unicode-bidi:isolate">${txt}</text></svg>`;
 }
 function poster(i, cls) {
-  if (S[i].poster) return `<img class="poster ${cls || ""}" src="${S[i].poster}" alt="" loading="lazy" data-pi="${i}" data-pc="${cls || ""}">`;
+  if (safeImg(S[i].poster)) return `<img class="poster ${cls || ""}" src="${safeImg(S[i].poster)}" alt="" loading="lazy" data-pi="${i}" data-pc="${cls || ""}">`;
   return art(i, cls || "");
 }
 
@@ -210,7 +211,7 @@ function similar(i, n) {
 function moreHTML(i) {
   const s = S[i];
   const rows = [];
-  if (s.creators.length) rows.push(`<dt>יוצרים</dt><dd>${s.creators.map(n => `<bdi>${n}</bdi>`).join(", ")}</dd>`);
+  if (s.creators.length) rows.push(`<dt>יוצרים</dt><dd>${s.creators.map(n => `<bdi>${esc(n)}</bdi>`).join(", ")}</dd>`);
   if (s.cast.length) rows.push(`<dt>${s.castLabel || "בכיכוב"}</dt><dd>${actorLinks(s.cast.map(c => c.name).join(", "))}</dd>`);
   const aw = (s.nyt ? [["📰", `מקום ${s.nyt} ברשימת 100 הסדרות הטובות של המאה ה-21 של הניו יורק טיימס (2026)`]] : []).concat(s.awards.map(a => ["🏆", a]));
   return `<section class="more" aria-label="עוד על הסדרה">
@@ -294,7 +295,7 @@ function ticketHTML(r) {
     <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
     ${ratesHTML(s)}
     <p class="avail">${platLine(s)}</p>
-    <p class="t-line">${s.l}</p>
+    <p class="t-line">${esc(s.l)}</p>
     ${praiseHTML(s)}
     ${trailerHTML(s)}
     <ul class="why">${r.why.map(w => `<li class="${w.ok ? "" : "miss"}">${w.ok ? CHECK : CROSS}<span>${w.t}</span></li>`).join("")}</ul>
@@ -353,13 +354,13 @@ function actorIndex() {
 }
 function actorLinks(x) {
   actorIndex();
-  return x.split(", ").map(n => { const k = ACTMAP.get(n.trim()); return k === undefined ? `<bdi>${n}</bdi>` : `<button class="nm" data-a="actor" data-k="${k}"><bdi>${n}</bdi></button>`; }).join(", ");
+  return x.split(", ").map(n => { const k = ACTMAP.get(n.trim()); return k === undefined ? `<bdi>${esc(n)}</bdi>` : `<button class="nm" data-a="actor" data-k="${k}"><bdi>${esc(n)}</bdi></button>`; }).join(", ");
 }
 function avatar(n, big) {
   const parts = n.split(" ").filter(Boolean), ini = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
   const h = [...n].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
-  const img = PHOTO.has(n) ? `<img src="${PHOTO.get(n)}" alt="" loading="lazy">` : "";
-  return `<span class="av${big ? " big" : ""}" style="--h:${h}" aria-hidden="true">${ini}${img}</span>`;
+  const img = safeImg(PHOTO.get(n)) ? `<img src="${safeImg(PHOTO.get(n))}" alt="" loading="lazy">` : "";
+  return `<span class="av${big ? " big" : ""}" style="--h:${h}" aria-hidden="true">${esc(ini)}${img}</span>`;
 }
 /* Hebrew name search by pronunciation: both the Latin name and the Hebrew query are reduced to a consonant skeleton */
 const HMAP = { "ב": "B", "ג": "G", "ד": "D", "ז": "S", "ט": "T", "כ": "K", "ך": "K", "ק": "K", "ל": "L", "מ": "M", "ם": "M", "נ": "N", "ן": "N", "ס": "S", "פ": "P", "ף": "P", "ר": "R", "ש": "S", "ת": "T" };
@@ -420,7 +421,7 @@ function actListHTML() {
   if (!rows.length) return `<div class="empty"><h2>לא נמצא שחקן</h2><p>נסו חלק מהשם, באנגלית או בעברית. בעברית החיפוש מבוסס על הגייה, ולכן הכתיב לא חייב להיות מדויק. הרשימה כוללת רק את השחקנים המרכזיים בכל סדרה, ולכן ייתכן ששחקן מוכר חסר.</p></div>`;
   return shown.map(a => {
     const k = ACTMAP.get(a.n), names = a.ids.slice(0, 3).map(i => `<bdi>${S[i].n}</bdi>`).join(", "), more = a.ids.length - 3;
-    return `<button class="arow" data-a="actor" data-k="${k}">${avatar(a.n)}<span class="ainfo"><b><bdi>${a.n}</bdi></b><small>${names}${more > 0 ? " ועוד " + more : ""}</small></span><span class="acount">${a.ids.length}</span></button>`;
+    return `<button class="arow" data-a="actor" data-k="${k}">${avatar(a.n)}<span class="ainfo"><b><bdi>${esc(a.n)}</bdi></b><small>${names}${more > 0 ? " ועוד " + more : ""}</small></span><span class="acount">${a.ids.length}</span></button>`;
   }).join("") + (rows.length > shown.length ? `<button class="btn ghost block" data-a="actmore">הצגת עוד (${rows.length - shown.length})</button>` : "");
 }
 function actorsHTML() {
@@ -438,7 +439,7 @@ function seriesDlgHTML(i) {
   return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
   ${ratesHTML(s)}
   <p class="avail">${platLine(s)}</p>
-  <p class="d-line">${s.l}</p>
+  <p class="d-line">${esc(s.l)}</p>
   ${praiseHTML(s)}
   ${trailerHTML(s)}
   <div class="d-acts"><button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
@@ -450,10 +451,10 @@ function actorLinksHTML(n) {
 }
 function actorDlgHTML(k) {
   const a = actorIndex()[k], unseen = a.ids.filter(i => !st.seen.has(i));
-  return `<div class="a-head">${avatar(a.n, true)}<div><h2 class="t-title"><bdi>${a.n}</bdi></h2><div class="meta"><span>${a.ids.length} סדרות באפליקציה</span><span>${unseen.length} שעוד לא ראיתם</span></div></div></div>
+  return `<div class="a-head">${avatar(a.n, true)}<div><h2 class="t-title"><bdi>${esc(a.n)}</bdi></h2><div class="meta"><span>${a.ids.length} סדרות באפליקציה</span><span>${unseen.length} שעוד לא ראיתם</span></div></div></div>
   ${actorLinksHTML(a.n)}
   <div class="grid a-grid">${a.ids.map(i => tile(i, "detail", true)).join("")}</div>
-  <div class="d-acts">${unseen.length ? `<button class="btn primary" data-a="actpick" data-k="${k}">תפתיעו אותי עם <bdi>${a.n}</bdi></button>` : ""}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>`;
+  <div class="d-acts">${unseen.length ? `<button class="btn primary" data-a="actpick" data-k="${k}">תפתיעו אותי עם <bdi>${esc(a.n)}</bdi></button>` : ""}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>`;
 }
 function paintDlg(keep) {
   const d = $("#dlg"), v = st.dlgCur, sc = d.scrollTop;
