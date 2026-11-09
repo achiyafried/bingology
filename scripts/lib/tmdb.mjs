@@ -58,6 +58,8 @@ export function transformTv(tv, { map } = {}) {
     // English text is not Hebrew: only a Hebrew overview counts.
     overviewHe: tv.overview?.trim() || null,
     imdbId: tv.external_ids?.imdb_id || null,
+    tmdbVote: tv.vote_count > 0 ? Math.round(tv.vote_average * 10) / 10 : null,
+    tmdbVotes: tv.vote_count > 0 ? tv.vote_count : null,
   };
   return { live, warnings };
 }

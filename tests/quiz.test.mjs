@@ -51,3 +51,8 @@ test("orderResults includes every series tied with the 10th best match", () => {
   assert.deepEqual(out.slice(0, 12), [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
   assert.deepEqual(out.slice(12), [12, 13]);
 });
+
+test("orderResults by score sorts the best matches by binge score, unknown last", () => {
+  const S5 = [{ bs: 70 }, { bs: 95 }, { bs: null }, { bs: 80 }, { bs: 60 }];
+  assert.deepEqual(orderResults(ranked, S5, "score").map(r => r.i), [1, 3, 0, 4, 2]);
+});

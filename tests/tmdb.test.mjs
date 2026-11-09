@@ -71,3 +71,12 @@ test("transformTv maps TMDB status to airing / ended / canceled", () => {
   assert.equal(st(undefined, true), "airing");
   assert.equal(st(undefined, false), "ended");
 });
+
+test("transformTv keeps the TMDB vote average and count", () => {
+  const { live } = transformTv({ ...bb, vote_average: 8.912, vote_count: 15234 }, { map });
+  assert.equal(live.tmdbVote, 8.9);
+  assert.equal(live.tmdbVotes, 15234);
+  const p = transformTv(partial, { map }).live;
+  assert.equal(p.tmdbVote, null);
+  assert.equal(p.tmdbVotes, null);
+});

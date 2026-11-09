@@ -117,3 +117,9 @@ test("a previous entry that was never fetched carries no live information", () =
   assert.equal(s.poster, null);
   assert.equal(s.runtime, 47);
 });
+
+test("TMDB votes come from live, then a real previous fetch", () => {
+  assert.equal(mergeEntry(entry, { ...live, tmdbVote: 8.9, tmdbVotes: 100 }, 9.5, null, NOW).tmdbVote, 8.9);
+  assert.equal(mergeEntry(entry, null, null, { ...prev, tmdbVote: 8.1, tmdbVotes: 50 }, NOW).tmdbVotes, 50);
+  assert.equal(mergeEntry(entry, null, null, null, NOW).tmdbVote, null);
+});

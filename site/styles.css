@@ -236,3 +236,5 @@ img.poster { object-fit: cover; }
 .st-end { background: rgba(26, 22, 64, .09); color: var(--ticket-muted); }
 .st-cxl { background: rgba(179, 38, 30, .12); color: #8F3730; }
 .sortnote { text-align: center; color: var(--muted); font-size: 14.5px; margin: -10px 0 16px; }
+.rate.bs { background: var(--ticket-accent); color: var(--ticket); font-weight: 700; }
+.rate.bs b { color: inherit; opacity: .85; }

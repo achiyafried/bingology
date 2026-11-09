@@ -14,6 +14,8 @@ export function fromData(json) {
     solo: !!x.solo,
     l: x.blurb || x.overviewHe || "",
     imdb: x.imdb,
+    tmdbVote: x.tmdbVote ?? null,
+    tmdbVotes: x.tmdbVotes ?? null,
     rt: x.rt ?? null,
     lang: x.lang,
     nyt: x.nytRank ?? null,

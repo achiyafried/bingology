@@ -21,9 +21,15 @@ test("pool filters by list and by any matching provider", () => {
   assert.deepEqual(poolIds(S, "mine", []).length, 3);
 });
 
-test("a series without an IMDb score is scored, not crashed", () => {
-  const s = { ...byName("Ted Lasso"), imdb: null };
-  const r = scoreSeries(s, { genres: [], platforms: [], imdb: 8 });
+test("quality: at or above the threshold counts fully, far below counts nothing", () => {
+  const ted = byName("Ted Lasso");
+  assert.equal(scoreSeries({ ...ted, bs: 80 }, { genres: [], platforms: [], quality: 75 }).pct, 100);
+  assert.equal(scoreSeries({ ...ted, bs: 72 }, { genres: [], platforms: [], quality: 75 }).pct, 40);
+  assert.equal(scoreSeries({ ...ted, bs: 60 }, { genres: [], platforms: [], quality: 75 }).pct, 0);
+});
+
+test("a series without a binge score is scored, not crashed", () => {
+  const r = scoreSeries({ ...byName("Ted Lasso"), bs: null }, { genres: [], platforms: [], quality: 75 });
   assert.equal(r.pct, 0);
-  assert.ok(r.items.some(x => !x.ok && x.t.includes("IMDb")));
+  assert.ok(r.items.some(x => !x.ok && x.t.includes("ציון")));
 });

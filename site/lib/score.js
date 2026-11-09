@@ -33,14 +33,11 @@ export function scoreSeries(s, a) {
     const match = a.lang === "other" ? !["en", "he"].includes(s.lang) : s.lang === a.lang;
     add(3, match ? 3 : 0, "שפת מקור: " + LNAME[s.lang], "שפת המקור היא " + LNAME[s.lang]);
   }
-  if (a.imdb && s.imdb == null) add(2.5, 0, "", "אין עדיין ציון IMDb");
-  else if (a.imdb) {
-    const got = s.imdb >= a.imdb ? 2.5 : s.imdb >= a.imdb - 0.3 ? 1 : 0;
-    add(2.5, got, `ציון IMDb ${s.imdb.toFixed(1)}`, `ציון IMDb ${s.imdb.toFixed(1)} (ביקשתם ${a.imdb.toFixed(1)}+)`);
-  }
-  if (a.rt && s.rt != null) {
-    const got = s.rt >= a.rt ? 2 : s.rt >= a.rt - 5 ? 0.8 : 0;
-    add(2, got, `${s.rt}% ממבקרי רוטן טומייטו`, `${s.rt}% ברוטן טומייטו (ביקשתם ${a.rt}%+)`);
+  // One combined quality question (ציון בינג׳, 50–100) replaces the IMDb and Rotten Tomatoes questions.
+  if (a.quality && s.bs == null) add(2.5, 0, "", "אין עדיין ציון בינג׳");
+  else if (a.quality) {
+    const got = s.bs >= a.quality ? 2.5 : s.bs >= a.quality - 5 ? 1 : 0;
+    add(2.5, got, `ציון בינג׳ ${s.bs}`, `ציון בינג׳ ${s.bs} (ביקשתם ${a.quality}+)`);
   }
   if (a.mood) {
     const got = s.mo.includes(a.mood) ? (s.mo[0] === a.mood ? 2 : 1.6) : 0;

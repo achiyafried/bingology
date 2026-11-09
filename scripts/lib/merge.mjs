@@ -1,5 +1,5 @@
 const FALLBACK_FIELDS = ["year", "seasons", "episodes", "runtime", "lang"];
-const SCALAR_FIELDS = ["status", "poster", "overviewHe"];
+const SCALAR_FIELDS = ["status", "poster", "overviewHe", "tmdbVote", "tmdbVotes"];
 // People lists: an empty list from TMDB usually means missing data, so keep looking.
 const PEOPLE_FIELDS = ["creators", "cast"];
 
