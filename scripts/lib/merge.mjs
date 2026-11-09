@@ -1,0 +1,49 @@
+const FALLBACK_FIELDS = ["year", "seasons", "episodes", "runtime", "lang"];
+const SCALAR_FIELDS = ["status", "poster", "overviewHe"];
+const LIST_FIELDS = ["creators", "cast", "providers"];
+
+const pick = (...vals) => vals.find(v => v !== null && v !== undefined) ?? null;
+
+/**
+ * One series for data.json. Manual fields come from the entry; each live field falls back
+ * to the previous night's value, then to the legacy fallback. Live lists (even empty) win
+ * when the series was fetched — an empty provider list is real news.
+ */
+export function mergeEntry(entry, live, imdb, prev, now) {
+  const { fallback = {}, ...manual } = entry;
+  const s = { ...manual };
+  for (const f of FALLBACK_FIELDS) s[f] = pick(live?.[f], prev?.[f], fallback[f]);
+  for (const f of SCALAR_FIELDS) s[f] = pick(live?.[f], prev?.[f]);
+  for (const f of LIST_FIELDS) s[f] = live ? live[f] ?? [] : prev?.[f] ?? [];
+  s.status ??= "ended";
+  s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
+  s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
+  return s;
+}
+
+/** Problems that make data.json unsafe to publish; empty array = valid. */
+export function validateData(data, expectedCount) {
+  const errs = [];
+  const list = data?.series ?? [];
+  if (list.length !== expectedCount) errs.push(`series count ${list.length} ≠ expected ${expectedCount}`);
+  list.forEach((s, i) => {
+    const who = `#${i} ${s.name ?? "?"}`;
+    if (!Number.isInteger(s.tmdbId)) errs.push(`${who}: tmdbId missing`);
+    if (!s.name) errs.push(`${who}: name missing`);
+    if (!(s.seasons >= 1)) errs.push(`${who}: seasons ${s.seasons}`);
+    if (!(s.episodes >= 1)) errs.push(`${who}: episodes ${s.episodes}`);
+    if (!(s.runtime > 0)) errs.push(`${who}: runtime ${s.runtime}`);
+    if (!(s.imdb >= 0 && s.imdb <= 10)) errs.push(`${who}: imdb ${s.imdb}`);
+  });
+  return errs;
+}
+
+export const shouldAbort = (failed, total) => failed / total > 0.2;
+
+const strip = d => JSON.stringify({ ...d, updatedAt: undefined, series: (d.series ?? []).map(s => ({ ...s, fetchedAt: undefined })) });
+
+/** True when two data.json objects differ only in timestamps. */
+export function sameData(a, b) {
+  if (!a || !b) return false;
+  return strip(a) === strip(b);
+}
