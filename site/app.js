@@ -2,7 +2,7 @@ import { GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, S
 import { fromData } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
-import { quizSteps } from "./lib/quiz.js";
+import { quizSteps, resetQuiz } from "./lib/quiz.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -314,7 +314,7 @@ function resultHTML() {
   const alts = st.ranked.slice(st.idx + 1, st.idx + 4);
   return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + ticketHTML(r) + moreHTML(r.i) +
     (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${S[x.i].n}">${poster(x.i, "")}<span class="cap"><bdi>${S[x.i].n}</bdi></span></button>`).join("")}</div></section>` : "") +
-    `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
+    `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button><button class="linkbtn" data-a="restart">התחלה מחדש</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
 }
 
 function listHTML() {
@@ -512,6 +512,7 @@ document.addEventListener("click", e => {
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
     case "dclose": $("#dlg").close(); break;
     case "retry": boot(); break;
+    case "restart": resetQuiz(st, blankAns()); render(true); break;
   }
 });
 $("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
