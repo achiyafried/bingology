@@ -235,10 +235,10 @@ function trailerHTML(s) {
   return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
 }
 function metaHTML(s) {
-  return `<div class="meta"><span>${s.y}</span><span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${s.airing ? "<span>עדיין משודרת</span>" : ""}</div>`;
+  return `<div class="meta">${s.y ? `<span>${s.y}</span>` : ""}<span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${s.airing ? "<span>עדיין משודרת</span>" : ""}</div>`;
 }
 function ratesHTML(s) {
-  return `<div class="rates"><span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
+  return `<div class="rates">${s.imdb != null ? `<span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>` : ""}${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
 }
 function tagsHTML(s) { return `<div class="tags">${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
 function bulbs(n) { let h = ""; for (let i = 0; i < TOTAL_STEPS; i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${TOTAL_STEPS}">${h}</div>`; }

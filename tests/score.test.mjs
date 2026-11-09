@@ -20,3 +20,10 @@ test("pool filters by list and by any matching provider", () => {
   assert.deepEqual(poolIds(S, "nyt", []).map(i => S[i].n), ["Breaking Bad", "Severance"]);
   assert.deepEqual(poolIds(S, "mine", []).length, 3);
 });
+
+test("a series without an IMDb score is scored, not crashed", () => {
+  const s = { ...byName("Ted Lasso"), imdb: null };
+  const r = scoreSeries(s, { genres: [], platforms: [], imdb: 8 });
+  assert.equal(r.pct, 0);
+  assert.ok(r.items.some(x => !x.ok && x.t.includes("IMDb")));
+});

@@ -33,7 +33,8 @@ export function validateData(data, expectedCount) {
     if (!(s.seasons >= 1)) errs.push(`${who}: seasons ${s.seasons}`);
     if (!(s.episodes >= 1)) errs.push(`${who}: episodes ${s.episodes}`);
     if (!(s.runtime > 0)) errs.push(`${who}: runtime ${s.runtime}`);
-    if (!(s.imdb >= 0 && s.imdb <= 10)) errs.push(`${who}: imdb ${s.imdb}`);
+    // null = no rating yet (new shows); the site handles it. Anything else must be a real number.
+    if (s.imdb !== null && !(typeof s.imdb === "number" && s.imdb >= 0 && s.imdb <= 10)) errs.push(`${who}: imdb ${s.imdb}`);
   });
   return errs;
 }

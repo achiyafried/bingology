@@ -33,7 +33,8 @@ export function scoreSeries(s, a) {
     const match = a.lang === "other" ? !["en", "he"].includes(s.lang) : s.lang === a.lang;
     add(3, match ? 3 : 0, "שפת מקור: " + LNAME[s.lang], "שפת המקור היא " + LNAME[s.lang]);
   }
-  if (a.imdb) {
+  if (a.imdb && s.imdb == null) add(2.5, 0, "", "אין עדיין ציון IMDb");
+  else if (a.imdb) {
     const got = s.imdb >= a.imdb ? 2.5 : s.imdb >= a.imdb - 0.3 ? 1 : 0;
     add(2.5, got, `ציון IMDb ${s.imdb.toFixed(1)}`, `ציון IMDb ${s.imdb.toFixed(1)} (ביקשתם ${a.imdb.toFixed(1)}+)`);
   }

@@ -81,3 +81,9 @@ test("sameData ignores timestamps only", () => {
   assert.equal(sameData(a, { updatedAt: "y", series: [{ imdb: 8, fetchedAt: "1" }] }), false);
   assert.equal(sameData(a, null), false);
 });
+
+test("validateData allows a missing IMDb score but rejects a non-number", () => {
+  const s = mergeEntry({ ...entry, fallback: { ...entry.fallback, imdb: null } }, null, null, null, NOW);
+  assert.deepEqual(validateData({ series: [s] }, 1), []);
+  assert.ok(validateData({ series: [{ ...s, imdb: "9.1" }] }, 1).some(e => e.includes("imdb")));
+});
