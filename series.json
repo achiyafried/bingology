@@ -1,0 +1,3935 @@
+[
+  {
+    "tmdbId": -1,
+    "name": "The Leftovers",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "שניים אחוז מהעולם נעלמו ברגע אחד. מה עושים עם האבל ועם השאלות שנשארו? דרמה עמוקה ומטלטלת.",
+    "nytRank": 25,
+    "praise": "מבקרים משבחים את הדרך שבה היא הופכת אבל וחוסר ודאות לדרמה עמוקה, בעיקר בעונה השלישית.",
+    "rt": 86,
+    "fallback": {
+      "year": 2014,
+      "seasons": 3,
+      "episodes": 28,
+      "runtime": 60,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -2,
+    "name": "The Sopranos",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "ראש מאפיה בניו ג׳רזי הולך לטיפול פסיכולוגי. אבן הפינה של הדרמה הטלוויזיונית.",
+    "praise": "מבקרים רואים בה את הסדרה שהפכה את הטלוויזיה לאמנות, בזכות דמות שהיא גם פושע וגם אדם מסובך.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2004, 2007) ובגלובוס הזהב"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 1999,
+      "seasons": 6,
+      "episodes": 86,
+      "runtime": 55,
+      "imdb": 9.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -3,
+    "name": "Breaking Bad",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מורה לכימיה חולה הופך ליצרן סמים. מתח שלא מרפה עד הפרק האחרון.",
+    "nytRank": 1,
+    "praise": "מבקרים מפרגנים להתפתחות הדמות הראשית ולתסריט הדוק שבו כל פרק מוביל לבא אחריו.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה פעמיים (2013, 2014)",
+      "Bryan Cranston זכה בארבעה פרסי אמי על התפקיד הראשי"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2008,
+      "seasons": 5,
+      "episodes": 62,
+      "runtime": 47,
+      "imdb": 9.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -4,
+    "name": "Better Call Saul",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הסיפור של עורך הדין שמאחורי הסיפור. איטית ואנושית יותר, וגאונית באותה מידה.",
+    "nytRank": 27,
+    "praise": "מבקרים משבחים את הקצב המדוד ואת פיתוח הדמויות, ורבים רואים בה שווה ערך לסדרת האם.",
+    "rt": 97,
+    "fallback": {
+      "year": 2015,
+      "seasons": 6,
+      "episodes": 63,
+      "runtime": 47,
+      "imdb": 9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -5,
+    "name": "Severance",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עובדים שהזיכרון שלהם חצוי בין העבודה לבית. מסתורין מוזר ומרתק על משרד מבהיל.",
+    "nytRank": 30,
+    "praise": "מבקרים אוהבים את הרעיון המקורי, את העיצוב הקר ואת הכתיבה שמשאירה אותך מנחש.",
+    "awards": [
+      "Tramell Tillman זכה בפרס אמי לשחקן משנה בדרמה (2025)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 19,
+      "runtime": 50,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -6,
+    "name": "Succession",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "think",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "משפחת מולטי-מיליארדרים נלחמת על הכס. סאטירה חדה ודיאלוגים שנשארים בראש.",
+    "nytRank": 4,
+    "praise": "מבקרים מפרגנים לדיאלוגים החדים ולסאטירה שהיא גם אכזרית וגם מצחיקה על משפחת מיליארדרים.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה שלוש פעמים"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2018,
+      "seasons": 4,
+      "episodes": 39,
+      "runtime": 60,
+      "imdb": 8.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -7,
+    "name": "Watchmen",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "המשך חופשי לקומיקס האגדי, על גזענות, זיכרון וגיבורי על במסכות. נועזת ומטורפת.",
+    "nytRank": 39,
+    "praise": "מבקרים משבחים את התעוזה שבה היא משתמשת בקומיקס המקורי כדי לדבר על גזענות וזיכרון.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2020)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 60,
+      "imdb": 7.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -8,
+    "name": "The Wire",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "בולטימור דרך עיני שוטרים, סוחרי סמים, פוליטיקאים ומורים. התיאור המקיף ביותר של עיר.",
+    "nytRank": 2,
+    "praise": "מבקרים רואים בה את התיאור המקיף והכן ביותר של עיר אמריקאית ושל המוסדות שלה.",
+    "awards": [
+      "מעולם לא זכתה בפרס אמי, ועדיין מוזכרת שוב ושוב כאחת הסדרות הגדולות אי פעם"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2002,
+      "seasons": 5,
+      "episodes": 60,
+      "runtime": 58,
+      "imdb": 9.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -9,
+    "name": "The Boys",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "comedy",
+      "thriller"
+    ],
+    "moods": [
+      "laugh",
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "גיבורי על שהם בעצם תאגיד מושחת. שחורה, מצחיקה, אלימה ובלי פילטרים.",
+    "praise": "מבקרים אוהבים את הסאטירה החדה על תרבות הסלבס והתאגידים, גם כשהיא אלימה בכוונה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2019,
+      "seasons": 5,
+      "episodes": 40,
+      "runtime": 60,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -10,
+    "name": "Game of Thrones",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "fantasy",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אפוס של שושלות, בגידות ודרקונים. עולם שלם שאפשר לטבוע בו.",
+    "nytRank": 6,
+    "praise": "מבקרים מפרגנים לעולם המפורט, לעלילות הרבות ולנכונות להרוג דמויות מרכזיות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה ארבע פעמים"
+    ],
+    "rt": 89,
+    "fallback": {
+      "year": 2011,
+      "seasons": 8,
+      "episodes": 73,
+      "runtime": 57,
+      "imdb": 9.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -11,
+    "name": "Six Feet Under",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "משפחה שמנהלת בית לוויות. על מוות, אהבה ואיך חיים באמצע.",
+    "nytRank": 15,
+    "praise": "מבקרים משבחים את הכנות שבה היא עוסקת במוות ובחיים של משפחה רגילה.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2001,
+      "seasons": 5,
+      "episodes": 63,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -12,
+    "name": "Foundation",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi"
+    ],
+    "moods": [
+      "escape",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אימפריה גלקטית מתפרקת ומנסים להציל את הציוויליזציה לאורך אלפי שנים. מדע בדיוני בקנה מידה ענק.",
+    "praise": "מבקרים מפרגנים לקנה המידה הגדול ולנכונות להתמודד עם הרעיונות של הספרים.",
+    "rt": 84,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 30,
+      "runtime": 55,
+      "imdb": 7.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -13,
+    "name": "The Walking Dead",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "apoc",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "הישרדות באפוקליפסת זומבים, והאנשים מסוכנים יותר מהם.",
+    "praise": "מבקרים משבחים בעיקר את הפרקים הראשונים ואת הדרמה האנושית סביב איום הזומבים.",
+    "rt": 81,
+    "fallback": {
+      "year": 2010,
+      "seasons": 11,
+      "episodes": 177,
+      "runtime": 45,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -14,
+    "name": "For All Mankind",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מה אם הרוסים נחתו ראשונים על הירח? היסטוריה חלופית של מירוץ החלל.",
+    "praise": "מבקרים אוהבים את ההיסטוריה החלופית ואת האופן שבו היא נבנית עשור אחר עשור.",
+    "rt": 93,
+    "fallback": {
+      "year": 2019,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -15,
+    "name": "Lost",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "drama",
+      "scifi"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ניצולי התרסקות על אי מסתורי. עשרות תעלומות שמחזיקות מול המסך.",
+    "nytRank": 22,
+    "praise": "מבקרים מפרגנים למסתורין הממכר ולדרך שבה הסדרה שינתה את הצפייה בטלוויזיה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2005)"
+    ],
+    "rt": 86,
+    "fallback": {
+      "year": 2004,
+      "seasons": 6,
+      "episodes": 121,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -16,
+    "name": "Mad Men",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם הפרסום בניו יורק של שנות ה-60. אלגנטית, איטית ומלאת שכבות.",
+    "nytRank": 3,
+    "praise": "מבקרים משבחים את הדיוק הסגנוני ואת הדרך השקטה שבה היא מציגה דמויות מסובכות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה ארבע שנים ברציפות (2008 עד 2011)"
+    ],
+    "rt": 93,
+    "fallback": {
+      "year": 2007,
+      "seasons": 7,
+      "episodes": 92,
+      "runtime": 47,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -17,
+    "name": "Pluribus",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הסדרה החדשה של יוצר “שובר שורות”: מדע בדיוני שקט ומוזר על עולם שמשתנה לגמרי.",
+    "praise": "מבקרים מפרגנים לרעיון המקורי ולביצוע המרשים של השחקנית הראשית.",
+    "awards": [
+      "Rhea Seehorn זכתה בפרס אמי על התפקיד הראשי בדרמה (2026)",
+      "זכתה בפרס אמי על הכתיבה לסדרת דרמה (2026)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 55,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -18,
+    "name": "Silo",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "האנושות חיה במקלט תת-קרקעי עצום ואסור לשאול שאלות. מתח דיסטופי.",
+    "praise": "מבקרים אוהבים את העולם הסגור והמתוח ואת התעלומה שמתפתחת בתוכו.",
+    "rt": 92,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 20,
+      "runtime": 50,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -19,
+    "name": "Dexter",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "רופא פלילי ביום, רוצח סדרתי בלילה, אבל רק של רעים.",
+    "nytRank": 88,
+    "praise": "מבקרים משבחים את הרעיון המקורי ואת הכריזמה של הדמות הראשית, בעיקר בעונות הראשונות.",
+    "awards": [
+      "Michael C. Hall זכה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 82,
+    "fallback": {
+      "year": 2006,
+      "seasons": 8,
+      "episodes": 96,
+      "runtime": 52,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -20,
+    "name": "The Crown",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "עשורים של המשפחה המלכותית הבריטית. הפקה מושקעת ומשחק מצוין.",
+    "nytRank": 20,
+    "praise": "מבקרים מפרגנים להפקה המפוארת ולמשחק, ובעיקר לשחקניות שמגלמות את המלכה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2021)",
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 87,
+    "fallback": {
+      "year": 2016,
+      "seasons": 6,
+      "episodes": 60,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -21,
+    "name": "House M.D.",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "mystery",
+      "comedy"
+    ],
+    "moods": [
+      "think",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "רופא מרושע ומבריק פותר תעלומות רפואיות. כמעט כל פרק עומד בפני עצמו.",
+    "nytRank": 95,
+    "praise": "מבקרים אוהבים את הדמות הראשית הציניקנית ואת פרקי התעלומה הרפואית המהירים.",
+    "awards": [
+      "Hugh Laurie זכה בגלובוס הזהב פעמיים"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2004,
+      "seasons": 8,
+      "episodes": 177,
+      "runtime": 44,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -22,
+    "name": "The White Lotus",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "laugh",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מלון יוקרה, תיירים עשירים ורצח באופק. קומדיה שחורה על חופשה.",
+    "nytRank": 21,
+    "praise": "מבקרים משבחים את הסאטירה על העשירים ואת הכתיבה המצחיקה והמרירה.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2022)"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 22,
+      "runtime": 60,
+      "imdb": 7.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -23,
+    "name": "The Last of Us",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "apoc",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מסע הישרדות בעולם שנכבש על ידי פטרייה. דרמה אנושית עם זומבים.",
+    "praise": "מבקרים משבחים את הרגש האמיתי בין שתי הדמויות המרכזיות ואת נאמנות העיבוד למשחק.",
+    "awards": [
+      "Nick Offerman זכה בפרס אמי על הופעת אורח (2023)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -24,
+    "name": "Ozark",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "יועץ פיננסי מלבין כספי קרטל באגם באמצע ארה״ב. מתח שלא נותן לנשום.",
+    "nytRank": 68,
+    "praise": "מבקרים מפרגנים לאווירה הקודרת ולמתח, ולמשחק של הכוכבים.",
+    "awards": [
+      "Julia Garner זכתה בפרס אמי כשחקנית משנה בדרמה פעמיים"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2017,
+      "seasons": 4,
+      "episodes": 44,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -25,
+    "name": "Oz",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "הכלא הכי אכזרי על המסך. ברוטלית, מזעזעת ובלתי מתפשרת.",
+    "praise": "מבקרים רואים בה סדרה חלוצית בתיאור הכלא, אלימה ובלתי מתפשרת.",
+    "rt": 85,
+    "fallback": {
+      "year": 1997,
+      "seasons": 6,
+      "episodes": 56,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -26,
+    "name": "The Americans",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "זוג מרגלים סובייטים בפרברי וושינגטון של שנות ה-80. דרמה זוגית בתוך סיפור ריגול.",
+    "nytRank": 17,
+    "praise": "מבקרים משבחים את הדרמה הזוגית בתוך סיפור הריגול ואת הכתיבה המדויקת.",
+    "awards": [
+      "Matthew Rhys זכה בפרס אמי על התפקיד הראשי בדרמה (2018)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 75,
+      "runtime": 50,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -27,
+    "name": "The Handmaid’s Tale",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "scifi",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "דיסטופיה על חברה שבה נשים נלקחות לשירות. קשה, חזקה ונוגעת ללב.",
+    "nytRank": 67,
+    "praise": "מבקרים משבחים את העונה הראשונה, את העיצוב החזק ואת המשחק של השחקנית הראשית.",
+    "awards": [
+      "הסדרה הראשונה בסטרימינג שזכתה באמי לסדרת דרמה (2017)"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2017,
+      "seasons": 6,
+      "episodes": 66,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -28,
+    "name": "Westworld",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פארק שעשועים של רובוטים שמתחילים להבין שהם רובוטים. פאזל פילוסופי.",
+    "praise": "מבקרים אוהבים את השאיפה הפילוסופית ואת הפאזל הנרטיבי, במיוחד בעונה הראשונה.",
+    "rt": 82,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 36,
+      "runtime": 60,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -29,
+    "name": "House of Cards",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פוליטיקאי חסר מצפון בדרך לבית הלבן. חכם, רע ומפתה.",
+    "nytRank": 48,
+    "praise": "מבקרים משבחים את הכוכבים ואת האופן שבו היא הציגה פוליטיקה מאחורי הקלעים.",
+    "awards": [
+      "Robin Wright זכתה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 73,
+      "runtime": 51,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -30,
+    "name": "The Pitt",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "משמרת אחת בחדר מיון, שעה אחר שעה. אנושית, מתוחה ואמיתית.",
+    "nytRank": 36,
+    "praise": "מבקרים משבחים את הקצב ההדוק, את הריאליזם ואת האנושיות של הצוות הרפואי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה פעמיים ברציפות (2025, 2026)",
+      "Noah Wyle זכה בפרס אמי על התפקיד הראשי בדרמה (2026)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 2,
+      "episodes": 30,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -31,
+    "name": "House of the Dragon",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "fantasy",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מלחמת אחים על כס הברזל, מאתיים שנה לפני “משחקי הכס”.",
+    "praise": "מבקרים אוהבים את העומק הפוליטי ואת הדרמה המשפחתית שמאחורי הדרקונים.",
+    "rt": 84,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -32,
+    "name": "Homeland",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "קצינת CIA עם הפרעה דו-קוטבית מחפשת את הבוגד. מתח פוליטי וריגולי.",
+    "nytRank": 38,
+    "praise": "מבקרים משבחים בעיקר את העונה הראשונה ואת הדמות הראשית המורכבת.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2012)"
+    ],
+    "rt": 86,
+    "fallback": {
+      "year": 2011,
+      "seasons": 8,
+      "episodes": 96,
+      "runtime": 52,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -33,
+    "name": "Fargo",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אנתולוגיה של פשעים קטנים, אנשים מוזרים וקומדיה שחורה בשלג.",
+    "praise": "מבקרים מפרגנים לטון המיוחד שמשלב אלימות, הומור ואנשים רגילים.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2014)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2014,
+      "seasons": 5,
+      "episodes": 51,
+      "runtime": 55,
+      "imdb": 8.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -34,
+    "name": "Boardwalk Empire",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אטלנטיק סיטי של שנות ה-20: מאפיה, פוליטיקה ואלכוהול.",
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת הדמויות שמחזיקות את העולם הפוליטי.",
+    "awards": [
+      "Steve Buscemi זכה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2010,
+      "seasons": 5,
+      "episodes": 56,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -35,
+    "name": "BoJack Horseman",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סוס שהיה כוכב טלוויזיה ושקוע בדיכאון. אנימציה מצחיקה וכואבת.",
+    "nytRank": 44,
+    "praise": "מבקרים משבחים את האיזון בין קומדיה לדרמה כואבת על דיכאון והתמכרות.",
+    "rt": 92,
+    "fallback": {
+      "year": 2014,
+      "seasons": 6,
+      "episodes": 77,
+      "runtime": 26,
+      "imdb": 8.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -36,
+    "name": "Station Eleven",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "apoc",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אחרי מגפה, להקת תיאטרון נודדת בין שרידי העולם. קצרה, יפה ומרגשת.",
+    "nytRank": 93,
+    "praise": "מבקרים אוהבים את הגישה הרכה לסיפור שאחרי המגפה ואת מבנה הזמנים.",
+    "rt": 93,
+    "fallback": {
+      "year": 2021,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -37,
+    "name": "Slow Horses",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "comedy"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מרגלים כושלים שנשלחו למחלקה “הפח” של MI5, בראשות גארי אולדמן. מתח עם הומור בריטי יבש.",
+    "nytRank": 62,
+    "praise": "מבקרים מפרגנים לגארי אולדמן ולהומור היבש של סדרת ריגול שמורכבת מכישלונות.",
+    "awards": [
+      "מועמדת לפרס אמי לסדרת דרמה (2026)"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2022,
+      "seasons": 5,
+      "episodes": 30,
+      "runtime": 45,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -38,
+    "name": "24",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "יום אחד, שעה אחר שעה, ג׳ק באואר מציל את העולם. ממכרת ומטורפת.",
+    "praise": "מבקרים משבחים את רעיון הזמן האמיתי ואת הקצב הממכר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2006)"
+    ],
+    "rt": 80,
+    "fallback": {
+      "year": 2001,
+      "seasons": 9,
+      "episodes": 204,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -39,
+    "name": "Chernobyl",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מיני-סדרה של חמישה פרקים על האסון הגרעיני. מצמררת ומושלמת.",
+    "nytRank": 19,
+    "praise": "מבקרים משבחים את הדיוק, את האווירה ואת התיאור של מחיר השקר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2019)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 1,
+      "episodes": 5,
+      "runtime": 65,
+      "imdb": 9.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -40,
+    "name": "Black Mirror",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פרקים עצמאיים על הצד האפל של הטכנולוגיה. אפשר לצפות בכל סדר.",
+    "nytRank": 26,
+    "praise": "מבקרים משבחים את הרעיונות החדים על טכנולוגיה, בעיקר בפרקים הטובים ביותר.",
+    "awards": [
+      "הפרק San Junipero זכה בפרס אמי לסרט טלוויזיה (2017)"
+    ],
+    "castLabel": "שחקנים בולטים (אנתולוגיה)",
+    "rt": 86,
+    "fallback": {
+      "year": 2011,
+      "seasons": 7,
+      "episodes": 34,
+      "runtime": 60,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -41,
+    "name": "Ted Lasso",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מאמן פוטבול אמריקאי מאמן קבוצת כדורגל אנגלית ומפיץ אופטימיות. חיבוק בצורת סדרה.",
+    "nytRank": 75,
+    "praise": "מבקרים אוהבים את החום, האופטימיות והכתיבה שמצליחה להיות רגישה בלי להתחנחן.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה פעמיים (2021, 2022)"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 2020,
+      "seasons": 3,
+      "episodes": 34,
+      "runtime": 40,
+      "imdb": 8.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -42,
+    "name": "Rome",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "רומא העתיקה של קיסר ופומפיוס דרך עיני שני חיילים. אפית, אלימה ומפתה.",
+    "praise": "מבקרים משבחים את התיאור המפורט והאנושי של רומא דרך שני חיילים פשוטים.",
+    "rt": 89,
+    "fallback": {
+      "year": 2005,
+      "seasons": 2,
+      "episodes": 22,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -43,
+    "name": "Upload",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "החיים שאחרי המוות מנוהלים כמו מלון יוקרה דיגיטלי. קומדיה קלילה עם נקודות למחשבה.",
+    "praise": "מבקרים מפרגנים לרעיון המצחיק על החיים שאחרי המוות כשירות דיגיטלי.",
+    "rt": 84,
+    "fallback": {
+      "year": 2020,
+      "seasons": 4,
+      "episodes": 29,
+      "runtime": 30,
+      "imdb": 7.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -44,
+    "name": "See",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "fantasy"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם שבו כולם עיוורים וגבר אחד מגדל ילדים שרואים. אקשן ופנטזיה.",
+    "praise": "מבקרים משבחים את העולם הוויזואלי הייחודי ואת הסצנות הגדולות.",
+    "rt": 60,
+    "fallback": {
+      "year": 2019,
+      "seasons": 3,
+      "episodes": 24,
+      "runtime": 55,
+      "imdb": 6.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -45,
+    "name": "Narcos",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "עלייתו ונפילתו של פאבלו אסקובר. מהירה, ממכרת וגם מלמדת.",
+    "praise": "מבקרים משבחים את הקצב ואת הדרך שבה היא מציגה את פאבלו אסקובר ואת הרודפים אחריו.",
+    "rt": 87,
+    "fallback": {
+      "year": 2015,
+      "seasons": 3,
+      "episodes": 30,
+      "runtime": 50,
+      "imdb": 8.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -46,
+    "name": "Prison Break",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller",
+      "crime"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אח שמתכנן לפרוץ מהכלא כדי להציל את אחיו. מתח, פיתולים והמון הגזמה אהובה.",
+    "praise": "מבקרים אוהבים את הרעיון הממכר של בריחה שתוכננה בפרטי פרטים.",
+    "rt": 70,
+    "fallback": {
+      "year": 2005,
+      "seasons": 5,
+      "episodes": 90,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -47,
+    "name": "Ray Donovan",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מתקן הבעיות של הוליווד ושל המשפחה שלו. דרמת פשע קודרת.",
+    "praise": "מבקרים משבחים את המשחק של הכוכבים ואת האווירה הקודרת.",
+    "awards": [
+      "Jon Voight זכה בגלובוס הזהב על תפקיד המשנה"
+    ],
+    "rt": 80,
+    "fallback": {
+      "year": 2013,
+      "seasons": 7,
+      "episodes": 82,
+      "runtime": 55,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -48,
+    "name": "Mindhunter",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "mystery"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סוכני FBI מראיינים רוצחים סדרתיים בשנות ה-70. איטית ומצמררת.",
+    "praise": "מבקרים משבחים את הדיאלוגים המתוחים בראיונות ואת הבימוי הקפדני.",
+    "rt": 97,
+    "fallback": {
+      "year": 2017,
+      "seasons": 2,
+      "episodes": 19,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -49,
+    "name": "The Diplomat",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שגרירה אמריקאית בלונדון נקלעת למשבר בינלאומי ולנישואים מורכבים. מתח פוליטי חכם ומהיר.",
+    "nytRank": 94,
+    "praise": "מבקרים אוהבים את הקצב המהיר ואת הכימיה בין הזוג הראשי.",
+    "awards": [
+      "מועמדת לפרס אמי לסדרת דרמה (2026)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2023,
+      "seasons": 3,
+      "episodes": 24,
+      "runtime": 50,
+      "imdb": 7.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -50,
+    "name": "Stranger Things",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "fantasy"
+    ],
+    "moods": [
+      "escape",
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ילדים בפרבר אמריקאי, כוחות על ועולם הפוך. נוסטלגיה של שנות ה-80.",
+    "nytRank": 53,
+    "praise": "מבקרים משבחים את הנוסטלגיה ואת הכימיה בין הילדים בעונה הראשונה.",
+    "awards": [
+      "זכתה בפרס SAG לצוות השחקנים הטוב בסדרת דרמה (2017)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 42,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -51,
+    "name": "Dark Matter",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "thriller",
+      "mystery"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פיזיקאי נחטף ומוצא את עצמו בגרסה אחרת של חייו. מתח ביקום מקביל.",
+    "praise": "מבקרים מפרגנים לרעיון של יקומים מקבילים ולמתח האישי.",
+    "rt": 84,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 50,
+      "imdb": 7.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -52,
+    "name": "The X-Files",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "mystery",
+      "scifi"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סוכני FBI חוקרים תיקים פרנורמליים. האמת נמצאת בחוץ.",
+    "praise": "מבקרים רואים בה סדרת מסתורין מכוננת, ופרקי המפלצות הטובים שלה אהובים במיוחד.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 1993,
+      "seasons": 11,
+      "episodes": 218,
+      "runtime": 45,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -53,
+    "name": "Orange Is the New Black",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה מהמעמד הבינוני בכלא נשים. קומדיה-דרמה צבעונית עם עשרות דמויות.",
+    "praise": "מבקרים משבחים את הליהוק המגוון ואת הדמויות הרבות שמקבלות סיפור משלהן.",
+    "awards": [
+      "זכתה בפרס SAG לצוות השחקנים הטוב בסדרת קומדיה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2013,
+      "seasons": 7,
+      "episodes": 91,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -54,
+    "name": "Twin Peaks",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "drama",
+      "fantasy"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מי הרג את לורה פלמר? דיוויד לינץ׳ מגיש תעלומה מוזרה וחלומית.",
+    "nytRank": 47,
+    "praise": "מבקרים מפרגנים לסגנון הייחודי של לינץ׳ ולאווירה החלומית.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 1990,
+      "seasons": 3,
+      "episodes": 48,
+      "runtime": 55,
+      "imdb": 8.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -55,
+    "name": "The Rings of Power",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "fantasy"
+    ],
+    "moods": [
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הרקע ל״שר הטבעות״: ממלכות, אלפים וכוח אפל שמתעורר.",
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת המראה של עולם ״שר הטבעות״.",
+    "rt": 83,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 60,
+      "imdb": 6.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -56,
+    "name": "שטיסל",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "drama",
+      "comedy",
+      "israeli"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה חרדית בירושלים: אהבה, אבות ובנים וחיבוטי נפש. דרמה ישראלית חמה.",
+    "praise": "מבקרים אוהבים את החום, ההומור והפרטים האותנטיים של העולם החרדי.",
+    "rt": null,
+    "fallback": {
+      "year": 2013,
+      "seasons": 3,
+      "episodes": 36,
+      "runtime": 50,
+      "imdb": 8.7,
+      "lang": "he"
+    }
+  },
+  {
+    "tmdbId": -57,
+    "name": "פאודה",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller",
+      "drama",
+      "israeli"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "יחידת מסתערבים ישראלית מול חמאס. מתח, אקשן וקונפליקט אנושי.",
+    "praise": "מבקרים משבחים את המתח והאקשן ואת העובדה שהיא מראה את שני הצדדים.",
+    "rt": null,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 48,
+      "runtime": 45,
+      "imdb": 8.3,
+      "lang": "he"
+    }
+  },
+  {
+    "tmdbId": -58,
+    "name": "The Man in the High Castle",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "history",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מה אם הנאצים ניצחו במלחמה? היסטוריה חלופית ומחרידה.",
+    "praise": "מבקרים משבחים את הרעיון ואת העיצוב של עולם שבו הנאצים ניצחו.",
+    "rt": 78,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -59,
+    "name": "The Good Place",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "fantasy"
+    ],
+    "moods": [
+      "laugh",
+      "think",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "היא מתה ונמצאת בגן עדן, אבל היא לא אמורה להיות שם. קומדיה פילוסופית מבריקה.",
+    "nytRank": 51,
+    "praise": "מבקרים אוהבים את ההיפוכים החכמים ואת השילוב של קומדיה ופילוסופיה.",
+    "rt": 95,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 53,
+      "runtime": 25,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -60,
+    "name": "Squid Game",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אנשים בחובות מתחרים במשחקי ילדים קטלניים. ממכרת ומטלטלת.",
+    "nytRank": 72,
+    "praise": "מבקרים משבחים את העיצוב החזותי ואת הסאטירה החברתית שמאחורי המשחקים.",
+    "awards": [
+      "Lee Jung-jae זכה בפרס אמי על התפקיד הראשי בדרמה (2022)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 22,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "ko"
+    }
+  },
+  {
+    "tmdbId": -61,
+    "name": "Fleabag",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה לונדונית חדה ושבורה פונה ישר אל המצלמה. קומדיה שחורה שמסתירה כאב אמיתי.",
+    "nytRank": 5,
+    "praise": "מבקרים משבחים את הכתיבה החדה ואת המשחק הרגיש שמאחורי ההומור.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2019)"
+    ],
+    "rt": 100,
+    "fallback": {
+      "year": 2016,
+      "seasons": 2,
+      "episodes": 12,
+      "runtime": 27,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -62,
+    "name": "Veep",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "סגנית נשיא אמריקאית וצוות עסקנים כושל. סאטירה פוליטית בקצב מטורף.",
+    "nytRank": 7,
+    "praise": "מבקרים מפרגנים לקללות המדויקות, לקצב ולשחקנית הראשית.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2015 עד 2017)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2012,
+      "seasons": 7,
+      "episodes": 65,
+      "runtime": 28,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -63,
+    "name": "30 Rock",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מאחורי הקלעים של תוכנית סאטירה בניו יורק. הומור מהיר עם בדיחה כמעט בכל שנייה.",
+    "nytRank": 8,
+    "praise": "מבקרים אוהבים את צפיפות הבדיחות ואת הכתיבה המבריקה של טינה פיי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2007 עד 2009)"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2006,
+      "seasons": 7,
+      "episodes": 138,
+      "runtime": 22,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -64,
+    "name": "Curb Your Enthusiasm",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "לארי דיוויד מסתבך בכל אינטראקציה חברתית אפשרית. קומדיית מבוכה בלי רחמים.",
+    "nytRank": 9,
+    "praise": "מבקרים משבחים את האלתור ואת הדרך שבה מצבים קטנים הופכים לפיצוצים.",
+    "rt": 92,
+    "fallback": {
+      "year": 2000,
+      "seasons": 12,
+      "episodes": 120,
+      "runtime": 30,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -65,
+    "name": "Atlanta",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שני בני דודים מנסים לפרוץ בסצנת ההיפ-הופ של אטלנטה. קומדיה סוריאליסטית על החיים באמריקה.",
+    "nytRank": 10,
+    "praise": "מבקרים אוהבים את הסגנון הסוריאליסטי ואת האומץ לעשות פרקים שונים לגמרי.",
+    "awards": [
+      "Donald Glover זכה בפרס אמי על התפקיד הראשי ועל הבימוי (2017)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 41,
+      "runtime": 30,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -66,
+    "name": "The Office (US)",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "יום-יום במשרד נייר בפנסילבניה, בסגנון דוקומנטרי. קומדיה חמה שאפשר לראות שוב ושוב.",
+    "nytRank": 11,
+    "praise": "מבקרים משבחים את החום ואת הדמויות שנהיות אהובות עם הזמן.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2006)"
+    ],
+    "rt": 81,
+    "fallback": {
+      "year": 2005,
+      "seasons": 9,
+      "episodes": 201,
+      "runtime": 22,
+      "imdb": 9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -67,
+    "name": "Arrested Development",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה עשירה ומטורפת שהאבא שלה בכלא. בדיחות שמתחברות רק בצפייה חוזרת.",
+    "nytRank": 12,
+    "praise": "מבקרים אוהבים את הבדיחות שמסתדרות על פני עונות שלמות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2004)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2003,
+      "seasons": 5,
+      "episodes": 84,
+      "runtime": 22,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -68,
+    "name": "Girls",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ארבע חברות בניו יורק בשנות ה-20 שלהן. מביכה, כנה ואנושית.",
+    "nytRank": 13,
+    "praise": "מבקרים משבחים את הכנות והחשיפה של חיי צעירות בניו יורק.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת קומדיה (2013)"
+    ],
+    "rt": 83,
+    "fallback": {
+      "year": 2012,
+      "seasons": 6,
+      "episodes": 62,
+      "runtime": 28,
+      "imdb": 7.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -69,
+    "name": "Friday Night Lights",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "קבוצת פוטבול בעיירה בטקסס, והעיר כולה נושמת אותה. דרמה אנושית שמרגשת גם מי שלא מבין בספורט.",
+    "nytRank": 14,
+    "praise": "מבקרים משבחים את הריאליזם ואת הדרך שבה היא מציגה קהילה שלמה.",
+    "awards": [
+      "Kyle Chandler זכה בפרס אמי על התפקיד הראשי בדרמה (2011)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2006,
+      "seasons": 5,
+      "episodes": 76,
+      "runtime": 43,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -70,
+    "name": "The Office (UK)",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "המקור הבריטי: שתי עונות קצרות ומושלמות של מבוכה במשרד.",
+    "nytRank": 16,
+    "praise": "מבקרים רואים בה קומדיית מבוכה מושלמת בגלל הקצרות והדיוק.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת קומדיה (2004)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2001,
+      "seasons": 2,
+      "episodes": 14,
+      "runtime": 29,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -71,
+    "name": "I May Destroy You",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סופרת צעירה מנסה להבין מה קרה לה בלילה אחד ולהחזיר לעצמה שליטה. כואבת, שנונה ומקורית.",
+    "nytRank": 18,
+    "praise": "מבקרים משבחים את הכנות ואת האומץ לגעת בנושא קשה בהומור ובכאב.",
+    "awards": [
+      "Michaela Coel זכתה בפרס אמי על הכתיבה (2021)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -72,
+    "name": "The Comeback",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שחקנית שנשכחה חוזרת לטלוויזיה עם צוות צילום שעוקב אחריה. קומדיית מבוכה עם עומק מפתיע.",
+    "nytRank": 23,
+    "praise": "מבקרים רואים בה סדרה שהקדימה את זמנה בבדיקת עולם הריאליטי והסלבס.",
+    "rt": 88,
+    "fallback": {
+      "year": 2005,
+      "seasons": 2,
+      "episodes": 21,
+      "runtime": 30,
+      "imdb": 7.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -73,
+    "name": "Deadwood",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "עיירת מכרות באמריקה של המאה ה-19, בלי חוק ובלי סדר. מערבון פיוטי וגס בשפה.",
+    "nytRank": 24,
+    "praise": "מבקרים משבחים את הכתיבה הפיוטית ואת הדיאלוגים הייחודיים.",
+    "awards": [
+      "Ian McShane זכה בגלובוס הזהב על תפקיד המשנה"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 2004,
+      "seasons": 3,
+      "episodes": 36,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -74,
+    "name": "Band of Brothers",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "פלוגה אחת של צנחנים אמריקאים במלחמת העולם השנייה. מיני-סדרה גדולה ומרגשת.",
+    "nytRank": 28,
+    "praise": "מבקרים משבחים את התיאור האנושי של המלחמה דרך חיילים מסוימים.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2002)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2001,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 60,
+      "imdb": 9.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -75,
+    "name": "Key & Peele",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכוני קומדיה של שני קומיקאים, עם דמויות שנשארות בראש. כל פרק עומד בפני עצמו.",
+    "nytRank": 29,
+    "praise": "מבקרים אוהבים את הדמויות ואת המערכונים שהפכו לוויראליים.",
+    "awards": [
+      "זכתה בפרס פיבודי"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2012,
+      "seasons": 5,
+      "episodes": 53,
+      "runtime": 22,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -76,
+    "name": "Survivor",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "תחרות הישרדות על אי נידח: בריתות, בגידות ומיליון דולר בסוף. ריאליטי שחי כבר עשרות שנים.",
+    "nytRank": 31,
+    "praise": "מבקרים מפרגנים לפורמט שהפך למודל של משחק ריאליטי ושרד עשרות שנים.",
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2000,
+      "seasons": 49,
+      "episodes": 700,
+      "runtime": 60,
+      "imdb": 7.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -77,
+    "name": "Andor",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סיפורו של מורד לפני ״מלחמת הכוכבים״. מתח פוליטי בוגר ומשובח בעולם מוכר.",
+    "nytRank": 32,
+    "praise": "מבקרים משבחים את הכתיבה הבוגרת ואת המתח הפוליטי, ורבים רואים בה את הסדרה הטובה ביותר בעולם הזה.",
+    "rt": 96,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 24,
+      "runtime": 50,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -78,
+    "name": "Enlightened",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה אחרי התמוטטות חוזרת לעבודה עם משימה לשנות את העולם. סדרה קטנה, נוגה ואמיצה.",
+    "nytRank": 33,
+    "praise": "מבקרים משבחים את המשחק של לורה דרן ואת הגישה האמיצה והכואבת.",
+    "awards": [
+      "Laura Dern זכתה בגלובוס הזהב על התפקיד הראשי בקומדיה"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2011,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 28,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -79,
+    "name": "Schitt’s Creek",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה עשירה מאבדת הכול וגרה בעיירה מצחיקה. הסדרה הכי חמה ומחבקת ברשימה.",
+    "nytRank": 34,
+    "praise": "מבקרים אוהבים את החום ואת האופן שבו הסדרה מתפתחת מקומדיה לסיפור אהבה.",
+    "awards": [
+      "טאטאה את פרסי האמי של 2020: זכתה בכל שבע הקטגוריות המרכזיות של הקומדיה"
+    ],
+    "rt": 93,
+    "fallback": {
+      "year": 2015,
+      "seasons": 6,
+      "episodes": 80,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -80,
+    "name": "True Detective",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אנתולוגיית חקירות קודרות. העונה הראשונה, עם מתיו מקונוהיי ווודי הרלסון, היא זו שנכנסה לרשימה.",
+    "nytRank": 35,
+    "praise": "מבקרים משבחים בעיקר את העונה הראשונה: האווירה והמשחק.",
+    "awards": [
+      "Cary Joji Fukunaga זכה בפרס אמי על הבימוי של העונה הראשונה (2014)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2014,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 60,
+      "imdb": 8.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -81,
+    "name": "Battlestar Galactica",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "שרידי האנושות בורחים מרובוטים בחלל. מדע בדיוני פוליטי ואפל.",
+    "nytRank": 37,
+    "praise": "מבקרים רואים בה סדרת מדע בדיוני בוגרת שנוגעת בפוליטיקה ובמוסר.",
+    "awards": [
+      "זכתה בפרס פיבודי"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2004,
+      "seasons": 4,
+      "episodes": 75,
+      "runtime": 45,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -82,
+    "name": "Adolescence",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "נער בן 13 נעצר והמשפחה שלו מתפרקת. ארבעה פרקים שצולמו כל אחד בלקיחה אחת.",
+    "nytRank": 40,
+    "praise": "מבקרים משבחים את הבימוי בלקיחה אחת ואת המשחק של הצעיר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2025)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 1,
+      "episodes": 4,
+      "runtime": 60,
+      "imdb": 8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -83,
+    "name": "Louie",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "קומיקאי גרוש בניו יורק ואירועי חיים מוזרים. קומדיה אישית וחצי-חלומית.",
+    "nytRank": 41,
+    "praise": "מבקרים אוהבים את הסגנון האישי והחצי-קולנועי.",
+    "awards": [
+      "זכתה בפרס אמי על כתיבה לסדרת קומדיה (2012)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2010,
+      "seasons": 5,
+      "episodes": 61,
+      "runtime": 22,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -84,
+    "name": "Hacks",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קומיקאית ותיקה וכותבת צעירה בדיוק הפוכה. חברות מצחיקה ונוקבת.",
+    "nytRank": 42,
+    "praise": "מבקרים משבחים את הכימיה בין שתי הדמויות ואת הכתיבה השנונה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2024)",
+      "Jean Smart זכתה בפרס אמי על התפקיד הראשי כמה פעמים"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2021,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 35,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -85,
+    "name": "Peaky Blinders",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "כנופיית משפחה בבירמינגהם שאחרי מלחמת העולם הראשונה. סגנון, אלימות ומוזיקה.",
+    "nytRank": 43,
+    "praise": "מבקרים אוהבים את הסגנון המצולם ואת המוזיקה.",
+    "rt": 92,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 36,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -86,
+    "name": "Happy Valley",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "סמלת משטרה ביורקשייר מתמודדת עם פושע שחזר מהכלא. דרמה בריטית חזקה.",
+    "nytRank": 45,
+    "praise": "מבקרים משבחים את הדמות הראשית ואת המשחק של השחקנית.",
+    "awards": [
+      "Sarah Lancashire זכתה בפרס BAFTA על התפקיד הראשי"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2014,
+      "seasons": 3,
+      "episodes": 18,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -87,
+    "name": "Broad City",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שתי חברות בניו יורק ומאבק יומיומי בשטויות. קומדיה מטורפת וחמה.",
+    "nytRank": 46,
+    "praise": "מבקרים אוהבים את האנרגיה ואת החברות המצחיקה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2014,
+      "seasons": 5,
+      "episodes": 50,
+      "runtime": 22,
+      "imdb": 7.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -88,
+    "name": "Normal People",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שני צעירים אירים בדרך ארוכה של קרבה והתרחקות. דרמה אינטימית ועדינה.",
+    "nytRank": 49,
+    "praise": "מבקרים משבחים את האינטימיות ואת המשחק העדין.",
+    "rt": 97,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -89,
+    "name": "Parks and Recreation",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "פקידה אופטימית בעירייה של עיירה באינדיאנה. קומדיה חמה על אנשים שאכפת להם.",
+    "nytRank": 50,
+    "praise": "מבקרים אוהבים את האופטימיות ואת צוות השחקנים החם.",
+    "rt": 88,
+    "fallback": {
+      "year": 2009,
+      "seasons": 7,
+      "episodes": 125,
+      "runtime": 22,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -90,
+    "name": "Downton Abbey",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אחוזה בריטית וצוות משרתיה בתחילת המאה ה-20. דרמה נעימה ומפנקת.",
+    "nytRank": 52,
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת המשחק של השחקנים הוותיקים.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2011)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2010,
+      "seasons": 6,
+      "episodes": 52,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -91,
+    "name": "The Bureau",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סוכני מודיעין צרפתים וחיים כפולים. דרמת ריגול איטית וחכמה.",
+    "nytRank": 54,
+    "praise": "מבקרים משבחים את הריאליזם של עולם הריגול ואת הקצב הסבלני.",
+    "rt": null,
+    "fallback": {
+      "year": 2015,
+      "seasons": 5,
+      "episodes": 50,
+      "runtime": 52,
+      "imdb": 8.6,
+      "lang": "fr"
+    }
+  },
+  {
+    "tmdbId": -92,
+    "name": "Insecure",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה שחורה בלוס אנג׳לס ומערכות יחסים מבולבלות. מצחיקה ואמיתית.",
+    "nytRank": 55,
+    "praise": "מבקרים אוהבים את הקול הייחודי של יוצרת הסדרה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 46,
+      "runtime": 30,
+      "imdb": 7.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -93,
+    "name": "Nathan for You",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קומיקאי ״עוזר״ לעסקים קטנים ברעיונות מופרכים. קומדיית מבוכה דוקומנטרית.",
+    "nytRank": 56,
+    "praise": "מבקרים משבחים את המבוכה המדויקת ואת הרעיונות המופרכים.",
+    "rt": 93,
+    "fallback": {
+      "year": 2013,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -94,
+    "name": "I Think You Should Leave",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכונים קצרים וביזאריים שנשארים בראש. פרקים קצרצרים וטירוף מוחלט.",
+    "nytRank": 57,
+    "praise": "מבקרים אוהבים את הביזאריות ואת המערכונים שנשארים בראש.",
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 17,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -95,
+    "name": "Chappelle’s Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכוני סטנד-אפ וסאטירה של דייב שאפל. קלאסיקה של שנות ה-2000.",
+    "nytRank": 58,
+    "praise": "מבקרים מפרגנים לחדות של הסאטירה על גזע וחברה.",
+    "rt": null,
+    "fallback": {
+      "year": 2003,
+      "seasons": 2,
+      "episodes": 28,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -96,
+    "name": "PEN15",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שתי נשים בנות 30 משחקות בנות 13 בכיתה ז׳. מביכה, מצחיקה ונוגעת ללב.",
+    "nytRank": 59,
+    "praise": "מבקרים משבחים את הכנות של גיל ההתבגרות ואת הרעיון הנועז.",
+    "rt": 98,
+    "fallback": {
+      "year": 2019,
+      "seasons": 2,
+      "episodes": 26,
+      "runtime": 25,
+      "imdb": 7.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -97,
+    "name": "Peep Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שני שותפים לדירה בלונדון, מצולמים דרך עיניהם. קומדיה בריטית מביכה.",
+    "nytRank": 60,
+    "praise": "מבקרים אוהבים את הרעיון של הצפייה דרך עיני הדמויות.",
+    "rt": null,
+    "fallback": {
+      "year": 2003,
+      "seasons": 9,
+      "episodes": 54,
+      "runtime": 25,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -98,
+    "name": "RuPaul’s Drag Race",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "תחרות של דראג קווינס: איפור, ריקוד וקצת דרמה. ריאליטי צבעוני ומצחיק.",
+    "nytRank": 61,
+    "praise": "מבקרים משבחים את האנרגיה ואת התרומה לתרבות הפופולרית.",
+    "awards": [
+      "זכתה בפרס אמי לתוכנית ריאליטי תחרותית פעמים רבות"
+    ],
+    "castLabel": "מגישים",
+    "rt": null,
+    "fallback": {
+      "year": 2009,
+      "seasons": 17,
+      "episodes": 240,
+      "runtime": 60,
+      "imdb": 7.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -99,
+    "name": "The Thick of It",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "פוליטיקאים ויועצי תקשורת בממשלה הבריטית, בלי פילטר. סאטירה חדה ומלאת קללות.",
+    "nytRank": 63,
+    "praise": "מבקרים אוהבים את הסאטירה הפוליטית המהירה והקללות הממוקדות.",
+    "rt": null,
+    "fallback": {
+      "year": 2005,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 30,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -100,
+    "name": "Anthony Bourdain: Parts Unknown",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape",
+      "feel",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "השף אנתוני בורדיין מטייל בעולם ואוכל עם מקומיים. דוקו על אוכל ואנשים.",
+    "nytRank": 64,
+    "praise": "מבקרים משבחים את הצילום ואת הסקרנות, ואת הדרך שבה אוכל מוביל לסיפורים.",
+    "awards": [
+      "זכתה בפרסי אמי ופיבודי"
+    ],
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2013,
+      "seasons": 12,
+      "episodes": 118,
+      "runtime": 45,
+      "imdb": 8.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -101,
+    "name": "Mare of Easttown",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "בלשית בעיירה בפנסילבניה חוקרת רצח ומתמודדת עם משפחה. מתח נוגע ללב.",
+    "nytRank": 65,
+    "praise": "מבקרים משבחים את המשחק של השחקנית הראשית ואת הדרמה של העיירה.",
+    "awards": [
+      "Kate Winslet זכתה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2021)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2021,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -102,
+    "name": "The Rehearsal",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "נתן פילדר בונה חזרות לשיחות קשות בחיים האמיתיים. ניסוי חברתי מצחיק ומוזר.",
+    "nytRank": 66,
+    "praise": "מבקרים משבחים את הרעיון המקורי ואת השאלות שהוא מעורר.",
+    "rt": 95,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -103,
+    "name": "Anthony Bourdain: No Reservations",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "בורדיין לפני ״אתרים לא ידועים״: אוכל, תרבות וטיולים. תוכנית מסעות אהובה.",
+    "nytRank": 69,
+    "praise": "מבקרים אוהבים את הסגנון הישיר ואת המסעות.",
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2005,
+      "seasons": 9,
+      "episodes": 142,
+      "runtime": 45,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -104,
+    "name": "The Shield",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "שוטרי יחידה מיוחדת בלוס אנג׳לס שעושים הכול כדי להצליח. קודרת וחזקה.",
+    "nytRank": 70,
+    "praise": "מבקרים רואים בה סדרה חלוצית על שוטרים מושחתים.",
+    "awards": [
+      "Michael Chiklis זכה בפרס אמי על התפקיד הראשי בדרמה (2002)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2002,
+      "seasons": 7,
+      "episodes": 88,
+      "runtime": 45,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -105,
+    "name": "Beef",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "כעס בכביש מתדרדר למלחמה בין שני זרים. אנתולוגיה קומית וכואבת.",
+    "nytRank": 71,
+    "praise": "מבקרים משבחים את המשחק ואת הדרך שבה סכסוך קטן מתפוצץ.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 35,
+      "imdb": 8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -106,
+    "name": "Barry",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "רוצח שכיר מחליט להיות שחקן. קומדיה שחורה שהופכת לאפלה.",
+    "nytRank": 73,
+    "praise": "מבקרים אוהבים את השילוב בין קומדיה לאלימות ואת המשחק של השחקן הראשי.",
+    "awards": [
+      "Bill Hader זכה בפרס אמי על התפקיד הראשי בקומדיה (2018, 2019)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2018,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 30,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -107,
+    "name": "The Bear",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שף צעיר חוזר לנהל מסעדה משפחתית בשיקגו. מטבח חם, עמוס ונוגע ללב.",
+    "nytRank": 74,
+    "praise": "מבקרים משבחים את האנרגיה, הצילום הצפוף והדמויות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2023)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2022,
+      "seasons": 4,
+      "episodes": 38,
+      "runtime": 35,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -108,
+    "name": "Somebody Somewhere",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה מקנזס מוצאת קהילה אחרי אובדן. סדרה קטנה, חמה ושקטה.",
+    "nytRank": 76,
+    "praise": "מבקרים משבחים את החום והאמינות של סיפור קטן.",
+    "rt": 98,
+    "fallback": {
+      "year": 2022,
+      "seasons": 3,
+      "episodes": 21,
+      "runtime": 30,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -109,
+    "name": "Modern Family",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שלוש משפחות שקשורות זו לזו, בסגנון דוקומנטרי. קומדיה משפחתית קלילה.",
+    "nytRank": 77,
+    "praise": "מבקרים אוהבים את האנסמבל ואת הצורה המצחיקה והחמה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה חמש שנים ברציפות (2010 עד 2014)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2009,
+      "seasons": 11,
+      "episodes": 250,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -110,
+    "name": "It’s Always Sunny in Philadelphia",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "חבורה של אנשים נוראיים מנהלת בר בפילדלפיה. קומדיה גסה וממושכת.",
+    "nytRank": 78,
+    "praise": "מבקרים משבחים את הנכונות להיות מרושעים ומצחיקים לאורך שנים.",
+    "rt": 87,
+    "fallback": {
+      "year": 2005,
+      "seasons": 17,
+      "episodes": 170,
+      "runtime": 22,
+      "imdb": 8.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -111,
+    "name": "The Good Wife",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה חוזרת לעבוד כעורכת דין אחרי שערוריית בעלה. דרמה משפטית חכמה.",
+    "nytRank": 79,
+    "praise": "מבקרים משבחים את הכתיבה המשפטית ואת השחקנית הראשית.",
+    "awards": [
+      "Julianna Margulies זכתה בפרס אמי על התפקיד הראשי בדרמה (2011)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2009,
+      "seasons": 7,
+      "episodes": 156,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -112,
+    "name": "How To with John Wilson",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "סרטי ״הדרכה״ שמסתעפים לעולם המוזר של ניו יורק. דוקו מצחיק ומרגש.",
+    "nytRank": 80,
+    "praise": "מבקרים אוהבים את החיפוש האישי והמוזר אחר רגעים אנושיים.",
+    "rt": 95,
+    "fallback": {
+      "year": 2020,
+      "seasons": 3,
+      "episodes": 18,
+      "runtime": 28,
+      "imdb": 8.3,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -113,
+    "name": "The Queen’s Gambit",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ילדה יתומה ושחמט בשנות ה-60. מיני-סדרה מרהיבה על גאונות והתמכרות.",
+    "nytRank": 81,
+    "praise": "מבקרים משבחים את ההפקה היפה ואת המשחק של השחקנית הראשית.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2021)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -114,
+    "name": "Better Things",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אמא חד-הורית לשלוש בנות מנסה לחיות ולהתפרנס. קומדיה-דרמה כנה.",
+    "nytRank": 82,
+    "praise": "מבקרים אוהבים את הכנות של סיפור על אמהות.",
+    "rt": 96,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 52,
+      "runtime": 30,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -115,
+    "name": "Justified",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מרשל אמריקאי בכובע לבן מול פושעים בקנטקי. דיאלוגים ושנינות.",
+    "nytRank": 83,
+    "praise": "מבקרים משבחים את הדיאלוגים ואת הכריזמה של הכוכב.",
+    "awards": [
+      "Margo Martindale זכתה בפרס אמי כשחקנית משנה בדרמה (2011)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2010,
+      "seasons": 6,
+      "episodes": 78,
+      "runtime": 45,
+      "imdb": 8.6,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -116,
+    "name": "Planet Earth",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מסע מרהיב בטבע הפראי של כדור הארץ. כדאי לראות במסך הכי גדול שיש.",
+    "nytRank": 84,
+    "praise": "מבקרים משבחים את הצילום המרהיב ואת התמונות שלא נראו קודם.",
+    "awards": [
+      "זכתה בפרסי אמי"
+    ],
+    "castLabel": "מספר",
+    "rt": 98,
+    "fallback": {
+      "year": 2006,
+      "seasons": 3,
+      "episodes": 25,
+      "runtime": 50,
+      "imdb": 9.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -117,
+    "name": "The Great British Baking Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אופים חובבים מתחרים באוהל בכפר הבריטי. ריאליטי נעים ושלֵו.",
+    "nytRank": 85,
+    "praise": "מבקרים אוהבים את האווירה הנעימה ואת היעדר הרוע בריאליטי.",
+    "castLabel": "מגישים ושופטים",
+    "rt": null,
+    "fallback": {
+      "year": 2010,
+      "seasons": 16,
+      "episodes": 150,
+      "runtime": 60,
+      "imdb": 8.1,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -118,
+    "name": "Shōgun",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "ספינה אנגלית מגיעה ליפן של ימי הסמוראים. דרמה פוליטית מרהיבה ואלימה.",
+    "nytRank": 86,
+    "praise": "מבקרים משבחים את ההפקה המרהיבה ואת הדיוק התרבותי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2024), עם 18 זכיות באמי בעונה אחת, שיא"
+    ],
+    "rt": 99,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "ja"
+    }
+  },
+  {
+    "tmdbId": -119,
+    "name": "Reservation Dogs",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "ארבעה נערים בשמורת אינדיאנים באוקלהומה. קומדיה מקורית וחמה.",
+    "nytRank": 87,
+    "praise": "מבקרים משבחים את הייצוג האותנטי ואת ההומור המקורי.",
+    "rt": 99,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 28,
+      "runtime": 28,
+      "imdb": 8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -120,
+    "name": "Baby Reindeer",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "קומיקאי מתחיל נקלע ליחסים עם מי שמתעללת בו. סיפור אמיתי, כואב ובלתי נעים.",
+    "nytRank": 89,
+    "praise": "מבקרים משבחים את הכנות ואת המשחק של היוצר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2024)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 30,
+      "imdb": 7.7,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -121,
+    "name": "Eastbound & Down",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מגיש בייסבול לשעבר חוזר לעיירה ולא מוותר על האגו. קומדיה גסה ומצחיקה.",
+    "nytRank": 90,
+    "praise": "מבקרים אוהבים את ההומור הגס ואת הדמות הראשית.",
+    "rt": 85,
+    "fallback": {
+      "year": 2009,
+      "seasons": 4,
+      "episodes": 29,
+      "runtime": 28,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -122,
+    "name": "Catastrophe",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אמריקאי ובריטית נכנסים להריון אחרי שבוע. קומדיה רומנטית כנה וקצרה.",
+    "nytRank": 91,
+    "praise": "מבקרים משבחים את הכנות ואת המהירות של הקומדיה.",
+    "rt": 96,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 25,
+      "imdb": 7.9,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -123,
+    "name": "The Night Of",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "סטודנט נעצר אחרי רצח ומערכת המשפט מתחילה לטחון. מתח משפטי ומאופק.",
+    "nytRank": 92,
+    "praise": "מבקרים משבחים את המשחק ואת הדרך שבה היא חושפת את מערכת המשפט.",
+    "awards": [
+      "Riz Ahmed זכה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2017)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2016,
+      "seasons": 1,
+      "episodes": 8,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -124,
+    "name": "Halt and Catch Fire",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם המחשבים בשנות ה-80 ובתחילת האינטרנט. חיבור אנושי לטכנולוגיה.",
+    "nytRank": 96,
+    "praise": "מבקרים משבחים אותה כסדרה שהשתפרה מעונה לעונה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2014,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 45,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -125,
+    "name": "Community",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קבוצת לימוד במכללה קהילתית. קומדיה מטא עם כבוד מוחלט לז׳אנר.",
+    "nytRank": 97,
+    "praise": "מבקרים אוהבים את הרעיונות המטא ואת הפרקים הנושאיים.",
+    "rt": 87,
+    "fallback": {
+      "year": 2009,
+      "seasons": 6,
+      "episodes": 110,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -126,
+    "name": "The OA",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "scifi",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה שנעלמה חוזרת עם סיפור מוזר ועיניים שרואות שוב. תעלומה מיסטית.",
+    "nytRank": 98,
+    "praise": "מבקרים משבחים את האומץ ואת האווירה המסתורית.",
+    "rt": 85,
+    "fallback": {
+      "year": 2016,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 50,
+      "imdb": 7.8,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -127,
+    "name": "Gilmore Girls",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אם ובת שגדלו כחברות בעיירה קטנה בקונטיקט. דיאלוגים מהירים ונעימים.",
+    "nytRank": 99,
+    "praise": "מבקרים אוהבים את הדיאלוגים המהירים ואת היחסים בין אם לבת.",
+    "rt": 85,
+    "fallback": {
+      "year": 2000,
+      "seasons": 7,
+      "episodes": 153,
+      "runtime": 43,
+      "imdb": 8.2,
+      "lang": "en"
+    }
+  },
+  {
+    "tmdbId": -128,
+    "name": "Scandal",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מטפלת במשברי יחסי ציבור בוושינגטון. דרמה פוליטית מהירה ומתפתלת.",
+    "nytRank": 100,
+    "praise": "מבקרים אוהבים את הקצב המהיר ואת הדרמה הפוליטית.",
+    "rt": 70,
+    "fallback": {
+      "year": 2012,
+      "seasons": 7,
+      "episodes": 124,
+      "runtime": 43,
+      "imdb": 7.7,
+      "lang": "en"
+    }
+  }
+]
