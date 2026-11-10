@@ -272,3 +272,9 @@ img.poster { object-fit: cover; }
 .srcnote { margin: -14px 0 18px; color: var(--muted); font-size: 14px; }
 .empty .btn { margin-top: 4px; text-decoration: none; }
 .empty .note { margin-top: 12px; }
+/* service logos on chips */
+.chip.plat { display: inline-flex; align-items: center; gap: 8px; padding-inline-start: 8px; }
+.chip .plogo, .chip .pmark { width: 24px; height: 24px; border-radius: 7px; flex: none; }
+.chip .plogo { object-fit: cover; }
+.chip .pmark { display: inline-flex; align-items: center; justify-content: center; font-family: "Secular One", "Assistant", sans-serif; font-size: 14px; line-height: 1; background: var(--surface2); color: var(--ink); }
+.chip[aria-pressed="true"] .pmark { background: rgba(255, 255, 255, .25); color: inherit; }
