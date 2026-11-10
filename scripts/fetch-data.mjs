@@ -20,8 +20,10 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
     const old = prevById.get(entry.tmdbId) ?? null;
     if (offline) return { s: mergeEntry(entry, null, null, old, now) };
     try {
-      const tv = await tmdbGet(`/tv/${entry.tmdbId}`, { language: "he-IL", append_to_response: APPEND }, fetchImpl);
-      const { live, warnings: w } = transformTv(tv, { map });
+      // English for consistent names; a light Hebrew request only for the Hebrew description.
+      const tv = await tmdbGet(`/tv/${entry.tmdbId}`, { language: "en-US", append_to_response: APPEND }, fetchImpl);
+      const he = await tmdbGet(`/tv/${entry.tmdbId}`, { language: "he-IL" }, fetchImpl).catch(() => null);
+      const { live, warnings: w } = transformTv(tv, { map, he });
       w.forEach(x => warnings.add(x));
       const imdb = await omdbRating(live.imdbId, fetchImpl);
       return { s: mergeEntry(entry, live, imdb, old, now) };

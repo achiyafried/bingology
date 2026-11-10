@@ -1,14 +1,14 @@
 const IMG = "https://image.tmdb.org/t/p/";
 const CAST_MAX = 10;
 
-/** Typical episode length in minutes: median of episode_run_time, else the last aired episode, else null. */
+/** Typical episode length in minutes: median of episode_run_time, else null (the last episode is often a long finale). */
 export function medianRuntime(tv) {
   const v = (tv.episode_run_time || []).filter(n => n > 0).sort((a, b) => a - b);
   if (v.length) {
     const mid = v.length >> 1;
     return v.length % 2 ? v[mid] : Math.round((v[mid - 1] + v[mid]) / 2);
   }
-  return tv.last_episode_to_air?.runtime || null;
+  return null;
 }
 
 /** TMDB status → "airing" | "ended" | "canceled" (falls back to in_production). */
@@ -34,8 +34,8 @@ export function mapProviders(flatrate, map) {
   return { cats, unknown };
 }
 
-/** TMDB /tv/{id} (he-IL, with credits/providers/external_ids appended) → live fields. */
-export function transformTv(tv, { map } = {}) {
+/** TMDB /tv/{id} (en-US, with credits/providers/external_ids appended) + the he-IL response → live fields. */
+export function transformTv(tv, { map, he } = {}) {
   const warnings = [];
   const flatrate = tv["watch/providers"]?.results?.IL?.flatrate ?? [];
   const { cats, unknown } = mapProviders(flatrate, map);
@@ -49,14 +49,15 @@ export function transformTv(tv, { map } = {}) {
     seasons: tv.number_of_seasons || null,
     episodes: tv.number_of_episodes || null,
     runtime: medianRuntime(tv),
+    runtimeLast: tv.last_episode_to_air?.runtime || null,
     status: statusOf(tv),
     lang: tv.original_language || null,
     poster: tv.poster_path ? `${IMG}w342${tv.poster_path}` : null,
     creators: (tv.created_by ?? []).map(c => c.name),
     cast,
     providers: cats,
-    // English text is not Hebrew: only a Hebrew overview counts.
-    overviewHe: tv.overview?.trim() || null,
+    // Only the Hebrew response counts: English text is not a Hebrew description.
+    overviewHe: he?.overview?.trim() || null,
     imdbId: tv.external_ids?.imdb_id || null,
     tmdbVote: tv.vote_count > 0 ? Math.round(tv.vote_average * 10) / 10 : null,
     tmdbVotes: tv.vote_count > 0 ? tv.vote_count : null,

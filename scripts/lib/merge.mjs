@@ -1,4 +1,4 @@
-const FALLBACK_FIELDS = ["year", "seasons", "episodes", "runtime", "lang"];
+const FALLBACK_FIELDS = ["year", "seasons", "episodes", "lang"];
 const SCALAR_FIELDS = ["status", "poster", "overviewHe", "tmdbVote", "tmdbVotes"];
 // People lists: an empty list from TMDB usually means missing data, so keep looking.
 const PEOPLE_FIELDS = ["creators", "cast"];
@@ -16,6 +16,8 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   const { fallback = {}, ...manual } = entry;
   const s = { ...manual };
   for (const f of FALLBACK_FIELDS) s[f] = pick(live?.[f], prev?.[f], fallback[f]);
+  // Runtime: TMDB's typical length, then the curated value, then last night, then the last episode as a last resort.
+  s.runtime = pick(live?.runtime, fallback.runtime, prev?.runtime, live?.runtimeLast);
   for (const f of SCALAR_FIELDS) s[f] = pick(live?.[f], prev?.[f]);
   for (const f of PEOPLE_FIELDS) s[f] = [live?.[f], prev?.[f], fallback[f]].find(v => v && v.length) ?? [];
   // Providers: when fetched, live wins even if empty (the series left Israeli streaming).

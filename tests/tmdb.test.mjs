@@ -8,10 +8,10 @@ const map = json("scripts/providers.json");
 const bb = json("tests/fixtures/tv-1396-he.json");
 const partial = json("tests/fixtures/tv-partial.json");
 
-test("medianRuntime uses the median, then the last episode, then null", () => {
+test("medianRuntime uses only the typical episode length, never the (often long) last episode", () => {
   assert.equal(medianRuntime({ episode_run_time: [45, 47, 60] }), 47);
   assert.equal(medianRuntime({ episode_run_time: [40, 50] }), 45);
-  assert.equal(medianRuntime({ episode_run_time: [], last_episode_to_air: { runtime: 52 } }), 52);
+  assert.equal(medianRuntime({ episode_run_time: [], last_episode_to_air: { runtime: 52 } }), null);
   assert.equal(medianRuntime({ episode_run_time: [] }), null);
 });
 
@@ -23,7 +23,7 @@ test("mapProviders maps known names and sends unknown ones to other", () => {
 });
 
 test("transformTv maps a full response", () => {
-  const { live } = transformTv(bb, { map });
+  const { live } = transformTv(bb, { map, he: bb });
   assert.equal(live.year, 2008);
   assert.equal(live.seasons, 5);
   assert.equal(live.episodes, 62);
@@ -79,4 +79,17 @@ test("transformTv keeps the TMDB vote average and count", () => {
   const p = transformTv(partial, { map }).live;
   assert.equal(p.tmdbVote, null);
   assert.equal(p.tmdbVotes, null);
+});
+
+test("Apple's renamed service (Apple TV) maps to apple", () => {
+  assert.deepEqual(mapProviders([{ provider_name: "Apple TV" }], map), { cats: ["apple"], unknown: [] });
+});
+
+test("the Hebrew overview comes only from the Hebrew response; the last episode length is kept separately", () => {
+  const en = { ...bb, overview: "A chemistry teacher...", episode_run_time: [], last_episode_to_air: { runtime: 75 } };
+  const { live } = transformTv(en, { map, he: { overview: "תקציר בעברית" } });
+  assert.equal(live.overviewHe, "תקציר בעברית");
+  assert.equal(live.runtime, null);
+  assert.equal(live.runtimeLast, 75);
+  assert.equal(transformTv(en, { map }).live.overviewHe, null);
 });

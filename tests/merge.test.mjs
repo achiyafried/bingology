@@ -31,7 +31,7 @@ test("live values win and manual fields come from the entry", () => {
 
 test("without live data the previous values are kept", () => {
   const s = mergeEntry(entry, null, null, prev, NOW);
-  assert.equal(s.runtime, 50);
+  assert.equal(s.runtime, 47); // curated runtime beats last night's
   assert.equal(s.imdb, 9.4);
   assert.deepEqual(s.providers, ["hbo"]);
   assert.equal(s.fetchedAt, "2026-11-09T03:00:00Z");
@@ -50,7 +50,7 @@ test("without live or previous data the fallback is used", () => {
 
 test("a missing live field falls back per field", () => {
   const s = mergeEntry(entry, { ...live, runtime: null, poster: null }, null, prev, NOW);
-  assert.equal(s.runtime, 50);
+  assert.equal(s.runtime, 47); // curated runtime beats last night's
   assert.equal(s.poster, "https://old.jpg");
   assert.equal(s.imdb, 9.4);
   assert.equal(s.seasons, 6);
@@ -122,4 +122,12 @@ test("TMDB votes come from live, then a real previous fetch", () => {
   assert.equal(mergeEntry(entry, { ...live, tmdbVote: 8.9, tmdbVotes: 100 }, 9.5, null, NOW).tmdbVote, 8.9);
   assert.equal(mergeEntry(entry, null, null, { ...prev, tmdbVote: 8.1, tmdbVotes: 50 }, NOW).tmdbVotes, 50);
   assert.equal(mergeEntry(entry, null, null, null, NOW).tmdbVote, null);
+});
+
+test("runtime: typical length, then the curated value, then previous, then the last episode", () => {
+  assert.equal(mergeEntry(entry, { ...live, runtime: 52 }, 9.5, prev, NOW).runtime, 52);
+  assert.equal(mergeEntry(entry, { ...live, runtime: null, runtimeLast: 80 }, 9.5, prev, NOW).runtime, 47);
+  const noFb = { ...entry, fallback: { ...entry.fallback, runtime: null } };
+  assert.equal(mergeEntry(noFb, { ...live, runtime: null, runtimeLast: 80 }, 9.5, prev, NOW).runtime, 50);
+  assert.equal(mergeEntry(noFb, { ...live, runtime: null, runtimeLast: 80 }, 9.5, null, NOW).runtime, 80);
 });

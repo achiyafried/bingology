@@ -95,3 +95,11 @@ test("pool respects the concurrency limit and keeps order", async () => {
   assert.deepEqual(out, [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]);
   assert.equal(max, 3);
 });
+
+test("names come from an English request and the overview from a Hebrew one", async () => {
+  const f = fakeFetch();
+  await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW });
+  const tv = f.calls.filter(u => u.includes("/tv/1"));
+  assert.ok(tv.some(u => u.includes("language=en-US") && u.includes("append_to_response")), tv.join("\n"));
+  assert.ok(tv.some(u => u.includes("language=he-IL") && !u.includes("append_to_response")), tv.join("\n"));
+});
