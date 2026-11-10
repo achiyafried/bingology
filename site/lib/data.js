@@ -22,6 +22,7 @@ export function fromData(json) {
     nyt: x.nytRank ?? null,
     lists: x.lists,
     providers: x.providers ?? [],
+    providersGuess: x.providersGuess ?? [],
     poster: x.poster ?? null,
     cast: x.cast ?? [],
     creators: x.creators ?? [],

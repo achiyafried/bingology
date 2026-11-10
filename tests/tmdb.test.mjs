@@ -109,3 +109,18 @@ test("transformTv includes the minimum age", () => {
   const tv = { ...bb, content_ratings: { results: [{ iso_3166_1: "US", rating: "TV-14" }] } };
   assert.equal(transformTv(tv, { map }).live.minAge, 14);
 });
+
+test("Disney+ is guessed from US Disney Plus / Hulu when TMDB has nothing for Israel", () => {
+  const wp = (il, us) => ({ ...bb, "watch/providers": { results: { IL: { flatrate: il.map(n => ({ provider_name: n })) }, US: { flatrate: us.map(n => ({ provider_name: n })) } } } });
+  let live = transformTv(wp([], ["Disney Plus", "Hulu"]), { map }).live;
+  assert.deepEqual(live.providers, ["disney"]);
+  assert.deepEqual(live.providersGuess, ["disney"]);
+  live = transformTv(wp(["Netflix"], ["Hulu"]), { map }).live;
+  assert.deepEqual(live.providers, ["netflix", "disney"]);
+  assert.deepEqual(live.providersGuess, ["disney"]);
+  live = transformTv(wp(["Disney Plus"], ["Disney Plus"]), { map }).live;
+  assert.deepEqual(live.providers, ["disney"]);
+  assert.deepEqual(live.providersGuess, []);
+  live = transformTv(wp(["Netflix"], ["Netflix"]), { map }).live;
+  assert.deepEqual(live.providersGuess, []);
+});

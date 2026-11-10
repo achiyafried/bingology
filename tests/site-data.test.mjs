@@ -56,3 +56,9 @@ test("seen marks for series not in today's data are kept when saving", () => {
   saveSeen(st, seen, S);
   assert.deepEqual(JSON.parse(st.m.get("tvpick:v2")).seen.sort((a, b) => a - b), [1396, 777777]);
 });
+
+test("fromData passes the guessed providers through", () => {
+  const S2 = fromData({ series: [{ name: "X", lists: [], providers: ["disney"], providersGuess: ["disney"] }, { name: "Y", lists: [] }] });
+  assert.deepEqual(S2[0].providersGuess, ["disney"]);
+  assert.deepEqual(S2[1].providersGuess, []);
+});

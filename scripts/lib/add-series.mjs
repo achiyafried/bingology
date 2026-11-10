@@ -25,6 +25,7 @@ export function parseIssueForm(body) {
     weight: w ? Number(w[1]) : null,
     solo: checked(find("עדיף לראות לבד")).length > 0,
     blurb: empty(find("תיאור")),
+    extra: [...new Set(checked(find("זמין גם ב")).map(l => (/\((\w+)\)\s*$/.exec(l) || [])[1]).filter(k => ["israel", "disney"].includes(k)))],
   };
 }
 
@@ -55,7 +56,7 @@ export function chooseMatch(results, query) {
 /** A series.json entry: form answers where given, guessed tags otherwise, and a runtime fallback so the nightly run never stalls. */
 export function buildEntry(tv, minAge, form) {
   const auto = autoTags(tv, minAge);
-  return {
+  const e = {
     tmdbId: tv.id, name: tv.name, lists: ["mine"],
     genres: auto.genres,
     moods: form.moods && form.moods.length ? form.moods : auto.moods,
@@ -70,4 +71,6 @@ export function buildEntry(tv, minAge, form) {
       imdb: null, lang: tv.original_language || null, creators: [], cast: [], providers: [],
     },
   };
+  if (form.extra && form.extra.length) e.extraProviders = form.extra;
+  return e;
 }

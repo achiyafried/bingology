@@ -32,13 +32,13 @@ https://www.themoviedb.org/tv/194764-the-penguin
 test("parseIssueForm reads the GitHub issue-form markdown", () => {
   assert.deepEqual(parseIssueForm(body), {
     name: "The Penguin", tmdb: "https://www.themoviedb.org/tv/194764-the-penguin",
-    moods: ["tense", "think"], weight: 3, solo: true, blurb: "עלייתו של הפינגווין.\nשורה שנייה.",
+    moods: ["tense", "think"], weight: 3, solo: true, blurb: "עלייתו של הפינגווין.\nשורה שנייה.", extra: [],
   });
 });
 
 test("parseIssueForm treats '_No response_' and defaults as empty", () => {
   const b = "### שם הסדרה\n\nSevered\n\n### קישור ל-TMDB (לא חובה)\n\n_No response_\n\n### כמה כבדה?\n\nלא יודע/ת (ניחוש אוטומטי)\n\n### עדיף לראות לבד?\n\n- [ ] כן, עדיף לבד";
-  assert.deepEqual(parseIssueForm(b), { name: "Severed", tmdb: null, moods: [], weight: null, solo: false, blurb: null });
+  assert.deepEqual(parseIssueForm(b), { name: "Severed", tmdb: null, moods: [], weight: null, solo: false, blurb: null, extra: [] });
 });
 
 test("tmdbIdFrom accepts a TMDB link or a bare number, nothing else", () => {
@@ -68,4 +68,16 @@ test("buildEntry uses the form where given, auto-tags otherwise, and always has 
     fallback: { year: 2024, seasons: 1, episodes: 8, runtime: 63, imdb: null, lang: "en", creators: [], cast: [], providers: [] },
   });
   assert.equal(buildEntry({ ...tv, last_episode_to_air: null }, 17, {}).fallback.runtime, 45);
+});
+
+test("parseIssueForm reads the 'also available on' checkboxes as categories", () => {
+  const b = "### שם הסדרה\n\nFauda\n\n### זמין גם ב- (לא חובה)\n\n- [X] yes (israel)\n- [ ] HOT (israel)\n- [X] Disney+ (disney)";
+  assert.deepEqual(parseIssueForm(b).extra, ["israel", "disney"]);
+  assert.deepEqual(parseIssueForm("### שם הסדרה\n\nX").extra, []);
+});
+
+test("buildEntry keeps the manual extra providers", () => {
+  const tv = { id: 1, name: "X", genres: [], origin_country: ["IL"], episode_run_time: [45] };
+  assert.deepEqual(buildEntry(tv, 14, { extra: ["israel"] }).extraProviders, ["israel"]);
+  assert.equal("extraProviders" in buildEntry(tv, 14, {}), false);
 });

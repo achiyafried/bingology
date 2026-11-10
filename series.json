@@ -4040,7 +4040,10 @@
       "providers": [
         "israel"
       ]
-    }
+    },
+    "extraProviders": [
+      "israel"
+    ]
   },
   {
     "tmdbId": 69557,
@@ -4105,7 +4108,10 @@
       "providers": [
         "israel"
       ]
-    }
+    },
+    "extraProviders": [
+      "israel"
+    ]
   },
   {
     "tmdbId": 62017,

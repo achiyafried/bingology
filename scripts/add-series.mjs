@@ -33,6 +33,7 @@ const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: "
 if (existing) {
   existing.lists = ["mine", ...existing.lists.filter(l => l !== "mine")];
   if (form.blurb) existing.blurb = form.blurb;
+  if (form.extra.length) existing.extraProviders = [...new Set([...(existing.extraProviders || []), ...form.extra])];
 } else {
   series.push(buildEntry(tv, minAgeOf(tv), form));
 }

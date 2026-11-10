@@ -19,6 +19,7 @@ export function statusOf(tv) {
   return tv.in_production ? "airing" : "ended";
 }
 
+const US_DISNEY = ["Disney Plus", "Hulu"];
 const US_AGE = { "TV-Y": 0, "TV-Y7": 7, "TV-G": 0, "TV-PG": 10, "TV-14": 14, "TV-MA": 17 };
 
 /** Minimum viewer age from TMDB content ratings: the US TV rating, else the first numeric rating anywhere. */
@@ -49,7 +50,13 @@ export function mapProviders(flatrate, map) {
 export function transformTv(tv, { map, he } = {}) {
   const warnings = [];
   const flatrate = tv["watch/providers"]?.results?.IL?.flatrate ?? [];
-  const { cats, unknown } = mapProviders(flatrate, map);
+  const { cats: ilCats, unknown } = mapProviders(flatrate, map);
+  // TMDB/JustWatch has no Disney+ data for Israel. Disney+ here also carries Hulu/FX content, so a US
+  // Disney Plus or Hulu listing is a reasonable guess — kept separately so the site can say "probably".
+  const us = (tv["watch/providers"]?.results?.US?.flatrate ?? []).map(p => p.provider_name);
+  const guess = !ilCats.includes("disney") && us.some(n => US_DISNEY.includes(n)) ? ["disney"] : [];
+  const keys = Object.keys(map), all = new Set([...ilCats, ...guess]);
+  const cats = keys.filter(k => all.has(k)).concat(all.has("other") ? ["other"] : []);
   for (const u of unknown) warnings.push(`unknown IL provider "${u}"`);
   const cast = [...(tv.aggregate_credits?.cast ?? [])]
     .sort((a, b) => a.order - b.order)
@@ -67,6 +74,7 @@ export function transformTv(tv, { map, he } = {}) {
     creators: (tv.created_by ?? []).map(c => c.name),
     cast,
     providers: cats,
+    providersGuess: guess,
     // Only the Hebrew response counts: English text is not a Hebrew description.
     overviewHe: he?.overview?.trim() || null,
     imdbId: tv.external_ids?.imdb_id || null,

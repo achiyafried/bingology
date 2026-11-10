@@ -23,6 +23,9 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   // Providers: when fetched, live wins even if empty (the series left Israeli streaming).
   // Not fetched: last real fetch if there was one, else the legacy main platform.
   s.providers = live ? live.providers ?? [] : prev ? prev.providers ?? [] : fallback.providers ?? [];
+  const extra = manual.extraProviders ?? [];
+  s.providers = [...new Set([...s.providers, ...extra])]; // manual "also on" (e.g. yes, HOT) that TMDB does not know
+  s.providersGuess = (live ? live.providersGuess ?? [] : prev?.providersGuess ?? []).filter(p => !extra.includes(p));
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
   return s;

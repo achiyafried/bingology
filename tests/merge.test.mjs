@@ -137,3 +137,17 @@ test("minAge comes from live, then a real previous fetch", () => {
   assert.equal(mergeEntry(entry, null, null, { ...prev, minAge: 17 }, NOW).minAge, 17);
   assert.equal(mergeEntry(entry, null, null, null, NOW).minAge, null);
 });
+
+test("manual extraProviders are added to live providers, without duplicates", () => {
+  const e2 = { ...entry, extraProviders: ["israel", "netflix"] };
+  const s = mergeEntry(e2, { ...live, providers: ["netflix"], providersGuess: [] }, 9.5, null, NOW);
+  assert.deepEqual(s.providers, ["netflix", "israel"]);
+  assert.deepEqual(s.extraProviders, ["israel", "netflix"]);
+  assert.deepEqual(mergeEntry(e2, null, null, null, NOW).providers, ["israel", "netflix"]);
+});
+
+test("providersGuess follows the live data, else a real previous fetch", () => {
+  assert.deepEqual(mergeEntry(entry, { ...live, providersGuess: ["disney"] }, 9.5, null, NOW).providersGuess, ["disney"]);
+  assert.deepEqual(mergeEntry(entry, null, null, { ...prev, providersGuess: ["disney"] }, NOW).providersGuess, ["disney"]);
+  assert.deepEqual(mergeEntry(entry, null, null, null, NOW).providersGuess, []);
+});

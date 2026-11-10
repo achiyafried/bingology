@@ -48,6 +48,16 @@ body:
       label: עדיף לראות לבד?
       options:
         - label: כן, עדיף לבד
+  - type: checkboxes
+    id: extra
+    attributes:
+      label: זמין גם ב- (לא חובה)
+      description: שירותים ש-TMDB לא מכיר בישראל
+      options:
+        - label: yes (israel)
+        - label: HOT (israel)
+        - label: כאן (israel)
+        - label: Disney+ (disney)
   - type: textarea
     id: blurb
     attributes:
