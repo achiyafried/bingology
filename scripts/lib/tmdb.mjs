@@ -59,7 +59,7 @@ export function transformTv(tv, { map, he } = {}) {
   const cats = keys.filter(k => all.has(k)).concat(all.has("other") ? ["other"] : []);
   for (const u of unknown) warnings.push(`unknown IL provider "${u}"`);
   const cast = [...(tv.aggregate_credits?.cast ?? [])]
-    .sort((a, b) => a.order - b.order)
+    .sort((a, b) => (b.total_episode_count ?? 0) - (a.total_episode_count ?? 0) || a.order - b.order)
     .slice(0, CAST_MAX)
     .map(c => ({ name: c.name, photo: c.profile_path ? `${IMG}w185${c.profile_path}` : null }));
   const live = {

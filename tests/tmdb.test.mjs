@@ -124,3 +124,14 @@ test("Disney+ is guessed from US Disney Plus / Hulu when TMDB has nothing for Is
   live = transformTv(wp(["Netflix"], ["Netflix"]), { map }).live;
   assert.deepEqual(live.providersGuess, []);
 });
+
+test("cast is ranked by episodes appeared in, falling back to TMDB order", () => {
+  const cast = [
+    { name: "Anna Torv", order: 0, total_episode_count: 100, profile_path: null },
+    { name: "Lance Reddick", order: 2, total_episode_count: 60, profile_path: null },
+    { name: "John Noble", order: 7, total_episode_count: 99, profile_path: null },
+    { name: "Guest", order: 1, total_episode_count: 3, profile_path: null },
+  ];
+  const { live } = transformTv({ ...bb, aggregate_credits: { cast } }, { map });
+  assert.deepEqual(live.cast.map(c => c.name), ["Anna Torv", "John Noble", "Lance Reddick", "Guest"]);
+});

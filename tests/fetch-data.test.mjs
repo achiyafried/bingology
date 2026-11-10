@@ -122,7 +122,7 @@ test("the wide pool is discovered, tagged from genres and appended after the cur
   assert.ok(!pool.some(s => s.tmdbId === 1), "curated id must not be in the pool");
   const comedy = pool.find(s => s.tmdbId === 101);
   assert.deepEqual(comedy.genres, ["comedy"]);
-  assert.equal(comedy.cast.length, 6);
+  assert.equal(comedy.cast.length, 8);
 });
 
 test("a pool series that fails is skipped without aborting the run", async () => {

@@ -14,7 +14,7 @@ const APPEND = "aggregate_credits,watch/providers,external_ids,content_ratings";
 const readJson = p => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 
 const MAX_DISCOVER_PAGES = 40;
-const POOL_CAST = 6;
+const POOL_CAST = 8;
 const POOL_MIN_IMDB = 7.5; // pool series rated lower on IMDb are left out (unknown is kept)
 
 /** TMDB details (en-US, with extras) + Hebrew overview + IMDb rating for one id. */
