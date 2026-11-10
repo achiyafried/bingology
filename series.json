@@ -8924,5 +8924,33 @@
       "cast": [],
       "providers": []
     }
+  },
+  {
+    "tmdbId": 456,
+    "name": "The Simpsons",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "",
+    "rt": null,
+    "fallback": {
+      "year": 1989,
+      "seasons": 38,
+      "episodes": 816,
+      "runtime": 21,
+      "imdb": null,
+      "lang": "en",
+      "creators": [],
+      "cast": [],
+      "providers": []
+    }
   }
 ]
