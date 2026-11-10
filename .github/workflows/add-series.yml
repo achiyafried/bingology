@@ -76,7 +76,9 @@ jobs:
           else
             echo "משהו השתבש בהוספה. הפרטים בלשונית Actions של המאגר." > msg.txt
           fi
-          gh issue comment "$N" -R "$R" --body-file msg.txt
+          # Edits re-run this job; don't repeat a message identical to the bot's last one.
+          LAST=$(gh issue view "$N" -R "$R" --json comments --jq '[.comments[] | select(.author.login == "github-actions")] | last | .body // ""')
+          if [ "$LAST" != "$(cat msg.txt)" ]; then gh issue comment "$N" -R "$R" --body-file msg.txt; fi
           S="${{ steps.add.outputs.status }}"
           if [ "${{ job.status }}" = "success" ] && { [ "$S" = "added" ] || [ "$S" = "exists" ]; }; then gh issue close "$N" -R "$R"; fi
 
