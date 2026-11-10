@@ -4,6 +4,7 @@ import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
 import { quizSteps, resetQuiz, orderResults } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
+import { bingePlan } from "./lib/plan.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -319,6 +320,33 @@ function ticketHTML(r) {
     <div class="perf"><i></i></div>${stub}</article>`;
 }
 
+const PACES = [1, 2, 3, 5];
+function planHTML() {
+  const r = st.ranked[st.idx], s = S[r.i], pace = st.pace || 2, p = bingePlan(s, pace);
+  const yr = p.finish && p.finish.getFullYear() !== new Date().getFullYear();
+  const fin = p.finish ? p.finish.toLocaleDateString("he-IL", yr ? { day: "numeric", month: "long", year: "numeric" } : { day: "numeric", month: "long" }) : "";
+  const stat = (em, n, label) => `<div class="p-stat"><span class="p-em" aria-hidden="true">${em}</span><strong>${n}</strong><span>${label}</span></div>`;
+  const sum = p.evenings == null ? "" : `<p class="p-sum"><strong>${p.evenings === 1 ? "ערב אחד" : p.evenings + " ערבים"}</strong>${p.evenings > 1 ? ` · תסיימו בערך ב־${fin}` : ""}</p>
+    <p class="p-alt">או ${p.weekends === 1 ? "סוף שבוע מרתוני אחד" : p.weekends + " סופי שבוע מרתוניים"}</p>`;
+  return `<h1 class="rtitle" data-focus tabindex="-1">תוכנית הבינג׳ שלך</h1>
+  <article class="ticket plan">
+    <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
+    <div class="p-stats">${stat("📺", s.s, s.s === 1 ? "עונה" : "עונות")}${stat("🎬", s.e, "פרקים")}${stat("⏱️", p.hours != null ? "כ־" + p.hours : "?", "שעות צפייה")}</div>
+    ${s.airing ? `<p class="p-note">הסדרה עדיין משודרת, אז בדרך עוד פרקים.</p>` : ""}
+    <div class="perf"><i></i></div>
+    <div class="p-pace"><h3>כמה פרקים בערב?</h3>
+      <div class="chips">${PACES.map(n => `<button class="chip" data-a="pace" data-v="${n}" aria-pressed="${pace === n}">${n}</button>`).join("")}</div>
+      ${sum}</div>
+    <div class="perf"><i></i></div>
+    <p class="avail">${platLine(s)}</p>
+    ${ratesHTML(s)}
+    <ul class="why">${r.why.filter(w => w.ok).map(w => `<li>${CHECK}<span>${w.t}</span></li>`).join("")}</ul>
+    ${trailerHTML(s)}
+    <p class="note p-fine">סך השעות מקורב: לפי אורך פרק ממוצע, ופרקי סיום לפעמים ארוכים יותר.</p>
+  </article>
+  <div class="foot"><button class="btn ghost" data-a="backrec">חזרה להמלצות</button><button class="btn primary" data-a="restart">התחלה מחדש</button></div>`;
+}
+
 function resultHTML() {
   if (!st.ranked.length || st.idx >= st.ranked.length) {
     const none = st.seen.size >= S.length;
@@ -350,6 +378,7 @@ function render(top) {
   else if (st.tab === "actors") body = actorsHTML();
   else if (st.screen === "intro") body = introHTML();
   else if (st.screen === "q") body = qHTML();
+  else if (st.screen === "plan") body = planHTML();
   else body = resultHTML();
   $("#app").innerHTML = header() + body + footerHTML();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
@@ -510,7 +539,9 @@ document.addEventListener("click", e => {
     case "finish": rank(false); st.screen = "result"; render(true); break;
     case "another": st.idx++; st.chosen = false; render(true); break;
     case "alt": st.idx = +el.dataset.k; st.chosen = false; render(true); break;
-    case "choose": st.chosen = true; render(false); break;
+    case "choose": st.chosen = true; st.screen = "plan"; render(true); break;
+    case "pace": st.pace = +v; render(false); break;
+    case "backrec": st.chosen = false; st.screen = "result"; render(true); break;
     case "unchoose": st.chosen = false; st.idx++; render(true); break;
     case "markseen": st.seen.add(i); save(); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
     case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;

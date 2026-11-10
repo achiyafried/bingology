@@ -238,3 +238,20 @@ img.poster { object-fit: cover; }
 .sortnote { text-align: center; color: var(--muted); font-size: 14.5px; margin: -10px 0 16px; }
 .rate.bs { background: var(--ticket-accent); color: var(--ticket); font-weight: 700; }
 .rate.bs b { color: inherit; opacity: .85; }
+/* binge plan */
+.p-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 14px 18px 6px; }
+.p-stat { background: rgba(59, 47, 208, .07); border-radius: 14px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.p-em { font-size: 22px; line-height: 1.2; }
+.p-stat strong { font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 30px; line-height: 1.1; color: var(--ticket-accent); }
+.p-stat span:last-child { font-size: 13px; color: var(--ticket-muted); font-weight: 600; }
+.p-note { margin: 4px 18px 0; font-size: 14px; color: #14673F; font-weight: 600; }
+.p-pace { padding: 6px 18px 4px; text-align: center; }
+.p-pace h3 { font-size: 20px; margin: 4px 0 10px; }
+.p-pace .chips { justify-content: center; margin-bottom: 12px; }
+.p-pace .chip { min-width: 52px; border-color: rgba(26, 22, 64, .2); background: transparent; color: var(--ticket-ink); }
+.p-pace .chip[aria-pressed="true"] { background: var(--ticket-ink); border-color: var(--ticket-ink); color: var(--ticket); }
+.p-sum { margin: 0; font-size: 18px; }
+.p-sum strong { font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 26px; color: var(--ticket-accent); }
+.p-alt { margin: 2px 0 8px; color: var(--ticket-muted); font-size: 14.5px; }
+.p-fine { padding: 0 18px 16px; margin: 6px 0 0; }
+.plan .why { padding-top: 8px; }
