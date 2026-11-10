@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { pickMatch, needsMatch } from "../scripts/lib/match.mjs";
-import { tmdbGet } from "../scripts/lib/api.mjs";
+import { tmdbGet, omdbRating, cleanKey } from "../scripts/lib/api.mjs";
 
 const r = (id, name, date, original_name = name) => ({ id, name, original_name, first_air_date: date });
 
@@ -49,4 +49,37 @@ test("placeholder (negative) and missing ids still need matching", () => {
   assert.equal(needsMatch({ tmdbId: null }), true);
   assert.equal(needsMatch({ tmdbId: -3 }), true);
   assert.equal(needsMatch({ tmdbId: 1396 }), false);
+});
+
+test("tmdbGet cleans paste markers and whitespace from the token", async () => {
+  process.env.TMDB_TOKEN = "\x1b[200~ tok123\n\x1b[201~";
+  let auth;
+  const fake = async (url, opts) => { auth = opts.headers.Authorization; return new Response("{}", { status: 200 }); };
+  await tmdbGet("/tv/1", {}, fake);
+  assert.equal(auth, "Bearer tok123");
+});
+
+test("cleanKey strips paste markers, control characters and spaces", () => {
+  assert.equal(cleanKey("\x1b[200~ab12cd34\r\n\x1b[201~"), "ab12cd34");
+  assert.equal(cleanKey(undefined), "");
+});
+
+test("omdbRating sends the cleaned key", async () => {
+  process.env.OMDB_KEY = " ab12\n";
+  let url;
+  await omdbRating("tt1", async u => { url = String(u); return new Response('{"imdbRating":"8.0"}'); });
+  assert.ok(url.endsWith("apikey=ab12"), url);
+});
+
+test("tmdbGet accepts the short v3 API key as a query parameter", async () => {
+  process.env.TMDB_TOKEN = "0123456789abcdef0123456789abcdef";
+  let seen;
+  await tmdbGet("/tv/1", { language: "he-IL" }, async (url, opts) => { seen = { url: String(url), auth: opts.headers.Authorization }; return new Response("{}"); });
+  assert.equal(seen.auth, undefined);
+  assert.ok(seen.url.includes("api_key=0123456789abcdef0123456789abcdef"), seen.url);
+});
+
+test("tmdbGet explains a 401", async () => {
+  process.env.TMDB_TOKEN = "eyJbad";
+  await assert.rejects(tmdbGet("/tv/1", {}, async () => new Response("{}", { status: 401 })), e => e.status === 401 && /Read Access Token/.test(e.message));
 });
