@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { quizSteps, resetQuiz, orderResults } from "../site/lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "../site/lib/quiz.js";
 
 const QS = [{ id: "src" }, { id: "platforms" }, { id: "genres" }];
 
@@ -55,4 +55,15 @@ test("orderResults includes every series tied with the 10th best match", () => {
 test("orderResults by score sorts the best matches by binge score, unknown last", () => {
   const S5 = [{ bs: 70 }, { bs: 95 }, { bs: null }, { bs: 80 }, { bs: 60 }];
   assert.deepEqual(orderResults(ranked, S5, "score").map(r => r.i), [1, 3, 0, 4, 2]);
+});
+
+test("the Israeli services are always offered", () => {
+  assert.deepEqual(ALWAYS_SHOWN, ["yes", "hot", "partner", "cellcom", "kan"]);
+});
+
+test("emptyPlatforms lists chosen services that have no series", () => {
+  const S = [{ providers: ["netflix", "yes"] }, { providers: [] }];
+  assert.deepEqual(emptyPlatforms(S, ["hot", "netflix", "kan"]), ["hot", "kan"]);
+  assert.deepEqual(emptyPlatforms(S, ["yes"]), []);
+  assert.deepEqual(emptyPlatforms(S, []), []);
 });

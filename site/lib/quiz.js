@@ -29,3 +29,9 @@ export function orderResults(ranked, S, mode) {
   });
   return top.concat(ranked.slice(n));
 }
+
+/** Services offered in the quiz even with no series yet: TMDB has no data for them, they are marked by hand. */
+export const ALWAYS_SHOWN = ["yes", "hot", "partner", "cellcom", "kan"];
+
+/** Chosen services that no series is listed on (to explain an empty result). */
+export const emptyPlatforms = (S, plats) => plats.filter(p => !S.some(s => s.providers.includes(p)));

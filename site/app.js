@@ -7,7 +7,7 @@ import { searchSeries } from "./lib/search.js";
 import { addSeriesUrl } from "./lib/addlink.js";
 
 const REPO = "achiyafried/bingology";
-import { quizSteps, resetQuiz, orderResults } from "./lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
 
@@ -16,7 +16,7 @@ const poolIds = (src, plats) => poolIn(S, src, plats);
 const store = (() => { try { return window.localStorage; } catch (e) { return null; } })();
 function save() { saveSeen(store, st.seen, S); }
 const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", yes: "yes", hot: "HOT", partner: "פרטנר", cellcom: "סלקום", kan: "כאן", other: "אחר" };
-const platsInUse = () => Object.keys(PLAT_LABEL).filter(k => S.some(s => s.providers.includes(k)));
+const platsInUse = () => Object.keys(PLAT_LABEL).filter(k => ALWAYS_SHOWN.includes(k) || S.some(s => s.providers.includes(k)));
 const platLine = s => s.providers.length ? "זמין ב: " + s.providers.map(p => PLAT_LABEL[p] + (s.providersGuess.includes(p) ? " (כנראה)" : "")).join(", ") : "לא זמינה כרגע בסטרימינג בישראל";
 const PHOTO = new Map();
 
@@ -356,6 +356,12 @@ function planHTML() {
 
 function resultHTML() {
   if (!st.ranked.length || st.idx >= st.ranked.length) {
+    const plats = st.ans.platforms || [], missing = emptyPlatforms(S, plats);
+    if (plats.length && missing.length === plats.length) {
+      const names = missing.map(p => PLAT_LABEL[p]).join(", ");
+      return `<div class="empty"><h2>אין עדיין סדרות מסומנות ב־${names}</h2><p>ל־TMDB אין נתונים על השירותים הישראליים, ולכן הם מסומנים ידנית לכל סדרה. אפשר לבחור עוד שירות, או להוסיף סדרה ולסמן "זמין גם ב־" בטופס ההוספה.</p>
+      <button class="btn primary" data-a="edit">שינוי התשובות</button><a class="btn ghost" href="${esc(addSeriesUrl(REPO, ""))}" target="_blank" rel="noopener noreferrer">➕ הוספת סדרה</a></div>`;
+    }
     const none = st.seen.size >= S.length;
     return `<div class="empty"><h2>${none ? "ראיתם הכול!" : "אין עוד המלצות"}</h2><p>${none ? `כל ${S.length} הסדרות מסומנות כנצפו.` : "לא נשארו סדרות שמתאימות לבחירות. אפשר לשנות את התשובות או לאפס את מה שסימנתם כנצפה."}</p>
     <button class="btn primary" data-a="edit">שינוי התשובות</button><button class="btn ghost" data-a="resetseen">איפוס הנצפו</button></div>`;
