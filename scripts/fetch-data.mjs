@@ -3,6 +3,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
+import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData } from "./lib/merge.mjs";
 
@@ -42,6 +43,7 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
 }
 
 async function main() {
+  loadEnv();
   const args = process.argv.slice(2);
   const offline = args.includes("--offline");
   const oi = args.indexOf("--only");

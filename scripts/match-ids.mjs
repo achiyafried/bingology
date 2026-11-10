@@ -4,6 +4,9 @@ import { existsSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { parseLegacy, legacyToSeries } from "./lib/legacy.mjs";
 import { pickMatch, needsMatch } from "./lib/match.mjs";
 import { tmdbGet } from "./lib/api.mjs";
+import { loadEnv } from "./lib/env.mjs";
+
+loadEnv();
 
 if (!process.env.TMDB_TOKEN) { console.error("TMDB_TOKEN is not set"); process.exit(1); }
 
