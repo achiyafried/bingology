@@ -54,7 +54,7 @@ export function parseLegacy(html) {
 
 const MINE_N = 60;
 // Legacy "main home" categories → today's categories (the rest have no Israeli equivalent).
-const PLAT_MAP = { netflix: "netflix", hbo: "hbo", apple: "apple", prime: "prime", disney: "disney", israel: "israel" };
+const PLAT_MAP = { netflix: "netflix", hbo: "hbo", apple: "apple", prime: "prime", disney: "disney", israel: "yes" };
 
 /** Legacy tables → curated series entries (order preserved; tmdbId to be matched later). */
 export function legacyToSeries(d) {

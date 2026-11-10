@@ -1,10 +1,13 @@
 // The wide pool: TMDB's best-rated series beyond the curated lists, with tags guessed from genres.
-export const POOL_SIZE = 500;
+export const TARGET_TOTAL = 1001; // a thousand and one series: the curated lists plus the pool
+export const poolSizeFor = curatedCount => Math.max(0, TARGET_TOTAL - curatedCount);
+// [min TMDB rating, min votes] — loosened step by step only until there are enough candidates.
+export const TIERS = [[7.5, 500], [7.3, 300], [7.2, 250], [7.0, 200]];
 export const EXCLUDED_GENRES = [16, 10762, 10763, 10764, 10767]; // animation, kids, news, reality, talk
 const PRIOR_VOTES = 1000;
 
-export const discoverParams = page => ({
-  language: "en-US", sort_by: "vote_count.desc", "vote_average.gte": 7.5, "vote_count.gte": 500,
+export const discoverParams = (page, [avg, votes] = TIERS[0]) => ({
+  language: "en-US", sort_by: "vote_count.desc", "vote_average.gte": avg, "vote_count.gte": votes,
   without_genres: EXCLUDED_GENRES.join("|"), page,
 });
 

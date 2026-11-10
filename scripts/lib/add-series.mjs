@@ -25,7 +25,7 @@ export function parseIssueForm(body) {
     weight: w ? Number(w[1]) : null,
     solo: checked(find("עדיף לראות לבד")).length > 0,
     blurb: empty(find("תיאור")),
-    extra: [...new Set(checked(find("זמין גם ב")).map(l => (/\((\w+)\)\s*$/.exec(l) || [])[1]).filter(k => ["israel", "disney"].includes(k)))],
+    extra: [...new Set(checked(find("זמין גם ב")).map(l => (/\((\w+)\)\s*$/.exec(l) || [])[1]).filter(k => ["yes", "hot", "partner", "cellcom", "kan", "disney"].includes(k)))],
   };
 }
 

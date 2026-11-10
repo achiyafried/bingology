@@ -7,39 +7,53 @@ import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
 import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData } from "./lib/merge.mjs";
-import { discoverParams, rankPool, poolEntry, POOL_SIZE } from "./lib/discover.mjs";
+import { discoverParams, rankPool, poolEntry, poolSizeFor, TIERS } from "./lib/discover.mjs";
 
 const CONCURRENCY = 8;
 const APPEND = "aggregate_credits,watch/providers,external_ids,content_ratings";
 const readJson = p => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 
-const MAX_DISCOVER_PAGES = 40;
+const MAX_DISCOVER_PAGES = 80;
+const OMDB_BUDGET = 900; // OMDb free tier: 1000 requests a day; leave room for manual runs and adds
 const POOL_CAST = 8;
 const POOL_MIN_IMDB = 7.5; // pool series rated lower on IMDb are left out (unknown is kept)
 
-/** TMDB details (en-US, with extras) + Hebrew overview + IMDb rating for one id. */
-async function fetchLive(id, fetchImpl, map, warnings) {
+const IMDB_MAX_AGE_MS = 3 * 24 * 3600 * 1000; // IMDb ratings move slowly: refresh each series every 3 days
+
+/** TMDB details (en-US, with extras) + Hebrew overview + IMDb rating (cached, budgeted) for one id. */
+async function fetchLive(id, fetchImpl, map, warnings, old, ctx) {
+  // Decide on OMDb before any await, so the budget is spent in list order (curated first, then pool by rank).
+  const fresh = !!old?.imdbAt && Date.parse(ctx.now) - Date.parse(old.imdbAt) < IMDB_MAX_AGE_MS;
+  const useOmdb = !fresh && ctx.budget > 0 && (ctx.budget--, true);
   // English for consistent names; a light Hebrew request only for the Hebrew description.
   const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: APPEND }, fetchImpl);
   const he = await tmdbGet(`/tv/${id}`, { language: "he-IL" }, fetchImpl).catch(() => null);
   const { live, warnings: w } = transformTv(tv, { map, he });
   w.forEach(x => warnings.add(x));
-  const imdb = await omdbRating(live.imdbId, fetchImpl);
-  return { tv, live, imdb };
+  if (fresh) return { tv, live, imdb: old.imdb ?? null, imdbAt: old.imdbAt };
+  const r = useOmdb ? await omdbRating(live.imdbId, fetchImpl) : undefined;
+  if (r === undefined) return { tv, live, imdb: null, imdbAt: old?.imdbAt ?? null }; // keep the old score, retry later
+  return { tv, live, imdb: r, imdbAt: ctx.now };
 }
 
 /** Candidate ids for the wide pool, best first. Throws if discovery itself fails. */
 async function discoverPool(curatedIds, size, fetchImpl) {
   const results = [];
-  for (let page = 1; page <= MAX_DISCOVER_PAGES; page++) {
-    const r = await tmdbGet("/discover/tv", discoverParams(page), fetchImpl);
-    results.push(...(r.results || []));
-    if (page >= (r.total_pages || 0) || results.length >= size * 1.6) break;
+  let ranked = [];
+  for (const tier of TIERS) {
+    for (let page = 1; page <= MAX_DISCOVER_PAGES; page++) {
+      const r = await tmdbGet("/discover/tv", discoverParams(page, tier), fetchImpl);
+      results.push(...(r.results || []));
+      if (page >= (r.total_pages || 0)) break;
+    }
+    ranked = rankPool(results, curatedIds, size);
+    if (ranked.length >= size) break;
   }
-  return rankPool(results, curatedIds, size);
+  return ranked;
 }
 
-export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false }) {
+export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity }) {
+  const ctx = { now, budget: omdbBudget };
   const list = only ? series.slice(0, only) : series;
   const prevById = new Map((prev?.series ?? []).map(s => [s.tmdbId, s]));
   const warnings = new Set();
@@ -47,12 +61,13 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
   // 1. Curated series: strict (failures count toward aborting the run).
   const results = await pool(list, CONCURRENCY, async entry => {
     const old = prevById.get(entry.tmdbId) ?? null;
-    if (offline) return { s: mergeEntry(entry, null, null, old, now) };
+    const keep = s => Object.assign(s, { imdbAt: old?.imdbAt ?? null });
+    if (offline) return { s: keep(mergeEntry(entry, null, null, old, now)) };
     try {
-      const { live, imdb } = await fetchLive(entry.tmdbId, fetchImpl, map, warnings);
-      return { s: mergeEntry(entry, live, imdb, old, now) };
+      const { live, imdb, imdbAt } = await fetchLive(entry.tmdbId, fetchImpl, map, warnings, old, ctx);
+      return { s: Object.assign(mergeEntry(entry, live, imdb, old, now), { imdbAt }) };
     } catch (err) {
-      return { s: mergeEntry(entry, null, null, old, now), err };
+      return { s: keep(mergeEntry(entry, null, null, old, now)), err };
     }
   });
 
@@ -80,8 +95,9 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
       const fetched = await pool(ids, CONCURRENCY, async id => {
         const old = prevById.get(id) ?? null;
         try {
-          const { tv, live, imdb } = await fetchLive(id, fetchImpl, map, warnings);
+          const { tv, live, imdb, imdbAt } = await fetchLive(id, fetchImpl, map, warnings, old, ctx);
           const s = mergeEntry(poolEntry(tv, live.minAge), live, imdb, old?.lists?.includes("pool") ? old : null, now);
+          s.imdbAt = imdbAt;
           s.cast = s.cast.slice(0, POOL_CAST);
           if (typeof s.imdb === "number" && s.imdb < POOL_MIN_IMDB) return { low: true };
           return s;
@@ -119,7 +135,7 @@ async function main() {
   const out = "site/data.json";
   const prev = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : null;
 
-  const r = await run({ series, prev, now: new Date().toISOString(), only, offline, poolSize: POOL_SIZE, keepPool });
+  const r = await run({ series, prev, now: new Date().toISOString(), only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET });
   r.warnings.forEach(w => console.warn("warn:", w));
   r.errors.forEach(e => console.error("invalid:", e));
   console.log(`${r.data.series.length} series, ${r.failed.length} failed${r.unreachable ? ", TMDB unreachable" : ""}`);
@@ -127,7 +143,7 @@ async function main() {
   if (r.abort) { console.error("aborting: data.json left unchanged"); process.exit(1); }
   if (only) { console.log("smoke test passed (nothing written)"); return; }
   if (sameData(r.data, prev)) { console.log("no changes"); return; }
-  writeFileSync(out, JSON.stringify(r.data, null, 2) + "\n");
+  writeFileSync(out, JSON.stringify(r.data) + "\n"); // compact: this file is downloaded by every visitor
   console.log(`wrote ${out}`);
 }
 

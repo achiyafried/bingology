@@ -135,3 +135,9 @@ test("cast is ranked by episodes appeared in, falling back to TMDB order", () =>
   const { live } = transformTv({ ...bb, aggregate_credits: { cast } }, { map });
   assert.deepEqual(live.cast.map(c => c.name), ["Anna Torv", "John Noble", "Lance Reddick", "Guest"]);
 });
+
+test("each Israeli service is its own category", () => {
+  for (const cat of ["yes", "hot", "partner", "cellcom", "kan"]) assert.ok(cat in map, cat);
+  assert.equal("israel" in map, false);
+  assert.deepEqual(mapProviders([{ provider_name: "HOT" }, { provider_name: "Kan Box" }], map).cats, ["hot", "kan"]);
+});

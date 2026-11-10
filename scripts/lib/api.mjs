@@ -31,18 +31,23 @@ export async function tmdbGet(path, params = {}, fetchImpl = fetch) {
   }
 }
 
-/** IMDb rating via OMDb, or null when unavailable. Never throws. */
+/**
+ * IMDb rating via OMDb. Never throws.
+ * number = the rating; null = OMDb answered but has no rating; undefined = the request failed
+ * (network, HTTP error, daily limit, bad key) — the caller should keep what it had and retry later.
+ */
 export async function omdbRating(imdbId, fetchImpl = fetch) {
   if (!imdbId) return null;
   try {
     const url = `https://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&apikey=${encodeURIComponent(cleanKey(process.env.OMDB_KEY))}`;
     const res = await fetchImpl(url);
-    if (!res.ok) return null;
+    if (!res.ok) return undefined;
     const j = await res.json();
+    if (j.Response === "False") return /limit|api key/i.test(j.Error || "") ? undefined : null;
     const n = Number(j.imdbRating);
-    return j.Response === "False" || !Number.isFinite(n) ? null : n;
+    return Number.isFinite(n) ? n : null;
   } catch {
-    return null;
+    return undefined;
   }
 }
 

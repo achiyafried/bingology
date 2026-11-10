@@ -19,7 +19,8 @@ function fakeFetch({ tv = {}, imdb = "9.5", discover = null } = {}) {
     if (url.includes("omdbapi.com")) return new Response(JSON.stringify({ Response: "True", imdbRating: imdb }));
     if (url.includes("/discover/tv")) {
       if (discover === "net") throw new TypeError("fetch failed");
-      const page = Number(new URL(url).searchParams.get("page")), pages = discover || [];
+      const sp = new URL(url).searchParams, page = Number(sp.get("page"));
+      const pages = Array.isArray(discover) ? discover : (discover?.[sp.get("vote_average.gte")] || []);
       return new Response(JSON.stringify({ page, total_pages: pages.length, results: pages[page - 1] || [] }));
     }
     const id = Number(/\/tv\/(\d+)/.exec(url)[1]);
@@ -86,8 +87,13 @@ test("only=N limits the run", async () => {
   assert.equal(r.data.series.length, 2);
 });
 
-test("omdbRating returns null on network errors", async () => {
-  assert.equal(await omdbRating("tt1", async () => { throw new TypeError("x"); }), null);
+test("omdbRating: undefined when the request failed (network, quota), null when OMDb has no rating", async () => {
+  assert.equal(await omdbRating("tt1", async () => { throw new TypeError("x"); }), undefined);
+  assert.equal(await omdbRating("tt1", async () => new Response(JSON.stringify({ Response: "False", Error: "Request limit reached!" }))), undefined);
+  assert.equal(await omdbRating("tt1", async () => new Response("{}", { status: 500 })), undefined);
+  assert.equal(await omdbRating("tt1", async () => new Response(JSON.stringify({ Response: "True", imdbRating: "N/A" }))), null);
+  assert.equal(await omdbRating("tt1", async () => new Response(JSON.stringify({ Response: "True", imdbRating: "8.3" }))), 8.3);
+  assert.equal(await omdbRating(null, async () => { throw new Error("must not call"); }), null);
 });
 
 test("pool respects the concurrency limit and keeps order", async () => {
@@ -184,4 +190,41 @@ test("keepPool refreshes curated series only and keeps last night's pool, minus 
   const r = await run({ series: [entry(1, "A"), entry(2, "B")], prev, fetchImpl: f, now: NOW, poolSize: 500, keepPool: true });
   assert.deepEqual(r.data.series.map(s => s.name), ["A", "B", "Stays"]);
   assert.ok(!f.calls.some(u => u.includes("/discover/")));
+});
+
+const omdbCounter = () => { const f = fakeFetch(); return { f, n: () => f.calls.filter(u => u.includes("omdbapi.com")).length }; };
+const prevWith = (imdbAt, imdb = 8.8) => ({ series: [{ tmdbId: 1, imdb, imdbAt, fetchedAt: "2026-11-09T03:00:00Z" }] });
+
+test("a fresh IMDb score (under 3 days) is reused without calling OMDb", async () => {
+  const { f, n } = omdbCounter();
+  const r = await run({ series: [entry(1, "A")], prev: prevWith("2026-11-08T03:00:00Z"), fetchImpl: f, now: NOW });
+  assert.equal(n(), 0);
+  assert.equal(r.data.series[0].imdb, 8.8);
+  assert.equal(r.data.series[0].imdbAt, "2026-11-08T03:00:00Z");
+});
+
+test("a stale IMDb score is refreshed and stamped", async () => {
+  const { f, n } = omdbCounter();
+  const r = await run({ series: [entry(1, "A")], prev: prevWith("2026-11-01T03:00:00Z"), fetchImpl: f, now: NOW });
+  assert.equal(n(), 1);
+  assert.equal(r.data.series[0].imdb, 9.5);
+  assert.equal(r.data.series[0].imdbAt, NOW);
+});
+
+test("the OMDb budget caps calls; over budget keeps the old score and stamp", async () => {
+  const { f, n } = omdbCounter();
+  const series = [1, 2, 3].map(i => entry(i, "S" + i));
+  const prev = { series: series.map(e => ({ tmdbId: e.tmdbId, imdb: 7.7, imdbAt: "2026-10-01T00:00:00Z", fetchedAt: "x" })) };
+  const r = await run({ series, prev, fetchImpl: f, now: NOW, omdbBudget: 2 });
+  assert.equal(n(), 2);
+  assert.deepEqual(r.data.series.map(s => s.imdbAt), [NOW, NOW, "2026-10-01T00:00:00Z"]);
+  assert.equal(r.data.series[2].imdb, 7.7);
+});
+
+test("discovery loosens the threshold only until there are enough candidates", async () => {
+  const f = fakeFetch({ discover: { "7.5": [[d(11), d(12)]], "7.3": [[d(11), d(12), d(13), d(14)]], "7.2": [[d(99)]] } });
+  const r = await run({ series: [], prev: null, fetchImpl: f, now: NOW, poolSize: 3 });
+  assert.equal(r.data.series.length, 3);
+  const tiers = f.calls.filter(u => u.includes("/discover/")).map(u => new URL(u).searchParams.get("vote_average.gte"));
+  assert.deepEqual([...new Set(tiers)], ["7.5", "7.3"]);
 });

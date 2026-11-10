@@ -15,7 +15,7 @@ let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
 const store = (() => { try { return window.localStorage; } catch (e) { return null; } })();
 function save() { saveSeen(store, st.seen, S); }
-const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", israel: "yes / HOT / סלקום / פרטנר / כאן", other: "אחר" };
+const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", yes: "yes", hot: "HOT", partner: "פרטנר", cellcom: "סלקום", kan: "כאן", other: "אחר" };
 const platsInUse = () => Object.keys(PLAT_LABEL).filter(k => S.some(s => s.providers.includes(k)));
 const platLine = s => s.providers.length ? "זמין ב: " + s.providers.map(p => PLAT_LABEL[p] + (s.providersGuess.includes(p) ? " (כנראה)" : "")).join(", ") : "לא זמינה כרגע בסטרימינג בישראל";
 const PHOTO = new Map();

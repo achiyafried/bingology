@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { discoverParams, rankPool, autoTags, poolEntry, EXCLUDED_GENRES } from "../scripts/lib/discover.mjs";
+import { discoverParams, rankPool, autoTags, poolEntry, EXCLUDED_GENRES, TIERS, poolSizeFor } from "../scripts/lib/discover.mjs";
 
 test("discover asks for well-rated shows and leaves out reality, talk, news, kids and animation", () => {
   const p = discoverParams(3);
@@ -31,4 +31,17 @@ test("autoTags maps TMDB genres to our genres, moods and weight", () => {
 test("poolEntry builds a curated-shaped entry marked as pool", () => {
   const e = poolEntry({ id: 42, name: "Show", genres: [{ id: 35 }], origin_country: ["US"] }, 14);
   assert.deepEqual(e, { tmdbId: 42, name: "Show", lists: ["pool"], genres: ["comedy"], moods: ["laugh"], weight: 1, solo: false, blurb: "", rt: null, fallback: {} });
+});
+
+test("the pool fills the site up to 1001 series in total (a thousand and one nights)", () => {
+  assert.equal(poolSizeFor(130), 871);
+  assert.equal(poolSizeFor(1200), 0);
+});
+
+test("discovery tiers start strict and loosen step by step", () => {
+  assert.deepEqual(TIERS, [[7.5, 500], [7.3, 300], [7.2, 250], [7.0, 200]]);
+  const p = discoverParams(2, TIERS[1]);
+  assert.equal(p["vote_average.gte"], 7.3);
+  assert.equal(p["vote_count.gte"], 300);
+  assert.equal(discoverParams(1)["vote_average.gte"], 7.5);
 });

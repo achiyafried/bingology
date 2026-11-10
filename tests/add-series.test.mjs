@@ -71,8 +71,8 @@ test("buildEntry uses the form where given, auto-tags otherwise, and always has 
 });
 
 test("parseIssueForm reads the 'also available on' checkboxes as categories", () => {
-  const b = "### שם הסדרה\n\nFauda\n\n### זמין גם ב- (לא חובה)\n\n- [X] yes (israel)\n- [ ] HOT (israel)\n- [X] Disney+ (disney)";
-  assert.deepEqual(parseIssueForm(b).extra, ["israel", "disney"]);
+  const b = "### שם הסדרה\n\nFauda\n\n### זמין גם ב- (לא חובה)\n\n- [X] yes (yes)\n- [ ] HOT (hot)\n- [X] פרטנר (partner)\n- [X] כאן (kan)\n- [X] Disney+ (disney)\n- [X] bogus (rm)";
+  assert.deepEqual(parseIssueForm(b).extra, ["yes", "partner", "kan", "disney"]);
   assert.deepEqual(parseIssueForm("### שם הסדרה\n\nX").extra, []);
 });
 
