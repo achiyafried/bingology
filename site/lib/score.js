@@ -11,6 +11,17 @@ export const SEAS_IDX = { one: 0, few: 1, mid: 2, many: 3 };
 export const LEN_TXT = { s: "עד חצי שעה", m: "כ-45 דקות", l: "שעה ומעלה" };
 export const SEAS_TXT = { one: "עונה אחת", few: "2–3 עונות", mid: "4–6 עונות", many: "7 עונות ומעלה" };
 
+export const ERAS = { "80": "שנות ה־80 ולפני", "90": "שנות ה־90", "00": "שנות ה־2000", "10": "שנות ה־2010", "20": "שנות ה־2020" };
+// Explicit order: integer-like object keys ("10", "80"...) would otherwise be sorted numerically.
+export const ERA_KEYS = ["80", "90", "00", "10", "20"];
+
+/** Decade bucket of a premiere year ("80" covers 1989 and earlier). */
+export function eraOf(y) {
+  if (!y) return null;
+  if (y < 1990) return "80";
+  return String(Math.floor(y / 10) % 10) + "0";
+}
+
 /** Indices of S in the chosen source list, filtered to series on any of the chosen services. */
 export function poolIds(S, src, plats) {
   let ids = S.map((_, i) => i);
@@ -65,6 +76,12 @@ export function scoreSeries(s, a) {
       const got = s.minAge <= 14 ? 1.5 : s.minAge < 17 ? 0.6 : 0;
       add(1.5, got, s.minAge ? `מתאימה מגיל ${s.minAge}` : "מתאימה לכל הגילים", `מיועדת לגילאי ${s.minAge}+`);
     } else add(1.5, s.h === 1 ? 1 : 0, "קלילה, כנראה מתאימה למשפחה", "לא בטוח שמתאימה למשפחה");
+  }
+  if (a.eras && a.eras.length) {
+    const e = eraOf(s.y), k = ERA_KEYS.indexOf(e);
+    const d = e == null ? 9 : Math.min(...a.eras.map(x => Math.abs(ERA_KEYS.indexOf(x) - k)));
+    const label = e ? `${ERAS[e]} (${s.y})` : "שנת הבכורה לא ידועה";
+    add(2, d === 0 ? 2 : d === 1 ? 1 : 0, `מהתקופה שבחרתם: ${label}`, `מתקופה אחרת: ${label}`);
   }
   const norm = max ? sc / max : 1;
   const pct = Math.min(100, Math.round(100 * norm));

@@ -1,4 +1,4 @@
-import { GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries } from "./lib/score.js";
+import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries } from "./lib/score.js";
 import { fromData } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
@@ -25,6 +25,7 @@ const ALL_QS = [
     ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"] ] },
   { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. אפשר לבחור כמה או לדלג." },
   { id: "genres", multi: true, t: "איזה ז׳אנר מתחשק?", d: "אפשר לבחור כמה, או לדלג." },
+  { id: "eras", multi: true, t: "מאיזו תקופה?", d: "לפי שנת הבכורה. אפשר לבחור כמה, או לדלג." },
   { id: "mood", t: "איזה מצב רוח אתם מחפשים הערב?", d: "מה הסדרה צריכה לעשות לכם?", o: [
     ["laugh", "😄", "שתצחיק ותרים", "משהו שמשאיר חיוך"],
     ["feel", "🥹", "שתרגש", "דרמה שנוגעת בלב"],
@@ -78,7 +79,7 @@ const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסת�
 
 /* state */
 const st = { tab: "pick", screen: "intro", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
-function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, sort: null }; }
+function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
 const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -193,7 +194,7 @@ const CROSS = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true
 function rank(surprise) {
   const rnd = mulberry(Math.floor(Math.random() * 1e9));
   const a = st.ans;
-  const answered = a.genres.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang;
+  const answered = a.genres.length || a.eras.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang;
   const out = [];
   const pool = new Set(poolIds(a.src, a.platforms));
   S.forEach((s, i) => {
@@ -292,7 +293,7 @@ function qHTML() {
   }
   const q = QS[step];
   if (q.multi) {
-    const chips = q.id === "genres" ? GENRES : PLAT_LABEL, keys = q.id === "genres" ? Object.keys(GENRES) : platsInUse(), sel = st.ans[q.id];
+    const chips = q.id === "genres" ? GENRES : q.id === "eras" ? ERAS : PLAT_LABEL, keys = q.id === "genres" ? Object.keys(GENRES) : q.id === "eras" ? ERA_KEYS : platsInUse(), sel = st.ans[q.id];
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">${q.t}</h2><p class="sub">${q.d}</p>
     <div class="chips">${keys.map(g => `<button class="chip" data-a="chip" data-q="${q.id}" data-v="${g}" aria-pressed="${sel.includes(g)}">${chips[g]}</button>`).join("")}</div>
     <button class="btn primary block" data-a="next">${sel.length ? "המשך" : "דלגו על השאלה"}</button></div>`;

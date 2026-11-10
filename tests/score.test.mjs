@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { scoreSeries, poolIds } from "../site/lib/score.js";
+import { scoreSeries, poolIds, eraOf } from "../site/lib/score.js";
 import { fromData } from "../site/lib/data.js";
 
 const S = fromData(JSON.parse(readFileSync("tests/fixtures/data-small.json", "utf8")));
@@ -57,4 +57,23 @@ test("company: family uses the age rating, then weight when unknown", () => {
   const why = scoreSeries({ ...ted, minAge: 17 }, only("family")).items[0];
   assert.equal(why.ok, false);
   assert.match(why.t, /17/);
+});
+
+test("eraOf buckets premiere years into decades (80s and earlier together)", () => {
+  assert.equal(eraOf(1975), "80");
+  assert.equal(eraOf(1989), "80");
+  assert.equal(eraOf(1993), "90");
+  assert.equal(eraOf(2008), "00");
+  assert.equal(eraOf(2019), "10");
+  assert.equal(eraOf(2025), "20");
+  assert.equal(eraOf(null), null);
+});
+
+test("eras: chosen decade fits fully, a neighbouring decade half, others not", () => {
+  const s = { ...byName("Breaking Bad") }; // 2008 → "00"
+  assert.equal(scoreSeries(s, { genres: [], platforms: [], eras: ["00"] }).pct, 100);
+  assert.equal(scoreSeries(s, { genres: [], platforms: [], eras: ["10"] }).pct, 50);
+  assert.equal(scoreSeries(s, { genres: [], platforms: [], eras: ["20"] }).pct, 0);
+  assert.equal(scoreSeries(s, { genres: [], platforms: [], eras: ["20", "00"] }).pct, 100);
+  assert.equal(scoreSeries({ ...s, y: null }, { genres: [], platforms: [], eras: ["00"] }).pct, 0);
 });
