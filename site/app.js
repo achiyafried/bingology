@@ -2,6 +2,8 @@ import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS
 import { fromData } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
+import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
+import { searchSeries } from "./lib/search.js";
 import { quizSteps, resetQuiz, orderResults } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
@@ -21,7 +23,7 @@ const LOGO = "<svg class=\"ic\" viewBox=\"0 0 512 512\" aria-hidden=\"true\" xml
 const ALL_QS = [
   { id: "src", t: "מאיפה לבחור?", d: "מאגר הסדרות שמהן נבחר.", o: [
     ["any", "🌐", "כל הסדרות", "הרשימה האישית, הניו יורק טיימס והמאגר הרחב יחד"],
-    ["mine", "⭐", "הרשימה האישית שלי", "60 הסדרות המובילות שלכם"],
+    ["mine", "⭐", "הרשימה האישית שלי", "הסדרות שבחרתם בעצמכם"],
     ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"],
     ["pool", "🌍", "המאגר הרחב", "500 הסדרות המדורגות ביותר ב-TMDB, מעבר לרשימות"] ] },
   { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. אפשר לבחור כמה או לדלג." },
@@ -267,7 +269,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brand">${LOGO}</div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button></div></header>`;
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button></div></header>`;
 }
 
 function introHTML() {
@@ -378,6 +380,7 @@ function render(top) {
   let body;
   if (st.tab === "list") body = listHTML();
   else if (st.tab === "actors") body = actorsHTML();
+  else if (st.tab === "search") body = searchHTML();
   else if (st.screen === "intro") body = introHTML();
   else if (st.screen === "q") body = qHTML();
   else if (st.screen === "plan") body = planHTML();
@@ -410,45 +413,6 @@ function avatar(n, big) {
   const img = safeImg(PHOTO.get(n)) ? `<img src="${safeImg(PHOTO.get(n))}" alt="" loading="lazy">` : "";
   return `<span class="av${big ? " big" : ""}" style="--h:${h}" aria-hidden="true">${esc(ini)}${img}</span>`;
 }
-/* Hebrew name search by pronunciation: both the Latin name and the Hebrew query are reduced to a consonant skeleton */
-const HMAP = { "ב": "B", "ג": "G", "ד": "D", "ז": "S", "ט": "T", "כ": "K", "ך": "K", "ק": "K", "ל": "L", "מ": "M", "ם": "M", "נ": "N", "ן": "N", "ס": "S", "פ": "P", "ף": "P", "ר": "R", "ש": "S", "ת": "T" };
-const collapseKey = s => s.replace(/(.)\1+/g, "$1");
-function hebKey(s) {
-  return s.replace(/[\u0591-\u05C7]/g, "").split(/[\s\-]+/).filter(Boolean).map(w => {
-    let out = "";
-    for (let i = 0; i < w.length; i++) {
-      const c = w[i], n = w[i + 1];
-      if ("'׳’\"״".includes(c)) continue;
-      if (c === "ו") { if (n === "ו") { out += "B"; i++; } else if (i === 0) out += "B"; continue; }
-      if (c === "צ" || c === "ץ") { out += (n === "'" || n === "׳") ? "K" : "S"; continue; }
-      out += HMAP[c] || "";
-    }
-    return collapseKey(out);
-  }).filter(Boolean);
-}
-function latKey(s) {
-  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean).map(w => {
-    w = w.replace(/sch/g, "S").replace(/tch/g, "K").replace(/ch/g, "K").replace(/sh/g, "S").replace(/th/g, "T").replace(/ph/g, "P").replace(/ck/g, "K").replace(/qu/g, "KB").replace(/gh/g, "").replace(/x/g, "KS");
-    let out = "";
-    for (let i = 0; i < w.length; i++) {
-      const c = w[i], n = w[i + 1] || "";
-      if (c >= "A" && c <= "Z") { out += c; continue; }
-      if ("bvw".includes(c)) out += "B";
-      else if (c === "c") out += "eiy".includes(n) ? "S" : "K";
-      else if ("kq".includes(c)) out += "K";
-      else if ("gj".includes(c)) out += "G";
-      else if ("sz".includes(c)) out += "S";
-      else if ("fp".includes(c)) out += "P";
-      else if ("dlmnrt".includes(c)) out += c.toUpperCase();
-    }
-    return collapseKey(out);
-  }).filter(Boolean);
-}
-function keyMatch(a, q) {
-  const qf = q.join("");
-  if (qf.length < 2) return false;
-  return qf.length >= 3 ? a.kf.includes(qf) : a.kw.some(w => w.startsWith(qf));
-}
 function actorRows() {
   const q = st.actQuery.trim().toLowerCase();
   let a = actorIndex();
@@ -466,11 +430,23 @@ function actorRows() {
 }
 function actListHTML() {
   const rows = actorRows(), shown = rows.slice(0, st.actLimit);
-  if (!rows.length) return `<div class="empty"><h2>לא נמצא שחקן</h2><p>נסו חלק מהשם, באנגלית או בעברית. בעברית החיפוש מבוסס על הגייה, ולכן הכתיב לא חייב להיות מדויק. הרשימה כוללת רק את השחקנים המרכזיים בכל סדרה, ולכן ייתכן ששחקן מוכר חסר.</p></div>`;
+  if (!rows.length) return `<div class="empty"><h2>לא נמצא שחקן</h2><p>נסו חלק מהשם, באנגלית או בעברית. בעברית החיפוש מבוסס על הגייה, ולכן הכתיב לא חייב להיות מדויק. מופיעים רק השחקנים המרכזיים של סדרות שנמצאות באתר, כך ששחקן שהסדרות שלו לא כאן לא יופיע. אפשר לחפש את הסדרה שלו בלשונית החיפוש.</p></div>`;
   return shown.map(a => {
     const k = ACTMAP.get(a.n), names = a.ids.slice(0, 3).map(i => `<bdi>${esc(S[i].n)}</bdi>`).join(", "), more = a.ids.length - 3;
     return `<button class="arow" data-a="actor" data-k="${k}">${avatar(a.n)}<span class="ainfo"><b><bdi>${esc(a.n)}</bdi></b><small>${names}${more > 0 ? " ועוד " + more : ""}</small></span><span class="acount">${a.ids.length}</span></button>`;
   }).join("") + (rows.length > shown.length ? `<button class="btn ghost block" data-a="actmore">הצגת עוד (${rows.length - shown.length})</button>` : "");
+}
+function serResHTML() {
+  const q = (st.serQuery || "").trim();
+  if (q.length < 2) return `<p class="note">אפשר לחפש באנגלית או בעברית. בעברית החיפוש לפי הגייה, כך ש"סופרנוס" ימצא את The Sopranos.</p>`;
+  const ids = searchSeries(S, q);
+  if (!ids.length) return `<div class="empty"><h2>הסדרה לא נמצאת באתר</h2><p>האתר כולל את הרשימה האישית, את 100 הסדרות של הניו יורק טיימס ואת המאגר הרחב: הסדרות המדורגות ביותר ב-TMDB. סדרה שחסרה אפשר להוסיף לרשימה האישית.</p></div>`;
+  return `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div>`;
+}
+function searchHTML() {
+  return `<div class="listbar"><h2>חיפוש סדרה</h2><span class="count">${S.length} סדרות</span></div>
+  <input id="serq" data-focus class="search" type="search" dir="auto" placeholder="שם הסדרה, באנגלית או בעברית" aria-label="חיפוש סדרה" value="${esc(st.serQuery || "")}" autocomplete="off">
+  <div id="serRes" aria-live="polite">${serResHTML()}</div>`;
 }
 function actorsHTML() {
   actorIndex();
@@ -566,6 +542,7 @@ document.addEventListener("click", e => {
 });
 $("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $("#dlg").addEventListener("close", () => { st.dlgStack = []; st.dlgCur = null; });
+document.addEventListener("input", e => { if (e.target && e.target.id === "serq") { st.serQuery = e.target.value; $("#serRes").innerHTML = serResHTML(); } });
 document.addEventListener("input", e => { if (e.target && e.target.id === "actq") { st.actQuery = e.target.value; st.actLimit = 60; $("#actList").innerHTML = actListHTML(); } });
 
 /* external links: some viewers (for example in-app webviews) block new windows, so fall back to copying the address */

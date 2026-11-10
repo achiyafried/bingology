@@ -8896,5 +8896,33 @@
         "other"
       ]
     }
+  },
+  {
+    "tmdbId": 2140,
+    "name": "Everybody Loves Raymond",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "ריי, כתב ספורט מלונג איילנד, מנסה לשרוד את ההורים שגרים ממול, את אחיו הקנאי ואת אשתו שתמיד צודקת. סיטקום משפחתי קלאסי ומצחיק.",
+    "rt": null,
+    "fallback": {
+      "year": 1996,
+      "seasons": 9,
+      "episodes": 210,
+      "runtime": 22,
+      "imdb": null,
+      "lang": "en",
+      "creators": [],
+      "cast": [],
+      "providers": []
+    }
   }
 ]
