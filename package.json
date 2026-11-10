@@ -1,0 +1,13 @@
+{
+  "name": "bingology",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "keys": "sh scripts/set-keys.sh",
+    "extract": "node scripts/extract-legacy.mjs",
+    "match": "node scripts/match-ids.mjs",
+    "fetch": "node scripts/fetch-data.mjs"
+  }
+}

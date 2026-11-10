@@ -1,0 +1,11 @@
+{
+  "updatedAt": "2026-11-10T03:00:00Z",
+  "series": [
+    { "tmdbId": 1396, "name": "Breaking Bad", "lists": ["mine", "nyt"], "nytRank": 1, "genres": ["crime", "thriller", "drama"], "moods": ["tense", "think"], "weight": 3, "solo": false, "blurb": "מורה לכימיה", "rt": 96,
+      "year": 2008, "seasons": 5, "episodes": 62, "runtime": 47, "lang": "en", "status": "ended", "poster": null, "overviewHe": null, "creators": ["Vince Gilligan"], "cast": [], "providers": ["netflix"], "imdb": 9.5, "fetchedAt": null },
+    { "tmdbId": 95396, "name": "Severance", "lists": ["mine", "nyt"], "nytRank": 30, "genres": ["scifi", "mystery", "thriller"], "moods": ["think", "tense"], "weight": 2, "solo": false, "blurb": "", "rt": 97,
+      "year": 2022, "seasons": 2, "episodes": 19, "runtime": 50, "lang": "en", "status": "airing", "poster": null, "overviewHe": "תקציר עברי", "creators": ["Dan Erickson"], "cast": [], "providers": ["apple"], "imdb": 8.7, "fetchedAt": null },
+    { "tmdbId": 97546, "name": "Ted Lasso", "lists": ["mine"], "genres": ["comedy", "drama"], "moods": ["laugh", "feel"], "weight": 1, "solo": false, "blurb": "מאמן", "rt": 92, "praise": "מבקרים אוהבים", "awards": ["אמי"],
+      "year": 2020, "seasons": 3, "episodes": 34, "runtime": 40, "lang": "en", "status": "ended", "poster": null, "overviewHe": null, "creators": [], "cast": [], "providers": ["apple"], "imdb": 8.8, "fetchedAt": null }
+  ]
+}

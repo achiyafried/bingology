@@ -1,0 +1,8900 @@
+[
+  {
+    "tmdbId": 54344,
+    "name": "The Leftovers",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "שניים אחוז מהעולם נעלמו ברגע אחד. מה עושים עם האבל ועם השאלות שנשארו? דרמה עמוקה ומטלטלת.",
+    "nytRank": 25,
+    "praise": "מבקרים משבחים את הדרך שבה היא הופכת אבל וחוסר ודאות לדרמה עמוקה, בעיקר בעונה השלישית.",
+    "rt": 86,
+    "fallback": {
+      "year": 2014,
+      "seasons": 3,
+      "episodes": 28,
+      "runtime": 60,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Damon Lindelof",
+        "Tom Perrotta"
+      ],
+      "cast": [
+        {
+          "name": "Justin Theroux",
+          "photo": null
+        },
+        {
+          "name": "Carrie Coon",
+          "photo": null
+        },
+        {
+          "name": "Amy Brenneman",
+          "photo": null
+        },
+        {
+          "name": "Christopher Eccleston",
+          "photo": null
+        },
+        {
+          "name": "Liv Tyler",
+          "photo": null
+        },
+        {
+          "name": "Margaret Qualley",
+          "photo": null
+        },
+        {
+          "name": "Ann Dowd",
+          "photo": null
+        },
+        {
+          "name": "Scott Glenn",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1398,
+    "name": "The Sopranos",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "ראש מאפיה בניו ג׳רזי הולך לטיפול פסיכולוגי. אבן הפינה של הדרמה הטלוויזיונית.",
+    "praise": "מבקרים רואים בה את הסדרה שהפכה את הטלוויזיה לאמנות, בזכות דמות שהיא גם פושע וגם אדם מסובך.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2004, 2007) ובגלובוס הזהב"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 1999,
+      "seasons": 6,
+      "episodes": 86,
+      "runtime": 55,
+      "imdb": 9.2,
+      "lang": "en",
+      "creators": [
+        "David Chase"
+      ],
+      "cast": [
+        {
+          "name": "James Gandolfini",
+          "photo": null
+        },
+        {
+          "name": "Edie Falco",
+          "photo": null
+        },
+        {
+          "name": "Lorraine Bracco",
+          "photo": null
+        },
+        {
+          "name": "Michael Imperioli",
+          "photo": null
+        },
+        {
+          "name": "Steven Van Zandt",
+          "photo": null
+        },
+        {
+          "name": "Tony Sirico",
+          "photo": null
+        },
+        {
+          "name": "Dominic Chianese",
+          "photo": null
+        },
+        {
+          "name": "Jamie-Lynn Sigler",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1396,
+    "name": "Breaking Bad",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מורה לכימיה חולה הופך ליצרן סמים. מתח שלא מרפה עד הפרק האחרון.",
+    "nytRank": 1,
+    "praise": "מבקרים מפרגנים להתפתחות הדמות הראשית ולתסריט הדוק שבו כל פרק מוביל לבא אחריו.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה פעמיים (2013, 2014)",
+      "Bryan Cranston זכה בארבעה פרסי אמי על התפקיד הראשי"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2008,
+      "seasons": 5,
+      "episodes": 62,
+      "runtime": 47,
+      "imdb": 9.5,
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan"
+      ],
+      "cast": [
+        {
+          "name": "Bryan Cranston",
+          "photo": null
+        },
+        {
+          "name": "Aaron Paul",
+          "photo": null
+        },
+        {
+          "name": "Anna Gunn",
+          "photo": null
+        },
+        {
+          "name": "Bob Odenkirk",
+          "photo": null
+        },
+        {
+          "name": "Dean Norris",
+          "photo": null
+        },
+        {
+          "name": "Betsy Brandt",
+          "photo": null
+        },
+        {
+          "name": "RJ Mitte",
+          "photo": null
+        },
+        {
+          "name": "Giancarlo Esposito",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 60059,
+    "name": "Better Call Saul",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הסיפור של עורך הדין שמאחורי הסיפור. איטית ואנושית יותר, וגאונית באותה מידה.",
+    "nytRank": 27,
+    "praise": "מבקרים משבחים את הקצב המדוד ואת פיתוח הדמויות, ורבים רואים בה שווה ערך לסדרת האם.",
+    "rt": 97,
+    "fallback": {
+      "year": 2015,
+      "seasons": 6,
+      "episodes": 63,
+      "runtime": 47,
+      "imdb": 9,
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan",
+        "Peter Gould"
+      ],
+      "cast": [
+        {
+          "name": "Bob Odenkirk",
+          "photo": null
+        },
+        {
+          "name": "Rhea Seehorn",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Banks",
+          "photo": null
+        },
+        {
+          "name": "Michael McKean",
+          "photo": null
+        },
+        {
+          "name": "Patrick Fabian",
+          "photo": null
+        },
+        {
+          "name": "Giancarlo Esposito",
+          "photo": null
+        },
+        {
+          "name": "Michael Mando",
+          "photo": null
+        },
+        {
+          "name": "Tony Dalton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 95396,
+    "name": "Severance",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עובדים שהזיכרון שלהם חצוי בין העבודה לבית. מסתורין מוזר ומרתק על משרד מבהיל.",
+    "nytRank": 30,
+    "praise": "מבקרים אוהבים את הרעיון המקורי, את העיצוב הקר ואת הכתיבה שמשאירה אותך מנחש.",
+    "awards": [
+      "Tramell Tillman זכה בפרס אמי לשחקן משנה בדרמה (2025)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 19,
+      "runtime": 50,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Dan Erickson (יוצר)",
+        "Ben Stiller (במאי ומפיק)"
+      ],
+      "cast": [
+        {
+          "name": "Adam Scott",
+          "photo": null
+        },
+        {
+          "name": "Britt Lower",
+          "photo": null
+        },
+        {
+          "name": "Tramell Tillman",
+          "photo": null
+        },
+        {
+          "name": "Patricia Arquette",
+          "photo": null
+        },
+        {
+          "name": "John Turturro",
+          "photo": null
+        },
+        {
+          "name": "Christopher Walken",
+          "photo": null
+        },
+        {
+          "name": "Zach Cherry",
+          "photo": null
+        },
+        {
+          "name": "Dichen Lachman",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 76331,
+    "name": "Succession",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "think",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "משפחת מולטי-מיליארדרים נלחמת על הכס. סאטירה חדה ודיאלוגים שנשארים בראש.",
+    "nytRank": 4,
+    "praise": "מבקרים מפרגנים לדיאלוגים החדים ולסאטירה שהיא גם אכזרית וגם מצחיקה על משפחת מיליארדרים.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה שלוש פעמים"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2018,
+      "seasons": 4,
+      "episodes": 39,
+      "runtime": 60,
+      "imdb": 8.8,
+      "lang": "en",
+      "creators": [
+        "Jesse Armstrong"
+      ],
+      "cast": [
+        {
+          "name": "Brian Cox",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Strong",
+          "photo": null
+        },
+        {
+          "name": "Sarah Snook",
+          "photo": null
+        },
+        {
+          "name": "Kieran Culkin",
+          "photo": null
+        },
+        {
+          "name": "Alan Ruck",
+          "photo": null
+        },
+        {
+          "name": "Matthew Macfadyen",
+          "photo": null
+        },
+        {
+          "name": "Nicholas Braun",
+          "photo": null
+        },
+        {
+          "name": "J. Smith-Cameron",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 79788,
+    "name": "Watchmen",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "המשך חופשי לקומיקס האגדי, על גזענות, זיכרון וגיבורי על במסכות. נועזת ומטורפת.",
+    "nytRank": 39,
+    "praise": "מבקרים משבחים את התעוזה שבה היא משתמשת בקומיקס המקורי כדי לדבר על גזענות וזיכרון.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2020)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 60,
+      "imdb": 7.6,
+      "lang": "en",
+      "creators": [
+        "Damon Lindelof"
+      ],
+      "cast": [
+        {
+          "name": "Regina King",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Irons",
+          "photo": null
+        },
+        {
+          "name": "Don Johnson",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Tim Blake Nelson",
+          "photo": null
+        },
+        {
+          "name": "Yahya Abdul-Mateen II",
+          "photo": null
+        },
+        {
+          "name": "Louis Gossett Jr.",
+          "photo": null
+        },
+        {
+          "name": "Hong Chau",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1438,
+    "name": "The Wire",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "בולטימור דרך עיני שוטרים, סוחרי סמים, פוליטיקאים ומורים. התיאור המקיף ביותר של עיר.",
+    "nytRank": 2,
+    "praise": "מבקרים רואים בה את התיאור המקיף והכן ביותר של עיר אמריקאית ושל המוסדות שלה.",
+    "awards": [
+      "מעולם לא זכתה בפרס אמי, ועדיין מוזכרת שוב ושוב כאחת הסדרות הגדולות אי פעם"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2002,
+      "seasons": 5,
+      "episodes": 60,
+      "runtime": 58,
+      "imdb": 9.3,
+      "lang": "en",
+      "creators": [
+        "David Simon"
+      ],
+      "cast": [
+        {
+          "name": "Dominic West",
+          "photo": null
+        },
+        {
+          "name": "Idris Elba",
+          "photo": null
+        },
+        {
+          "name": "Sonja Sohn",
+          "photo": null
+        },
+        {
+          "name": "Wendell Pierce",
+          "photo": null
+        },
+        {
+          "name": "Lance Reddick",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Clarke Peters",
+          "photo": null
+        },
+        {
+          "name": "Aidan Gillen",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 76479,
+    "name": "The Boys",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "comedy",
+      "thriller"
+    ],
+    "moods": [
+      "laugh",
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "גיבורי על שהם בעצם תאגיד מושחת. שחורה, מצחיקה, אלימה ובלי פילטרים.",
+    "praise": "מבקרים אוהבים את הסאטירה החדה על תרבות הסלבס והתאגידים, גם כשהיא אלימה בכוונה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2019,
+      "seasons": 5,
+      "episodes": 40,
+      "runtime": 60,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Eric Kripke"
+      ],
+      "cast": [
+        {
+          "name": "Karl Urban",
+          "photo": null
+        },
+        {
+          "name": "Jack Quaid",
+          "photo": null
+        },
+        {
+          "name": "Antony Starr",
+          "photo": null
+        },
+        {
+          "name": "Erin Moriarty",
+          "photo": null
+        },
+        {
+          "name": "Laz Alonso",
+          "photo": null
+        },
+        {
+          "name": "Chace Crawford",
+          "photo": null
+        },
+        {
+          "name": "Karen Fukuhara",
+          "photo": null
+        },
+        {
+          "name": "Jessie T. Usher",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1399,
+    "name": "Game of Thrones",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "fantasy",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אפוס של שושלות, בגידות ודרקונים. עולם שלם שאפשר לטבוע בו.",
+    "nytRank": 6,
+    "praise": "מבקרים מפרגנים לעולם המפורט, לעלילות הרבות ולנכונות להרוג דמויות מרכזיות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה ארבע פעמים"
+    ],
+    "rt": 89,
+    "fallback": {
+      "year": 2011,
+      "seasons": 8,
+      "episodes": 73,
+      "runtime": 57,
+      "imdb": 9.2,
+      "lang": "en",
+      "creators": [
+        "David Benioff",
+        "D. B. Weiss"
+      ],
+      "cast": [
+        {
+          "name": "Emilia Clarke",
+          "photo": null
+        },
+        {
+          "name": "Kit Harington",
+          "photo": null
+        },
+        {
+          "name": "Peter Dinklage",
+          "photo": null
+        },
+        {
+          "name": "Lena Headey",
+          "photo": null
+        },
+        {
+          "name": "Sophie Turner",
+          "photo": null
+        },
+        {
+          "name": "Maisie Williams",
+          "photo": null
+        },
+        {
+          "name": "Nikolaj Coster-Waldau",
+          "photo": null
+        },
+        {
+          "name": "Sean Bean",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1274,
+    "name": "Six Feet Under",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "משפחה שמנהלת בית לוויות. על מוות, אהבה ואיך חיים באמצע.",
+    "nytRank": 15,
+    "praise": "מבקרים משבחים את הכנות שבה היא עוסקת במוות ובחיים של משפחה רגילה.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2001,
+      "seasons": 5,
+      "episodes": 63,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Alan Ball"
+      ],
+      "cast": [
+        {
+          "name": "Peter Krause",
+          "photo": null
+        },
+        {
+          "name": "Michael C. Hall",
+          "photo": null
+        },
+        {
+          "name": "Frances Conroy",
+          "photo": null
+        },
+        {
+          "name": "Lauren Ambrose",
+          "photo": null
+        },
+        {
+          "name": "Rachel Griffiths",
+          "photo": null
+        },
+        {
+          "name": "Freddy Rodriguez",
+          "photo": null
+        },
+        {
+          "name": "Mathew St. Patrick",
+          "photo": null
+        },
+        {
+          "name": "Justina Machado",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 93740,
+    "name": "Foundation",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi"
+    ],
+    "moods": [
+      "escape",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אימפריה גלקטית מתפרקת ומנסים להציל את הציוויליזציה לאורך אלפי שנים. מדע בדיוני בקנה מידה ענק.",
+    "praise": "מבקרים מפרגנים לקנה המידה הגדול ולנכונות להתמודד עם הרעיונות של הספרים.",
+    "rt": 84,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 30,
+      "runtime": 55,
+      "imdb": 7.5,
+      "lang": "en",
+      "creators": [
+        "David S. Goyer"
+      ],
+      "cast": [
+        {
+          "name": "Lee Pace",
+          "photo": null
+        },
+        {
+          "name": "Jared Harris",
+          "photo": null
+        },
+        {
+          "name": "Lou Llobell",
+          "photo": null
+        },
+        {
+          "name": "Leah Harvey",
+          "photo": null
+        },
+        {
+          "name": "Laura Birn",
+          "photo": null
+        },
+        {
+          "name": "Terrence Mann",
+          "photo": null
+        },
+        {
+          "name": "Cassian Bilton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1402,
+    "name": "The Walking Dead",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "apoc",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "הישרדות באפוקליפסת זומבים, והאנשים מסוכנים יותר מהם.",
+    "praise": "מבקרים משבחים בעיקר את הפרקים הראשונים ואת הדרמה האנושית סביב איום הזומבים.",
+    "rt": 81,
+    "fallback": {
+      "year": 2010,
+      "seasons": 11,
+      "episodes": 177,
+      "runtime": 45,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Frank Darabont (פיתוח)",
+        "Robert Kirkman (הקומיקס)"
+      ],
+      "cast": [
+        {
+          "name": "Andrew Lincoln",
+          "photo": null
+        },
+        {
+          "name": "Norman Reedus",
+          "photo": null
+        },
+        {
+          "name": "Melissa McBride",
+          "photo": null
+        },
+        {
+          "name": "Danai Gurira",
+          "photo": null
+        },
+        {
+          "name": "Steven Yeun",
+          "photo": null
+        },
+        {
+          "name": "Lauren Cohan",
+          "photo": null
+        },
+        {
+          "name": "Chandler Riggs",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Dean Morgan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 87917,
+    "name": "For All Mankind",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מה אם הרוסים נחתו ראשונים על הירח? היסטוריה חלופית של מירוץ החלל.",
+    "praise": "מבקרים אוהבים את ההיסטוריה החלופית ואת האופן שבו היא נבנית עשור אחר עשור.",
+    "rt": 93,
+    "fallback": {
+      "year": 2019,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "en",
+      "creators": [
+        "Ronald D. Moore",
+        "Matt Wolpert",
+        "Ben Nedivi"
+      ],
+      "cast": [
+        {
+          "name": "Joel Kinnaman",
+          "photo": null
+        },
+        {
+          "name": "Michael Dorman",
+          "photo": null
+        },
+        {
+          "name": "Sarah Jones",
+          "photo": null
+        },
+        {
+          "name": "Wrenn Schmidt",
+          "photo": null
+        },
+        {
+          "name": "Shantel VanSanten",
+          "photo": null
+        },
+        {
+          "name": "Krys Marshall",
+          "photo": null
+        },
+        {
+          "name": "Jodi Balfour",
+          "photo": null
+        },
+        {
+          "name": "Cynthy Wu",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4607,
+    "name": "Lost",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "drama",
+      "scifi"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ניצולי התרסקות על אי מסתורי. עשרות תעלומות שמחזיקות מול המסך.",
+    "nytRank": 22,
+    "praise": "מבקרים מפרגנים למסתורין הממכר ולדרך שבה הסדרה שינתה את הצפייה בטלוויזיה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2005)"
+    ],
+    "rt": 86,
+    "fallback": {
+      "year": 2004,
+      "seasons": 6,
+      "episodes": 121,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "J. J. Abrams",
+        "Jeffrey Lieber",
+        "Damon Lindelof"
+      ],
+      "cast": [
+        {
+          "name": "Matthew Fox",
+          "photo": null
+        },
+        {
+          "name": "Evangeline Lilly",
+          "photo": null
+        },
+        {
+          "name": "Jorge Garcia",
+          "photo": null
+        },
+        {
+          "name": "Terry O'Quinn",
+          "photo": null
+        },
+        {
+          "name": "Josh Holloway",
+          "photo": null
+        },
+        {
+          "name": "Naveen Andrews",
+          "photo": null
+        },
+        {
+          "name": "Daniel Dae Kim",
+          "photo": null
+        },
+        {
+          "name": "Michael Emerson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1104,
+    "name": "Mad Men",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם הפרסום בניו יורק של שנות ה-60. אלגנטית, איטית ומלאת שכבות.",
+    "nytRank": 3,
+    "praise": "מבקרים משבחים את הדיוק הסגנוני ואת הדרך השקטה שבה היא מציגה דמויות מסובכות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה ארבע שנים ברציפות (2008 עד 2011)"
+    ],
+    "rt": 93,
+    "fallback": {
+      "year": 2007,
+      "seasons": 7,
+      "episodes": 92,
+      "runtime": 47,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Matthew Weiner"
+      ],
+      "cast": [
+        {
+          "name": "Jon Hamm",
+          "photo": null
+        },
+        {
+          "name": "Elisabeth Moss",
+          "photo": null
+        },
+        {
+          "name": "January Jones",
+          "photo": null
+        },
+        {
+          "name": "John Slattery",
+          "photo": null
+        },
+        {
+          "name": "Christina Hendricks",
+          "photo": null
+        },
+        {
+          "name": "Vincent Kartheiser",
+          "photo": null
+        },
+        {
+          "name": "Robert Morse",
+          "photo": null
+        },
+        {
+          "name": "Jessica Paré",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 225171,
+    "name": "Pluribus",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הסדרה החדשה של יוצר “שובר שורות”: מדע בדיוני שקט ומוזר על עולם שמשתנה לגמרי.",
+    "praise": "מבקרים מפרגנים לרעיון המקורי ולביצוע המרשים של השחקנית הראשית.",
+    "awards": [
+      "Rhea Seehorn זכתה בפרס אמי על התפקיד הראשי בדרמה (2026)",
+      "זכתה בפרס אמי על הכתיבה לסדרת דרמה (2026)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 55,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Vince Gilligan"
+      ],
+      "cast": [
+        {
+          "name": "Rhea Seehorn",
+          "photo": null
+        },
+        {
+          "name": "Karolina Wydra",
+          "photo": null
+        },
+        {
+          "name": "Carlos-Manuel Vesga",
+          "photo": null
+        },
+        {
+          "name": "Miriam Shor",
+          "photo": null
+        },
+        {
+          "name": "Samba Schutte",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 125988,
+    "name": "Silo",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "האנושות חיה במקלט תת-קרקעי עצום ואסור לשאול שאלות. מתח דיסטופי.",
+    "praise": "מבקרים אוהבים את העולם הסגור והמתוח ואת התעלומה שמתפתחת בתוכו.",
+    "rt": 92,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 20,
+      "runtime": 50,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Graham Yost"
+      ],
+      "cast": [
+        {
+          "name": "Rebecca Ferguson",
+          "photo": null
+        },
+        {
+          "name": "Tim Robbins",
+          "photo": null
+        },
+        {
+          "name": "Common",
+          "photo": null
+        },
+        {
+          "name": "Rashida Jones",
+          "photo": null
+        },
+        {
+          "name": "Harriet Walter",
+          "photo": null
+        },
+        {
+          "name": "Chinaza Uche",
+          "photo": null
+        },
+        {
+          "name": "Avi Nash",
+          "photo": null
+        },
+        {
+          "name": "Will Patton",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1405,
+    "name": "Dexter",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "רופא פלילי ביום, רוצח סדרתי בלילה, אבל רק של רעים.",
+    "nytRank": 88,
+    "praise": "מבקרים משבחים את הרעיון המקורי ואת הכריזמה של הדמות הראשית, בעיקר בעונות הראשונות.",
+    "awards": [
+      "Michael C. Hall זכה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 82,
+    "fallback": {
+      "year": 2006,
+      "seasons": 8,
+      "episodes": 96,
+      "runtime": 52,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "James Manos Jr."
+      ],
+      "cast": [
+        {
+          "name": "Michael C. Hall",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Carpenter",
+          "photo": null
+        },
+        {
+          "name": "Julie Benz",
+          "photo": null
+        },
+        {
+          "name": "David Zayas",
+          "photo": null
+        },
+        {
+          "name": "James Remar",
+          "photo": null
+        },
+        {
+          "name": "C. S. Lee",
+          "photo": null
+        },
+        {
+          "name": "Lauren Vélez",
+          "photo": null
+        },
+        {
+          "name": "Desmond Harrington",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 65494,
+    "name": "The Crown",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "עשורים של המשפחה המלכותית הבריטית. הפקה מושקעת ומשחק מצוין.",
+    "nytRank": 20,
+    "praise": "מבקרים מפרגנים להפקה המפוארת ולמשחק, ובעיקר לשחקניות שמגלמות את המלכה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2021)",
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 87,
+    "fallback": {
+      "year": 2016,
+      "seasons": 6,
+      "episodes": 60,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Peter Morgan"
+      ],
+      "cast": [
+        {
+          "name": "Claire Foy",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Imelda Staunton",
+          "photo": null
+        },
+        {
+          "name": "Matt Smith",
+          "photo": null
+        },
+        {
+          "name": "Vanessa Kirby",
+          "photo": null
+        },
+        {
+          "name": "Tobias Menzies",
+          "photo": null
+        },
+        {
+          "name": "Josh O'Connor",
+          "photo": null
+        },
+        {
+          "name": "Gillian Anderson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1408,
+    "name": "House M.D.",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "mystery",
+      "comedy"
+    ],
+    "moods": [
+      "think",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "רופא מרושע ומבריק פותר תעלומות רפואיות. כמעט כל פרק עומד בפני עצמו.",
+    "nytRank": 95,
+    "praise": "מבקרים אוהבים את הדמות הראשית הציניקנית ואת פרקי התעלומה הרפואית המהירים.",
+    "awards": [
+      "Hugh Laurie זכה בגלובוס הזהב פעמיים"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2004,
+      "seasons": 8,
+      "episodes": 177,
+      "runtime": 44,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "David Shore"
+      ],
+      "cast": [
+        {
+          "name": "Hugh Laurie",
+          "photo": null
+        },
+        {
+          "name": "Lisa Edelstein",
+          "photo": null
+        },
+        {
+          "name": "Omar Epps",
+          "photo": null
+        },
+        {
+          "name": "Robert Sean Leonard",
+          "photo": null
+        },
+        {
+          "name": "Jesse Spencer",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Morrison",
+          "photo": null
+        },
+        {
+          "name": "Peter Jacobson",
+          "photo": null
+        },
+        {
+          "name": "Olivia Wilde",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 111803,
+    "name": "The White Lotus",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "laugh",
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מלון יוקרה, תיירים עשירים ורצח באופק. קומדיה שחורה על חופשה.",
+    "nytRank": 21,
+    "praise": "מבקרים משבחים את הסאטירה על העשירים ואת הכתיבה המצחיקה והמרירה.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2022)"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 22,
+      "runtime": 60,
+      "imdb": 7.9,
+      "lang": "en",
+      "creators": [
+        "Mike White"
+      ],
+      "cast": [
+        {
+          "name": "Jennifer Coolidge",
+          "photo": null
+        },
+        {
+          "name": "Sydney Sweeney",
+          "photo": null
+        },
+        {
+          "name": "Murray Bartlett",
+          "photo": null
+        },
+        {
+          "name": "Alexandra Daddario",
+          "photo": null
+        },
+        {
+          "name": "Aubrey Plaza",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "Natasha Rothwell",
+          "photo": null
+        },
+        {
+          "name": "Connie Britton",
+          "photo": null
+        },
+        {
+          "name": "Theo James",
+          "photo": null
+        },
+        {
+          "name": "Parker Posey",
+          "photo": null
+        },
+        {
+          "name": "Jason Isaacs",
+          "photo": null
+        },
+        {
+          "name": "Michelle Monaghan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 100088,
+    "name": "The Last of Us",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "apoc",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מסע הישרדות בעולם שנכבש על ידי פטרייה. דרמה אנושית עם זומבים.",
+    "praise": "מבקרים משבחים את הרגש האמיתי בין שתי הדמויות המרכזיות ואת נאמנות העיבוד למשחק.",
+    "awards": [
+      "Nick Offerman זכה בפרס אמי על הופעת אורח (2023)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Craig Mazin",
+        "Neil Druckmann"
+      ],
+      "cast": [
+        {
+          "name": "Pedro Pascal",
+          "photo": null
+        },
+        {
+          "name": "Bella Ramsey",
+          "photo": null
+        },
+        {
+          "name": "Anna Torv",
+          "photo": null
+        },
+        {
+          "name": "Nick Offerman",
+          "photo": null
+        },
+        {
+          "name": "Gabriel Luna",
+          "photo": null
+        },
+        {
+          "name": "Merle Dandridge",
+          "photo": null
+        },
+        {
+          "name": "Murray Bartlett",
+          "photo": null
+        },
+        {
+          "name": "Melanie Lynskey",
+          "photo": null
+        },
+        {
+          "name": "Isabela Merced",
+          "photo": null
+        },
+        {
+          "name": "Kaitlyn Dever",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 69740,
+    "name": "Ozark",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "יועץ פיננסי מלבין כספי קרטל באגם באמצע ארה״ב. מתח שלא נותן לנשום.",
+    "nytRank": 68,
+    "praise": "מבקרים מפרגנים לאווירה הקודרת ולמתח, ולמשחק של הכוכבים.",
+    "awards": [
+      "Julia Garner זכתה בפרס אמי כשחקנית משנה בדרמה פעמיים"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2017,
+      "seasons": 4,
+      "episodes": 44,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Bill Dubuque",
+        "Mark Williams"
+      ],
+      "cast": [
+        {
+          "name": "Jason Bateman",
+          "photo": null
+        },
+        {
+          "name": "Laura Linney",
+          "photo": null
+        },
+        {
+          "name": "Julia Garner",
+          "photo": null
+        },
+        {
+          "name": "Sofia Hublitz",
+          "photo": null
+        },
+        {
+          "name": "Skylar Gaertner",
+          "photo": null
+        },
+        {
+          "name": "Peter Mullan",
+          "photo": null
+        },
+        {
+          "name": "Janet McTeer",
+          "photo": null
+        },
+        {
+          "name": "Tom Pelphrey",
+          "photo": null
+        },
+        {
+          "name": "Lisa Emery",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 3322,
+    "name": "Oz",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "הכלא הכי אכזרי על המסך. ברוטלית, מזעזעת ובלתי מתפשרת.",
+    "praise": "מבקרים רואים בה סדרה חלוצית בתיאור הכלא, אלימה ובלתי מתפשרת.",
+    "rt": 85,
+    "fallback": {
+      "year": 1997,
+      "seasons": 6,
+      "episodes": 56,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Tom Fontana"
+      ],
+      "cast": [
+        {
+          "name": "Ernie Hudson",
+          "photo": null
+        },
+        {
+          "name": "J. K. Simmons",
+          "photo": null
+        },
+        {
+          "name": "Lee Tergesen",
+          "photo": null
+        },
+        {
+          "name": "Dean Winters",
+          "photo": null
+        },
+        {
+          "name": "Eamonn Walker",
+          "photo": null
+        },
+        {
+          "name": "Christopher Meloni",
+          "photo": null
+        },
+        {
+          "name": "Harold Perrineau",
+          "photo": null
+        },
+        {
+          "name": "Kirk Acevedo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 46533,
+    "name": "The Americans",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "זוג מרגלים סובייטים בפרברי וושינגטון של שנות ה-80. דרמה זוגית בתוך סיפור ריגול.",
+    "nytRank": 17,
+    "praise": "מבקרים משבחים את הדרמה הזוגית בתוך סיפור הריגול ואת הכתיבה המדויקת.",
+    "awards": [
+      "Matthew Rhys זכה בפרס אמי על התפקיד הראשי בדרמה (2018)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 75,
+      "runtime": 50,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Joe Weisberg"
+      ],
+      "cast": [
+        {
+          "name": "Keri Russell",
+          "photo": null
+        },
+        {
+          "name": "Matthew Rhys",
+          "photo": null
+        },
+        {
+          "name": "Noah Emmerich",
+          "photo": null
+        },
+        {
+          "name": "Holly Taylor",
+          "photo": null
+        },
+        {
+          "name": "Margo Martindale",
+          "photo": null
+        },
+        {
+          "name": "Alison Wright",
+          "photo": null
+        },
+        {
+          "name": "Costa Ronin",
+          "photo": null
+        },
+        {
+          "name": "Brandon J. Dirden",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 69478,
+    "name": "The Handmaid’s Tale",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "scifi",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "דיסטופיה על חברה שבה נשים נלקחות לשירות. קשה, חזקה ונוגעת ללב.",
+    "nytRank": 67,
+    "praise": "מבקרים משבחים את העונה הראשונה, את העיצוב החזק ואת המשחק של השחקנית הראשית.",
+    "awards": [
+      "הסדרה הראשונה בסטרימינג שזכתה באמי לסדרת דרמה (2017)"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2017,
+      "seasons": 6,
+      "episodes": 66,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Bruce Miller (פיתוח)",
+        "Margaret Atwood (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Elisabeth Moss",
+          "photo": null
+        },
+        {
+          "name": "Yvonne Strahovski",
+          "photo": null
+        },
+        {
+          "name": "Joseph Fiennes",
+          "photo": null
+        },
+        {
+          "name": "Samira Wiley",
+          "photo": null
+        },
+        {
+          "name": "Alexis Bledel",
+          "photo": null
+        },
+        {
+          "name": "Ann Dowd",
+          "photo": null
+        },
+        {
+          "name": "Max Minghella",
+          "photo": null
+        },
+        {
+          "name": "O-T Fagbenle",
+          "photo": null
+        },
+        {
+          "name": "Madeline Brewer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 63247,
+    "name": "Westworld",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "mystery"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פארק שעשועים של רובוטים שמתחילים להבין שהם רובוטים. פאזל פילוסופי.",
+    "praise": "מבקרים אוהבים את השאיפה הפילוסופית ואת הפאזל הנרטיבי, במיוחד בעונה הראשונה.",
+    "rt": 82,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 36,
+      "runtime": 60,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Jonathan Nolan",
+        "Lisa Joy"
+      ],
+      "cast": [
+        {
+          "name": "Evan Rachel Wood",
+          "photo": null
+        },
+        {
+          "name": "Thandiwe Newton",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Wright",
+          "photo": null
+        },
+        {
+          "name": "Ed Harris",
+          "photo": null
+        },
+        {
+          "name": "Anthony Hopkins",
+          "photo": null
+        },
+        {
+          "name": "James Marsden",
+          "photo": null
+        },
+        {
+          "name": "Tessa Thompson",
+          "photo": null
+        },
+        {
+          "name": "Ben Barnes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1425,
+    "name": "House of Cards",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פוליטיקאי חסר מצפון בדרך לבית הלבן. חכם, רע ומפתה.",
+    "nytRank": 48,
+    "praise": "מבקרים משבחים את הכוכבים ואת האופן שבו היא הציגה פוליטיקה מאחורי הקלעים.",
+    "awards": [
+      "Robin Wright זכתה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 84,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 73,
+      "runtime": 51,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Beau Willimon"
+      ],
+      "cast": [
+        {
+          "name": "Kevin Spacey",
+          "photo": null
+        },
+        {
+          "name": "Robin Wright",
+          "photo": null
+        },
+        {
+          "name": "Michael Kelly",
+          "photo": null
+        },
+        {
+          "name": "Kate Mara",
+          "photo": null
+        },
+        {
+          "name": "Corey Stoll",
+          "photo": null
+        },
+        {
+          "name": "Molly Parker",
+          "photo": null
+        },
+        {
+          "name": "Mahershala Ali",
+          "photo": null
+        },
+        {
+          "name": "Constance Zimmer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 250307,
+    "name": "The Pitt",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "משמרת אחת בחדר מיון, שעה אחר שעה. אנושית, מתוחה ואמיתית.",
+    "nytRank": 36,
+    "praise": "מבקרים משבחים את הקצב ההדוק, את הריאליזם ואת האנושיות של הצוות הרפואי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה פעמיים ברציפות (2025, 2026)",
+      "Noah Wyle זכה בפרס אמי על התפקיד הראשי בדרמה (2026)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 2,
+      "episodes": 30,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "R. Scott Gemmill"
+      ],
+      "cast": [
+        {
+          "name": "Noah Wyle",
+          "photo": null
+        },
+        {
+          "name": "Tracy Ifeachor",
+          "photo": null
+        },
+        {
+          "name": "Katherine LaNasa",
+          "photo": null
+        },
+        {
+          "name": "Patrick Ball",
+          "photo": null
+        },
+        {
+          "name": "Taylor Dearden",
+          "photo": null
+        },
+        {
+          "name": "Supriya Ganesh",
+          "photo": null
+        },
+        {
+          "name": "Fiona Dourif",
+          "photo": null
+        },
+        {
+          "name": "Isa Briones",
+          "photo": null
+        },
+        {
+          "name": "Gerran Howell",
+          "photo": null
+        },
+        {
+          "name": "Sepideh Moafi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 94997,
+    "name": "House of the Dragon",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "fantasy",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מלחמת אחים על כס הברזל, מאתיים שנה לפני “משחקי הכס”.",
+    "praise": "מבקרים אוהבים את העומק הפוליטי ואת הדרמה המשפחתית שמאחורי הדרקונים.",
+    "rt": 84,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Ryan Condal",
+        "George R. R. Martin"
+      ],
+      "cast": [
+        {
+          "name": "Matt Smith",
+          "photo": null
+        },
+        {
+          "name": "Emma D'Arcy",
+          "photo": null
+        },
+        {
+          "name": "Olivia Cooke",
+          "photo": null
+        },
+        {
+          "name": "Paddy Considine",
+          "photo": null
+        },
+        {
+          "name": "Rhys Ifans",
+          "photo": null
+        },
+        {
+          "name": "Steve Toussaint",
+          "photo": null
+        },
+        {
+          "name": "Eve Best",
+          "photo": null
+        },
+        {
+          "name": "Fabien Frankel",
+          "photo": null
+        },
+        {
+          "name": "Ewan Mitchell",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1407,
+    "name": "Homeland",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "קצינת CIA עם הפרעה דו-קוטבית מחפשת את הבוגד. מתח פוליטי וריגולי.",
+    "nytRank": 38,
+    "praise": "מבקרים משבחים בעיקר את העונה הראשונה ואת הדמות הראשית המורכבת.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2012)"
+    ],
+    "rt": 86,
+    "fallback": {
+      "year": 2011,
+      "seasons": 8,
+      "episodes": 96,
+      "runtime": 52,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Howard Gordon",
+        "Alex Gansa"
+      ],
+      "cast": [
+        {
+          "name": "Claire Danes",
+          "photo": null
+        },
+        {
+          "name": "Mandy Patinkin",
+          "photo": null
+        },
+        {
+          "name": "Damian Lewis",
+          "photo": null
+        },
+        {
+          "name": "Rupert Friend",
+          "photo": null
+        },
+        {
+          "name": "Morena Baccarin",
+          "photo": null
+        },
+        {
+          "name": "David Harewood",
+          "photo": null
+        },
+        {
+          "name": "Nazanin Boniadi",
+          "photo": null
+        },
+        {
+          "name": "Morgan Saylor",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 60622,
+    "name": "Fargo",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אנתולוגיה של פשעים קטנים, אנשים מוזרים וקומדיה שחורה בשלג.",
+    "praise": "מבקרים מפרגנים לטון המיוחד שמשלב אלימות, הומור ואנשים רגילים.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2014)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2014,
+      "seasons": 5,
+      "episodes": 51,
+      "runtime": 55,
+      "imdb": 8.9,
+      "lang": "en",
+      "creators": [
+        "Noah Hawley"
+      ],
+      "cast": [
+        {
+          "name": "Billy Bob Thornton",
+          "photo": null
+        },
+        {
+          "name": "Martin Freeman",
+          "photo": null
+        },
+        {
+          "name": "Allison Tolman",
+          "photo": null
+        },
+        {
+          "name": "Kirsten Dunst",
+          "photo": null
+        },
+        {
+          "name": "Colin Hanks",
+          "photo": null
+        },
+        {
+          "name": "Ewan McGregor",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Carrie Coon",
+          "photo": null
+        },
+        {
+          "name": "Jon Hamm",
+          "photo": null
+        },
+        {
+          "name": "Juno Temple",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1621,
+    "name": "Boardwalk Empire",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אטלנטיק סיטי של שנות ה-20: מאפיה, פוליטיקה ואלכוהול.",
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת הדמויות שמחזיקות את העולם הפוליטי.",
+    "awards": [
+      "Steve Buscemi זכה בגלובוס הזהב על התפקיד הראשי"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2010,
+      "seasons": 5,
+      "episodes": 56,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Terence Winter"
+      ],
+      "cast": [
+        {
+          "name": "Steve Buscemi",
+          "photo": null
+        },
+        {
+          "name": "Kelly Macdonald",
+          "photo": null
+        },
+        {
+          "name": "Michael Shannon",
+          "photo": null
+        },
+        {
+          "name": "Shea Whigham",
+          "photo": null
+        },
+        {
+          "name": "Michael Stuhlbarg",
+          "photo": null
+        },
+        {
+          "name": "Stephen Graham",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Bobby Cannavale",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 61222,
+    "name": "BoJack Horseman",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סוס שהיה כוכב טלוויזיה ושקוע בדיכאון. אנימציה מצחיקה וכואבת.",
+    "nytRank": 44,
+    "praise": "מבקרים משבחים את האיזון בין קומדיה לדרמה כואבת על דיכאון והתמכרות.",
+    "rt": 92,
+    "fallback": {
+      "year": 2014,
+      "seasons": 6,
+      "episodes": 77,
+      "runtime": 26,
+      "imdb": 8.8,
+      "lang": "en",
+      "creators": [
+        "Raphael Bob-Waksberg"
+      ],
+      "cast": [
+        {
+          "name": "Will Arnett",
+          "photo": null
+        },
+        {
+          "name": "Amy Sedaris",
+          "photo": null
+        },
+        {
+          "name": "Alison Brie",
+          "photo": null
+        },
+        {
+          "name": "Paul F. Tompkins",
+          "photo": null
+        },
+        {
+          "name": "Aaron Paul",
+          "photo": null
+        },
+        {
+          "name": "Stephanie Beatriz",
+          "photo": null
+        },
+        {
+          "name": "Kristen Schaal",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 90972,
+    "name": "Station Eleven",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "apoc",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אחרי מגפה, להקת תיאטרון נודדת בין שרידי העולם. קצרה, יפה ומרגשת.",
+    "nytRank": 93,
+    "praise": "מבקרים אוהבים את הגישה הרכה לסיפור שאחרי המגפה ואת מבנה הזמנים.",
+    "rt": 93,
+    "fallback": {
+      "year": 2021,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Patrick Somerville"
+      ],
+      "cast": [
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Himesh Patel",
+          "photo": null
+        },
+        {
+          "name": "Gael García Bernal",
+          "photo": null
+        },
+        {
+          "name": "Danielle Deadwyler",
+          "photo": null
+        },
+        {
+          "name": "Matilda Lawler",
+          "photo": null
+        },
+        {
+          "name": "Lori Petty",
+          "photo": null
+        },
+        {
+          "name": "Daniel Zovatto",
+          "photo": null
+        },
+        {
+          "name": "David Wilmot",
+          "photo": null
+        },
+        {
+          "name": "Nabhaan Rizwan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 95480,
+    "name": "Slow Horses",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "comedy"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מרגלים כושלים שנשלחו למחלקה “הפח” של MI5, בראשות גארי אולדמן. מתח עם הומור בריטי יבש.",
+    "nytRank": 62,
+    "praise": "מבקרים מפרגנים לגארי אולדמן ולהומור היבש של סדרת ריגול שמורכבת מכישלונות.",
+    "awards": [
+      "מועמדת לפרס אמי לסדרת דרמה (2026)"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2022,
+      "seasons": 5,
+      "episodes": 30,
+      "runtime": 45,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Will Smith (מפתח ומחבר התסריטים)"
+      ],
+      "cast": [
+        {
+          "name": "Gary Oldman",
+          "photo": null
+        },
+        {
+          "name": "Jack Lowden",
+          "photo": null
+        },
+        {
+          "name": "Kristin Scott Thomas",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Pryce",
+          "photo": null
+        },
+        {
+          "name": "Olivia Cooke",
+          "photo": null
+        },
+        {
+          "name": "Christopher Chung",
+          "photo": null
+        },
+        {
+          "name": "Rosalind Eleazar",
+          "photo": null
+        },
+        {
+          "name": "Aimee-Ffion Edwards",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1973,
+    "name": "24",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "יום אחד, שעה אחר שעה, ג׳ק באואר מציל את העולם. ממכרת ומטורפת.",
+    "praise": "מבקרים משבחים את רעיון הזמן האמיתי ואת הקצב הממכר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2006)"
+    ],
+    "rt": 80,
+    "fallback": {
+      "year": 2001,
+      "seasons": 9,
+      "episodes": 204,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Joel Surnow",
+        "Robert Cochran"
+      ],
+      "cast": [
+        {
+          "name": "Kiefer Sutherland",
+          "photo": null
+        },
+        {
+          "name": "Mary Lynn Rajskub",
+          "photo": null
+        },
+        {
+          "name": "Carlos Bernard",
+          "photo": null
+        },
+        {
+          "name": "Dennis Haysbert",
+          "photo": null
+        },
+        {
+          "name": "Elisha Cuthbert",
+          "photo": null
+        },
+        {
+          "name": "Kim Raver",
+          "photo": null
+        },
+        {
+          "name": "Reiko Aylesworth",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 87108,
+    "name": "Chernobyl",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מיני-סדרה של חמישה פרקים על האסון הגרעיני. מצמררת ומושלמת.",
+    "nytRank": 19,
+    "praise": "מבקרים משבחים את הדיוק, את האווירה ואת התיאור של מחיר השקר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2019)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 1,
+      "episodes": 5,
+      "runtime": 65,
+      "imdb": 9.3,
+      "lang": "en",
+      "creators": [
+        "Craig Mazin"
+      ],
+      "cast": [
+        {
+          "name": "Jared Harris",
+          "photo": null
+        },
+        {
+          "name": "Stellan Skarsgård",
+          "photo": null
+        },
+        {
+          "name": "Emily Watson",
+          "photo": null
+        },
+        {
+          "name": "Jessie Buckley",
+          "photo": null
+        },
+        {
+          "name": "Paul Ritter",
+          "photo": null
+        },
+        {
+          "name": "Con O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Adam Nagaitis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 42009,
+    "name": "Black Mirror",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פרקים עצמאיים על הצד האפל של הטכנולוגיה. אפשר לצפות בכל סדר.",
+    "nytRank": 26,
+    "praise": "מבקרים משבחים את הרעיונות החדים על טכנולוגיה, בעיקר בפרקים הטובים ביותר.",
+    "awards": [
+      "הפרק San Junipero זכה בפרס אמי לסרט טלוויזיה (2017)"
+    ],
+    "castLabel": "שחקנים בולטים (אנתולוגיה)",
+    "rt": 86,
+    "fallback": {
+      "year": 2011,
+      "seasons": 7,
+      "episodes": 34,
+      "runtime": 60,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Charlie Brooker"
+      ],
+      "cast": [
+        {
+          "name": "Bryce Dallas Howard",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Daniel Kaluuya",
+          "photo": null
+        },
+        {
+          "name": "Domhnall Gleeson",
+          "photo": null
+        },
+        {
+          "name": "Hayley Atwell",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Anthony Mackie",
+          "photo": null
+        },
+        {
+          "name": "Cristin Milioti",
+          "photo": null
+        },
+        {
+          "name": "Miley Cyrus",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 97546,
+    "name": "Ted Lasso",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מאמן פוטבול אמריקאי מאמן קבוצת כדורגל אנגלית ומפיץ אופטימיות. חיבוק בצורת סדרה.",
+    "nytRank": 75,
+    "praise": "מבקרים אוהבים את החום, האופטימיות והכתיבה שמצליחה להיות רגישה בלי להתחנחן.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה פעמיים (2021, 2022)"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 2020,
+      "seasons": 3,
+      "episodes": 34,
+      "runtime": 40,
+      "imdb": 8.8,
+      "lang": "en",
+      "creators": [
+        "Jason Sudeikis",
+        "Bill Lawrence",
+        "Brendan Hunt",
+        "Joe Kelly"
+      ],
+      "cast": [
+        {
+          "name": "Jason Sudeikis",
+          "photo": null
+        },
+        {
+          "name": "Hannah Waddingham",
+          "photo": null
+        },
+        {
+          "name": "Brett Goldstein",
+          "photo": null
+        },
+        {
+          "name": "Juno Temple",
+          "photo": null
+        },
+        {
+          "name": "Brendan Hunt",
+          "photo": null
+        },
+        {
+          "name": "Phil Dunster",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Swift",
+          "photo": null
+        },
+        {
+          "name": "Nick Mohammed",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1891,
+    "name": "Rome",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "רומא העתיקה של קיסר ופומפיוס דרך עיני שני חיילים. אפית, אלימה ומפתה.",
+    "praise": "מבקרים משבחים את התיאור המפורט והאנושי של רומא דרך שני חיילים פשוטים.",
+    "rt": 89,
+    "fallback": {
+      "year": 2005,
+      "seasons": 2,
+      "episodes": 22,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Bruno Heller",
+        "John Milius",
+        "William J. MacDonald"
+      ],
+      "cast": [
+        {
+          "name": "Kevin McKidd",
+          "photo": null
+        },
+        {
+          "name": "Ray Stevenson",
+          "photo": null
+        },
+        {
+          "name": "Polly Walker",
+          "photo": null
+        },
+        {
+          "name": "Ciarán Hinds",
+          "photo": null
+        },
+        {
+          "name": "James Purefoy",
+          "photo": null
+        },
+        {
+          "name": "Lindsay Duncan",
+          "photo": null
+        },
+        {
+          "name": "Tobias Menzies",
+          "photo": null
+        },
+        {
+          "name": "Kerry Condon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 86248,
+    "name": "Upload",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "החיים שאחרי המוות מנוהלים כמו מלון יוקרה דיגיטלי. קומדיה קלילה עם נקודות למחשבה.",
+    "praise": "מבקרים מפרגנים לרעיון המצחיק על החיים שאחרי המוות כשירות דיגיטלי.",
+    "rt": 84,
+    "fallback": {
+      "year": 2020,
+      "seasons": 4,
+      "episodes": 29,
+      "runtime": 30,
+      "imdb": 7.9,
+      "lang": "en",
+      "creators": [
+        "Greg Daniels"
+      ],
+      "cast": [
+        {
+          "name": "Robbie Amell",
+          "photo": null
+        },
+        {
+          "name": "Andy Allo",
+          "photo": null
+        },
+        {
+          "name": "Allegra Edwards",
+          "photo": null
+        },
+        {
+          "name": "Kevin Bigley",
+          "photo": null
+        },
+        {
+          "name": "Zainab Johnson",
+          "photo": null
+        },
+        {
+          "name": "Owen Daniels",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
+    }
+  },
+  {
+    "tmdbId": 80752,
+    "name": "See",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "fantasy"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם שבו כולם עיוורים וגבר אחד מגדל ילדים שרואים. אקשן ופנטזיה.",
+    "praise": "מבקרים משבחים את העולם הוויזואלי הייחודי ואת הסצנות הגדולות.",
+    "rt": 60,
+    "fallback": {
+      "year": 2019,
+      "seasons": 3,
+      "episodes": 24,
+      "runtime": 55,
+      "imdb": 6.9,
+      "lang": "en",
+      "creators": [
+        "Steven Knight"
+      ],
+      "cast": [
+        {
+          "name": "Jason Momoa",
+          "photo": null
+        },
+        {
+          "name": "Alfre Woodard",
+          "photo": null
+        },
+        {
+          "name": "Hera Hilmar",
+          "photo": null
+        },
+        {
+          "name": "Sylvia Hoeks",
+          "photo": null
+        },
+        {
+          "name": "Christian Camargo",
+          "photo": null
+        },
+        {
+          "name": "Archie Madekwe",
+          "photo": null
+        },
+        {
+          "name": "Nesta Cooper",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 63351,
+    "name": "Narcos",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "עלייתו ונפילתו של פאבלו אסקובר. מהירה, ממכרת וגם מלמדת.",
+    "praise": "מבקרים משבחים את הקצב ואת הדרך שבה היא מציגה את פאבלו אסקובר ואת הרודפים אחריו.",
+    "rt": 87,
+    "fallback": {
+      "year": 2015,
+      "seasons": 3,
+      "episodes": 30,
+      "runtime": 50,
+      "imdb": 8.8,
+      "lang": "en",
+      "creators": [
+        "Chris Brancato",
+        "Carlo Bernard",
+        "Doug Miro"
+      ],
+      "cast": [
+        {
+          "name": "Wagner Moura",
+          "photo": null
+        },
+        {
+          "name": "Boyd Holbrook",
+          "photo": null
+        },
+        {
+          "name": "Pedro Pascal",
+          "photo": null
+        },
+        {
+          "name": "Alberto Ammann",
+          "photo": null
+        },
+        {
+          "name": "Joanna Christie",
+          "photo": null
+        },
+        {
+          "name": "Maurice Compte",
+          "photo": null
+        },
+        {
+          "name": "Paulina Gaitán",
+          "photo": null
+        },
+        {
+          "name": "Damián Alcázar",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 2288,
+    "name": "Prison Break",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller",
+      "crime"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אח שמתכנן לפרוץ מהכלא כדי להציל את אחיו. מתח, פיתולים והמון הגזמה אהובה.",
+    "praise": "מבקרים אוהבים את הרעיון הממכר של בריחה שתוכננה בפרטי פרטים.",
+    "rt": 70,
+    "fallback": {
+      "year": 2005,
+      "seasons": 5,
+      "episodes": 90,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Paul Scheuring"
+      ],
+      "cast": [
+        {
+          "name": "Wentworth Miller",
+          "photo": null
+        },
+        {
+          "name": "Dominic Purcell",
+          "photo": null
+        },
+        {
+          "name": "Sarah Wayne Callies",
+          "photo": null
+        },
+        {
+          "name": "Robert Knepper",
+          "photo": null
+        },
+        {
+          "name": "Amaury Nolasco",
+          "photo": null
+        },
+        {
+          "name": "Wade Williams",
+          "photo": null
+        },
+        {
+          "name": "Peter Stormare",
+          "photo": null
+        },
+        {
+          "name": "William Fichtner",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1423,
+    "name": "Ray Donovan",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מתקן הבעיות של הוליווד ושל המשפחה שלו. דרמת פשע קודרת.",
+    "praise": "מבקרים משבחים את המשחק של הכוכבים ואת האווירה הקודרת.",
+    "awards": [
+      "Jon Voight זכה בגלובוס הזהב על תפקיד המשנה"
+    ],
+    "rt": 80,
+    "fallback": {
+      "year": 2013,
+      "seasons": 7,
+      "episodes": 82,
+      "runtime": 55,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Ann Biderman"
+      ],
+      "cast": [
+        {
+          "name": "Liev Schreiber",
+          "photo": null
+        },
+        {
+          "name": "Jon Voight",
+          "photo": null
+        },
+        {
+          "name": "Paula Malcomson",
+          "photo": null
+        },
+        {
+          "name": "Eddie Marsan",
+          "photo": null
+        },
+        {
+          "name": "Dash Mihok",
+          "photo": null
+        },
+        {
+          "name": "Pooch Hall",
+          "photo": null
+        },
+        {
+          "name": "Katherine Moennig",
+          "photo": null
+        },
+        {
+          "name": "Kerris Dorsey",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 67744,
+    "name": "Mindhunter",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "thriller",
+      "mystery"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סוכני FBI מראיינים רוצחים סדרתיים בשנות ה-70. איטית ומצמררת.",
+    "praise": "מבקרים משבחים את הדיאלוגים המתוחים בראיונות ואת הבימוי הקפדני.",
+    "rt": 97,
+    "fallback": {
+      "year": 2017,
+      "seasons": 2,
+      "episodes": 19,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Joe Penhall"
+      ],
+      "cast": [
+        {
+          "name": "Jonathan Groff",
+          "photo": null
+        },
+        {
+          "name": "Holt McCallany",
+          "photo": null
+        },
+        {
+          "name": "Anna Torv",
+          "photo": null
+        },
+        {
+          "name": "Cameron Britton",
+          "photo": null
+        },
+        {
+          "name": "Hannah Gross",
+          "photo": null
+        },
+        {
+          "name": "Sonny Valicenti",
+          "photo": null
+        },
+        {
+          "name": "Michael Cerveris",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 203857,
+    "name": "The Diplomat",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שגרירה אמריקאית בלונדון נקלעת למשבר בינלאומי ולנישואים מורכבים. מתח פוליטי חכם ומהיר.",
+    "nytRank": 94,
+    "praise": "מבקרים אוהבים את הקצב המהיר ואת הכימיה בין הזוג הראשי.",
+    "awards": [
+      "מועמדת לפרס אמי לסדרת דרמה (2026)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2023,
+      "seasons": 3,
+      "episodes": 24,
+      "runtime": 50,
+      "imdb": 7.9,
+      "lang": "en",
+      "creators": [
+        "Debora Cahn"
+      ],
+      "cast": [
+        {
+          "name": "Keri Russell",
+          "photo": null
+        },
+        {
+          "name": "Rufus Sewell",
+          "photo": null
+        },
+        {
+          "name": "David Gyasi",
+          "photo": null
+        },
+        {
+          "name": "Ali Ahn",
+          "photo": null
+        },
+        {
+          "name": "Rory Kinnear",
+          "photo": null
+        },
+        {
+          "name": "Ato Essandoh",
+          "photo": null
+        },
+        {
+          "name": "Nana Mensah",
+          "photo": null
+        },
+        {
+          "name": "Michael McKean",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 66732,
+    "name": "Stranger Things",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "mystery",
+      "fantasy"
+    ],
+    "moods": [
+      "escape",
+      "tense",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ילדים בפרבר אמריקאי, כוחות על ועולם הפוך. נוסטלגיה של שנות ה-80.",
+    "nytRank": 53,
+    "praise": "מבקרים משבחים את הנוסטלגיה ואת הכימיה בין הילדים בעונה הראשונה.",
+    "awards": [
+      "זכתה בפרס SAG לצוות השחקנים הטוב בסדרת דרמה (2017)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 42,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "האחים Duffer"
+      ],
+      "cast": [
+        {
+          "name": "Millie Bobby Brown",
+          "photo": null
+        },
+        {
+          "name": "Winona Ryder",
+          "photo": null
+        },
+        {
+          "name": "David Harbour",
+          "photo": null
+        },
+        {
+          "name": "Finn Wolfhard",
+          "photo": null
+        },
+        {
+          "name": "Gaten Matarazzo",
+          "photo": null
+        },
+        {
+          "name": "Caleb McLaughlin",
+          "photo": null
+        },
+        {
+          "name": "Noah Schnapp",
+          "photo": null
+        },
+        {
+          "name": "Sadie Sink",
+          "photo": null
+        },
+        {
+          "name": "Joe Keery",
+          "photo": null
+        },
+        {
+          "name": "Natalia Dyer",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 196322,
+    "name": "Dark Matter",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "thriller",
+      "mystery"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "פיזיקאי נחטף ומוצא את עצמו בגרסה אחרת של חייו. מתח ביקום מקביל.",
+    "praise": "מבקרים מפרגנים לרעיון של יקומים מקבילים ולמתח האישי.",
+    "rt": 84,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 9,
+      "runtime": 50,
+      "imdb": 7.6,
+      "lang": "en",
+      "creators": [
+        "Blake Crouch"
+      ],
+      "cast": [
+        {
+          "name": "Joel Edgerton",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Connelly",
+          "photo": null
+        },
+        {
+          "name": "Alice Braga",
+          "photo": null
+        },
+        {
+          "name": "Jimmi Simpson",
+          "photo": null
+        },
+        {
+          "name": "Dayo Okeniyi",
+          "photo": null
+        },
+        {
+          "name": "Oakes Fegley",
+          "photo": null
+        },
+        {
+          "name": "Lee Shorten",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "apple"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4087,
+    "name": "The X-Files",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "mystery",
+      "scifi"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סוכני FBI חוקרים תיקים פרנורמליים. האמת נמצאת בחוץ.",
+    "praise": "מבקרים רואים בה סדרת מסתורין מכוננת, ופרקי המפלצות הטובים שלה אהובים במיוחד.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 1993,
+      "seasons": 11,
+      "episodes": 218,
+      "runtime": 45,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Chris Carter"
+      ],
+      "cast": [
+        {
+          "name": "David Duchovny",
+          "photo": null
+        },
+        {
+          "name": "Gillian Anderson",
+          "photo": null
+        },
+        {
+          "name": "Mitch Pileggi",
+          "photo": null
+        },
+        {
+          "name": "William B. Davis",
+          "photo": null
+        },
+        {
+          "name": "Robert Patrick",
+          "photo": null
+        },
+        {
+          "name": "Annabeth Gish",
+          "photo": null
+        },
+        {
+          "name": "Nicholas Lea",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1424,
+    "name": "Orange Is the New Black",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה מהמעמד הבינוני בכלא נשים. קומדיה-דרמה צבעונית עם עשרות דמויות.",
+    "praise": "מבקרים משבחים את הליהוק המגוון ואת הדמויות הרבות שמקבלות סיפור משלהן.",
+    "awards": [
+      "זכתה בפרס SAG לצוות השחקנים הטוב בסדרת קומדיה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2013,
+      "seasons": 7,
+      "episodes": 91,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "en",
+      "creators": [
+        "Jenji Kohan"
+      ],
+      "cast": [
+        {
+          "name": "Taylor Schilling",
+          "photo": null
+        },
+        {
+          "name": "Laura Prepon",
+          "photo": null
+        },
+        {
+          "name": "Uzo Aduba",
+          "photo": null
+        },
+        {
+          "name": "Danielle Brooks",
+          "photo": null
+        },
+        {
+          "name": "Kate Mulgrew",
+          "photo": null
+        },
+        {
+          "name": "Natasha Lyonne",
+          "photo": null
+        },
+        {
+          "name": "Samira Wiley",
+          "photo": null
+        },
+        {
+          "name": "Taryn Manning",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1920,
+    "name": "Twin Peaks",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "drama",
+      "fantasy"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מי הרג את לורה פלמר? דיוויד לינץ׳ מגיש תעלומה מוזרה וחלומית.",
+    "nytRank": 47,
+    "praise": "מבקרים מפרגנים לסגנון הייחודי של לינץ׳ ולאווירה החלומית.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת דרמה"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 1990,
+      "seasons": 3,
+      "episodes": 48,
+      "runtime": 55,
+      "imdb": 8.8,
+      "lang": "en",
+      "creators": [
+        "David Lynch",
+        "Mark Frost"
+      ],
+      "cast": [
+        {
+          "name": "Kyle MacLachlan",
+          "photo": null
+        },
+        {
+          "name": "Sheryl Lee",
+          "photo": null
+        },
+        {
+          "name": "Laura Dern",
+          "photo": null
+        },
+        {
+          "name": "Sherilyn Fenn",
+          "photo": null
+        },
+        {
+          "name": "Ray Wise",
+          "photo": null
+        },
+        {
+          "name": "Piper Laurie",
+          "photo": null
+        },
+        {
+          "name": "Michael Ontkean",
+          "photo": null
+        },
+        {
+          "name": "Lara Flynn Boyle",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 84773,
+    "name": "The Rings of Power",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "fantasy"
+    ],
+    "moods": [
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "הרקע ל״שר הטבעות״: ממלכות, אלפים וכוח אפל שמתעורר.",
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת המראה של עולם ״שר הטבעות״.",
+    "rt": 83,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 60,
+      "imdb": 6.9,
+      "lang": "en",
+      "creators": [
+        "J. D. Payne",
+        "Patrick McKay"
+      ],
+      "cast": [
+        {
+          "name": "Morfydd Clark",
+          "photo": null
+        },
+        {
+          "name": "Robert Aramayo",
+          "photo": null
+        },
+        {
+          "name": "Charlie Vickers",
+          "photo": null
+        },
+        {
+          "name": "Markella Kavenagh",
+          "photo": null
+        },
+        {
+          "name": "Ismael Cruz Córdova",
+          "photo": null
+        },
+        {
+          "name": "Owain Arthur",
+          "photo": null
+        },
+        {
+          "name": "Sophia Nomvete",
+          "photo": null
+        },
+        {
+          "name": "Charles Edwards",
+          "photo": null
+        },
+        {
+          "name": "Nazanin Boniadi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
+    }
+  },
+  {
+    "tmdbId": 56017,
+    "name": "שטיסל",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "drama",
+      "comedy",
+      "israeli"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה חרדית בירושלים: אהבה, אבות ובנים וחיבוטי נפש. דרמה ישראלית חמה.",
+    "praise": "מבקרים אוהבים את החום, ההומור והפרטים האותנטיים של העולם החרדי.",
+    "rt": null,
+    "fallback": {
+      "year": 2013,
+      "seasons": 3,
+      "episodes": 36,
+      "runtime": 50,
+      "imdb": 8.7,
+      "lang": "he",
+      "creators": [
+        "אורי אלון",
+        "יהונתן אינדורסקי"
+      ],
+      "cast": [
+        {
+          "name": "דב גליקמן",
+          "photo": null
+        },
+        {
+          "name": "מיכאל אלוני",
+          "photo": null
+        },
+        {
+          "name": "נטע ריסקין",
+          "photo": null
+        },
+        {
+          "name": "שירה האס",
+          "photo": null
+        },
+        {
+          "name": "זוהר שטראוס",
+          "photo": null
+        },
+        {
+          "name": "שרה פון שוורצה",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "israel"
+      ]
+    }
+  },
+  {
+    "tmdbId": 69557,
+    "name": "פאודה",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "thriller",
+      "drama",
+      "israeli"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "יחידת מסתערבים ישראלית מול חמאס. מתח, אקשן וקונפליקט אנושי.",
+    "praise": "מבקרים משבחים את המתח והאקשן ואת העובדה שהיא מראה את שני הצדדים.",
+    "rt": null,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 48,
+      "runtime": 45,
+      "imdb": 8.3,
+      "lang": "he",
+      "creators": [
+        "ליאור רז",
+        "אבי יששכרוף"
+      ],
+      "cast": [
+        {
+          "name": "ליאור רז",
+          "photo": null
+        },
+        {
+          "name": "חישאם סולימאן",
+          "photo": null
+        },
+        {
+          "name": "שדי מרעי",
+          "photo": null
+        },
+        {
+          "name": "יעקב זדה דניאל",
+          "photo": null
+        },
+        {
+          "name": "רונה-לי שמעון",
+          "photo": null
+        },
+        {
+          "name": "צחי הלוי",
+          "photo": null
+        },
+        {
+          "name": "איציק כהן",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "israel"
+      ]
+    }
+  },
+  {
+    "tmdbId": 62017,
+    "name": "The Man in the High Castle",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "scifi",
+      "history",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "מה אם הנאצים ניצחו במלחמה? היסטוריה חלופית ומחרידה.",
+    "praise": "מבקרים משבחים את הרעיון ואת העיצוב של עולם שבו הנאצים ניצחו.",
+    "rt": 78,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 55,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Frank Spotnitz (פיתוח)",
+        "Philip K. Dick (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Alexa Davalos",
+          "photo": null
+        },
+        {
+          "name": "Rupert Evans",
+          "photo": null
+        },
+        {
+          "name": "Luke Kleintank",
+          "photo": null
+        },
+        {
+          "name": "Rufus Sewell",
+          "photo": null
+        },
+        {
+          "name": "DJ Qualls",
+          "photo": null
+        },
+        {
+          "name": "Joel de la Fuente",
+          "photo": null
+        },
+        {
+          "name": "Cary-Hiroyuki Tagawa",
+          "photo": null
+        },
+        {
+          "name": "Jason O'Mara",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
+    }
+  },
+  {
+    "tmdbId": 66573,
+    "name": "The Good Place",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "fantasy"
+    ],
+    "moods": [
+      "laugh",
+      "think",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "היא מתה ונמצאת בגן עדן, אבל היא לא אמורה להיות שם. קומדיה פילוסופית מבריקה.",
+    "nytRank": 51,
+    "praise": "מבקרים אוהבים את ההיפוכים החכמים ואת השילוב של קומדיה ופילוסופיה.",
+    "rt": 95,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 53,
+      "runtime": 25,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Michael Schur"
+      ],
+      "cast": [
+        {
+          "name": "Kristen Bell",
+          "photo": null
+        },
+        {
+          "name": "Ted Danson",
+          "photo": null
+        },
+        {
+          "name": "William Jackson Harper",
+          "photo": null
+        },
+        {
+          "name": "Jameela Jamil",
+          "photo": null
+        },
+        {
+          "name": "Manny Jacinto",
+          "photo": null
+        },
+        {
+          "name": "D'Arcy Carden",
+          "photo": null
+        },
+        {
+          "name": "Marc Evan Jackson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 93405,
+    "name": "Squid Game",
+    "lists": [
+      "mine",
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אנשים בחובות מתחרים במשחקי ילדים קטלניים. ממכרת ומטלטלת.",
+    "nytRank": 72,
+    "praise": "מבקרים משבחים את העיצוב החזותי ואת הסאטירה החברתית שמאחורי המשחקים.",
+    "awards": [
+      "Lee Jung-jae זכה בפרס אמי על התפקיד הראשי בדרמה (2022)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 22,
+      "runtime": 55,
+      "imdb": 8,
+      "lang": "ko",
+      "creators": [
+        "Hwang Dong-hyuk"
+      ],
+      "cast": [
+        {
+          "name": "Lee Jung-jae",
+          "photo": null
+        },
+        {
+          "name": "Park Hae-soo",
+          "photo": null
+        },
+        {
+          "name": "Wi Ha-jun",
+          "photo": null
+        },
+        {
+          "name": "Jung Ho-yeon",
+          "photo": null
+        },
+        {
+          "name": "Oh Yeong-su",
+          "photo": null
+        },
+        {
+          "name": "Heo Sung-tae",
+          "photo": null
+        },
+        {
+          "name": "Anupam Tripathi",
+          "photo": null
+        },
+        {
+          "name": "Gong Yoo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 67070,
+    "name": "Fleabag",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה לונדונית חדה ושבורה פונה ישר אל המצלמה. קומדיה שחורה שמסתירה כאב אמיתי.",
+    "nytRank": 5,
+    "praise": "מבקרים משבחים את הכתיבה החדה ואת המשחק הרגיש שמאחורי ההומור.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2019)"
+    ],
+    "rt": 100,
+    "fallback": {
+      "year": 2016,
+      "seasons": 2,
+      "episodes": 12,
+      "runtime": 27,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Phoebe Waller-Bridge"
+      ],
+      "cast": [
+        {
+          "name": "Phoebe Waller-Bridge",
+          "photo": null
+        },
+        {
+          "name": "Sian Clifford",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Andrew Scott",
+          "photo": null
+        },
+        {
+          "name": "Bill Paterson",
+          "photo": null
+        },
+        {
+          "name": "Brett Gelman",
+          "photo": null
+        },
+        {
+          "name": "Hugh Skinner",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 2947,
+    "name": "Veep",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "סגנית נשיא אמריקאית וצוות עסקנים כושל. סאטירה פוליטית בקצב מטורף.",
+    "nytRank": 7,
+    "praise": "מבקרים מפרגנים לקללות המדויקות, לקצב ולשחקנית הראשית.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2015 עד 2017)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2012,
+      "seasons": 7,
+      "episodes": 65,
+      "runtime": 28,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Armando Iannucci"
+      ],
+      "cast": [
+        {
+          "name": "Julia Louis-Dreyfus",
+          "photo": null
+        },
+        {
+          "name": "Tony Hale",
+          "photo": null
+        },
+        {
+          "name": "Anna Chlumsky",
+          "photo": null
+        },
+        {
+          "name": "Timothy Simons",
+          "photo": null
+        },
+        {
+          "name": "Reid Scott",
+          "photo": null
+        },
+        {
+          "name": "Matt Walsh",
+          "photo": null
+        },
+        {
+          "name": "Kevin Dunn",
+          "photo": null
+        },
+        {
+          "name": "Gary Cole",
+          "photo": null
+        },
+        {
+          "name": "Sam Richardson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4608,
+    "name": "30 Rock",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מאחורי הקלעים של תוכנית סאטירה בניו יורק. הומור מהיר עם בדיחה כמעט בכל שנייה.",
+    "nytRank": 8,
+    "praise": "מבקרים אוהבים את צפיפות הבדיחות ואת הכתיבה המבריקה של טינה פיי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה שלוש שנים ברציפות (2007 עד 2009)"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2006,
+      "seasons": 7,
+      "episodes": 138,
+      "runtime": 22,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Tina Fey"
+      ],
+      "cast": [
+        {
+          "name": "Tina Fey",
+          "photo": null
+        },
+        {
+          "name": "Alec Baldwin",
+          "photo": null
+        },
+        {
+          "name": "Tracy Morgan",
+          "photo": null
+        },
+        {
+          "name": "Jane Krakowski",
+          "photo": null
+        },
+        {
+          "name": "Jack McBrayer",
+          "photo": null
+        },
+        {
+          "name": "Scott Adsit",
+          "photo": null
+        },
+        {
+          "name": "Judah Friedlander",
+          "photo": null
+        },
+        {
+          "name": "Keith Powell",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4546,
+    "name": "Curb Your Enthusiasm",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "לארי דיוויד מסתבך בכל אינטראקציה חברתית אפשרית. קומדיית מבוכה בלי רחמים.",
+    "nytRank": 9,
+    "praise": "מבקרים משבחים את האלתור ואת הדרך שבה מצבים קטנים הופכים לפיצוצים.",
+    "rt": 92,
+    "fallback": {
+      "year": 2000,
+      "seasons": 12,
+      "episodes": 120,
+      "runtime": 30,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Larry David"
+      ],
+      "cast": [
+        {
+          "name": "Larry David",
+          "photo": null
+        },
+        {
+          "name": "Jeff Garlin",
+          "photo": null
+        },
+        {
+          "name": "Cheryl Hines",
+          "photo": null
+        },
+        {
+          "name": "Susie Essman",
+          "photo": null
+        },
+        {
+          "name": "J. B. Smoove",
+          "photo": null
+        },
+        {
+          "name": "Richard Lewis",
+          "photo": null
+        },
+        {
+          "name": "Ted Danson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 65495,
+    "name": "Atlanta",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שני בני דודים מנסים לפרוץ בסצנת ההיפ-הופ של אטלנטה. קומדיה סוריאליסטית על החיים באמריקה.",
+    "nytRank": 10,
+    "praise": "מבקרים אוהבים את הסגנון הסוריאליסטי ואת האומץ לעשות פרקים שונים לגמרי.",
+    "awards": [
+      "Donald Glover זכה בפרס אמי על התפקיד הראשי ועל הבימוי (2017)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2016,
+      "seasons": 4,
+      "episodes": 41,
+      "runtime": 30,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Donald Glover"
+      ],
+      "cast": [
+        {
+          "name": "Donald Glover",
+          "photo": null
+        },
+        {
+          "name": "Brian Tyree Henry",
+          "photo": null
+        },
+        {
+          "name": "Lakeith Stanfield",
+          "photo": null
+        },
+        {
+          "name": "Zazie Beetz",
+          "photo": null
+        },
+        {
+          "name": "Isiah Whitlock Jr.",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 2316,
+    "name": "The Office (US)",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "יום-יום במשרד נייר בפנסילבניה, בסגנון דוקומנטרי. קומדיה חמה שאפשר לראות שוב ושוב.",
+    "nytRank": 11,
+    "praise": "מבקרים משבחים את החום ואת הדמויות שנהיות אהובות עם הזמן.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2006)"
+    ],
+    "rt": 81,
+    "fallback": {
+      "year": 2005,
+      "seasons": 9,
+      "episodes": 201,
+      "runtime": 22,
+      "imdb": 9,
+      "lang": "en",
+      "creators": [
+        "Greg Daniels"
+      ],
+      "cast": [
+        {
+          "name": "Steve Carell",
+          "photo": null
+        },
+        {
+          "name": "Rainn Wilson",
+          "photo": null
+        },
+        {
+          "name": "John Krasinski",
+          "photo": null
+        },
+        {
+          "name": "Jenna Fischer",
+          "photo": null
+        },
+        {
+          "name": "Ed Helms",
+          "photo": null
+        },
+        {
+          "name": "B. J. Novak",
+          "photo": null
+        },
+        {
+          "name": "Mindy Kaling",
+          "photo": null
+        },
+        {
+          "name": "Angela Kinsey",
+          "photo": null
+        },
+        {
+          "name": "Brian Baumgartner",
+          "photo": null
+        },
+        {
+          "name": "Oscar Nuñez",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4589,
+    "name": "Arrested Development",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה עשירה ומטורפת שהאבא שלה בכלא. בדיחות שמתחברות רק בצפייה חוזרת.",
+    "nytRank": 12,
+    "praise": "מבקרים אוהבים את הבדיחות שמסתדרות על פני עונות שלמות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2004)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2003,
+      "seasons": 5,
+      "episodes": 84,
+      "runtime": 22,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Mitchell Hurwitz"
+      ],
+      "cast": [
+        {
+          "name": "Jason Bateman",
+          "photo": null
+        },
+        {
+          "name": "Portia de Rossi",
+          "photo": null
+        },
+        {
+          "name": "Will Arnett",
+          "photo": null
+        },
+        {
+          "name": "Michael Cera",
+          "photo": null
+        },
+        {
+          "name": "David Cross",
+          "photo": null
+        },
+        {
+          "name": "Tony Hale",
+          "photo": null
+        },
+        {
+          "name": "Jeffrey Tambor",
+          "photo": null
+        },
+        {
+          "name": "Alia Shawkat",
+          "photo": null
+        },
+        {
+          "name": "Jessica Walter",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 42282,
+    "name": "Girls",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ארבע חברות בניו יורק בשנות ה-20 שלהן. מביכה, כנה ואנושית.",
+    "nytRank": 13,
+    "praise": "מבקרים משבחים את הכנות והחשיפה של חיי צעירות בניו יורק.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת קומדיה (2013)"
+    ],
+    "rt": 83,
+    "fallback": {
+      "year": 2012,
+      "seasons": 6,
+      "episodes": 62,
+      "runtime": 28,
+      "imdb": 7.8,
+      "lang": "en",
+      "creators": [
+        "Lena Dunham"
+      ],
+      "cast": [
+        {
+          "name": "Lena Dunham",
+          "photo": null
+        },
+        {
+          "name": "Allison Williams",
+          "photo": null
+        },
+        {
+          "name": "Jemima Kirke",
+          "photo": null
+        },
+        {
+          "name": "Zosia Mamet",
+          "photo": null
+        },
+        {
+          "name": "Adam Driver",
+          "photo": null
+        },
+        {
+          "name": "Alex Karpovsky",
+          "photo": null
+        },
+        {
+          "name": "Andrew Rannells",
+          "photo": null
+        },
+        {
+          "name": "Ray Romano",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4278,
+    "name": "Friday Night Lights",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "קבוצת פוטבול בעיירה בטקסס, והעיר כולה נושמת אותה. דרמה אנושית שמרגשת גם מי שלא מבין בספורט.",
+    "nytRank": 14,
+    "praise": "מבקרים משבחים את הריאליזם ואת הדרך שבה היא מציגה קהילה שלמה.",
+    "awards": [
+      "Kyle Chandler זכה בפרס אמי על התפקיד הראשי בדרמה (2011)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2006,
+      "seasons": 5,
+      "episodes": 76,
+      "runtime": 43,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Peter Berg (פיתוח)"
+      ],
+      "cast": [
+        {
+          "name": "Kyle Chandler",
+          "photo": null
+        },
+        {
+          "name": "Connie Britton",
+          "photo": null
+        },
+        {
+          "name": "Taylor Kitsch",
+          "photo": null
+        },
+        {
+          "name": "Zach Gilford",
+          "photo": null
+        },
+        {
+          "name": "Aimee Teegarden",
+          "photo": null
+        },
+        {
+          "name": "Jesse Plemons",
+          "photo": null
+        },
+        {
+          "name": "Michael B. Jordan",
+          "photo": null
+        },
+        {
+          "name": "Adrianne Palicki",
+          "photo": null
+        },
+        {
+          "name": "Minka Kelly",
+          "photo": null
+        },
+        {
+          "name": "Scott Porter",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 2996,
+    "name": "The Office (UK)",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "המקור הבריטי: שתי עונות קצרות ומושלמות של מבוכה במשרד.",
+    "nytRank": 16,
+    "praise": "מבקרים רואים בה קומדיית מבוכה מושלמת בגלל הקצרות והדיוק.",
+    "awards": [
+      "זכתה בגלובוס הזהב לסדרת קומדיה (2004)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2001,
+      "seasons": 2,
+      "episodes": 14,
+      "runtime": 29,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Ricky Gervais",
+        "Stephen Merchant"
+      ],
+      "cast": [
+        {
+          "name": "Ricky Gervais",
+          "photo": null
+        },
+        {
+          "name": "Martin Freeman",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Crook",
+          "photo": null
+        },
+        {
+          "name": "Lucy Davis",
+          "photo": null
+        },
+        {
+          "name": "Ralph Ineson",
+          "photo": null
+        },
+        {
+          "name": "Oliver Chris",
+          "photo": null
+        },
+        {
+          "name": "Ewen MacIntosh",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 102619,
+    "name": "I May Destroy You",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "comedy"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "סופרת צעירה מנסה להבין מה קרה לה בלילה אחד ולהחזיר לעצמה שליטה. כואבת, שנונה ומקורית.",
+    "nytRank": 18,
+    "praise": "מבקרים משבחים את הכנות ואת האומץ לגעת בנושא קשה בהומור ובכאב.",
+    "awards": [
+      "Michaela Coel זכתה בפרס אמי על הכתיבה (2021)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Michaela Coel"
+      ],
+      "cast": [
+        {
+          "name": "Michaela Coel",
+          "photo": null
+        },
+        {
+          "name": "Paapa Essiedu",
+          "photo": null
+        },
+        {
+          "name": "Weruche Opia",
+          "photo": null
+        },
+        {
+          "name": "Karla-Simone Spence",
+          "photo": null
+        },
+        {
+          "name": "Stephen Wight",
+          "photo": null
+        },
+        {
+          "name": "Harriet Webb",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1999,
+    "name": "The Comeback",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שחקנית שנשכחה חוזרת לטלוויזיה עם צוות צילום שעוקב אחריה. קומדיית מבוכה עם עומק מפתיע.",
+    "nytRank": 23,
+    "praise": "מבקרים רואים בה סדרה שהקדימה את זמנה בבדיקת עולם הריאליטי והסלבס.",
+    "rt": 88,
+    "fallback": {
+      "year": 2005,
+      "seasons": 2,
+      "episodes": 21,
+      "runtime": 30,
+      "imdb": 7.7,
+      "lang": "en",
+      "creators": [
+        "Lisa Kudrow",
+        "Michael Patrick King"
+      ],
+      "cast": [
+        {
+          "name": "Lisa Kudrow",
+          "photo": null
+        },
+        {
+          "name": "Damian Young",
+          "photo": null
+        },
+        {
+          "name": "Laura Silverman",
+          "photo": null
+        },
+        {
+          "name": "Robert Michael Morris",
+          "photo": null
+        },
+        {
+          "name": "Malin Åkerman",
+          "photo": null
+        },
+        {
+          "name": "Dan Bucatinsky",
+          "photo": null
+        },
+        {
+          "name": "Lance Barber",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1406,
+    "name": "Deadwood",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "עיירת מכרות באמריקה של המאה ה-19, בלי חוק ובלי סדר. מערבון פיוטי וגס בשפה.",
+    "nytRank": 24,
+    "praise": "מבקרים משבחים את הכתיבה הפיוטית ואת הדיאלוגים הייחודיים.",
+    "awards": [
+      "Ian McShane זכה בגלובוס הזהב על תפקיד המשנה"
+    ],
+    "rt": 92,
+    "fallback": {
+      "year": 2004,
+      "seasons": 3,
+      "episodes": 36,
+      "runtime": 55,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "David Milch"
+      ],
+      "cast": [
+        {
+          "name": "Ian McShane",
+          "photo": null
+        },
+        {
+          "name": "Timothy Olyphant",
+          "photo": null
+        },
+        {
+          "name": "Molly Parker",
+          "photo": null
+        },
+        {
+          "name": "Brad Dourif",
+          "photo": null
+        },
+        {
+          "name": "Paula Malcomson",
+          "photo": null
+        },
+        {
+          "name": "W. Earl Brown",
+          "photo": null
+        },
+        {
+          "name": "John Hawkes",
+          "photo": null
+        },
+        {
+          "name": "Robin Weigert",
+          "photo": null
+        },
+        {
+          "name": "Kim Dickens",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4613,
+    "name": "Band of Brothers",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "פלוגה אחת של צנחנים אמריקאים במלחמת העולם השנייה. מיני-סדרה גדולה ומרגשת.",
+    "nytRank": 28,
+    "praise": "מבקרים משבחים את התיאור האנושי של המלחמה דרך חיילים מסוימים.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2002)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2001,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 60,
+      "imdb": 9.4,
+      "lang": "en",
+      "creators": [
+        "בהפקת Tom Hanks ו-Steven Spielberg"
+      ],
+      "cast": [
+        {
+          "name": "Damian Lewis",
+          "photo": null
+        },
+        {
+          "name": "Ron Livingston",
+          "photo": null
+        },
+        {
+          "name": "Donnie Wahlberg",
+          "photo": null
+        },
+        {
+          "name": "Scott Grimes",
+          "photo": null
+        },
+        {
+          "name": "Matthew Settle",
+          "photo": null
+        },
+        {
+          "name": "Neal McDonough",
+          "photo": null
+        },
+        {
+          "name": "Michael Cudlitz",
+          "photo": null
+        },
+        {
+          "name": "Dexter Fletcher",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 43082,
+    "name": "Key & Peele",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכוני קומדיה של שני קומיקאים, עם דמויות שנשארות בראש. כל פרק עומד בפני עצמו.",
+    "nytRank": 29,
+    "praise": "מבקרים אוהבים את הדמויות ואת המערכונים שהפכו לוויראליים.",
+    "awards": [
+      "זכתה בפרס פיבודי"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2012,
+      "seasons": 5,
+      "episodes": 53,
+      "runtime": 22,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Keegan-Michael Key",
+        "Jordan Peele"
+      ],
+      "cast": [
+        {
+          "name": "Keegan-Michael Key",
+          "photo": null
+        },
+        {
+          "name": "Jordan Peele",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 14658,
+    "name": "Survivor",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "תחרות הישרדות על אי נידח: בריתות, בגידות ומיליון דולר בסוף. ריאליטי שחי כבר עשרות שנים.",
+    "nytRank": 31,
+    "praise": "מבקרים מפרגנים לפורמט שהפך למודל של משחק ריאליטי ושרד עשרות שנים.",
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2000,
+      "seasons": 49,
+      "episodes": 700,
+      "runtime": 60,
+      "imdb": 7.5,
+      "lang": "en",
+      "creators": [
+        "Charlie Parsons (הפורמט)",
+        "Mark Burnett (הגרסה האמריקאית)"
+      ],
+      "cast": [
+        {
+          "name": "Jeff Probst",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 83867,
+    "name": "Andor",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סיפורו של מורד לפני ״מלחמת הכוכבים״. מתח פוליטי בוגר ומשובח בעולם מוכר.",
+    "nytRank": 32,
+    "praise": "מבקרים משבחים את הכתיבה הבוגרת ואת המתח הפוליטי, ורבים רואים בה את הסדרה הטובה ביותר בעולם הזה.",
+    "rt": 96,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 24,
+      "runtime": 50,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Tony Gilroy"
+      ],
+      "cast": [
+        {
+          "name": "Diego Luna",
+          "photo": null
+        },
+        {
+          "name": "Stellan Skarsgård",
+          "photo": null
+        },
+        {
+          "name": "Genevieve O'Reilly",
+          "photo": null
+        },
+        {
+          "name": "Denise Gough",
+          "photo": null
+        },
+        {
+          "name": "Adria Arjona",
+          "photo": null
+        },
+        {
+          "name": "Fiona Shaw",
+          "photo": null
+        },
+        {
+          "name": "Kyle Soller",
+          "photo": null
+        },
+        {
+          "name": "Faye Marsay",
+          "photo": null
+        },
+        {
+          "name": "Andy Serkis",
+          "photo": null
+        },
+        {
+          "name": "Forest Whitaker",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 34594,
+    "name": "Enlightened",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה אחרי התמוטטות חוזרת לעבודה עם משימה לשנות את העולם. סדרה קטנה, נוגה ואמיצה.",
+    "nytRank": 33,
+    "praise": "מבקרים משבחים את המשחק של לורה דרן ואת הגישה האמיצה והכואבת.",
+    "awards": [
+      "Laura Dern זכתה בגלובוס הזהב על התפקיד הראשי בקומדיה"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2011,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 28,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Mike White",
+        "Laura Dern"
+      ],
+      "cast": [
+        {
+          "name": "Laura Dern",
+          "photo": null
+        },
+        {
+          "name": "Luke Wilson",
+          "photo": null
+        },
+        {
+          "name": "Diane Ladd",
+          "photo": null
+        },
+        {
+          "name": "Mike White",
+          "photo": null
+        },
+        {
+          "name": "Timm Sharp",
+          "photo": null
+        },
+        {
+          "name": "Sarah Burns",
+          "photo": null
+        },
+        {
+          "name": "Molly Shannon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 61662,
+    "name": "Schitt’s Creek",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "משפחה עשירה מאבדת הכול וגרה בעיירה מצחיקה. הסדרה הכי חמה ומחבקת ברשימה.",
+    "nytRank": 34,
+    "praise": "מבקרים אוהבים את החום ואת האופן שבו הסדרה מתפתחת מקומדיה לסיפור אהבה.",
+    "awards": [
+      "טאטאה את פרסי האמי של 2020: זכתה בכל שבע הקטגוריות המרכזיות של הקומדיה"
+    ],
+    "rt": 93,
+    "fallback": {
+      "year": 2015,
+      "seasons": 6,
+      "episodes": 80,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Eugene Levy",
+        "Dan Levy"
+      ],
+      "cast": [
+        {
+          "name": "Eugene Levy",
+          "photo": null
+        },
+        {
+          "name": "Catherine O'Hara",
+          "photo": null
+        },
+        {
+          "name": "Dan Levy",
+          "photo": null
+        },
+        {
+          "name": "Annie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Chris Elliott",
+          "photo": null
+        },
+        {
+          "name": "Emily Hampshire",
+          "photo": null
+        },
+        {
+          "name": "Noah Reid",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Robertson",
+          "photo": null
+        },
+        {
+          "name": "Tim Rozon",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 46648,
+    "name": "True Detective",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "mystery",
+      "thriller"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "אנתולוגיית חקירות קודרות. העונה הראשונה, עם מתיו מקונוהיי ווודי הרלסון, היא זו שנכנסה לרשימה.",
+    "nytRank": 35,
+    "praise": "מבקרים משבחים בעיקר את העונה הראשונה: האווירה והמשחק.",
+    "awards": [
+      "Cary Joji Fukunaga זכה בפרס אמי על הבימוי של העונה הראשונה (2014)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2014,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 60,
+      "imdb": 8.9,
+      "lang": "en",
+      "creators": [
+        "Nic Pizzolatto"
+      ],
+      "cast": [
+        {
+          "name": "Matthew McConaughey",
+          "photo": null
+        },
+        {
+          "name": "Woody Harrelson",
+          "photo": null
+        },
+        {
+          "name": "Colin Farrell",
+          "photo": null
+        },
+        {
+          "name": "Mahershala Ali",
+          "photo": null
+        },
+        {
+          "name": "Jodie Foster",
+          "photo": null
+        },
+        {
+          "name": "Rachel McAdams",
+          "photo": null
+        },
+        {
+          "name": "Vince Vaughn",
+          "photo": null
+        },
+        {
+          "name": "Kelly Reilly",
+          "photo": null
+        },
+        {
+          "name": "Carmen Ejogo",
+          "photo": null
+        },
+        {
+          "name": "Stephen Dorff",
+          "photo": null
+        },
+        {
+          "name": "Michelle Monaghan",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1972,
+    "name": "Battlestar Galactica",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "scifi",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think",
+      "escape"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "שרידי האנושות בורחים מרובוטים בחלל. מדע בדיוני פוליטי ואפל.",
+    "nytRank": 37,
+    "praise": "מבקרים רואים בה סדרת מדע בדיוני בוגרת שנוגעת בפוליטיקה ובמוסר.",
+    "awards": [
+      "זכתה בפרס פיבודי"
+    ],
+    "rt": 88,
+    "fallback": {
+      "year": 2004,
+      "seasons": 4,
+      "episodes": 75,
+      "runtime": 45,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Ronald D. Moore"
+      ],
+      "cast": [
+        {
+          "name": "Edward James Olmos",
+          "photo": null
+        },
+        {
+          "name": "Mary McDonnell",
+          "photo": null
+        },
+        {
+          "name": "Katee Sackhoff",
+          "photo": null
+        },
+        {
+          "name": "Jamie Bamber",
+          "photo": null
+        },
+        {
+          "name": "James Callis",
+          "photo": null
+        },
+        {
+          "name": "Tricia Helfer",
+          "photo": null
+        },
+        {
+          "name": "Grace Park",
+          "photo": null
+        },
+        {
+          "name": "Michael Hogan",
+          "photo": null
+        },
+        {
+          "name": "Aaron Douglas",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 249042,
+    "name": "Adolescence",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "נער בן 13 נעצר והמשפחה שלו מתפרקת. ארבעה פרקים שצולמו כל אחד בלקיחה אחת.",
+    "nytRank": 40,
+    "praise": "מבקרים משבחים את הבימוי בלקיחה אחת ואת המשחק של הצעיר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2025)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2025,
+      "seasons": 1,
+      "episodes": 4,
+      "runtime": 60,
+      "imdb": 8,
+      "lang": "en",
+      "creators": [
+        "Jack Thorne",
+        "Stephen Graham"
+      ],
+      "cast": [
+        {
+          "name": "Stephen Graham",
+          "photo": null
+        },
+        {
+          "name": "Owen Cooper",
+          "photo": null
+        },
+        {
+          "name": "Ashley Walters",
+          "photo": null
+        },
+        {
+          "name": "Erin Doherty",
+          "photo": null
+        },
+        {
+          "name": "Faye Marsay",
+          "photo": null
+        },
+        {
+          "name": "Christine Tremarco",
+          "photo": null
+        },
+        {
+          "name": "Mark Stanley",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 32962,
+    "name": "Louie",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "קומיקאי גרוש בניו יורק ואירועי חיים מוזרים. קומדיה אישית וחצי-חלומית.",
+    "nytRank": 41,
+    "praise": "מבקרים אוהבים את הסגנון האישי והחצי-קולנועי.",
+    "awards": [
+      "זכתה בפרס אמי על כתיבה לסדרת קומדיה (2012)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2010,
+      "seasons": 5,
+      "episodes": 61,
+      "runtime": 22,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Louis C.K."
+      ],
+      "cast": [
+        {
+          "name": "Louis C.K.",
+          "photo": null
+        },
+        {
+          "name": "Pamela Adlon",
+          "photo": null
+        },
+        {
+          "name": "Hadley Delany",
+          "photo": null
+        },
+        {
+          "name": "Ursula Parker",
+          "photo": null
+        },
+        {
+          "name": "Robert Kelly",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 124101,
+    "name": "Hacks",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קומיקאית ותיקה וכותבת צעירה בדיוק הפוכה. חברות מצחיקה ונוקבת.",
+    "nytRank": 42,
+    "praise": "מבקרים משבחים את הכימיה בין שתי הדמויות ואת הכתיבה השנונה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2024)",
+      "Jean Smart זכתה בפרס אמי על התפקיד הראשי כמה פעמים"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2021,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 35,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Lucia Aniello",
+        "Paul W. Downs",
+        "Jen Statsky"
+      ],
+      "cast": [
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Hannah Einbinder",
+          "photo": null
+        },
+        {
+          "name": "Carl Clemons-Hopkins",
+          "photo": null
+        },
+        {
+          "name": "Paul W. Downs",
+          "photo": null
+        },
+        {
+          "name": "Megan Stalter",
+          "photo": null
+        },
+        {
+          "name": "Christopher McDonald",
+          "photo": null
+        },
+        {
+          "name": "Poppy Liu",
+          "photo": null
+        },
+        {
+          "name": "Mark Indelicato",
+          "photo": null
+        },
+        {
+          "name": "Kaitlin Olson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 60574,
+    "name": "Peaky Blinders",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "כנופיית משפחה בבירמינגהם שאחרי מלחמת העולם הראשונה. סגנון, אלימות ומוזיקה.",
+    "nytRank": 43,
+    "praise": "מבקרים אוהבים את הסגנון המצולם ואת המוזיקה.",
+    "rt": 92,
+    "fallback": {
+      "year": 2013,
+      "seasons": 6,
+      "episodes": 36,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Steven Knight"
+      ],
+      "cast": [
+        {
+          "name": "Cillian Murphy",
+          "photo": null
+        },
+        {
+          "name": "Paul Anderson",
+          "photo": null
+        },
+        {
+          "name": "Helen McCrory",
+          "photo": null
+        },
+        {
+          "name": "Tom Hardy",
+          "photo": null
+        },
+        {
+          "name": "Sophie Rundle",
+          "photo": null
+        },
+        {
+          "name": "Joe Cole",
+          "photo": null
+        },
+        {
+          "name": "Finn Cole",
+          "photo": null
+        },
+        {
+          "name": "Natasha O'Keeffe",
+          "photo": null
+        },
+        {
+          "name": "Anya Taylor-Joy",
+          "photo": null
+        },
+        {
+          "name": "Sam Neill",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 61244,
+    "name": "Happy Valley",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "feel"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "סמלת משטרה ביורקשייר מתמודדת עם פושע שחזר מהכלא. דרמה בריטית חזקה.",
+    "nytRank": 45,
+    "praise": "מבקרים משבחים את הדמות הראשית ואת המשחק של השחקנית.",
+    "awards": [
+      "Sarah Lancashire זכתה בפרס BAFTA על התפקיד הראשי"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2014,
+      "seasons": 3,
+      "episodes": 18,
+      "runtime": 55,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Sally Wainwright"
+      ],
+      "cast": [
+        {
+          "name": "Sarah Lancashire",
+          "photo": null
+        },
+        {
+          "name": "James Norton",
+          "photo": null
+        },
+        {
+          "name": "Siobhan Finneran",
+          "photo": null
+        },
+        {
+          "name": "Charlie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Steve Pemberton",
+          "photo": null
+        },
+        {
+          "name": "George Costigan",
+          "photo": null
+        },
+        {
+          "name": "Con O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Rhys Connah",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 60839,
+    "name": "Broad City",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שתי חברות בניו יורק ומאבק יומיומי בשטויות. קומדיה מטורפת וחמה.",
+    "nytRank": 46,
+    "praise": "מבקרים אוהבים את האנרגיה ואת החברות המצחיקה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2014,
+      "seasons": 5,
+      "episodes": 50,
+      "runtime": 22,
+      "imdb": 7.7,
+      "lang": "en",
+      "creators": [
+        "Abbi Jacobson",
+        "Ilana Glazer"
+      ],
+      "cast": [
+        {
+          "name": "Abbi Jacobson",
+          "photo": null
+        },
+        {
+          "name": "Ilana Glazer",
+          "photo": null
+        },
+        {
+          "name": "Paul W. Downs",
+          "photo": null
+        },
+        {
+          "name": "Arturo Castro",
+          "photo": null
+        },
+        {
+          "name": "Hannibal Buress",
+          "photo": null
+        },
+        {
+          "name": "Stephen Schneider",
+          "photo": null
+        },
+        {
+          "name": "Jon Glaser",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 89905,
+    "name": "Normal People",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שני צעירים אירים בדרך ארוכה של קרבה והתרחקות. דרמה אינטימית ועדינה.",
+    "nytRank": 49,
+    "praise": "מבקרים משבחים את האינטימיות ואת המשחק העדין.",
+    "rt": 97,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Alice Birch (עיבוד)",
+        "Sally Rooney (הספר)"
+      ],
+      "cast": [
+        {
+          "name": "Daisy Edgar-Jones",
+          "photo": null
+        },
+        {
+          "name": "Paul Mescal",
+          "photo": null
+        },
+        {
+          "name": "Sarah Greene",
+          "photo": null
+        },
+        {
+          "name": "Desmond Eastwood",
+          "photo": null
+        },
+        {
+          "name": "Aislín McGuckin",
+          "photo": null
+        },
+        {
+          "name": "India Mullen",
+          "photo": null
+        },
+        {
+          "name": "Eanna Hardwicke",
+          "photo": null
+        },
+        {
+          "name": "Fionn O'Shea",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 8592,
+    "name": "Parks and Recreation",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "פקידה אופטימית בעירייה של עיירה באינדיאנה. קומדיה חמה על אנשים שאכפת להם.",
+    "nytRank": 50,
+    "praise": "מבקרים אוהבים את האופטימיות ואת צוות השחקנים החם.",
+    "rt": 88,
+    "fallback": {
+      "year": 2009,
+      "seasons": 7,
+      "episodes": 125,
+      "runtime": 22,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Greg Daniels",
+        "Michael Schur"
+      ],
+      "cast": [
+        {
+          "name": "Amy Poehler",
+          "photo": null
+        },
+        {
+          "name": "Nick Offerman",
+          "photo": null
+        },
+        {
+          "name": "Aziz Ansari",
+          "photo": null
+        },
+        {
+          "name": "Chris Pratt",
+          "photo": null
+        },
+        {
+          "name": "Rashida Jones",
+          "photo": null
+        },
+        {
+          "name": "Aubrey Plaza",
+          "photo": null
+        },
+        {
+          "name": "Adam Scott",
+          "photo": null
+        },
+        {
+          "name": "Retta",
+          "photo": null
+        },
+        {
+          "name": "Rob Lowe",
+          "photo": null
+        },
+        {
+          "name": "Jim O'Heir",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 33907,
+    "name": "Downton Abbey",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "feel",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אחוזה בריטית וצוות משרתיה בתחילת המאה ה-20. דרמה נעימה ומפנקת.",
+    "nytRank": 52,
+    "praise": "מבקרים משבחים את ההפקה המפוארת ואת המשחק של השחקנים הוותיקים.",
+    "awards": [
+      "העונה הראשונה זכתה בפרס אמי לסדרה מוגבלת (2011)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2010,
+      "seasons": 6,
+      "episodes": 52,
+      "runtime": 55,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Julian Fellowes"
+      ],
+      "cast": [
+        {
+          "name": "Hugh Bonneville",
+          "photo": null
+        },
+        {
+          "name": "Michelle Dockery",
+          "photo": null
+        },
+        {
+          "name": "Maggie Smith",
+          "photo": null
+        },
+        {
+          "name": "Elizabeth McGovern",
+          "photo": null
+        },
+        {
+          "name": "Laura Carmichael",
+          "photo": null
+        },
+        {
+          "name": "Jim Carter",
+          "photo": null
+        },
+        {
+          "name": "Joanne Froggatt",
+          "photo": null
+        },
+        {
+          "name": "Dan Stevens",
+          "photo": null
+        },
+        {
+          "name": "Phyllis Logan",
+          "photo": null
+        },
+        {
+          "name": "Allen Leech",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 62476,
+    "name": "The Bureau",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "thriller",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "סוכני מודיעין צרפתים וחיים כפולים. דרמת ריגול איטית וחכמה.",
+    "nytRank": 54,
+    "praise": "מבקרים משבחים את הריאליזם של עולם הריגול ואת הקצב הסבלני.",
+    "rt": null,
+    "fallback": {
+      "year": 2015,
+      "seasons": 5,
+      "episodes": 50,
+      "runtime": 52,
+      "imdb": 8.6,
+      "lang": "fr",
+      "creators": [
+        "Éric Rochant"
+      ],
+      "cast": [
+        {
+          "name": "Mathieu Kassovitz",
+          "photo": null
+        },
+        {
+          "name": "Jean-Pierre Darroussin",
+          "photo": null
+        },
+        {
+          "name": "Florence Loiret-Caille",
+          "photo": null
+        },
+        {
+          "name": "Sara Giraudeau",
+          "photo": null
+        },
+        {
+          "name": "Zineb Triki",
+          "photo": null
+        },
+        {
+          "name": "Léa Drucker",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Lambert",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 67883,
+    "name": "Insecure",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה שחורה בלוס אנג׳לס ומערכות יחסים מבולבלות. מצחיקה ואמיתית.",
+    "nytRank": 55,
+    "praise": "מבקרים אוהבים את הקול הייחודי של יוצרת הסדרה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 46,
+      "runtime": 30,
+      "imdb": 7.9,
+      "lang": "en",
+      "creators": [
+        "Issa Rae",
+        "Larry Wilmore"
+      ],
+      "cast": [
+        {
+          "name": "Issa Rae",
+          "photo": null
+        },
+        {
+          "name": "Yvonne Orji",
+          "photo": null
+        },
+        {
+          "name": "Jay Ellis",
+          "photo": null
+        },
+        {
+          "name": "Y'lan Noel",
+          "photo": null
+        },
+        {
+          "name": "Natasha Rothwell",
+          "photo": null
+        },
+        {
+          "name": "Amanda Seales",
+          "photo": null
+        },
+        {
+          "name": "Alexander Hodge",
+          "photo": null
+        },
+        {
+          "name": "Kendrick Sampson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 58957,
+    "name": "Nathan for You",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קומיקאי ״עוזר״ לעסקים קטנים ברעיונות מופרכים. קומדיית מבוכה דוקומנטרית.",
+    "nytRank": 56,
+    "praise": "מבקרים משבחים את המבוכה המדויקת ואת הרעיונות המופרכים.",
+    "rt": 93,
+    "fallback": {
+      "year": 2013,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Nathan Fielder",
+        "Michael Koman"
+      ],
+      "cast": [
+        {
+          "name": "Nathan Fielder",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 88728,
+    "name": "I Think You Should Leave",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכונים קצרים וביזאריים שנשארים בראש. פרקים קצרצרים וטירוף מוחלט.",
+    "nytRank": 57,
+    "praise": "מבקרים אוהבים את הביזאריות ואת המערכונים שנשארים בראש.",
+    "rt": 96,
+    "fallback": {
+      "year": 2019,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 17,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Tim Robinson",
+        "Zach Kanin"
+      ],
+      "cast": [
+        {
+          "name": "Tim Robinson",
+          "photo": null
+        },
+        {
+          "name": "Sam Richardson",
+          "photo": null
+        },
+        {
+          "name": "Tim Heidecker",
+          "photo": null
+        },
+        {
+          "name": "Will Forte",
+          "photo": null
+        },
+        {
+          "name": "Patti Harrison",
+          "photo": null
+        },
+        {
+          "name": "Conner O'Malley",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 713,
+    "name": "Chappelle’s Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מערכוני סטנד-אפ וסאטירה של דייב שאפל. קלאסיקה של שנות ה-2000.",
+    "nytRank": 58,
+    "praise": "מבקרים מפרגנים לחדות של הסאטירה על גזע וחברה.",
+    "rt": null,
+    "fallback": {
+      "year": 2003,
+      "seasons": 2,
+      "episodes": 28,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Dave Chappelle",
+        "Neal Brennan"
+      ],
+      "cast": [
+        {
+          "name": "Dave Chappelle",
+          "photo": null
+        },
+        {
+          "name": "Charlie Murphy",
+          "photo": null
+        },
+        {
+          "name": "Donnell Rawlings",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 85702,
+    "name": "PEN15",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שתי נשים בנות 30 משחקות בנות 13 בכיתה ז׳. מביכה, מצחיקה ונוגעת ללב.",
+    "nytRank": 59,
+    "praise": "מבקרים משבחים את הכנות של גיל ההתבגרות ואת הרעיון הנועז.",
+    "rt": 98,
+    "fallback": {
+      "year": 2019,
+      "seasons": 2,
+      "episodes": 26,
+      "runtime": 25,
+      "imdb": 7.7,
+      "lang": "en",
+      "creators": [
+        "Maya Erskine",
+        "Anna Konkle",
+        "Sam Zvibleman"
+      ],
+      "cast": [
+        {
+          "name": "Maya Erskine",
+          "photo": null
+        },
+        {
+          "name": "Anna Konkle",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 815,
+    "name": "Peep Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שני שותפים לדירה בלונדון, מצולמים דרך עיניהם. קומדיה בריטית מביכה.",
+    "nytRank": 60,
+    "praise": "מבקרים אוהבים את הרעיון של הצפייה דרך עיני הדמויות.",
+    "rt": null,
+    "fallback": {
+      "year": 2003,
+      "seasons": 9,
+      "episodes": 54,
+      "runtime": 25,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Jesse Armstrong",
+        "Sam Bain"
+      ],
+      "cast": [
+        {
+          "name": "David Mitchell",
+          "photo": null
+        },
+        {
+          "name": "Robert Webb",
+          "photo": null
+        },
+        {
+          "name": "Olivia Colman",
+          "photo": null
+        },
+        {
+          "name": "Matt King",
+          "photo": null
+        },
+        {
+          "name": "Paterson Joseph",
+          "photo": null
+        },
+        {
+          "name": "Isy Suttie",
+          "photo": null
+        },
+        {
+          "name": "Sophie Winkleman",
+          "photo": null
+        },
+        {
+          "name": "Jessica Hynes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 8514,
+    "name": "RuPaul’s Drag Race",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "תחרות של דראג קווינס: איפור, ריקוד וקצת דרמה. ריאליטי צבעוני ומצחיק.",
+    "nytRank": 61,
+    "praise": "מבקרים משבחים את האנרגיה ואת התרומה לתרבות הפופולרית.",
+    "awards": [
+      "זכתה בפרס אמי לתוכנית ריאליטי תחרותית פעמים רבות"
+    ],
+    "castLabel": "מגישים",
+    "rt": null,
+    "fallback": {
+      "year": 2009,
+      "seasons": 17,
+      "episodes": 240,
+      "runtime": 60,
+      "imdb": 7.3,
+      "lang": "en",
+      "creators": [
+        "RuPaul Charles",
+        "Fenton Bailey",
+        "Randy Barbato"
+      ],
+      "cast": [
+        {
+          "name": "RuPaul",
+          "photo": null
+        },
+        {
+          "name": "Michelle Visage",
+          "photo": null
+        },
+        {
+          "name": "Carson Kressley",
+          "photo": null
+        },
+        {
+          "name": "Ross Mathews",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4507,
+    "name": "The Thick of It",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "פוליטיקאים ויועצי תקשורת בממשלה הבריטית, בלי פילטר. סאטירה חדה ומלאת קללות.",
+    "nytRank": 63,
+    "praise": "מבקרים אוהבים את הסאטירה הפוליטית המהירה והקללות הממוקדות.",
+    "rt": null,
+    "fallback": {
+      "year": 2005,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 30,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Armando Iannucci"
+      ],
+      "cast": [
+        {
+          "name": "Peter Capaldi",
+          "photo": null
+        },
+        {
+          "name": "Chris Addison",
+          "photo": null
+        },
+        {
+          "name": "Rebecca Front",
+          "photo": null
+        },
+        {
+          "name": "Joanna Scanlan",
+          "photo": null
+        },
+        {
+          "name": "James Smith",
+          "photo": null
+        },
+        {
+          "name": "Paul Higgins",
+          "photo": null
+        },
+        {
+          "name": "Chris Langham",
+          "photo": null
+        },
+        {
+          "name": "Roger Allam",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 56305,
+    "name": "Anthony Bourdain: Parts Unknown",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape",
+      "feel",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "השף אנתוני בורדיין מטייל בעולם ואוכל עם מקומיים. דוקו על אוכל ואנשים.",
+    "nytRank": 64,
+    "praise": "מבקרים משבחים את הצילום ואת הסקרנות, ואת הדרך שבה אוכל מוביל לסיפורים.",
+    "awards": [
+      "זכתה בפרסי אמי ופיבודי"
+    ],
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2013,
+      "seasons": 12,
+      "episodes": 118,
+      "runtime": 45,
+      "imdb": 8.9,
+      "lang": "en",
+      "creators": [
+        "Anthony Bourdain"
+      ],
+      "cast": [
+        {
+          "name": "Anthony Bourdain",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 115004,
+    "name": "Mare of Easttown",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "mystery"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "בלשית בעיירה בפנסילבניה חוקרת רצח ומתמודדת עם משפחה. מתח נוגע ללב.",
+    "nytRank": 65,
+    "praise": "מבקרים משבחים את המשחק של השחקנית הראשית ואת הדרמה של העיירה.",
+    "awards": [
+      "Kate Winslet זכתה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2021)"
+    ],
+    "rt": 97,
+    "fallback": {
+      "year": 2021,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Brad Ingelsby"
+      ],
+      "cast": [
+        {
+          "name": "Kate Winslet",
+          "photo": null
+        },
+        {
+          "name": "Julianne Nicholson",
+          "photo": null
+        },
+        {
+          "name": "Jean Smart",
+          "photo": null
+        },
+        {
+          "name": "Evan Peters",
+          "photo": null
+        },
+        {
+          "name": "Angourie Rice",
+          "photo": null
+        },
+        {
+          "name": "Guy Pearce",
+          "photo": null
+        },
+        {
+          "name": "David Denman",
+          "photo": null
+        },
+        {
+          "name": "Cailee Spaeny",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 204284,
+    "name": "The Rehearsal",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "נתן פילדר בונה חזרות לשיחות קשות בחיים האמיתיים. ניסוי חברתי מצחיק ומוזר.",
+    "nytRank": 66,
+    "praise": "מבקרים משבחים את הרעיון המקורי ואת השאלות שהוא מעורר.",
+    "rt": 95,
+    "fallback": {
+      "year": 2022,
+      "seasons": 2,
+      "episodes": 12,
+      "runtime": 30,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Nathan Fielder",
+        "Eric Notarnicola"
+      ],
+      "cast": [
+        {
+          "name": "Nathan Fielder",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4533,
+    "name": "Anthony Bourdain: No Reservations",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "בורדיין לפני ״אתרים לא ידועים״: אוכל, תרבות וטיולים. תוכנית מסעות אהובה.",
+    "nytRank": 69,
+    "praise": "מבקרים אוהבים את הסגנון הישיר ואת המסעות.",
+    "castLabel": "מגיש",
+    "rt": null,
+    "fallback": {
+      "year": 2005,
+      "seasons": 9,
+      "episodes": 142,
+      "runtime": 45,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Anthony Bourdain"
+      ],
+      "cast": [
+        {
+          "name": "Anthony Bourdain",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1414,
+    "name": "The Shield",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "שוטרי יחידה מיוחדת בלוס אנג׳לס שעושים הכול כדי להצליח. קודרת וחזקה.",
+    "nytRank": 70,
+    "praise": "מבקרים רואים בה סדרה חלוצית על שוטרים מושחתים.",
+    "awards": [
+      "Michael Chiklis זכה בפרס אמי על התפקיד הראשי בדרמה (2002)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2002,
+      "seasons": 7,
+      "episodes": 88,
+      "runtime": 45,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Shawn Ryan"
+      ],
+      "cast": [
+        {
+          "name": "Michael Chiklis",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "CCH Pounder",
+          "photo": null
+        },
+        {
+          "name": "Michael Jace",
+          "photo": null
+        },
+        {
+          "name": "Jay Karnes",
+          "photo": null
+        },
+        {
+          "name": "Catherine Dent",
+          "photo": null
+        },
+        {
+          "name": "Benito Martinez",
+          "photo": null
+        },
+        {
+          "name": "Glenn Close",
+          "photo": null
+        },
+        {
+          "name": "Forest Whitaker",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 154385,
+    "name": "Beef",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "כעס בכביש מתדרדר למלחמה בין שני זרים. אנתולוגיה קומית וכואבת.",
+    "nytRank": 71,
+    "praise": "מבקרים משבחים את המשחק ואת הדרך שבה סכסוך קטן מתפוצץ.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת"
+    ],
+    "rt": 98,
+    "fallback": {
+      "year": 2023,
+      "seasons": 2,
+      "episodes": 18,
+      "runtime": 35,
+      "imdb": 8,
+      "lang": "en",
+      "creators": [
+        "Lee Sung Jin"
+      ],
+      "cast": [
+        {
+          "name": "Steven Yeun",
+          "photo": null
+        },
+        {
+          "name": "Ali Wong",
+          "photo": null
+        },
+        {
+          "name": "Joseph Lee",
+          "photo": null
+        },
+        {
+          "name": "Young Mazino",
+          "photo": null
+        },
+        {
+          "name": "Maria Bello",
+          "photo": null
+        },
+        {
+          "name": "David Choe",
+          "photo": null
+        },
+        {
+          "name": "Oscar Isaac",
+          "photo": null
+        },
+        {
+          "name": "Carey Mulligan",
+          "photo": null
+        },
+        {
+          "name": "Charles Melton",
+          "photo": null
+        },
+        {
+          "name": "Cailee Spaeny",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 73107,
+    "name": "Barry",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "רוצח שכיר מחליט להיות שחקן. קומדיה שחורה שהופכת לאפלה.",
+    "nytRank": 73,
+    "praise": "מבקרים אוהבים את השילוב בין קומדיה לאלימות ואת המשחק של השחקן הראשי.",
+    "awards": [
+      "Bill Hader זכה בפרס אמי על התפקיד הראשי בקומדיה (2018, 2019)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2018,
+      "seasons": 4,
+      "episodes": 32,
+      "runtime": 30,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Alec Berg",
+        "Bill Hader"
+      ],
+      "cast": [
+        {
+          "name": "Bill Hader",
+          "photo": null
+        },
+        {
+          "name": "Sarah Goldberg",
+          "photo": null
+        },
+        {
+          "name": "Stephen Root",
+          "photo": null
+        },
+        {
+          "name": "Henry Winkler",
+          "photo": null
+        },
+        {
+          "name": "Anthony Carrigan",
+          "photo": null
+        },
+        {
+          "name": "D'Arcy Carden",
+          "photo": null
+        },
+        {
+          "name": "Darrell Britt-Gibson",
+          "photo": null
+        },
+        {
+          "name": "Michael Irby",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 136315,
+    "name": "The Bear",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "feel",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "שף צעיר חוזר לנהל מסעדה משפחתית בשיקגו. מטבח חם, עמוס ונוגע ללב.",
+    "nytRank": 74,
+    "praise": "מבקרים משבחים את האנרגיה, הצילום הצפוף והדמויות.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה (2023)"
+    ],
+    "rt": 95,
+    "fallback": {
+      "year": 2022,
+      "seasons": 4,
+      "episodes": 38,
+      "runtime": 35,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Christopher Storer"
+      ],
+      "cast": [
+        {
+          "name": "Jeremy Allen White",
+          "photo": null
+        },
+        {
+          "name": "Ayo Edebiri",
+          "photo": null
+        },
+        {
+          "name": "Ebon Moss-Bachrach",
+          "photo": null
+        },
+        {
+          "name": "Liza Colón-Zayas",
+          "photo": null
+        },
+        {
+          "name": "Lionel Boyce",
+          "photo": null
+        },
+        {
+          "name": "Abby Elliott",
+          "photo": null
+        },
+        {
+          "name": "Matty Matheson",
+          "photo": null
+        },
+        {
+          "name": "Edwin Lee Gibson",
+          "photo": null
+        },
+        {
+          "name": "Oliver Platt",
+          "photo": null
+        },
+        {
+          "name": "Jamie Lee Curtis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 106308,
+    "name": "Somebody Somewhere",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה מקנזס מוצאת קהילה אחרי אובדן. סדרה קטנה, חמה ושקטה.",
+    "nytRank": 76,
+    "praise": "מבקרים משבחים את החום והאמינות של סיפור קטן.",
+    "rt": 98,
+    "fallback": {
+      "year": 2022,
+      "seasons": 3,
+      "episodes": 21,
+      "runtime": 30,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Bridget Everett",
+        "Hannah Bos",
+        "Paul Thureen"
+      ],
+      "cast": [
+        {
+          "name": "Bridget Everett",
+          "photo": null
+        },
+        {
+          "name": "Jeff Hiller",
+          "photo": null
+        },
+        {
+          "name": "Mary Catherine Garrison",
+          "photo": null
+        },
+        {
+          "name": "Murray Hill",
+          "photo": null
+        },
+        {
+          "name": "Danny McCarthy",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1421,
+    "name": "Modern Family",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "שלוש משפחות שקשורות זו לזו, בסגנון דוקומנטרי. קומדיה משפחתית קלילה.",
+    "nytRank": 77,
+    "praise": "מבקרים אוהבים את האנסמבל ואת הצורה המצחיקה והחמה.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת קומדיה חמש שנים ברציפות (2010 עד 2014)"
+    ],
+    "rt": 85,
+    "fallback": {
+      "year": 2009,
+      "seasons": 11,
+      "episodes": 250,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Christopher Lloyd",
+        "Steven Levitan"
+      ],
+      "cast": [
+        {
+          "name": "Ed O'Neill",
+          "photo": null
+        },
+        {
+          "name": "Sofía Vergara",
+          "photo": null
+        },
+        {
+          "name": "Julie Bowen",
+          "photo": null
+        },
+        {
+          "name": "Ty Burrell",
+          "photo": null
+        },
+        {
+          "name": "Jesse Tyler Ferguson",
+          "photo": null
+        },
+        {
+          "name": "Eric Stonestreet",
+          "photo": null
+        },
+        {
+          "name": "Sarah Hyland",
+          "photo": null
+        },
+        {
+          "name": "Ariel Winter",
+          "photo": null
+        },
+        {
+          "name": "Nolan Gould",
+          "photo": null
+        },
+        {
+          "name": "Rico Rodriguez",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 2710,
+    "name": "It’s Always Sunny in Philadelphia",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "חבורה של אנשים נוראיים מנהלת בר בפילדלפיה. קומדיה גסה וממושכת.",
+    "nytRank": 78,
+    "praise": "מבקרים משבחים את הנכונות להיות מרושעים ומצחיקים לאורך שנים.",
+    "rt": 87,
+    "fallback": {
+      "year": 2005,
+      "seasons": 17,
+      "episodes": 170,
+      "runtime": 22,
+      "imdb": 8.7,
+      "lang": "en",
+      "creators": [
+        "Rob McElhenney"
+      ],
+      "cast": [
+        {
+          "name": "Charlie Day",
+          "photo": null
+        },
+        {
+          "name": "Glenn Howerton",
+          "photo": null
+        },
+        {
+          "name": "Rob McElhenney",
+          "photo": null
+        },
+        {
+          "name": "Kaitlin Olson",
+          "photo": null
+        },
+        {
+          "name": "Danny DeVito",
+          "photo": null
+        },
+        {
+          "name": "Mary Elizabeth Ellis",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1435,
+    "name": "The Good Wife",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "crime"
+    ],
+    "moods": [
+      "think",
+      "tense"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אישה חוזרת לעבוד כעורכת דין אחרי שערוריית בעלה. דרמה משפטית חכמה.",
+    "nytRank": 79,
+    "praise": "מבקרים משבחים את הכתיבה המשפטית ואת השחקנית הראשית.",
+    "awards": [
+      "Julianna Margulies זכתה בפרס אמי על התפקיד הראשי בדרמה (2011)"
+    ],
+    "rt": 90,
+    "fallback": {
+      "year": 2009,
+      "seasons": 7,
+      "episodes": 156,
+      "runtime": 43,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "Robert King",
+        "Michelle King"
+      ],
+      "cast": [
+        {
+          "name": "Julianna Margulies",
+          "photo": null
+        },
+        {
+          "name": "Josh Charles",
+          "photo": null
+        },
+        {
+          "name": "Christine Baranski",
+          "photo": null
+        },
+        {
+          "name": "Archie Panjabi",
+          "photo": null
+        },
+        {
+          "name": "Alan Cumming",
+          "photo": null
+        },
+        {
+          "name": "Matt Czuchry",
+          "photo": null
+        },
+        {
+          "name": "Chris Noth",
+          "photo": null
+        },
+        {
+          "name": "Matthew Goode",
+          "photo": null
+        },
+        {
+          "name": "Zach Grenier",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 110971,
+    "name": "How To with John Wilson",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "think"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "סרטי ״הדרכה״ שמסתעפים לעולם המוזר של ניו יורק. דוקו מצחיק ומרגש.",
+    "nytRank": 80,
+    "praise": "מבקרים אוהבים את החיפוש האישי והמוזר אחר רגעים אנושיים.",
+    "rt": 95,
+    "fallback": {
+      "year": 2020,
+      "seasons": 3,
+      "episodes": 18,
+      "runtime": 28,
+      "imdb": 8.3,
+      "lang": "en",
+      "creators": [
+        "John Wilson"
+      ],
+      "cast": [
+        {
+          "name": "John Wilson",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 87739,
+    "name": "The Queen’s Gambit",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "ילדה יתומה ושחמט בשנות ה-60. מיני-סדרה מרהיבה על גאונות והתמכרות.",
+    "nytRank": 81,
+    "praise": "מבקרים משבחים את ההפקה היפה ואת המשחק של השחקנית הראשית.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2021)"
+    ],
+    "rt": 96,
+    "fallback": {
+      "year": 2020,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Scott Frank",
+        "Allan Scott"
+      ],
+      "cast": [
+        {
+          "name": "Anya Taylor-Joy",
+          "photo": null
+        },
+        {
+          "name": "Bill Camp",
+          "photo": null
+        },
+        {
+          "name": "Thomas Brodie-Sangster",
+          "photo": null
+        },
+        {
+          "name": "Marielle Heller",
+          "photo": null
+        },
+        {
+          "name": "Harry Melling",
+          "photo": null
+        },
+        {
+          "name": "Moses Ingram",
+          "photo": null
+        },
+        {
+          "name": "Isla Johnston",
+          "photo": null
+        },
+        {
+          "name": "Jacob Fortune-Lloyd",
+          "photo": null
+        },
+        {
+          "name": "Marcin Dorociński",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 66859,
+    "name": "Better Things",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אמא חד-הורית לשלוש בנות מנסה לחיות ולהתפרנס. קומדיה-דרמה כנה.",
+    "nytRank": 82,
+    "praise": "מבקרים אוהבים את הכנות של סיפור על אמהות.",
+    "rt": 96,
+    "fallback": {
+      "year": 2016,
+      "seasons": 5,
+      "episodes": 52,
+      "runtime": 30,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Pamela Adlon",
+        "Louis C.K."
+      ],
+      "cast": [
+        {
+          "name": "Pamela Adlon",
+          "photo": null
+        },
+        {
+          "name": "Mikey Madison",
+          "photo": null
+        },
+        {
+          "name": "Hannah Alligood",
+          "photo": null
+        },
+        {
+          "name": "Olivia Edward",
+          "photo": null
+        },
+        {
+          "name": "Celia Imrie",
+          "photo": null
+        },
+        {
+          "name": "Diedrich Bader",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1436,
+    "name": "Justified",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "laugh"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מרשל אמריקאי בכובע לבן מול פושעים בקנטקי. דיאלוגים ושנינות.",
+    "nytRank": 83,
+    "praise": "מבקרים משבחים את הדיאלוגים ואת הכריזמה של הכוכב.",
+    "awards": [
+      "Margo Martindale זכתה בפרס אמי כשחקנית משנה בדרמה (2011)"
+    ],
+    "rt": 91,
+    "fallback": {
+      "year": 2010,
+      "seasons": 6,
+      "episodes": 78,
+      "runtime": 45,
+      "imdb": 8.6,
+      "lang": "en",
+      "creators": [
+        "Graham Yost"
+      ],
+      "cast": [
+        {
+          "name": "Timothy Olyphant",
+          "photo": null
+        },
+        {
+          "name": "Walton Goggins",
+          "photo": null
+        },
+        {
+          "name": "Nick Searcy",
+          "photo": null
+        },
+        {
+          "name": "Joelle Carter",
+          "photo": null
+        },
+        {
+          "name": "Erica Tazel",
+          "photo": null
+        },
+        {
+          "name": "Jacob Pitts",
+          "photo": null
+        },
+        {
+          "name": "Jere Burns",
+          "photo": null
+        },
+        {
+          "name": "Margo Martindale",
+          "photo": null
+        },
+        {
+          "name": "Jeremy Davies",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 1044,
+    "name": "Planet Earth",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מסע מרהיב בטבע הפראי של כדור הארץ. כדאי לראות במסך הכי גדול שיש.",
+    "nytRank": 84,
+    "praise": "מבקרים משבחים את הצילום המרהיב ואת התמונות שלא נראו קודם.",
+    "awards": [
+      "זכתה בפרסי אמי"
+    ],
+    "castLabel": "מספר",
+    "rt": 98,
+    "fallback": {
+      "year": 2006,
+      "seasons": 3,
+      "episodes": 25,
+      "runtime": 50,
+      "imdb": 9.4,
+      "lang": "en",
+      "creators": [
+        "Alastair Fothergill"
+      ],
+      "cast": [
+        {
+          "name": "David Attenborough",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 34549,
+    "name": "The Great British Baking Show",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "doc"
+    ],
+    "moods": [
+      "laugh",
+      "escape"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אופים חובבים מתחרים באוהל בכפר הבריטי. ריאליטי נעים ושלֵו.",
+    "nytRank": 85,
+    "praise": "מבקרים אוהבים את האווירה הנעימה ואת היעדר הרוע בריאליטי.",
+    "castLabel": "מגישים ושופטים",
+    "rt": null,
+    "fallback": {
+      "year": 2010,
+      "seasons": 16,
+      "episodes": 150,
+      "runtime": 60,
+      "imdb": 8.1,
+      "lang": "en",
+      "creators": [
+        "Love Productions (הפורמט)"
+      ],
+      "cast": [
+        {
+          "name": "Mary Berry",
+          "photo": null
+        },
+        {
+          "name": "Paul Hollywood",
+          "photo": null
+        },
+        {
+          "name": "Mel Giedroyc",
+          "photo": null
+        },
+        {
+          "name": "Sue Perkins",
+          "photo": null
+        },
+        {
+          "name": "Noel Fielding",
+          "photo": null
+        },
+        {
+          "name": "Matt Lucas",
+          "photo": null
+        },
+        {
+          "name": "Prue Leith",
+          "photo": null
+        },
+        {
+          "name": "Sandi Toksvig",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 126308,
+    "name": "Shōgun",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "history",
+      "drama"
+    ],
+    "moods": [
+      "escape",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "ספינה אנגלית מגיעה ליפן של ימי הסמוראים. דרמה פוליטית מרהיבה ואלימה.",
+    "nytRank": 86,
+    "praise": "מבקרים משבחים את ההפקה המרהיבה ואת הדיוק התרבותי.",
+    "awards": [
+      "זכתה בפרס אמי לסדרת דרמה (2024), עם 18 זכיות באמי בעונה אחת, שיא"
+    ],
+    "rt": 99,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 10,
+      "runtime": 60,
+      "imdb": 8.6,
+      "lang": "ja",
+      "creators": [
+        "Rachel Kondo",
+        "Justin Marks"
+      ],
+      "cast": [
+        {
+          "name": "Hiroyuki Sanada",
+          "photo": null
+        },
+        {
+          "name": "Cosmo Jarvis",
+          "photo": null
+        },
+        {
+          "name": "Anna Sawai",
+          "photo": null
+        },
+        {
+          "name": "Tadanobu Asano",
+          "photo": null
+        },
+        {
+          "name": "Takehiro Hira",
+          "photo": null
+        },
+        {
+          "name": "Tokuma Nishioka",
+          "photo": null
+        },
+        {
+          "name": "Moeka Hoshi",
+          "photo": null
+        },
+        {
+          "name": "Yuki Kura",
+          "photo": null
+        },
+        {
+          "name": "Fumi Nikaido",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 95215,
+    "name": "Reservation Dogs",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "ארבעה נערים בשמורת אינדיאנים באוקלהומה. קומדיה מקורית וחמה.",
+    "nytRank": 87,
+    "praise": "מבקרים משבחים את הייצוג האותנטי ואת ההומור המקורי.",
+    "rt": 99,
+    "fallback": {
+      "year": 2021,
+      "seasons": 3,
+      "episodes": 28,
+      "runtime": 28,
+      "imdb": 8,
+      "lang": "en",
+      "creators": [
+        "Sterlin Harjo",
+        "Taika Waititi"
+      ],
+      "cast": [
+        {
+          "name": "Devery Jacobs",
+          "photo": null
+        },
+        {
+          "name": "Paulina Alexis",
+          "photo": null
+        },
+        {
+          "name": "D'Pharaoh Woon-A-Tai",
+          "photo": null
+        },
+        {
+          "name": "Lane Factor",
+          "photo": null
+        },
+        {
+          "name": "Zahn McClarnon",
+          "photo": null
+        },
+        {
+          "name": "Sarah Podemski",
+          "photo": null
+        },
+        {
+          "name": "Gary Farmer",
+          "photo": null
+        },
+        {
+          "name": "Kaniehtiio Horn",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "disney"
+      ]
+    }
+  },
+  {
+    "tmdbId": 241259,
+    "name": "Baby Reindeer",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "feel",
+      "tense"
+    ],
+    "weight": 3,
+    "solo": true,
+    "blurb": "קומיקאי מתחיל נקלע ליחסים עם מי שמתעללת בו. סיפור אמיתי, כואב ובלתי נעים.",
+    "nytRank": 89,
+    "praise": "מבקרים משבחים את הכנות ואת המשחק של היוצר.",
+    "awards": [
+      "זכתה בפרס אמי לסדרה מוגבלת (2024)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2024,
+      "seasons": 1,
+      "episodes": 7,
+      "runtime": 30,
+      "imdb": 7.7,
+      "lang": "en",
+      "creators": [
+        "Richard Gadd"
+      ],
+      "cast": [
+        {
+          "name": "Richard Gadd",
+          "photo": null
+        },
+        {
+          "name": "Jessica Gunning",
+          "photo": null
+        },
+        {
+          "name": "Nava Mau",
+          "photo": null
+        },
+        {
+          "name": "Tom Goodman-Hill",
+          "photo": null
+        },
+        {
+          "name": "Shalom Brune-Franklin",
+          "photo": null
+        },
+        {
+          "name": "Danny Kirrane",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 8624,
+    "name": "Eastbound & Down",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "מגיש בייסבול לשעבר חוזר לעיירה ולא מוותר על האגו. קומדיה גסה ומצחיקה.",
+    "nytRank": 90,
+    "praise": "מבקרים אוהבים את ההומור הגס ואת הדמות הראשית.",
+    "rt": 85,
+    "fallback": {
+      "year": 2009,
+      "seasons": 4,
+      "episodes": 29,
+      "runtime": 28,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Danny McBride",
+        "Jody Hill",
+        "Ben Best"
+      ],
+      "cast": [
+        {
+          "name": "Danny McBride",
+          "photo": null
+        },
+        {
+          "name": "Steve Little",
+          "photo": null
+        },
+        {
+          "name": "Katy Mixon",
+          "photo": null
+        },
+        {
+          "name": "John Hawkes",
+          "photo": null
+        },
+        {
+          "name": "Jennifer Irwin",
+          "photo": null
+        },
+        {
+          "name": "Andrew Daly",
+          "photo": null
+        },
+        {
+          "name": "Ben Best",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 61920,
+    "name": "Catastrophe",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh",
+      "feel"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אמריקאי ובריטית נכנסים להריון אחרי שבוע. קומדיה רומנטית כנה וקצרה.",
+    "nytRank": 91,
+    "praise": "מבקרים משבחים את הכנות ואת המהירות של הקומדיה.",
+    "rt": 96,
+    "fallback": {
+      "year": 2015,
+      "seasons": 4,
+      "episodes": 24,
+      "runtime": 25,
+      "imdb": 7.9,
+      "lang": "en",
+      "creators": [
+        "Rob Delaney",
+        "Sharon Horgan"
+      ],
+      "cast": [
+        {
+          "name": "Rob Delaney",
+          "photo": null
+        },
+        {
+          "name": "Sharon Horgan",
+          "photo": null
+        },
+        {
+          "name": "Carrie Fisher",
+          "photo": null
+        },
+        {
+          "name": "Ashley Jensen",
+          "photo": null
+        },
+        {
+          "name": "Mark Bonnar",
+          "photo": null
+        },
+        {
+          "name": "Daniel Lapaine",
+          "photo": null
+        },
+        {
+          "name": "Jonathan Forbes",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "prime"
+      ]
+    }
+  },
+  {
+    "tmdbId": 66276,
+    "name": "The Night Of",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "crime",
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 3,
+    "solo": false,
+    "blurb": "סטודנט נעצר אחרי רצח ומערכת המשפט מתחילה לטחון. מתח משפטי ומאופק.",
+    "nytRank": 92,
+    "praise": "מבקרים משבחים את המשחק ואת הדרך שבה היא חושפת את מערכת המשפט.",
+    "awards": [
+      "Riz Ahmed זכה בפרס אמי על התפקיד הראשי בסדרה מוגבלת (2017)"
+    ],
+    "rt": 94,
+    "fallback": {
+      "year": 2016,
+      "seasons": 1,
+      "episodes": 8,
+      "runtime": 60,
+      "imdb": 8.4,
+      "lang": "en",
+      "creators": [
+        "Richard Price",
+        "Steven Zaillian"
+      ],
+      "cast": [
+        {
+          "name": "Riz Ahmed",
+          "photo": null
+        },
+        {
+          "name": "John Turturro",
+          "photo": null
+        },
+        {
+          "name": "Bill Camp",
+          "photo": null
+        },
+        {
+          "name": "Michael K. Williams",
+          "photo": null
+        },
+        {
+          "name": "Jeannie Berlin",
+          "photo": null
+        },
+        {
+          "name": "Amara Karan",
+          "photo": null
+        },
+        {
+          "name": "Poorna Jagannathan",
+          "photo": null
+        },
+        {
+          "name": "Paulo Costanzo",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "hbo"
+      ]
+    }
+  },
+  {
+    "tmdbId": 59659,
+    "name": "Halt and Catch Fire",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "history"
+    ],
+    "moods": [
+      "think",
+      "feel"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "עולם המחשבים בשנות ה-80 ובתחילת האינטרנט. חיבור אנושי לטכנולוגיה.",
+    "nytRank": 96,
+    "praise": "מבקרים משבחים אותה כסדרה שהשתפרה מעונה לעונה.",
+    "rt": 93,
+    "fallback": {
+      "year": 2014,
+      "seasons": 4,
+      "episodes": 40,
+      "runtime": 45,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Christopher Cantwell",
+        "Christopher C. Rogers"
+      ],
+      "cast": [
+        {
+          "name": "Lee Pace",
+          "photo": null
+        },
+        {
+          "name": "Scoot McNairy",
+          "photo": null
+        },
+        {
+          "name": "Mackenzie Davis",
+          "photo": null
+        },
+        {
+          "name": "Kerry Bishé",
+          "photo": null
+        },
+        {
+          "name": "Toby Huss",
+          "photo": null
+        },
+        {
+          "name": "Mark O'Brien",
+          "photo": null
+        },
+        {
+          "name": "Manish Dayal",
+          "photo": null
+        },
+        {
+          "name": "Annabeth Gish",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 18347,
+    "name": "Community",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy"
+    ],
+    "moods": [
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "קבוצת לימוד במכללה קהילתית. קומדיה מטא עם כבוד מוחלט לז׳אנר.",
+    "nytRank": 97,
+    "praise": "מבקרים אוהבים את הרעיונות המטא ואת הפרקים הנושאיים.",
+    "rt": 87,
+    "fallback": {
+      "year": 2009,
+      "seasons": 6,
+      "episodes": 110,
+      "runtime": 22,
+      "imdb": 8.5,
+      "lang": "en",
+      "creators": [
+        "Dan Harmon"
+      ],
+      "cast": [
+        {
+          "name": "Joel McHale",
+          "photo": null
+        },
+        {
+          "name": "Gillian Jacobs",
+          "photo": null
+        },
+        {
+          "name": "Danny Pudi",
+          "photo": null
+        },
+        {
+          "name": "Alison Brie",
+          "photo": null
+        },
+        {
+          "name": "Donald Glover",
+          "photo": null
+        },
+        {
+          "name": "Yvette Nicole Brown",
+          "photo": null
+        },
+        {
+          "name": "Ken Jeong",
+          "photo": null
+        },
+        {
+          "name": "Chevy Chase",
+          "photo": null
+        },
+        {
+          "name": "Jim Rash",
+          "photo": null
+        },
+        {
+          "name": "Paget Brewster",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 69061,
+    "name": "The OA",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "mystery",
+      "scifi",
+      "drama"
+    ],
+    "moods": [
+      "think",
+      "escape"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "אישה שנעלמה חוזרת עם סיפור מוזר ועיניים שרואות שוב. תעלומה מיסטית.",
+    "nytRank": 98,
+    "praise": "מבקרים משבחים את האומץ ואת האווירה המסתורית.",
+    "rt": 85,
+    "fallback": {
+      "year": 2016,
+      "seasons": 2,
+      "episodes": 16,
+      "runtime": 50,
+      "imdb": 7.8,
+      "lang": "en",
+      "creators": [
+        "Brit Marling",
+        "Zal Batmanglij"
+      ],
+      "cast": [
+        {
+          "name": "Brit Marling",
+          "photo": null
+        },
+        {
+          "name": "Jason Isaacs",
+          "photo": null
+        },
+        {
+          "name": "Emory Cohen",
+          "photo": null
+        },
+        {
+          "name": "Phyllis Smith",
+          "photo": null
+        },
+        {
+          "name": "Patrick Gibson",
+          "photo": null
+        },
+        {
+          "name": "Brendan Meyer",
+          "photo": null
+        },
+        {
+          "name": "Ian Alexander",
+          "photo": null
+        },
+        {
+          "name": "Alice Krige",
+          "photo": null
+        },
+        {
+          "name": "Riz Ahmed",
+          "photo": null
+        },
+        {
+          "name": "Kingsley Ben-Adir",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "netflix"
+      ]
+    }
+  },
+  {
+    "tmdbId": 4586,
+    "name": "Gilmore Girls",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "comedy",
+      "drama"
+    ],
+    "moods": [
+      "feel",
+      "laugh"
+    ],
+    "weight": 1,
+    "solo": false,
+    "blurb": "אם ובת שגדלו כחברות בעיירה קטנה בקונטיקט. דיאלוגים מהירים ונעימים.",
+    "nytRank": 99,
+    "praise": "מבקרים אוהבים את הדיאלוגים המהירים ואת היחסים בין אם לבת.",
+    "rt": 85,
+    "fallback": {
+      "year": 2000,
+      "seasons": 7,
+      "episodes": 153,
+      "runtime": 43,
+      "imdb": 8.2,
+      "lang": "en",
+      "creators": [
+        "Amy Sherman-Palladino"
+      ],
+      "cast": [
+        {
+          "name": "Lauren Graham",
+          "photo": null
+        },
+        {
+          "name": "Alexis Bledel",
+          "photo": null
+        },
+        {
+          "name": "Kelly Bishop",
+          "photo": null
+        },
+        {
+          "name": "Scott Patterson",
+          "photo": null
+        },
+        {
+          "name": "Melissa McCarthy",
+          "photo": null
+        },
+        {
+          "name": "Keiko Agena",
+          "photo": null
+        },
+        {
+          "name": "Yanic Truesdale",
+          "photo": null
+        },
+        {
+          "name": "Jared Padalecki",
+          "photo": null
+        },
+        {
+          "name": "Milo Ventimiglia",
+          "photo": null
+        },
+        {
+          "name": "Matt Czuchry",
+          "photo": null
+        },
+        {
+          "name": "Liza Weil",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  },
+  {
+    "tmdbId": 39269,
+    "name": "Scandal",
+    "lists": [
+      "nyt"
+    ],
+    "genres": [
+      "drama",
+      "thriller"
+    ],
+    "moods": [
+      "tense"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "מטפלת במשברי יחסי ציבור בוושינגטון. דרמה פוליטית מהירה ומתפתלת.",
+    "nytRank": 100,
+    "praise": "מבקרים אוהבים את הקצב המהיר ואת הדרמה הפוליטית.",
+    "rt": 70,
+    "fallback": {
+      "year": 2012,
+      "seasons": 7,
+      "episodes": 124,
+      "runtime": 43,
+      "imdb": 7.7,
+      "lang": "en",
+      "creators": [
+        "Shonda Rhimes"
+      ],
+      "cast": [
+        {
+          "name": "Kerry Washington",
+          "photo": null
+        },
+        {
+          "name": "Tony Goldwyn",
+          "photo": null
+        },
+        {
+          "name": "Columbus Short",
+          "photo": null
+        },
+        {
+          "name": "Jeff Perry",
+          "photo": null
+        },
+        {
+          "name": "Guillermo Díaz",
+          "photo": null
+        },
+        {
+          "name": "Darby Stanchfield",
+          "photo": null
+        },
+        {
+          "name": "Katie Lowes",
+          "photo": null
+        },
+        {
+          "name": "Joshua Malina",
+          "photo": null
+        },
+        {
+          "name": "Bellamy Young",
+          "photo": null
+        },
+        {
+          "name": "Scott Foley",
+          "photo": null
+        },
+        {
+          "name": "Portia de Rossi",
+          "photo": null
+        }
+      ],
+      "providers": [
+        "other"
+      ]
+    }
+  }
+]
