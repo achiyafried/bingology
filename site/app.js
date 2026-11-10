@@ -307,7 +307,7 @@ function ticketHTML(r) {
   const stub = st.chosen
     ? `<div class="stub"><div class="acts"><div class="chosen">נבחרה לערב הזה. צפייה נעימה!</div><button class="btn ghost" data-a="unchoose">בעצם, הראו עוד אחת</button></div></div>`
     : `<div class="stub"><div class="match">${r.pct === null ? `<strong aria-hidden="true">🎲</strong><span>הפתעה</span>` : `<strong>${r.pct}%</strong><span>התאמה</span>`}</div>
-       <div class="acts"><button class="btn primary choose" data-a="choose"><span class="c-main">יש!</span><small class="c-sub">לחץ לסיכום ותוכנית צפייה</small></button>
+       <div class="acts"><button class="btn primary choose" data-a="choose"><span class="c-main">יש!</span><small class="c-sub">לחצו לסיכום ותוכנית צפייה</small></button>
        <div class="row2"><button class="btn ghost" data-a="another">הציגו אחרת</button><button class="btn ghost" data-a="markseen" data-i="${r.i}">כבר ראיתי</button></div></div></div>`;
   return `<article class="ticket" aria-live="polite">
     <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
