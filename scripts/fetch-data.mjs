@@ -8,7 +8,7 @@ import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData } from "./lib/merge.mjs";
 
 const CONCURRENCY = 8;
-const APPEND = "aggregate_credits,watch/providers,external_ids";
+const APPEND = "aggregate_credits,watch/providers,external_ids,content_ratings";
 const readJson = p => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 
 export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json") }) {

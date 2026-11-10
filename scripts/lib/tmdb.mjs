@@ -19,6 +19,17 @@ export function statusOf(tv) {
   return tv.in_production ? "airing" : "ended";
 }
 
+const US_AGE = { "TV-Y": 0, "TV-Y7": 7, "TV-G": 0, "TV-PG": 10, "TV-14": 14, "TV-MA": 17 };
+
+/** Minimum viewer age from TMDB content ratings: the US TV rating, else the first numeric rating anywhere. */
+export function minAgeOf(tv) {
+  const list = tv.content_ratings?.results ?? [];
+  const us = list.find(r => r.iso_3166_1 === "US" && r.rating in US_AGE);
+  if (us) return US_AGE[us.rating];
+  for (const r of list) { const n = parseInt(r.rating, 10); if (Number.isFinite(n)) return n; }
+  return null;
+}
+
 /** IL flatrate providers → our categories, in providers.json order, "other" last. */
 export function mapProviders(flatrate, map) {
   const byName = new Map();
@@ -59,6 +70,7 @@ export function transformTv(tv, { map, he } = {}) {
     // Only the Hebrew response counts: English text is not a Hebrew description.
     overviewHe: he?.overview?.trim() || null,
     imdbId: tv.external_ids?.imdb_id || null,
+    minAge: minAgeOf(tv),
     tmdbVote: tv.vote_count > 0 ? Math.round(tv.vote_average * 10) / 10 : null,
     tmdbVotes: tv.vote_count > 0 ? tv.vote_count : null,
   };

@@ -33,3 +33,28 @@ test("a series without a binge score is scored, not crashed", () => {
   assert.equal(r.pct, 0);
   assert.ok(r.items.some(x => !x.ok && x.t.includes("ציון")));
 });
+
+const only = company => ({ genres: [], platforms: [], company });
+
+test("company: alone favors 'better alone' series but accepts all", () => {
+  assert.equal(scoreSeries({ ...byName("Ted Lasso"), solo: true }, only("solo")).pct, 100);
+  assert.equal(scoreSeries({ ...byName("Ted Lasso"), solo: false }, only("solo")).pct, 80);
+});
+
+test("company: as a couple, 'better alone' series do not fit", () => {
+  assert.equal(scoreSeries({ ...byName("Ted Lasso"), solo: true }, only("couple")).pct, 0);
+  assert.equal(scoreSeries({ ...byName("Ted Lasso"), solo: false }, only("couple")).pct, 100);
+});
+
+test("company: family uses the age rating, then weight when unknown", () => {
+  const ted = { ...byName("Ted Lasso"), solo: false };
+  assert.equal(scoreSeries({ ...ted, minAge: 14 }, only("family")).pct, 100);
+  assert.equal(scoreSeries({ ...ted, minAge: 17 }, only("family")).pct, 0);
+  assert.equal(scoreSeries({ ...ted, minAge: 16 }, only("family")).pct, 40);
+  assert.equal(scoreSeries({ ...ted, minAge: null, h: 1 }, only("family")).pct, 67);
+  assert.equal(scoreSeries({ ...ted, minAge: null, h: 3 }, only("family")).pct, 0);
+  assert.equal(scoreSeries({ ...ted, minAge: 10, solo: true }, only("family")).pct, 0);
+  const why = scoreSeries({ ...ted, minAge: 17 }, only("family")).items[0];
+  assert.equal(why.ok, false);
+  assert.match(why.t, /17/);
+});

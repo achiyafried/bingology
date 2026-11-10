@@ -36,6 +36,11 @@ const ALL_QS = [
     [2, "⚖️", "באמצע", "קצת עומק, בלי להכביד"],
     [3, "🌧️", "כבד ומטלטל", "מוכנים לצאת מזה עם משהו על הלב"],
     ["any", "🤷", "לא משנה", ""] ] },
+  { id: "company", t: "עם מי צופים?", d: "נתאים את הסדרה לחברה.", o: [
+    ["solo", "🧍", "לבד", "זמן איכות עם עצמי"],
+    ["couple", "💑", "בזוג", "משהו ששנינו נהנה ממנו"],
+    ["family", "👨‍👩‍👧", "עם המשפחה", "מתאים גם לבני נוער"],
+    ["any", "🤷", "לא משנה", ""] ] },
   { id: "quality", t: "כמה טובה היא צריכה להיות?", d: "לפי ציון בינג׳: שילוב של IMDb, TMDB, רוטן טומייטו והניו יורק טיימס, יחסית לסדרות ברשימה.", o: [
     [90, "🏆", "מהטובות ברשימה", "ציון בינג׳ 90 ומעלה"],
     [80, "🌟", "מצוינת", "ציון בינג׳ 80 ומעלה"],
@@ -72,7 +77,7 @@ const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסת�
 
 /* state */
 const st = { tab: "pick", screen: "intro", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
-function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, quality: null, len: null, seasons: null, lang: null, sort: null }; }
+function blankAns() { return { src: null, platforms: [], genres: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
 const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -187,7 +192,7 @@ const CROSS = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true
 function rank(surprise) {
   const rnd = mulberry(Math.floor(Math.random() * 1e9));
   const a = st.ans;
-  const answered = a.genres.length || a.mood || a.weight || a.quality || a.len || a.seasons || a.lang;
+  const answered = a.genres.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang;
   const out = [];
   const pool = new Set(poolIds(a.src, a.platforms));
   S.forEach((s, i) => {
@@ -246,7 +251,7 @@ function metaHTML(s) {
 }
 function ratesHTML(s) {
   const bsTip = s.bs == null ? "" : Object.entries(s.bsParts).map(([k, p]) => `${BS_NAME[k]}: אחוזון ${Math.round(p * 100)}`).join(" · ");
-  return `<div class="rates">${s.bs != null ? `<span class="rate bs" title="${bsTip}"><b>ציון בינג׳</b> ${s.bs}</span>` : ""}${s.imdb != null ? `<span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>` : ""}${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}${s.tmdbVote != null ? `<span class="rate"><b>TMDB</b> ${s.tmdbVote.toFixed(1)}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
+  return `<div class="rates">${s.bs != null ? `<span class="rate bs" title="${bsTip}"><b>ציון בינג׳</b> ${s.bs}</span>` : ""}${s.imdb != null ? `<span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>` : ""}${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}${s.minAge != null ? `<span class="rate"><b>גיל</b> ${s.minAge ? s.minAge + "+" : "לכל הגילים"}</span>` : ""}${s.tmdbVote != null ? `<span class="rate"><b>TMDB</b> ${s.tmdbVote.toFixed(1)}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
 }
 function tagsHTML(s) { return `<div class="tags">${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
 function bulbs(n) { let h = ""; for (let i = 0; i < totalSteps(); i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${totalSteps()}">${h}</div>`; }

@@ -131,3 +131,9 @@ test("runtime: typical length, then the curated value, then previous, then the l
   assert.equal(mergeEntry(noFb, { ...live, runtime: null, runtimeLast: 80 }, 9.5, prev, NOW).runtime, 50);
   assert.equal(mergeEntry(noFb, { ...live, runtime: null, runtimeLast: 80 }, 9.5, null, NOW).runtime, 80);
 });
+
+test("minAge comes from live, then a real previous fetch", () => {
+  assert.equal(mergeEntry(entry, { ...live, minAge: 14 }, 9.5, null, NOW).minAge, 14);
+  assert.equal(mergeEntry(entry, null, null, { ...prev, minAge: 17 }, NOW).minAge, 17);
+  assert.equal(mergeEntry(entry, null, null, null, NOW).minAge, null);
+});

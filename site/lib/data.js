@@ -16,6 +16,7 @@ export function fromData(json) {
     imdb: x.imdb,
     tmdbVote: x.tmdbVote ?? null,
     tmdbVotes: x.tmdbVotes ?? null,
+    minAge: x.minAge ?? null,
     rt: x.rt ?? null,
     lang: x.lang,
     nyt: x.nytRank ?? null,

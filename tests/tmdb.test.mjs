@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { medianRuntime, mapProviders, transformTv } from "../scripts/lib/tmdb.mjs";
+import { medianRuntime, mapProviders, transformTv, minAgeOf } from "../scripts/lib/tmdb.mjs";
 
 const json = p => JSON.parse(readFileSync(p, "utf8"));
 const map = json("scripts/providers.json");
@@ -92,4 +92,20 @@ test("the Hebrew overview comes only from the Hebrew response; the last episode 
   assert.equal(live.runtime, null);
   assert.equal(live.runtimeLast, 75);
   assert.equal(transformTv(en, { map }).live.overviewHe, null);
+});
+
+test("minAgeOf reads the US TV rating, falling back to any country", () => {
+  const cr = list => ({ content_ratings: { results: list } });
+  assert.equal(minAgeOf(cr([{ iso_3166_1: "DE", rating: "16" }, { iso_3166_1: "US", rating: "TV-MA" }])), 17);
+  assert.equal(minAgeOf(cr([{ iso_3166_1: "US", rating: "TV-14" }])), 14);
+  assert.equal(minAgeOf(cr([{ iso_3166_1: "US", rating: "TV-PG" }])), 10);
+  assert.equal(minAgeOf(cr([{ iso_3166_1: "US", rating: "TV-G" }])), 0);
+  assert.equal(minAgeOf(cr([{ iso_3166_1: "GB", rating: "15" }])), 15);
+  assert.equal(minAgeOf(cr([])), null);
+  assert.equal(minAgeOf({}), null);
+});
+
+test("transformTv includes the minimum age", () => {
+  const tv = { ...bb, content_ratings: { results: [{ iso_3166_1: "US", rating: "TV-14" }] } };
+  assert.equal(transformTv(tv, { map }).live.minAge, 14);
 });

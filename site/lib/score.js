@@ -55,6 +55,17 @@ export function scoreSeries(s, a) {
     const d = Math.abs(s.h - a.weight);
     add(1.5, [1.5, 0.6, 0][d], WEIGHT_WHY[s.h], s.h > a.weight ? "כבדה יותר ממה שביקשתם" : "קלילה יותר ממה שביקשתם");
   }
+  if (a.company === "solo") {
+    add(1.5, s.solo ? 1.5 : 1.2, s.solo ? "מתאימה במיוחד לצפייה לבד" : "מתאימה גם לצפייה לבד", "");
+  } else if (a.company === "couple") {
+    add(1.5, s.solo ? 0 : 1.5, "מתאימה לצפייה בזוג", "עדיף לצפות בה לבד");
+  } else if (a.company === "family") {
+    if (s.solo) add(1.5, 0, "", "עדיף לצפות בה לבד");
+    else if (s.minAge != null) {
+      const got = s.minAge <= 14 ? 1.5 : s.minAge < 17 ? 0.6 : 0;
+      add(1.5, got, s.minAge ? `מתאימה מגיל ${s.minAge}` : "מתאימה לכל הגילים", `מיועדת לגילאי ${s.minAge}+`);
+    } else add(1.5, s.h === 1 ? 1 : 0, "קלילה, כנראה מתאימה למשפחה", "לא בטוח שמתאימה למשפחה");
+  }
   const norm = max ? sc / max : 1;
   const pct = Math.min(100, Math.round(100 * norm));
   return { norm, pct, items };
