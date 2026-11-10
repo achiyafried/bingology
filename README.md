@@ -45,7 +45,7 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 
 ## פיתוח מקומי
 
-צריך Node.js 20 ומעלה.
+צריך Node.js 22 ומעלה.
 
 ```bash
 npm test                         # בדיקות

@@ -2,7 +2,7 @@
   "name": "bingology",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": { "node": ">=22" },
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
     "keys": "sh scripts/set-keys.sh",
