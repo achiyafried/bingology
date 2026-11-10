@@ -255,3 +255,6 @@ img.poster { object-fit: cover; }
 .p-alt { margin: 2px 0 8px; color: var(--ticket-muted); font-size: 14.5px; }
 .p-fine { padding: 0 18px 16px; margin: 6px 0 0; }
 .plan .why { padding-top: 8px; }
+.btn.choose { flex-direction: column; gap: 0; padding-top: 8px; padding-bottom: 8px; line-height: 1.2; }
+.btn.choose .c-main { font-size: 19px; }
+.btn.choose .c-sub { font-size: 13px; font-weight: 600; opacity: .8; }
