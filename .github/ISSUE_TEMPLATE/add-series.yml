@@ -1,0 +1,55 @@
+name: ➕ הוספת סדרה לרשימה
+description: הוספה (או הצעה) של סדרה לרשימה האישית של Bingology
+title: "הוספת סדרה"
+labels: ["add-series"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        חובה למלא רק את שם הסדרה. את השאר אפשר להשאיר, והם ינוחשו אוטומטית מ-TMDB.
+        בקשה מבעל האתר נוספת אוטומטית תוך כמה דקות. הצעות של אחרים מחכות לאישור.
+  - type: input
+    id: name
+    attributes:
+      label: שם הסדרה
+      description: באנגלית, כפי שהיא מופיעה ב-TMDB או ב-IMDb
+      placeholder: The Penguin
+    validations:
+      required: true
+  - type: input
+    id: tmdb
+    attributes:
+      label: קישור ל-TMDB (לא חובה)
+      description: כדאי אם יש כמה סדרות באותו שם (למשל גרסה אמריקאית ובריטית)
+      placeholder: https://www.themoviedb.org/tv/194764-the-penguin
+  - type: checkboxes
+    id: moods
+    attributes:
+      label: מצבי רוח (לא חובה)
+      options:
+        - label: לצחוק ולהרים (laugh)
+        - label: להתרגש (feel)
+        - label: מתח ואדרנלין (tense)
+        - label: להעסיק את המוח (think)
+        - label: בריחה לעולם אחר (escape)
+  - type: dropdown
+    id: weight
+    attributes:
+      label: כמה כבדה?
+      options:
+        - לא יודע/ת (ניחוש אוטומטי)
+        - קלילה (1)
+        - באמצע (2)
+        - כבדה ומטלטלת (3)
+      default: 0
+  - type: checkboxes
+    id: solo
+    attributes:
+      label: עדיף לראות לבד?
+      options:
+        - label: כן, עדיף לבד
+  - type: textarea
+    id: blurb
+    attributes:
+      label: תיאור קצר בעברית (לא חובה)
+      description: אם ריק, נשתמש בתיאור העברי של TMDB

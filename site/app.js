@@ -4,6 +4,9 @@ import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
 import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
 import { searchSeries } from "./lib/search.js";
+import { addSeriesUrl } from "./lib/addlink.js";
+
+const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
@@ -366,10 +369,15 @@ function resultHTML() {
 
 function listHTML() {
   const ids = poolIds(st.listSrc === "all" ? null : st.listSrc, st.listPlat ? [st.listPlat] : null).filter(i => !(st.hideSeen && st.seen.has(i)));
-  const srcs = [["all", "הכול"], ["mine", "הרשימה שלי"], ["nyt", "ניו יורק טיימס"], ["pool", "המאגר הרחב"]];
+  const nMine = S.filter(x => x.lists.includes("mine")).length, nNyt = S.filter(x => x.nyt).length, nPool = S.filter(x => x.lists.includes("pool")).length;
+  const srcs = [["all", "הכול", `כל ${S.length} הסדרות באתר: הרשימה האישית, הניו יורק טיימס והמאגר הרחב`],
+    ["mine", "הרשימה שלי", `${nMine} הסדרות שנבחרו ידנית, עם תגיות ותיאורים שנכתבו בעצמנו`],
+    ["nyt", "ניו יורק טיימס", `${nNyt} הסדרות הטובות של המאה ה-21 לפי הניו יורק טיימס (דירוג ספטמבר 2026), לפי סדר הדירוג`],
+    ["pool", "המאגר הרחב", `${nPool} הסדרות המדורגות ביותר ב-TMDB שאינן ברשימות. מתעדכן כל לילה, והתגיות מנוחשות אוטומטית`]];
   const inUse = platsInUse(), plats = [["all", "כל הפלטפורמות"]].concat(inUse.map(k => [k, PLAT_LABEL[k]]));
   return `<div class="listbar"><h2>הרשימה</h2><span class="count">ראיתם ${st.seen.size} מתוך ${S.length}</span></div>
-  <div class="chips">${srcs.map(x => `<button class="chip" data-a="lsrc" data-v="${x[0]}" aria-pressed="${st.listSrc === x[0]}">${x[1]}</button>`).join("")}<button class="chip" data-a="hideseen" aria-pressed="${st.hideSeen}">הסתרת מה שכבר ראיתי</button></div>
+  <div class="chips">${srcs.map(x => `<button class="chip" data-a="lsrc" data-v="${x[0]}" data-tip="${x[2]}" aria-pressed="${st.listSrc === x[0]}">${x[1]}</button>`).join("")}<button class="chip" data-a="hideseen" data-tip="מסתיר מהרשימה סדרות שסימנתם כנצפו" aria-pressed="${st.hideSeen}">הסתרת מה שכבר ראיתי</button></div>
+  <p class="srcnote">${(srcs.find(x => x[0] === st.listSrc) || srcs[0])[2]}</p>
   ${inUse.length ? `<div class="chips">${plats.map(x => `<button class="chip" data-a="lplat" data-v="${x[0]}" aria-pressed="${(st.listPlat || "all") === x[0]}">${x[1]}</button>`).join("")}</div>` : ""}
   ${ids.length ? `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div>` : `<div class="empty"><h2>אין סדרות להצגה</h2><p>נסו פלטפורמה אחרת או בטלו את הסתרת הנצפו.</p></div>`}
   <p class="note">הקשה על סדרה פותחת את הפרטים ומאפשרת לסמן אותה כנצפתה. הדירוג של הניו יורק טיימס הוא ״100 הסדרות הטובות של המאה ה-21״ (ספטמבר 2026). הזמינות היא לפי שירותי הסטרימינג בישראל. מספר העונות והפרקים, הפוסטרים וציון IMDb מתעדכנים כל יום; ציון רוטן טומייטו קבוע.</p>`;
@@ -440,8 +448,10 @@ function serResHTML() {
   const q = (st.serQuery || "").trim();
   if (q.length < 2) return `<p class="note">אפשר לחפש באנגלית או בעברית. בעברית החיפוש לפי הגייה, כך ש"סופרנוס" ימצא את The Sopranos.</p>`;
   const ids = searchSeries(S, q);
-  if (!ids.length) return `<div class="empty"><h2>הסדרה לא נמצאת באתר</h2><p>האתר כולל את הרשימה האישית, את 100 הסדרות של הניו יורק טיימס ואת המאגר הרחב: הסדרות המדורגות ביותר ב-TMDB. סדרה שחסרה אפשר להוסיף לרשימה האישית.</p></div>`;
-  return `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div>`;
+  const add = `<a class="btn primary" href="${esc(addSeriesUrl(REPO, q))}" target="_blank" rel="noopener noreferrer">➕ הוספה או הצעה לרשימה<span class="sr"> (נפתח ב-GitHub)</span></a>`;
+  const how = `<p class="note">נפתח טופס קצר ב-GitHub (צריך חשבון). בקשה של בעל האתר נוספת אוטומטית תוך כמה דקות, והצעות של אחרים מחכות לאישור.</p>`;
+  if (!ids.length) return `<div class="empty"><h2>הסדרה לא נמצאת באתר</h2><p>האתר כולל את הרשימה האישית, את 100 הסדרות של הניו יורק טיימס ואת המאגר הרחב: הסדרות המדורגות ביותר ב-TMDB.</p>${add}${how}</div>`;
+  return `<div class="grid">${ids.map(i => tile(i, "detail", true)).join("")}</div><p class="note">לא מצאתם? <a href="${esc(addSeriesUrl(REPO, q))}" target="_blank" rel="noopener noreferrer">הציעו להוסיף את "${esc(q)}"</a></p>`;
 }
 function searchHTML() {
   return `<div class="listbar"><h2>חיפוש סדרה</h2><span class="count">${S.length} סדרות</span></div>

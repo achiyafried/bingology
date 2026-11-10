@@ -176,3 +176,12 @@ test("the pool is topped up from extra candidates when some are filtered out", a
   const r = await run({ series: [], prev: null, fetchImpl: f, now: NOW, poolSize: 2 });
   assert.deepEqual(r.data.series.map(s => s.tmdbId), [302, 303]);
 });
+
+test("keepPool refreshes curated series only and keeps last night's pool, minus anything now curated", async () => {
+  const mk = (id, name) => ({ tmdbId: id, name, lists: ["pool"], genres: ["drama"], moods: ["feel"], weight: 2, solo: false, blurb: "", rt: null, seasons: 1, episodes: 8, runtime: 50, imdb: 8, fetchedAt: "old" });
+  const prev = { series: [mk(700, "Stays"), mk(2, "Now Curated")] };
+  const f = fakeFetch({ discover: "net" });
+  const r = await run({ series: [entry(1, "A"), entry(2, "B")], prev, fetchImpl: f, now: NOW, poolSize: 500, keepPool: true });
+  assert.deepEqual(r.data.series.map(s => s.name), ["A", "B", "Stays"]);
+  assert.ok(!f.calls.some(u => u.includes("/discover/")));
+});

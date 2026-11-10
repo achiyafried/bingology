@@ -259,3 +259,16 @@ img.poster { object-fit: cover; }
 .btn.choose .c-main { font-size: 19px; }
 .btn.choose .c-sub { font-size: 13px; font-weight: 600; opacity: .8; }
 .tag.pick { background: rgba(255, 201, 51, .3); color: #6B4E00; }
+/* tooltips on hover (desktop) — on touch screens the .srcnote line explains the selected list */
+[data-tip] { position: relative; }
+@media (hover: hover) {
+  [data-tip]:hover::after, [data-tip]:focus-visible::after {
+    content: attr(data-tip); position: absolute; z-index: 20; top: calc(100% + 8px); inset-inline-start: 50%; transform: translateX(50%);
+    width: max-content; max-width: 240px; white-space: normal; text-align: start;
+    background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 7px 10px; border-radius: 10px; box-shadow: var(--shadow); pointer-events: none;
+  }
+}
+.srcnote { margin: -14px 0 18px; color: var(--muted); font-size: 14px; }
+.empty .btn { margin-top: 4px; text-decoration: none; }
+.empty .note { margin-top: 12px; }

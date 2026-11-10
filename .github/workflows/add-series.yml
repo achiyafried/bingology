@@ -1,0 +1,90 @@
+name: Add series
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+# One data writer at a time (shared with nothing else that pushes, but keeps two quick adds in order).
+concurrency:
+  group: add-series
+  cancel-in-progress: false
+
+jobs:
+  # Someone other than the owner suggested a series: say thanks, use no secrets.
+  thanks:
+    if: >-
+      github.event.action == 'opened' &&
+      contains(github.event.issue.labels.*.name, 'add-series') &&
+      github.event.issue.user.login != github.repository_owner
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - run: gh issue comment "$N" -R "$R" --body "תודה על ההצעה! 💡 היא תיכנס לרשימה אחרי אישור."
+        env:
+          GH_TOKEN: ${{ github.token }}
+          N: ${{ github.event.issue.number }}
+          R: ${{ github.repository }}
+
+  # Only the owner's own actions run with the API keys: opening/editing an issue, or adding the "approved" label.
+  add:
+    if: >-
+      contains(github.event.issue.labels.*.name, 'add-series') &&
+      github.event.issue.state == 'open' &&
+      github.event.sender.login == github.repository_owner &&
+      (github.event.action != 'labeled' || github.event.label.name == 'approved')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    outputs:
+      status: ${{ steps.add.outputs.status }}
+    env:
+      TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+      OMDB_KEY: ${{ secrets.OMDB_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      N: ${{ github.event.issue.number }}
+      R: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The issue body is read from the event file inside Node, never placed into a shell command.
+      - id: add
+        name: Add to series.json
+        run: |
+          node scripts/add-series.mjs
+          echo "status=$(node -p 'require("./add-result.json").status')" >> "$GITHUB_OUTPUT"
+      - name: Refresh data (curated only, keep the pool)
+        if: steps.add.outputs.status == 'added'
+        run: npm test && node scripts/fetch-data.mjs --keep-pool
+      - name: Commit and push
+        if: steps.add.outputs.status == 'added'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add series.json site/data.json
+          git commit -m "feat: add series from issue #$N"
+          git pull --rebase -X theirs origin main
+          git push
+      - name: Report on the issue
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ] && [ -f add-result.json ]; then
+            node -p 'require("./add-result.json").message' > msg.txt
+          else
+            echo "משהו השתבש בהוספה. הפרטים בלשונית Actions של המאגר." > msg.txt
+          fi
+          gh issue comment "$N" -R "$R" --body-file msg.txt
+          S="${{ steps.add.outputs.status }}"
+          if [ "${{ job.status }}" = "success" ] && { [ "$S" = "added" ] || [ "$S" = "exists" ]; }; then gh issue close "$N" -R "$R"; fi
+
+  deploy:
+    needs: add
+    if: needs.add.outputs.status == 'added'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml

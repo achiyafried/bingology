@@ -1,5 +1,6 @@
 // Nightly: series.json + TMDB + OMDb → site/data.json
 // Flags: --only N (smoke test, writes nothing, skips the pool)  --offline (no network, prev/fallback only)
+//        --keep-pool (refresh curated series only; keep last night's pool — used when adding a series)
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
@@ -38,7 +39,7 @@ async function discoverPool(curatedIds, size, fetchImpl) {
   return rankPool(results, curatedIds, size);
 }
 
-export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0 }) {
+export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false }) {
   const list = only ? series.slice(0, only) : series;
   const prevById = new Map((prev?.series ?? []).map(s => [s.tmdbId, s]));
   const warnings = new Set();
@@ -66,11 +67,12 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
   // 2. Wide pool: best effort (a failing pool series is skipped, never aborts the run).
   let poolSeries = [];
   if (poolSize && !only) {
-    const prevPool = (prev?.series ?? []).filter(s => s.lists?.includes("pool"));
+    const curatedIds = new Set(list.map(e => e.tmdbId));
+    const prevPool = (prev?.series ?? []).filter(s => s.lists?.includes("pool") && !curatedIds.has(s.tmdbId));
     let ids = null;
-    if (!offline) {
+    if (!offline && !keepPool) {
       // Extra candidates so the pool stays full after the IMDb filter.
-      try { ids = await discoverPool(new Set(list.map(e => e.tmdbId)), Math.ceil(poolSize * 1.3), fetchImpl); }
+      try { ids = await discoverPool(curatedIds, Math.ceil(poolSize * 1.3), fetchImpl); }
       catch (err) { warnings.add(`discover failed, keeping last pool: ${err.message}`); }
     }
     if (!ids) poolSeries = prevPool;
@@ -108,6 +110,7 @@ async function main() {
   const offline = args.includes("--offline");
   const oi = args.indexOf("--only");
   const only = oi >= 0 ? Number(args[oi + 1]) : undefined;
+  const keepPool = args.includes("--keep-pool");
   if (!offline && (!process.env.TMDB_TOKEN || !process.env.OMDB_KEY)) {
     console.error("TMDB_TOKEN and OMDB_KEY must be set (or use --offline)");
     process.exit(1);
@@ -116,7 +119,7 @@ async function main() {
   const out = "site/data.json";
   const prev = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : null;
 
-  const r = await run({ series, prev, now: new Date().toISOString(), only, offline, poolSize: POOL_SIZE });
+  const r = await run({ series, prev, now: new Date().toISOString(), only, offline, poolSize: POOL_SIZE, keepPool });
   r.warnings.forEach(w => console.warn("warn:", w));
   r.errors.forEach(e => console.error("invalid:", e));
   console.log(`${r.data.series.length} series, ${r.failed.length} failed${r.unreachable ? ", TMDB unreachable" : ""}`);
