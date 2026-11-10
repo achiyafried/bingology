@@ -12,16 +12,21 @@ const entry = (id, name) => ({ tmdbId: id, name, lists: ["mine"], genres: ["dram
   rt: null, fallback: { year: 2000, seasons: 2, episodes: 20, runtime: 45, imdb: 8.1, lang: "en" } });
 
 /** Fake network: `tv` maps id → fixture object | HTTP status number | "net" (network error). */
-function fakeFetch({ tv = {}, imdb = "9.5" } = {}) {
+function fakeFetch({ tv = {}, imdb = "9.5", discover = null } = {}) {
   const calls = [];
   const f = async url => {
     url = String(url); calls.push(url);
     if (url.includes("omdbapi.com")) return new Response(JSON.stringify({ Response: "True", imdbRating: imdb }));
+    if (url.includes("/discover/tv")) {
+      if (discover === "net") throw new TypeError("fetch failed");
+      const page = Number(new URL(url).searchParams.get("page")), pages = discover || [];
+      return new Response(JSON.stringify({ page, total_pages: pages.length, results: pages[page - 1] || [] }));
+    }
     const id = Number(/\/tv\/(\d+)/.exec(url)[1]);
     const v = tv[id];
     if (v === "net") throw new TypeError("fetch failed");
     if (typeof v === "number") return new Response("{}", { status: v });
-    return new Response(JSON.stringify({ ...bb, id }));
+    return new Response(JSON.stringify({ ...bb, ...(v || {}), id }));
   };
   f.calls = calls;
   return f;
@@ -102,4 +107,72 @@ test("names come from an English request and the overview from a Hebrew one", as
   const tv = f.calls.filter(u => u.includes("/tv/1"));
   assert.ok(tv.some(u => u.includes("language=en-US") && u.includes("append_to_response")), tv.join("\n"));
   assert.ok(tv.some(u => u.includes("language=he-IL") && !u.includes("append_to_response")), tv.join("\n"));
+});
+
+const d = (id, va = 8.5, vc = 2000) => ({ id, vote_average: va, vote_count: vc, genre_ids: [35] });
+const manyCast = { aggregate_credits: { cast: Array.from({ length: 12 }, (_, k) => ({ name: "Actor " + k, order: k, profile_path: null })) } };
+
+test("the wide pool is discovered, tagged from genres and appended after the curated series", async () => {
+  const f = fakeFetch({ discover: [[d(1), d(101), d(102)], [d(103)]], tv: { 101: { ...manyCast, genres: [{ id: 35 }], name: "Pool Comedy" } } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, poolSize: 2 });
+  assert.equal(r.abort, false, JSON.stringify(r.errors));
+  assert.equal(r.data.series.length, 3);
+  const pool = r.data.series.slice(1);
+  assert.ok(pool.every(s => s.lists[0] === "pool"));
+  assert.ok(!pool.some(s => s.tmdbId === 1), "curated id must not be in the pool");
+  const comedy = pool.find(s => s.tmdbId === 101);
+  assert.deepEqual(comedy.genres, ["comedy"]);
+  assert.equal(comedy.cast.length, 6);
+});
+
+test("a pool series that fails is skipped without aborting the run", async () => {
+  const f = fakeFetch({ discover: [[d(101), d(102), d(103)]], tv: { 102: 404 } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, poolSize: 3 });
+  assert.equal(r.abort, false);
+  assert.deepEqual(r.data.series.map(s => s.tmdbId).sort((a, b) => a - b), [1, 101, 103]);
+});
+
+test("if discovery fails, last night's pool is kept", async () => {
+  const prevPool = { ...entry(500, "Old Pool"), lists: ["pool"], seasons: 2, episodes: 10, runtime: 40, year: 2010, lang: "en", imdb: 8, status: "ended", poster: null, creators: [], cast: [], providers: [], fetchedAt: "old" };
+  delete prevPool.fallback;
+  const f = fakeFetch({ discover: "net" });
+  const r = await run({ series: [entry(1, "A")], prev: { series: [prevPool] }, fetchImpl: f, now: NOW, poolSize: 5 });
+  assert.equal(r.abort, false);
+  assert.deepEqual(r.data.series.map(s => s.name), ["A", "Old Pool"]);
+  assert.ok(r.warnings.some(w => w.includes("discover")));
+});
+
+test("offline keeps the previous pool and never calls the network", async () => {
+  const prevPool = { tmdbId: 500, name: "Old Pool", lists: ["pool"], genres: ["drama"], moods: ["feel"], weight: 2, solo: false, blurb: "", rt: null, seasons: 2, episodes: 10, runtime: 40, imdb: 8, fetchedAt: "old" };
+  const f = fakeFetch();
+  const r = await run({ series: [entry(1, "A")], prev: { series: [prevPool] }, fetchImpl: f, now: NOW, poolSize: 5, offline: true });
+  assert.deepEqual(r.data.series.map(s => s.name), ["A", "Old Pool"]);
+  assert.equal(f.calls.length, 0);
+});
+
+test("pool series under 7.5 on IMDb are left out; unknown IMDb is kept", async () => {
+  const f = async url => {
+    url = String(url);
+    if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(201), d(202), d(203)] }));
+    if (url.includes("omdbapi.com")) {
+      const id = new URL(url).searchParams.get("i");
+      return new Response(JSON.stringify(id === "tt201" ? { imdbRating: "7.2" } : id === "tt202" ? { imdbRating: "8.4" } : { imdbRating: "N/A" }));
+    }
+    const id = Number(/\/tv\/(\d+)/.exec(url)[1]);
+    return new Response(JSON.stringify({ ...bb, id, external_ids: { imdb_id: "tt" + id }, episode_run_time: [40] }));
+  };
+  const r = await run({ series: [], prev: null, fetchImpl: f, now: NOW, poolSize: 3 });
+  assert.deepEqual(r.data.series.map(s => s.tmdbId).sort(), [202, 203]);
+});
+
+test("the pool is topped up from extra candidates when some are filtered out", async () => {
+  const f = async url => {
+    url = String(url);
+    if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(301, 9.0), d(302, 8.9), d(303, 8.8)] }));
+    if (url.includes("omdbapi.com")) return new Response(JSON.stringify({ imdbRating: new URL(url).searchParams.get("i") === "tt301" ? "6.0" : "8.0" }));
+    const id = Number(/\/tv\/(\d+)/.exec(url)[1]);
+    return new Response(JSON.stringify({ ...bb, id, external_ids: { imdb_id: "tt" + id }, episode_run_time: [40] }));
+  };
+  const r = await run({ series: [], prev: null, fetchImpl: f, now: NOW, poolSize: 2 });
+  assert.deepEqual(r.data.series.map(s => s.tmdbId), [302, 303]);
 });

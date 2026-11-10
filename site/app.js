@@ -20,9 +20,10 @@ const LOGO = "<svg class=\"ic\" viewBox=\"0 0 512 512\" aria-hidden=\"true\" xml
 
 const ALL_QS = [
   { id: "src", t: "מאיפה לבחור?", d: "מאגר הסדרות שמהן נבחר.", o: [
-    ["any", "🌐", "כל הסדרות", "הרשימה האישית והניו יורק טיימס יחד"],
+    ["any", "🌐", "כל הסדרות", "הרשימה האישית, הניו יורק טיימס והמאגר הרחב יחד"],
     ["mine", "⭐", "הרשימה האישית שלי", "60 הסדרות המובילות שלכם"],
-    ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"] ] },
+    ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"],
+    ["pool", "🌍", "המאגר הרחב", "500 הסדרות המדורגות ביותר ב-TMDB, מעבר לרשימות"] ] },
   { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. אפשר לבחור כמה או לדלג." },
   { id: "genres", multi: true, t: "איזה ז׳אנר מתחשק?", d: "אפשר לבחור כמה, או לדלג." },
   { id: "eras", multi: true, t: "מאיזו תקופה?", d: "לפי שנת הבכורה. אפשר לבחור כמה, או לדלג." },
@@ -177,7 +178,7 @@ function wrapTitle(n) {
 let _gid = 0;
 function art(i, cls) {
   const s = S[i], [c1, c2, a, b, m] = ART[i] || ["#333333", "#111111", "#dddddd", "#ffffff", "rings"];
-  const id = "pg" + (++_gid), esc = x => x.replace(/&/g, "&amp;");
+  const id = "pg" + (++_gid);
   const lines = wrapTitle(s.n), long = Math.max(...lines.map(l => l.length));
   const fs = lines.length > 3 || long > 13 ? 20 : long > 10 ? 25 : 30, lh = Math.round(fs * 1.1), y0 = 204 - (lines.length - 1) * lh;
   const txt = lines.map((l, k) => `<tspan x="14" y="${y0 + k * lh}">${esc(l)}</tspan>`).join("");
@@ -231,7 +232,7 @@ function moreHTML(i) {
   return `<section class="more" aria-label="עוד על הסדרה">
     ${rows.length ? `<div class="sec"><h3>מי עומד מאחורי הסדרה</h3><dl>${rows.join("")}</dl></div>` : ""}
     ${aw.length ? `<div class="sec"><h3>פרסים והכרה</h3><ul class="aw">${aw.map(a => `<li><span aria-hidden="true">${a[0]}</span><span>${a[1]}</span></li>`).join("")}</ul></div>` : ""}
-    <div class="sec"><h3>אם אהבתם, אולי גם</h3><div class="sim">${similar(i).map(x => `<button class="tile${st.seen.has(x.j) ? " seen" : ""}" data-a="detail" data-i="${x.j}" aria-label="${S[x.j].n}">${poster(x.j, "")}<span class="badge">${CHECK}</span><span class="cap"><bdi>${S[x.j].n}</bdi></span><span class="why2">${x.why}</span></button>`).join("")}</div></div>
+    <div class="sec"><h3>אם אהבתם, אולי גם</h3><div class="sim">${similar(i).map(x => `<button class="tile${st.seen.has(x.j) ? " seen" : ""}" data-a="detail" data-i="${x.j}" aria-label="${esc(S[x.j].n)}">${poster(x.j, "")}<span class="badge">${CHECK}</span><span class="cap"><bdi>${esc(S[x.j].n)}</bdi></span><span class="why2">${x.why}</span></button>`).join("")}</div></div>
     <p class="note">מוצגים הפרסים הבולטים בלבד, לא רשימה מלאה.</p>
   </section>`;
 }
@@ -255,12 +256,12 @@ function ratesHTML(s) {
   const bsTip = s.bs == null ? "" : Object.entries(s.bsParts).map(([k, p]) => `${BS_NAME[k]}: אחוזון ${Math.round(p * 100)}`).join(" · ");
   return `<div class="rates">${s.bs != null ? `<span class="rate bs" title="${bsTip}"><b>ציון בינג׳</b> ${s.bs}</span>` : ""}${s.imdb != null ? `<span class="rate"><b>IMDb</b> ${s.imdb.toFixed(1)}</span>` : ""}${s.rt != null ? `<span class="rate"><b>רוטן טומייטו</b> ${s.rt}%</span>` : ""}${s.nyt ? `<span class="rate"><b>ניו יורק טיימס</b> מקום ${s.nyt}</span>` : ""}${s.minAge != null ? `<span class="rate"><b>גיל</b> ${s.minAge ? s.minAge + "+" : "לכל הגילים"}</span>` : ""}${s.tmdbVote != null ? `<span class="rate"><b>TMDB</b> ${s.tmdbVote.toFixed(1)}</span>` : ""}<span class="rate"><b>שפה</b> ${LNAME[s.lang] || s.lang}</span></div>`;
 }
-function tagsHTML(s) { return `<div class="tags">${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
+function tagsHTML(s) { return `<div class="tags">${s.lists.includes("mine") ? `<span class="tag pick">⭐ בחירה אישית</span>` : ""}${s.g.map(g => `<span class="tag">${GENRES[g]}</span>`).join("")}</div>`; }
 function bulbs(n) { let h = ""; for (let i = 0; i < totalSteps(); i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${totalSteps()}">${h}</div>`; }
 function tile(i, mode, cap) {
   const s = S[i], seen = st.seen.has(i);
   const pre = st.tab === "list" && st.listSrc === "nyt" && s.nyt ? s.nyt + ". " : "";
-  return `<button class="tile${seen ? " seen" : ""}" data-a="${mode}" data-i="${i}" ${mode === "toggle" ? `aria-pressed="${seen}"` : ""} aria-label="${s.n}${seen ? ", סומנה כנצפתה" : ""}">${poster(i, "")}<span class="badge">${CHECK}</span>${cap ? `<span class="cap">${pre}<bdi>${s.n}</bdi></span>` : ""}</button>`;
+  return `<button class="tile${seen ? " seen" : ""}" data-a="${mode}" data-i="${i}" ${mode === "toggle" ? `aria-pressed="${seen}"` : ""} aria-label="${esc(s.n)}${seen ? ", סומנה כנצפתה" : ""}">${poster(i, "")}<span class="badge">${CHECK}</span>${cap ? `<span class="cap">${pre}<bdi>${esc(s.n)}</bdi></span>` : ""}</button>`;
 }
 
 /* screens */
@@ -311,7 +312,7 @@ function ticketHTML(r) {
        <div class="acts"><button class="btn primary choose" data-a="choose"><span class="c-main">יאללה מתחילים</span><small class="c-sub">לתוכנית הצפייה ←</small></button>
        <div class="row2"><button class="btn ghost" data-a="another">הציגו אחרת</button><button class="btn ghost" data-a="markseen" data-i="${r.i}">כבר ראיתי</button></div></div></div>`;
   return `<article class="ticket" aria-live="polite">
-    <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
+    <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
     ${ratesHTML(s)}
     <p class="avail">${platLine(s)}</p>
     <p class="t-line">${esc(s.l)}</p>
@@ -357,13 +358,13 @@ function resultHTML() {
   const r = st.ranked[st.idx];
   const alts = st.ranked.slice(st.idx + 1, st.idx + 4);
   return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + (!st.surprise && SORT_NOTE[st.ans.sort] ? `<p class="sortnote">${SORT_NOTE[st.ans.sort]}</p>` : "") + ticketHTML(r) + moreHTML(r.i) +
-    (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${S[x.i].n}">${poster(x.i, "")}<span class="cap"><bdi>${S[x.i].n}</bdi></span></button>`).join("")}</div></section>` : "") +
+    (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${esc(S[x.i].n)}">${poster(x.i, "")}<span class="cap"><bdi>${esc(S[x.i].n)}</bdi></span></button>`).join("")}</div></section>` : "") +
     `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button><button class="linkbtn" data-a="restart">התחלה מחדש</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
 }
 
 function listHTML() {
   const ids = poolIds(st.listSrc === "all" ? null : st.listSrc, st.listPlat ? [st.listPlat] : null).filter(i => !(st.hideSeen && st.seen.has(i)));
-  const srcs = [["all", "הכול"], ["mine", "הרשימה שלי"], ["nyt", "ניו יורק טיימס"]];
+  const srcs = [["all", "הכול"], ["mine", "הרשימה שלי"], ["nyt", "ניו יורק טיימס"], ["pool", "המאגר הרחב"]];
   const inUse = platsInUse(), plats = [["all", "כל הפלטפורמות"]].concat(inUse.map(k => [k, PLAT_LABEL[k]]));
   return `<div class="listbar"><h2>הרשימה</h2><span class="count">ראיתם ${st.seen.size} מתוך ${S.length}</span></div>
   <div class="chips">${srcs.map(x => `<button class="chip" data-a="lsrc" data-v="${x[0]}" aria-pressed="${st.listSrc === x[0]}">${x[1]}</button>`).join("")}<button class="chip" data-a="hideseen" aria-pressed="${st.hideSeen}">הסתרת מה שכבר ראיתי</button></div>
@@ -467,7 +468,7 @@ function actListHTML() {
   const rows = actorRows(), shown = rows.slice(0, st.actLimit);
   if (!rows.length) return `<div class="empty"><h2>לא נמצא שחקן</h2><p>נסו חלק מהשם, באנגלית או בעברית. בעברית החיפוש מבוסס על הגייה, ולכן הכתיב לא חייב להיות מדויק. הרשימה כוללת רק את השחקנים המרכזיים בכל סדרה, ולכן ייתכן ששחקן מוכר חסר.</p></div>`;
   return shown.map(a => {
-    const k = ACTMAP.get(a.n), names = a.ids.slice(0, 3).map(i => `<bdi>${S[i].n}</bdi>`).join(", "), more = a.ids.length - 3;
+    const k = ACTMAP.get(a.n), names = a.ids.slice(0, 3).map(i => `<bdi>${esc(S[i].n)}</bdi>`).join(", "), more = a.ids.length - 3;
     return `<button class="arow" data-a="actor" data-k="${k}">${avatar(a.n)}<span class="ainfo"><b><bdi>${esc(a.n)}</bdi></b><small>${names}${more > 0 ? " ועוד " + more : ""}</small></span><span class="acount">${a.ids.length}</span></button>`;
   }).join("") + (rows.length > shown.length ? `<button class="btn ghost block" data-a="actmore">הצגת עוד (${rows.length - shown.length})</button>` : "");
 }
@@ -483,7 +484,7 @@ function actorsHTML() {
 /* dialog */
 function seriesDlgHTML(i) {
   const s = S[i], seen = st.seen.has(i); st.dlgId = i;
-  return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${s.n}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
+  return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
   ${ratesHTML(s)}
   <p class="avail">${platLine(s)}</p>
   <p class="d-line">${esc(s.l)}</p>

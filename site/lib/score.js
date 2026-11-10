@@ -27,6 +27,7 @@ export function poolIds(S, src, plats) {
   let ids = S.map((_, i) => i);
   if (src === "mine") ids = ids.filter(i => S[i].lists.includes("mine"));
   if (src === "nyt") ids = ids.filter(i => S[i].nyt).sort((x, y) => S[x].nyt - S[y].nyt);
+  if (src === "pool") ids = ids.filter(i => S[i].lists.includes("pool"));
   if (plats && plats.length) ids = ids.filter(i => S[i].providers.some(p => plats.includes(p)));
   return ids;
 }

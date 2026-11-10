@@ -43,3 +43,16 @@ test("fromData passes the series status through", () => {
   assert.equal(S[1].status, "airing");
   assert.equal(fromData({ series: [{ name: "X", lists: [] }] })[0].status, null);
 });
+
+test("seen marks for series not in today's data are kept when saving", () => {
+  const st = memStorage();
+  st.setItem("tvpick:v2", JSON.stringify({ seen: [95396, 777777] })); // 777777 rotated out of the pool
+  const seen = loadSeen(st, S);
+  assert.deepEqual([...seen], [1]);
+  seen.add(0);
+  saveSeen(st, seen, S);
+  assert.deepEqual(JSON.parse(st.m.get("tvpick:v2")).seen.sort((a, b) => a - b), [1396, 95396, 777777]);
+  seen.delete(1);
+  saveSeen(st, seen, S);
+  assert.deepEqual(JSON.parse(st.m.get("tvpick:v2")).seen.sort((a, b) => a - b), [1396, 777777]);
+});

@@ -77,3 +77,10 @@ test("eras: chosen decade fits fully, a neighbouring decade half, others not", (
   assert.equal(scoreSeries(s, { genres: [], platforms: [], eras: ["20", "00"] }).pct, 100);
   assert.equal(scoreSeries({ ...s, y: null }, { genres: [], platforms: [], eras: ["00"] }).pct, 0);
 });
+
+test("pool source picks only wide-pool series; any includes everything", () => {
+  const SP = S.concat([{ ...S[2], tmdbId: 9, n: "Pool Show", lists: ["pool"], nyt: null }]);
+  assert.deepEqual(poolIds(SP, "pool", []).map(i => SP[i].n), ["Pool Show"]);
+  assert.equal(poolIds(SP, "any", []).length, 4);
+  assert.ok(!poolIds(SP, "mine", []).some(i => SP[i].n === "Pool Show"));
+});

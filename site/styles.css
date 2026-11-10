@@ -258,3 +258,4 @@ img.poster { object-fit: cover; }
 .btn.choose { flex-direction: column; gap: 0; padding-top: 8px; padding-bottom: 8px; line-height: 1.2; }
 .btn.choose .c-main { font-size: 19px; }
 .btn.choose .c-sub { font-size: 13px; font-weight: 600; opacity: .8; }
+.tag.pick { background: rgba(255, 201, 51, .3); color: #6B4E00; }
