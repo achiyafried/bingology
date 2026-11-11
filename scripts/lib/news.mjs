@@ -56,3 +56,44 @@ export function diffNews(prevSeries, currSeries, now) {
   }
   return out;
 }
+
+const KEEP_DAYS = 60;
+const MAX_ITEMS = 400;
+const FLAP_DAYS = 7;
+const DAY = 86400000;
+
+const dayNum = (d) => Date.parse(`${d}T00:00:00Z`) / DAY;
+
+// Drop stream_added/stream_removed pairs for the same show+region+provider that cancel out within 7 days.
+function dropFlaps(items) {
+  const opposite = { stream_added: "stream_removed", stream_removed: "stream_added" };
+  const dead = new Set();
+  items.forEach((a, i) => {
+    if (!opposite[a.kind] || dead.has(i)) return;
+    const j = items.findIndex((b, k) => k !== i && !dead.has(k) && b.kind === opposite[a.kind]
+      && b.tmdbId === a.tmdbId && b.region === a.region && b.provider === a.provider
+      && Math.abs(dayNum(a.date) - dayNum(b.date)) <= FLAP_DAYS);
+    if (j >= 0) { dead.add(i); dead.add(j); }
+  });
+  return items.filter((_, i) => !dead.has(i));
+}
+
+export function mergeNews(prevNews, newItems, now) {
+  const seen = new Set();
+  const all = [];
+  for (const item of [...newItems, ...(prevNews?.items || [])]) {
+    if (seen.has(item.id)) continue;
+    seen.add(item.id);
+    all.push(item);
+  }
+  const cutoff = dayNum(now.slice(0, 10)) - KEEP_DAYS;
+  const recent = all.filter((i) => dayNum(i.date) >= cutoff);
+  const items = dropFlaps(recent).slice(0, MAX_ITEMS);
+  return { updatedAt: now, items };
+}
+
+export function buildNews(prevData, data, prevNews, now) {
+  const news = mergeNews(prevNews, diffNews(prevData, data, now), now);
+  const changed = JSON.stringify(news.items) !== JSON.stringify(prevNews?.items || []);
+  return { news, changed };
+}
