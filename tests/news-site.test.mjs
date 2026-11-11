@@ -100,3 +100,20 @@ test("stripItems", () => {
   assert.ok(rm.every((x) => x.tmdbId !== 999));
   assert.equal(rm[0].tmdbId, 9);
 });
+
+test("stripItems: no duplicate series between items and upcoming", () => {
+  const r = stripItems([it({ tmdbId: 9, kind: "announced", season: 2, airDate: "2026-12-01" })], S, TODAY);
+  assert.deepEqual(r.map((x) => x.tmdbId), [9, 6, 1]);
+  assert.equal(r[0].kind, "announced");
+  assert.equal(r.filter((x) => x.tmdbId === 9).length, 1);
+});
+
+test("stripItems: recent, then upcoming, then older items; cap 3", () => {
+  const noUp = S.filter((s) => s.tmdbId !== 9 && s.tmdbId !== 6 && s.tmdbId !== 1);
+  const older = [it({ tmdbId: 2, kind: "ended", date: "2026-10-01" }), it({ tmdbId: 3, kind: "ended", date: "2026-10-20" })];
+  const r = stripItems(older, noUp, TODAY);
+  assert.deepEqual(r.map((x) => x.tmdbId), [3, 2], "older items shown, newest first, when nothing else");
+  const mixed = stripItems([...older, it({ tmdbId: 4, kind: "ended", date: "2026-11-09" })], S.filter((s) => s.tmdbId !== 6 && s.tmdbId !== 1), TODAY);
+  assert.deepEqual(mixed.map((x) => x.tmdbId), [4, 9, 3]);
+  assert.equal(stripItems([], [], TODAY).length, 0);
+});

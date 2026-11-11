@@ -81,13 +81,19 @@ export function upcomingSeasons(S, today) {
     .sort((a, b) => a.date.localeCompare(b.date) || a.tmdbId - b.tmdbId);
 }
 
-/** Home strip: 3 most recent items (in S); if fewer than 3 are from the last 7 days, fill with upcoming seasons. */
-export function stripItems(items, S, today) {
+/** Only items whose series is still in S (a series dropped from data.json gets no news). */
+export function visibleItems(items, S) {
   const ids = new Set(S.map((s) => s.tmdbId));
-  const recent = items
-    .filter((i) => ids.has(i.tmdbId) && daysAgo(i.date, today) < 7)
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 3);
-  if (recent.length >= 3) return recent;
-  return [...recent, ...upcomingSeasons(S, today)].slice(0, 3);
+  return (items || []).filter((i) => ids.has(i.tmdbId));
+}
+
+/** Home strip (cap 3): items from the last 7 days (newest first), then upcoming seasons for series not
+ *  already in the strip, then older items. Items for series not in S are skipped. */
+export function stripItems(items, S, today) {
+  const vis = visibleItems(items, S).sort((a, b) => b.date.localeCompare(a.date));
+  const recent = vis.filter((i) => daysAgo(i.date, today) < 7).slice(0, 3);
+  const shown = new Set(recent.map((i) => i.tmdbId));
+  const up = upcomingSeasons(S, today).filter((u) => !shown.has(u.tmdbId));
+  const older = vis.filter((i) => daysAgo(i.date, today) >= 7);
+  return [...recent, ...up, ...older].slice(0, 3);
 }
