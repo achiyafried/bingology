@@ -46,6 +46,13 @@ export function mapProviders(flatrate, map) {
   return { cats, unknown };
 }
 
+/** Episodes per regular season, in order (specials excluded, empty seasons dropped). */
+function seasonEpsOf(tv) {
+  if (!Array.isArray(tv.seasons)) return null;
+  const eps = tv.seasons.filter(s => s.season_number > 0 && s.episode_count > 0).map(s => s.episode_count);
+  return eps.length ? eps : null;
+}
+
 /** TMDB /tv/{id} (en-US, with credits/providers/external_ids appended) + the he-IL response → live fields. */
 export function transformTv(tv, { map, he } = {}) {
   const warnings = [];
@@ -65,6 +72,7 @@ export function transformTv(tv, { map, he } = {}) {
   const live = {
     year: tv.first_air_date ? Number(tv.first_air_date.slice(0, 4)) : null,
     seasons: tv.number_of_seasons || null,
+    seasonEps: seasonEpsOf(tv),
     episodes: tv.number_of_episodes || null,
     runtime: medianRuntime(tv),
     runtimeLast: tv.last_episode_to_air?.runtime || null,

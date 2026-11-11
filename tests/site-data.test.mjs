@@ -62,3 +62,9 @@ test("fromData passes the guessed providers through", () => {
   assert.deepEqual(S2[0].providersGuess, ["disney"]);
   assert.deepEqual(S2[1].providersGuess, []);
 });
+
+test("fromData maps seasonEps to se", () => {
+  const r = fromData({ series: [{ name: "X", lists: [], seasonEps: [7, 13] }, { name: "Y", lists: [] }] });
+  assert.deepEqual(r[0].se, [7, 13]);
+  assert.equal(r[1].se, null);
+});
