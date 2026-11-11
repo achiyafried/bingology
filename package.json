@@ -5,6 +5,8 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
+    "test:rls": "node --env-file=.env --test tests/rls.test.mjs",
+    "schema:test": "node scripts/apply-schema.mjs",
     "keys": "sh scripts/set-keys.sh",
     "extract": "node scripts/extract-legacy.mjs",
     "match": "node scripts/match-ids.mjs",
