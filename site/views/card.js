@@ -14,10 +14,17 @@ function chip(f) {
   return what ? `<span class="fr w">${n} ${what}</span>` : "";
 }
 
-/** state: {entry: {status, rating} | null, friends: [{name, status, rating}], err} */
+/** The local "seen" toggle (app.js's dseen), for when the account can't be used. */
+const localToggle = seen => `<div class="acct-local"><button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button></div>`;
+
+/**
+ * state: {entry: {status, rating} | null, friends: [{name, status, rating}], seen (local mark),
+ *   err (account unreachable), local (no session after all)}
+ */
 export function cardHTML(state) {
   const st = state || {};
-  if (st.err) return `<p class="lbl acct-err">לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע</p>`;
+  if (st.local) return localToggle(st.seen);
+  if (st.err) return `<p class="lbl acct-err">לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע</p>${localToggle(st.seen)}`;
   const cur = st.entry && st.entry.status;
   const status = STATUSES.map(([v, t]) => `<button data-a="cst" data-v="${v}" aria-pressed="${cur === v}">${t}</button>`).join("");
   const r = st.entry && st.entry.rating;
@@ -55,7 +62,7 @@ export async function syncSeen(S, seen) {
 
 /**
  * The site's own "seen" toggles, when signed in. On: status 'seen' (unless already seen or dropped).
- * Off: deletes the row only when it is a plain 'seen' mark without a rating or note, so a slip never loses them.
+ * Off: deletes the row only when it is a plain 'seen' mark without a rating, note or finish date, so a slip never loses them.
  */
 export async function writeSeen(s, on) {
   const m = await mine();
@@ -65,13 +72,13 @@ export async function writeSeen(s, on) {
   if (on) {
     if (e && DONE.has(e.status)) return;
     await store.saveEntry(s.tmdbId, { status: "seen", title: s.n, poster: s.poster ?? null });
-  } else if (e && e.status === "seen" && !e.rating && !e.note) {
+  } else if (e && e.status === "seen" && !e.rating && !e.note && !e.finished_on) {
     await store.removeEntry(s.tmdbId);
   }
   cache.delete(s.tmdbId);
 }
 
-/** ctx: {s (series), toast(msg), onSeen(on)} — renders into root (a fresh element on every dialog paint). */
+/** ctx: {s (series), seen (local mark), toast(msg), onSeen(on)} — renders into root (a fresh element on every dialog paint). */
 export async function mountCard(root, ctx) {
   const id = ctx.s.tmdbId;
   const paint = st => { if (root.isConnected) root.innerHTML = cardHTML(st); };
@@ -80,12 +87,12 @@ export async function mountCard(root, ctx) {
   try {
     const { circle } = await loadMods();
     const [m, friends] = await Promise.all([mine(), circle.friendsOn(id)]);
-    if (!m) { root.innerHTML = ""; return; }
+    if (!m) { paint({ local: true, seen: ctx.seen }); return; }
     const st = { entry: m.get(id) || null, friends };
     cache.set(id, st);
     paint(st);
   } catch (e) {
-    if (!cache.has(id)) paint({ err: true });
+    if (!cache.has(id)) paint({ err: true, seen: ctx.seen });
   }
 }
 

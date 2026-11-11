@@ -128,6 +128,7 @@ export function ago(iso, now = Date.now()) {
   if (m < 60) return m === 1 ? "לפני דקה" : `לפני ${m} דקות`;
   if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`;
   if (d < 2) return "אתמול";
+  if (d === 2) return "לפני יומיים";
   if (d < 7) return `לפני ${d} ימים`;
   return new Date(t).toLocaleDateString("he-IL", { day: "numeric", month: "long" });
 }
@@ -335,9 +336,25 @@ async function load() {
 /* ── circle: invite links, loading, joint pick ── */
 
 const JOIN_KEY = "bingology:join";
+export const JOIN_TTL = 7 * 86400e3; // a pending invite older than this is dropped
 const ls = () => { try { return localStorage; } catch (e) { return null; } };
-function pendingJoin() { try { return (ls() && ls().getItem(JOIN_KEY)) || null; } catch (e) { return null; } }
-function setJoin(code) { try { const s = ls(); if (s) code ? s.setItem(JOIN_KEY, code) : s.removeItem(JOIN_KEY); } catch (e) { /* storage unavailable */ } }
+/** The stored invite code ({code, at} JSON) if it is younger than JOIN_TTL; otherwise null. */
+export function readJoin(raw, now = Date.now()) {
+  try {
+    const j = JSON.parse(raw);
+    return j && typeof j.code === "string" && j.code && Number.isFinite(j.at) && now - j.at < JOIN_TTL ? j.code : null;
+  } catch (e) { return null; }
+}
+function pendingJoin() {
+  try {
+    const s = ls(), raw = s && s.getItem(JOIN_KEY);
+    if (!raw) return null;
+    const code = readJoin(raw);
+    if (!code) s.removeItem(JOIN_KEY); // expired or malformed
+    return code;
+  } catch (e) { return null; }
+}
+function setJoin(code) { try { const s = ls(); if (s) code ? s.setItem(JOIN_KEY, JSON.stringify({ code, at: Date.now() })) : s.removeItem(JOIN_KEY); } catch (e) { /* storage unavailable */ } }
 /** The code from a pasted invite link (…#join=<code>) or a bare code; null when it is neither. */
 function codeFrom(text) {
   const t = String(text || "").trim();
@@ -363,6 +380,18 @@ async function refreshCircle() {
   paint();
 }
 
+/**
+ * The partner already said "יאללה" and is still watching it: offer that first, until I answer it
+ * (I haven't voted on it, skipped it, or started / seen / dropped it). Returns a tmdbId or null.
+ */
+export function partnerYes({ votes, lists, me, partner, skipped, has }) {
+  const mine = lists.get(me) || new Map(), theirs = lists.get(partner) || new Map();
+  const v = votes.find(v => v.vote === "yes" && v.user_id === partner && theirs.get(v.tmdb_id) === "watching"
+    && !skipped.has(v.tmdb_id) && !BUSY.has(mine.get(v.tmdb_id)) && has(v.tmdb_id)
+    && !votes.some(w => w.user_id === me && w.tmdb_id === v.tmdb_id));
+  return v ? v.tmdb_id : null;
+}
+
 /** Me + the member I share the most "want" with; votes from either of us steer the pick. */
 function computePick() {
   const cs = V.cs, me = V.user && V.user.id;
@@ -374,11 +403,8 @@ function computePick() {
   if (!partner) return;
   const skipped = new Set(V.skipLocal || []);
   for (const v of cs.votes) if (v.vote === "skip" && (v.user_id === me || v.user_id === partner)) skipped.add(v.tmdb_id);
-  const mine = lists.get(me);
-  // The partner already said "יאללה" (and started it): offer that first, until I answer it.
-  const yes = cs.votes.find(v => v.vote === "yes" && v.user_id === partner && !skipped.has(v.tmdb_id) && !BUSY.has(mine.get(v.tmdb_id))
-    && seriesOf(v.tmdb_id) && !cs.votes.some(w => w.user_id === me && w.tmdb_id === v.tmdb_id));
-  if (yes) { V.pick = { tmdbId: yes.tmdb_id, mode: "yes", partner }; return; }
+  const yes = partnerYes({ votes: cs.votes, lists, me, partner, skipped, has: id => !!seriesOf(id) });
+  if (yes !== null) { V.pick = { tmdbId: yes, mode: "yes", partner }; return; }
   const S = CTX.S || [];
   const p = jointPick(S, S.map(s => ({ score: s.bs })), lists, [me, partner], skipped);
   V.pick = p ? { ...p, partner } : null;

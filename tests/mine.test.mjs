@@ -264,3 +264,39 @@ test("series card: no rating row before seen; no friends block when none", () =>
   assert.doesNotMatch(h, /class="friends"/);
   assert.match(cardHTML({ entry: null, friends: [] }), /data-a="cst" data-v="want" aria-pressed="false"/);
 });
+
+/* ───────── Task 8 fix round 1 ───────── */
+import { partnerYes, readJoin, JOIN_TTL } from "../site/views/mine.js";
+
+test("card error state falls back to the local seen toggle", () => {
+  const off = cardHTML({ err: true, seen: false });
+  assert.match(off, /data-a="dseen"[^>]*>סימון כנצפתה</);
+  assert.match(cardHTML({ err: true, seen: true }), /data-a="dseen"[^>]*>עוד לא ראיתי</);
+  assert.doesNotMatch(off, /data-a="cst"/);
+  assert.match(cardHTML({ local: true, seen: false }), /data-a="dseen"/, "no session after all (stale): local toggle too");
+});
+
+test("partner-yes pick only while the partner is still watching it", () => {
+  const votes = [{ tmdb_id: 136315, user_id: "u2", vote: "yes" }];
+  const base = { votes, me: "u1", partner: "u2", skipped: new Set(), has: () => true };
+  const lists = st => new Map([["u1", new Map()], ["u2", new Map([[136315, st]])]]);
+  assert.equal(partnerYes({ ...base, lists: lists("watching") }), 136315);
+  assert.equal(partnerYes({ ...base, lists: lists("seen") }), null);
+  assert.equal(partnerYes({ ...base, lists: lists("dropped") }), null);
+  assert.equal(partnerYes({ ...base, lists: new Map([["u1", new Map([[136315, "watching"]])], ["u2", new Map([[136315, "watching"]])]]) }), null, "I already started it");
+  assert.equal(partnerYes({ ...base, lists: lists("watching"), skipped: new Set([136315]) }), null);
+});
+
+test("pending invite expires after 7 days", () => {
+  const now = Date.parse("2026-11-11T12:00:00Z");
+  assert.equal(JOIN_TTL, 7 * 86400e3);
+  assert.equal(readJoin(JSON.stringify({ code: "AbC234", at: now - 86400e3 }), now), "AbC234");
+  assert.equal(readJoin(JSON.stringify({ code: "AbC234", at: now - 8 * 86400e3 }), now), null);
+  assert.equal(readJoin("AbC234", now), null, "old format without a timestamp is dropped");
+  assert.equal(readJoin(null, now), null);
+});
+
+test("ago: two days is 'לפני יומיים'", () => {
+  assert.equal(ago(new Date(NOW - 2 * 86400e3 - 3600e3).toISOString(), NOW), "לפני יומיים");
+  assert.equal(ago(new Date(NOW - 2 * 3600e3).toISOString(), NOW), "לפני שעתיים");
+});

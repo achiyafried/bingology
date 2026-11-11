@@ -510,7 +510,9 @@ function paintDlg(keep) {
   d.scrollTop = keep ? sc : 0;
   if (!d.open) d.showModal();
   const s = v.t === "s" && S[v.v], box = $("#acct");
-  if (s && box) acct(m => m.mountCard(box, { s, toast: showToast, onSeen: on => { setSeen(v.v, on); render(false); } }));
+  // views/card.js could not load at all: the local seen toggle instead.
+  if (s && box) acct(m => m.mountCard(box, { s, seen: st.seen.has(v.v), toast: showToast, onSeen: on => { setSeen(v.v, on); render(false); } }))
+    .then(() => { if (box.isConnected && !box.innerHTML) box.outerHTML = `<div class="d-acts"><button class="btn primary" data-a="dseen">${st.seen.has(v.v) ? "עוד לא ראיתי" : "סימון כנצפתה"}</button></div>`; });
 }
 function dlgGo(view) {
   const d = $("#dlg");
@@ -549,7 +551,7 @@ document.addEventListener("click", e => {
     case "unchoose": st.chosen = false; st.idx++; render(true); break;
     case "markseen": setSeen(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
     case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;
-    case "resetseen": st.seen.clear(); save(); rank(false); render(true); break;
+    case "resetseen": st.seen.clear(); if (hasSession()) showToast("הסימונים בחשבון לא נמחקו. הסדרות שסימנתם יחזרו בכניסה הבאה."); else save(); rank(false); render(true); break;
     case "lsrc": st.listSrc = v; render(false); break;
     case "hideseen": st.hideSeen = !st.hideSeen; render(false); break;
     case "detail": openDlg(i); break;
@@ -658,7 +660,8 @@ async function boot() {
     ACT = null; PHOTO.clear();
     route();
     render(false);
-    if (hasSession()) acct(m => m.syncSeen(S, st.seen)).then(n => { if (n) { save(); if (st.tab !== "mine") render(false); } });
+    // Signed in: after the first paint, add the account's seen marks (memory only, so "איפוס הנצפו" stays a local reset).
+    if (hasSession()) setTimeout(() => acct(m => m.syncSeen(S, st.seen)).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
   } catch (e) {
     $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;
   }
