@@ -295,6 +295,7 @@ function qHTML() {
   const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : step === QS.length ? "כמעט שם" : "אחרון"}</span></div>`;
   if (step === QS.length) {
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
+    <div class="skip-top"><button class="btn ghost" data-a="next">דילוג</button></div>
     <div class="grid">${poolIds(st.ans.src, st.ans.platforms).map(i => tile(i, "toggle", false)).join("")}</div>
     <div class="sticky-cta"><button class="btn primary block" data-a="next">הראו לי את ההמלצה</button></div></div>`;
   }

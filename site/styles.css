@@ -109,6 +109,8 @@ dialog .nm { color: var(--ticket-accent); }
 .count { color: var(--muted); font-size: 15px; min-width: 60px; text-align: end; }
 .qbody h2 { font-size: clamp(27px, 7vw, 34px); margin-bottom: 8px; }
 .qbody .sub { color: var(--muted); margin: 0 0 20px; }
+.qbody .skip-top { display: flex; justify-content: flex-start; margin: -8px 0 16px; }
+.qbody .skip-top .btn { padding: 8px 18px; font-size: 15px; }
 .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: start; padding: 15px 18px; border-radius: 16px; background: var(--surface); border: 2px solid transparent; margin-bottom: 10px; }
 .opt:hover { border-color: var(--line); }
 .opt[aria-pressed="true"] { border-color: var(--accent); }

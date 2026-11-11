@@ -77,3 +77,14 @@ test("app.js loads the account code and views lazily (no static import)", () => 
   assert.doesNotMatch(src, /^\s*import\s*["'][^"']*(account\/|views\/)/m, "no side-effect-only import either");
   assert.match(src, /import\(\s*["']\.\/views\/mine\.js["']\s*\)/, "the tab loads views/mine.js on demand");
 });
+
+test("seen step: a skip button right under the subtitle, before the grid, plus the bottom button", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const m = /מה כבר ראיתם\?[\s\S]*?<\/div><\/div>`;/.exec(src);
+  assert.ok(m, "found the seen step");
+  const step = m[0];
+  const sub = step.indexOf("אפשר לדלג.</p>"), skip = step.indexOf(">דילוג</button>"), grid = step.indexOf('<div class="grid">');
+  assert.ok(sub > 0 && skip > sub && grid > skip, "skip sits between the subtitle and the grid");
+  assert.match(step, /<button class="btn ghost[^"]*" data-a="next">דילוג<\/button>/);
+  assert.equal((step.match(/data-a="next"/g) || []).length, 2, "the bottom button stays");
+});
