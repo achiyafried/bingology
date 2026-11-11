@@ -277,7 +277,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brand">${LOGO}</div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button></div></header>`;
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${st.tab === "mine"}">שלי</button></div></header>`;
 }
 
 function introHTML() {
@@ -397,7 +397,8 @@ function listHTML() {
 function render(top) {
   const y = window.scrollY;
   let body;
-  if (st.tab === "list") body = listHTML();
+  if (st.tab === "mine") body = `<div id="mine"></div>`;
+  else if (st.tab === "list") body = listHTML();
   else if (st.tab === "actors") body = actorsHTML();
   else if (st.tab === "search") body = searchHTML();
   else if (st.screen === "intro") body = introHTML();
@@ -405,6 +406,7 @@ function render(top) {
   else if (st.screen === "plan") body = planHTML();
   else body = resultHTML();
   $("#app").innerHTML = header() + body + footerHTML();
+  if (st.tab === "mine") showMine();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -520,7 +522,7 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
-    case "tab": st.tab = v; render(true); break;
+    case "tab": if (st.share) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
@@ -612,6 +614,21 @@ function footerHTML() {
   <p>נתוני זמינות: JustWatch</p></footer>`;
 }
 
+/* "שלי" tab: the account code loads only here (or for a #u= / sign-in return link), never at startup */
+function showMine() {
+  const root = $("#mine");
+  import("./views/mine.js")
+    .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, localSeen: () => st.seen.size, toast: showToast, copy: copyText }))
+    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
+}
+function route() {
+  const m = /^#u=([A-Za-z0-9_-]{1,64})$/.exec(location.hash);
+  st.share = m ? m[1] : null;
+  if (m || /[#&](access_token|error_description)=/.test(location.hash) || /[?&]code=/.test(location.search)) st.tab = "mine";
+}
+window.addEventListener("hashchange", () => { route(); if (S.length) render(true); });
+window.addEventListener("bingology:write-failed", () => showToast("השינוי לא נשמר"));
+
 async function boot() {
   $("#app").innerHTML = `<div class="empty loading" role="status"><p>טוענים את הסדרות…</p></div>`;
   try {
@@ -624,6 +641,7 @@ async function boot() {
     st.updatedAt = json.updatedAt;
     st.seen = loadSeen(store, S);
     ACT = null; PHOTO.clear();
+    route();
     render(false);
   } catch (e) {
     $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;

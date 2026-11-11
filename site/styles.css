@@ -278,3 +278,49 @@ img.poster { object-fit: cover; }
 .chip .plogo { object-fit: cover; }
 .chip .pmark { display: inline-flex; align-items: center; justify-content: center; font-family: "Secular One", "Assistant", sans-serif; font-size: 14px; line-height: 1; background: var(--surface2); color: var(--ink); }
 .chip[aria-pressed="true"] .pmark { background: rgba(255, 255, 255, .25); color: inherit; }
+/* "שלי" tab (views/mine.js) */
+.mine .me { display: flex; align-items: center; gap: 14px; background: var(--surface); border-radius: 18px; padding: 16px; margin-bottom: 18px; }
+.mine .me .av { width: 56px; height: 56px; background: var(--accent); color: var(--accent-ink); font-size: 22px; direction: rtl; }
+.mine .me .who { flex: 1; min-width: 0; }
+.mine .me h2 { font-size: 24px; word-break: break-word; }
+.mine .me small { display: block; color: var(--muted); font-size: 14px; }
+.mine .me .btn { padding: 8px 14px; font-size: 15px; flex: none; }
+.mine .shared { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: -8px 0 18px; padding: 0 4px; color: var(--muted); font-size: 14px; font-weight: 600; }
+.mine .shared .linkbtn { color: var(--accent); font-size: 14px; }
+.mine .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+.mine .stat { background: var(--surface); border-radius: 14px; padding: 10px; text-align: center; }
+.mine .stat strong { display: block; font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 26px; line-height: 1.1; }
+.mine .stat span { font-size: 13px; color: var(--muted); font-weight: 600; }
+.mine .sh { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 10px; }
+.mine .sh h3 { font-size: 21px; }
+.mine .sh .linkbtn { color: var(--accent); font-size: 14px; text-decoration: none; }
+.mine .card { background: var(--surface); border-radius: 18px; padding: 6px 14px; }
+.mine .it { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.mine .it:first-child { border-top: 0; }
+.mine .it.ask { flex-wrap: wrap; }
+.mine .it-main { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; padding: 0; border: 0; background: none; text-align: start; color: inherit; }
+.mine .it img, .mine .it .noimg { width: 62px; aspect-ratio: 240 / 216; object-fit: cover; border-radius: 10px; flex: none; background: var(--surface2); }
+.mine .it .i { flex: 1; min-width: 0; }
+.mine .it b { display: block; font-size: 17px; overflow-wrap: anywhere; }
+.mine .it small { display: block; color: var(--muted); font-size: 14px; line-height: 1.3; }
+.mine .bar { display: block; height: 6px; background: var(--surface2); border-radius: 99px; margin-top: 6px; overflow: hidden; }
+.mine .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.mine .plus { border: 2px solid var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }
+.mine .score { font-family: "Secular One", "Assistant", sans-serif; font-size: 26px; min-width: 34px; text-align: center; flex: none; }
+.mine .score.none { color: var(--muted); }
+.mine .bscore { background: var(--surface2); border-radius: 999px; padding: 2px 10px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }
+.mine .rateq { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; direction: ltr; }
+.mine .rateq .chip { padding: 6px 0; font-size: 15px; }
+.mine .rateq-x { display: flex; gap: 14px; width: 100%; }
+.mine .rateq-x .linkbtn { font-size: 14px; }
+.mine .signin { background: var(--surface); border-radius: 18px; padding: 22px; text-align: center; }
+.mine .signin h2 { font-size: 26px; margin-bottom: 6px; }
+.mine .signin p { color: var(--muted); margin: 0 0 16px; }
+.mine .signin .btn { margin-bottom: 8px; }
+.mine .signin .fine { font-size: 14px; margin: 10px 0 0; }
+.mine .signin .search { margin-bottom: 8px; }
+.mine .foot { margin-top: 26px; }
+@media (max-width: 420px) {
+  .tab { padding-inline: 3px; line-height: 1.25; }
+  .tab span[aria-hidden] { display: none; }
+}
