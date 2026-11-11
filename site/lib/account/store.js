@@ -32,8 +32,9 @@ export function flushQueue() {
   if (flushing) return flushing;
   flushing = (async () => {
     const st = ls();
-    if (!st || !pending(st).length || !(await currentUser())) return { sent: 0, failed: 0, gaveUp: [] }; // signed out: keep rows, don't burn attempts
-    const r = await flush(st, upsert);
+    const user = st && pending(st).length ? await currentUser() : null;
+    if (!user) return { sent: 0, failed: 0, gaveUp: [] }; // signed out: keep rows, don't burn attempts
+    const r = await flush(st, upsert, user.id); // rows queued by another account are dropped
     if (r.gaveUp.length) {
       for (const id of r.gaveUp) mine.delete(id);
       if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("bingology:write-failed", { detail: { ids: r.gaveUp } }));

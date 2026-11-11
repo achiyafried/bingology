@@ -535,7 +535,7 @@ async function onClick(ev) {
         const { circle } = await loadMods();
         await circle.vote(id, "yes");
         if (V.cs) V.cs.votes.push({ tmdb_id: id, user_id: V.user.id, vote: "yes" });
-        await save(id, { status: "watching", season: 1, episode: 1 });
+        await save(id, { status: "watching" });
         computePick(); paint();
         if (CTX.toast && (V.entries.get(id) || {}).status === "watching") CTX.toast("נוסף ל\"רואה עכשיו\". בהצלחה!");
         break;

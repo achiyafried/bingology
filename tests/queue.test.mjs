@@ -59,3 +59,13 @@ test("enqueue with prior attempts: gave up after the 3rd failure overall", async
   assert.deepEqual((await flush(st, send)).gaveUp, [1]);
   assert.deepEqual(pending(st), []);
 });
+
+test("forUser drops queued rows of another account without sending them", async () => {
+  const st = mem();
+  enqueue(st, 1, { tmdb_id: 1, user_id: "a" }); enqueue(st, 2, { tmdb_id: 2, user_id: "b" });
+  const seen = [];
+  const r = await flush(st, async row => { seen.push(row.tmdb_id); }, "b");
+  assert.deepEqual(seen, [2]);
+  assert.deepEqual(r, { sent: 1, failed: 0, gaveUp: [] });
+  assert.deepEqual(pending(st), []);
+});

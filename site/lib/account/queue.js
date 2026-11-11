@@ -27,9 +27,12 @@ export function pending(storage) {
   return read(storage).map(x => x.row);
 }
 
-/** Replays rows in order through send(row). Failed rows stay (attempts+1); the 3rd failure drops them. */
-export async function flush(storage, send) {
-  const q = read(storage);
+/**
+ * Replays rows in order through send(row). Failed rows stay (attempts+1); the 3rd failure drops them.
+ * With forUser, rows written by another account are dropped silently (never sent, not counted as failures).
+ */
+export async function flush(storage, send, forUser) {
+  const q = read(storage).filter(x => forUser === undefined || x.row.user_id === forUser);
   const keep = [];
   const out = { sent: 0, failed: 0, gaveUp: [] };
   for (const item of q) {
@@ -42,7 +45,7 @@ export async function flush(storage, send) {
     }
   }
   // Rows enqueued while we were sending must survive.
-  const fresh = read(storage).filter(x => {
+  const fresh = read(storage).filter(x => forUser === undefined || x.row.user_id === forUser).filter(x => {
     const o = q.find(y => y.tmdbId === x.tmdbId);
     return !o || JSON.stringify(o.row) !== JSON.stringify(x.row);
   });

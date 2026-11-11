@@ -1,5 +1,6 @@
 -- Bingology personal area: tables, triggers, RLS, RPCs. Source of truth for the database.
 -- Idempotent: safe to re-run (`npm run schema:test` applies it to the TEST project).
+-- Future column changes must use `alter table … add column if not exists` so re-running this file stays safe.
 --
 -- Privilege model: Supabase grants everything on new public tables/functions to anon and authenticated by
 -- default, so every table and function below revokes first and grants back only what is needed.
@@ -107,6 +108,7 @@ create or replace trigger set_finished_on
 
 -- entries_to_events: the only writer of events. Status change and rating change create events;
 -- episode/season/note/title changes do not. Nothing is written while the user has no circle.
+-- An INSERT as 'seen' with no finished_on means "watched, date unknown" (e.g. device migration): no event.
 create or replace function public.entries_to_events() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare
@@ -116,7 +118,8 @@ begin
   if c is null then
     return null;
   end if;
-  if tg_op = 'INSERT' or new.status is distinct from old.status then
+  if (tg_op = 'INSERT' and not (new.status = 'seen' and new.finished_on is null))
+     or (tg_op = 'UPDATE' and new.status is distinct from old.status) then
     insert into public.events (user_id, circle_id, tmdb_id, kind, rating, season)
     values (new.user_id, c, new.tmdb_id,
             case new.status when 'want' then 'wanted' when 'watching' then 'started'

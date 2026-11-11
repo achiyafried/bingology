@@ -146,6 +146,20 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
     assert.equal(r.json[0].finished_on, null);
   });
 
+  test("events: seen rows inserted without a date (migration) write no event; watching to seen still does", async () => {
+    const ev = async (id) => (await rest(B.token, "GET", `events?user_id=eq.${A.id}&tmdb_id=eq.${id}&select=kind`)).json;
+    for (const id of [7001, 7002, 7003]) {
+      const r = await rest(A.token, "POST", "entries", { user_id: A.id, tmdb_id: id, status: "seen", title: "Old", poster: null });
+      assert.equal(r.status, 201, JSON.stringify(r.json));
+      assert.deepEqual(await ev(id), [], "no event for a seen insert with unknown date");
+    }
+    await rest(A.token, "POST", "entries", { user_id: A.id, tmdb_id: 7004, status: "watching", title: "Now", poster: null });
+    assert.deepEqual((await ev(7004)).map((e) => e.kind), ["started"]);
+    await rest(A.token, "PATCH", `entries?user_id=eq.${A.id}&tmdb_id=eq.7004`, { status: "seen" });
+    assert.deepEqual((await ev(7004)).map((e) => e.kind), ["started", "finished"]);
+    await rest(A.token, "DELETE", `entries?user_id=eq.${A.id}&tmdb_id=in.(7001,7002,7003,7004)`); // keep later tests' counts intact
+  });
+
   test("pick_votes: circle reads, own writes only", async () => {
     const circle = (await rest(A.token, "GET", "circles?select=id")).json[0].id;
     const ok = await rest(B.token, "POST", "pick_votes", { circle_id: circle, tmdb_id: SHOW, user_id: B.id, vote: "skip" });

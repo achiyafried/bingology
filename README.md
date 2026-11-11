@@ -18,7 +18,7 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 
 **ציון בינג׳** (50–100) משלב IMDb (40%), TMDB (20%), רוטן טומייטו (30%) והניו יורק טיימס (10%). כל מקור מומר לאחוזון בתוך הרשימה, מקור חסר לא פוגע בציון, ובציוני TMDB עם מעט מצביעים הציון נמשך לממוצע. המשקלות ב-`site/lib/binge.js`.
 
-**אזור אישי:** לשונית "אישי" באתר (רשימות, התקדמות ושיתוף עם חברים) נשמרת ב-Supabase, עם התחברות Google או מייל. האתר עצמו נשאר סטטי; ההגנה על הנתונים היא כללי RLS ב-`supabase/schema.sql`, והעדכון הלילי שולח גם פינג קטן כדי שהפרויקט החינמי לא יושהה. ההקמה למטה.
+**אזור אישי:** לשונית "שלי" באתר (רשימות, התקדמות ושיתוף עם חברים) נשמרת ב-Supabase, עם התחברות Google או מייל. האתר עצמו נשאר סטטי; ההגנה על הנתונים היא כללי RLS ב-`supabase/schema.sql`, והעדכון הלילי שולח גם פינג קטן כדי שהפרויקט החינמי לא יושהה. ההקמה למטה.
 
 אם העדכון הלילי נכשל (שירות לא זמין, יותר מ-20% מהסדרות נכשלו, או נתונים לא תקינים) — האתר נשאר על הגרסה האחרונה שעבדה, ו-GitHub שולח מייל.
 
@@ -59,14 +59,16 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 ### 3. התחברות
 1. **Authentication → Providers → Email:** מוודאים שמופעל.
 2. **Authentication → Providers → Google:** מפעילים, ומעתיקים משם את **Callback URL** (נראה כמו `https://<project>.supabase.co/auth/v1/callback`).
-3. ב-[Google Cloud Console](https://console.cloud.google.com/): יוצרים פרויקט → **APIs & Services → OAuth consent screen** (External, ממלאים שם ומייל) → **Credentials → Create credentials → OAuth client ID** → סוג **Web application**. תחת **Authorized redirect URIs** מדביקים את ה-Callback URL מהשלב הקודם.
+3. ב-[Google Cloud Console](https://console.cloud.google.com/): יוצרים פרויקט → **APIs & Services → OAuth consent screen** (External, ממלאים שם ומייל) → **Publishing status → Publish app** (להעביר ל-In production; עם ההרשאות הבסיסיות לא נדרש אימות, ובלי זה רק משתמשי בדיקה שנוספו ידנית יוכלו להתחבר) → **Credentials → Create credentials → OAuth client ID** → סוג **Web application**. תחת **Authorized redirect URIs** מדביקים את ה-Callback URL מהשלב הקודם.
 4. מעתיקים את **Client ID** ו-**Client secret** חזרה ל-Supabase (עמוד ה-provider של Google) ושומרים.
-5. **Authentication → URL Configuration:** ב-**Site URL** וגם ב-**Redirect URLs** מזינים `https://achiyafried.github.io/bingology/`.
+5. **Authentication → URL Configuration:** ב-**Site URL** וגם ב-**Redirect URLs** מזינים `https://achiyafried.github.io/bingology/`. ב-**Redirect URLs** מוסיפים גם `https://achiyafried.github.io/bingology/**`.
+6. **קישורי מייל:** המייל המובנה של Supabase מגיע רק לכתובות של צוות הפרויקט, ובכמה הודעות בלבד בשעה. כדי שחברים יוכלו להתחבר במייל, מגדירים SMTP משלכם (למשל Resend, מסלול חינמי): נרשמים ב-[resend.com](https://resend.com), מאמתים דומיין ויוצרים API key, ואז ב-**Authentication → SMTP Settings** מפעילים Custom SMTP עם host `smtp.resend.com`, פורט `465`, משתמש `resend` והסיסמה היא ה-API key. אחרת, מבקשים מהחברים להתחבר עם Google.
 
 ### 4. מפתחות באתר
 1. **Project Settings → API Keys** (או **API**): מעתיקים את **Project URL** ואת ה-**Publishable key** (מתחיל ב-`sb_publishable_`; בדשבורד ישן הוא נקרא `anon`).
 2. מדביקים אותם ב-`site/lib/account/config.js`.
-3. המפתחות האלה פומביים בכוונה, וההגנה היא כללי ה-RLS. את ה-**Secret key** (`service_role`) לעולם לא שמים בקוד האתר.
+3. **אזהרה: כרגע הקובץ מכיל את הערכים של פרויקט הבדיקות. אסור למזג ל-main לפני שמחליפים אותם בערכי פרויקט הייצור.** בדיקה לפני מיזוג: `CHECK_PROD_CONFIG=1 npm test` (נכשלת כל עוד הקובץ מצביע על פרויקט הבדיקות).
+4. המפתחות האלה פומביים בכוונה, וההגנה היא כללי ה-RLS. את ה-**Secret key** (`service_role`) לעולם לא שמים בקוד האתר.
 
 ### 5. סודות ב-GitHub (פינג לילי)
 ב-**Settings → Secrets and variables → Actions** מוסיפים שניים (של פרויקט הייצור):
