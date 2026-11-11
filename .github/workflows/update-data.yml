@@ -26,12 +26,12 @@ jobs:
       - name: Fetch all series
         run: node scripts/fetch-data.mjs
       - id: commit
-        name: Commit data.json if it changed
+        name: Commit data.json and news.json if changed
         run: |
-          if [ -n "$(git status --porcelain site/data.json)" ]; then
+          if [ -n "$(git status --porcelain site/data.json site/news.json)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add site/data.json
+            git add site/data.json site/news.json
             git commit -m "chore: update series data"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"

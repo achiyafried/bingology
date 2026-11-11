@@ -99,3 +99,22 @@ export function buildNews(prevData, data, prevNews, now) {
   const changed = JSON.stringify(news.items) !== JSON.stringify(prevNews?.items || []);
   return { news, changed };
 }
+
+// Nightly entry point: never throws. A news failure leaves news.json as it was.
+// `prevData`/`data` are whole data.json objects; fs functions are injected for tests.
+export function writeNews({ prevData, data, newsPath, now, read, write, warn }) {
+  try {
+    let prevNews = null;
+    try {
+      const raw = read(newsPath);
+      if (raw != null) prevNews = JSON.parse(raw);
+    } catch (e) {
+      warn(`news: previous ${newsPath} unreadable (${e.message}); starting empty`);
+    }
+    const { news, changed } = buildNews(prevData?.series, data.series, prevNews, now);
+    if (!changed) return;
+    write(newsPath, JSON.stringify(news) + "\n");
+  } catch (e) {
+    warn(`news: skipped (${e.message}); ${newsPath} left as is`);
+  }
+}

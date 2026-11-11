@@ -7,6 +7,7 @@ import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
 import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData } from "./lib/merge.mjs";
+import { writeNews } from "./lib/news.mjs";
 import { discoverParams, rankPool, poolEntry, poolSizeFor, TIERS } from "./lib/discover.mjs";
 
 const CONCURRENCY = 8;
@@ -142,6 +143,9 @@ async function main() {
 
   if (r.abort) { console.error("aborting: data.json left unchanged"); process.exit(1); }
   if (only) { console.log("smoke test passed (nothing written)"); return; }
+  // News is decided independently of whether data.json changed; failures only warn.
+  writeNews({ prevData: prev, data: r.data, newsPath: "site/news.json", now: new Date().toISOString(),
+    read: p => (existsSync(p) ? readFileSync(p, "utf8") : null), write: writeFileSync, warn: m => console.warn("warn:", m) });
   if (sameData(r.data, prev)) { console.log("no changes"); return; }
   writeFileSync(out, JSON.stringify(r.data) + "\n"); // compact: this file is downloaded by every visitor
   console.log(`wrote ${out}`);

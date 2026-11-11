@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { diffNews, mergeNews, buildNews } from "../scripts/lib/news.mjs";
+import { diffNews, mergeNews, buildNews, writeNews } from "../scripts/lib/news.mjs";
 
 const NOW = "2026-11-12T03:00:00Z";
 const S = (o = {}) => ({ tmdbId: 95396, seasons: 2, status: "airing", next: null,
@@ -133,4 +133,43 @@ test("premiere from seasons rising alone", () => {
 test("flap at exactly 7 days is removed", () => {
   const r = mergeNews({ items: [sr("stream_removed", "2026-11-06")] }, [sr("stream_added", "2026-11-13")], N3);
   assert.deepEqual(r.items, []);
+});
+
+// writeNews: fs injected; news failure must never throw
+const WS = (o = {}) => ({ tmdbId: 1, seasons: 1, status: "airing", next: null, streams: { IL: [], US: [], UK: [] }, ...o });
+const wdata = (o) => ({ series: [WS({ fetchedAt: "2026-11-12T03:00:00Z", ...o })] });
+const wprev = () => ({ series: [WS({ fetchedAt: "2026-11-11T03:00:00Z" })] });
+
+test("writeNews: corrupt previous news.json warns once and starts empty", () => {
+  const warns = [], writes = [];
+  writeNews({ prevData: wprev(), data: wdata({ status: "ended" }), newsPath: "n.json", now: NOW,
+    read: () => "{oops", write: (p, s) => writes.push([p, s]), warn: (m) => warns.push(m) });
+  assert.equal(warns.length, 1);
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0][0], "n.json");
+  const out = JSON.parse(writes[0][1]);
+  assert.equal(out.items.length, 1);
+  assert.equal(out.items[0].kind, "ended");
+});
+
+test("writeNews: buildNews failure warns, writes nothing, does not throw", () => {
+  const warns = [], writes = [];
+  assert.doesNotThrow(() => writeNews({ prevData: wprev(), data: null, newsPath: "n.json", now: NOW,
+    read: () => null, write: (...a) => writes.push(a), warn: (m) => warns.push(m) }));
+  assert.ok(warns.length >= 1);
+  assert.equal(writes.length, 0);
+});
+
+test("writeNews: unchanged does not write", () => {
+  const writes = [];
+  writeNews({ prevData: wprev(), data: wdata(), newsPath: "n.json", now: NOW,
+    read: () => JSON.stringify({ updatedAt: "x", items: [] }), write: (...a) => writes.push(a), warn: () => {} });
+  assert.equal(writes.length, 0);
+});
+
+test("writeNews: missing news.json and no items writes nothing", () => {
+  const writes = [];
+  writeNews({ prevData: wprev(), data: wdata(), newsPath: "n.json", now: NOW,
+    read: () => null, write: (...a) => writes.push(a), warn: () => {} });
+  assert.equal(writes.length, 0);
 });
