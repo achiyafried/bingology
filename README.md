@@ -18,6 +18,8 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 
 **ציון בינג׳** (50–100) משלב IMDb (40%), TMDB (20%), רוטן טומייטו (30%) והניו יורק טיימס (10%). כל מקור מומר לאחוזון בתוך הרשימה, מקור חסר לא פוגע בציון, ובציוני TMDB עם מעט מצביעים הציון נמשך לממוצע. המשקלות ב-`site/lib/binge.js`.
 
+**אזור אישי:** לשונית "אישי" באתר (רשימות, התקדמות ושיתוף עם חברים) נשמרת ב-Supabase, עם התחברות Google או מייל. האתר עצמו נשאר סטטי; ההגנה על הנתונים היא כללי RLS ב-`supabase/schema.sql`, והעדכון הלילי שולח גם פינג קטן כדי שהפרויקט החינמי לא יושהה. ההקמה למטה.
+
 אם העדכון הלילי נכשל (שירות לא זמין, יותר מ-20% מהסדרות נכשלו, או נתונים לא תקינים) — האתר נשאר על הגרסה האחרונה שעבדה, ו-GitHub שולח מייל.
 
 ## הקמה (פעם אחת)
@@ -40,6 +42,48 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 4. **Actions → Update data → Run workflow** — הרצה ראשונה ידנית. הרצה ידנית תמיד מפרסמת את האתר, גם אם הנתונים לא השתנו.
 
 האתר יהיה בכתובת `https://<שם-המשתמש>.github.io/bingology`.
+
+## אזור אישי (Supabase)
+
+הקמה חד-פעמית, ידנית. פרויקט הבדיקות `bingology-test` כבר קיים; כאן מקימים את פרויקט הייצור.
+
+### 1. פרויקט Supabase
+1. נכנסים ל-[supabase.com/dashboard](https://supabase.com/dashboard) → **New project**.
+2. שם: `bingology`. אזור (Region): **Central EU (Frankfurt)**. מסלול Free.
+
+### 2. סכמה (טבלאות וכללי הגנה)
+1. בפרויקט: **SQL Editor → New query**.
+2. מדביקים את כל התוכן של `supabase/schema.sql` ולוחצים **Run**.
+3. אחרי כל שינוי עתידי בסכמה — מריצים אותה שוב כך.
+
+### 3. התחברות
+1. **Authentication → Providers → Email:** מוודאים שמופעל.
+2. **Authentication → Providers → Google:** מפעילים, ומעתיקים משם את **Callback URL** (נראה כמו `https://<project>.supabase.co/auth/v1/callback`).
+3. ב-[Google Cloud Console](https://console.cloud.google.com/): יוצרים פרויקט → **APIs & Services → OAuth consent screen** (External, ממלאים שם ומייל) → **Credentials → Create credentials → OAuth client ID** → סוג **Web application**. תחת **Authorized redirect URIs** מדביקים את ה-Callback URL מהשלב הקודם.
+4. מעתיקים את **Client ID** ו-**Client secret** חזרה ל-Supabase (עמוד ה-provider של Google) ושומרים.
+5. **Authentication → URL Configuration:** ב-**Site URL** וגם ב-**Redirect URLs** מזינים `https://achiyafried.github.io/bingology/`.
+
+### 4. מפתחות באתר
+1. **Project Settings → API Keys** (או **API**): מעתיקים את **Project URL** ואת ה-**Publishable key** (מתחיל ב-`sb_publishable_`; בדשבורד ישן הוא נקרא `anon`).
+2. מדביקים אותם ב-`site/lib/account/config.js`.
+3. המפתחות האלה פומביים בכוונה, וההגנה היא כללי ה-RLS. את ה-**Secret key** (`service_role`) לעולם לא שמים בקוד האתר.
+
+### 5. סודות ב-GitHub (פינג לילי)
+ב-**Settings → Secrets and variables → Actions** מוסיפים שניים (של פרויקט הייצור):
+- `SUPABASE_URL` — ה-Project URL
+- `SUPABASE_ANON_KEY` — ה-Publishable key
+
+העדכון הלילי שולח בקשת קריאה קטנה כדי שהפרויקט לא יושהה אחרי שבוע ללא פעילות. אם הצעד נכשל הוא לא מפיל את העדכון.
+
+### 6. פרויקט הבדיקות (למפתחים)
+```bash
+sh scripts/set-supabase-keys.sh   # שומר ב-.env: SUPABASE_TEST_URL, SUPABASE_TEST_ANON_KEY, SUPABASE_TEST_SERVICE_KEY
+npm run test:rls                  # בדיקות כללי ההגנה מול פרויקט הבדיקות
+
+sh scripts/set-supabase-token.sh  # טוקן אישי קצר-מועד (Account → Access Tokens)
+npm run schema:test               # מחיל את schema.sql על פרויקט הבדיקות
+```
+אחרי הרצת הסכמה מבטלים (Revoke) את הטוקן ב-Supabase.
 
 ## הוספה או הסרה של סדרה
 

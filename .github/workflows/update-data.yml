@@ -38,6 +38,13 @@ jobs:
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
+      # Keeps the free Supabase project from pausing after a week of inactivity.
+      - name: Ping Supabase (keep-alive)
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: curl -fsS "$SUPABASE_URL/rest/v1/circles?select=id&limit=1" -H "apikey: $SUPABASE_ANON_KEY"
 
   # A push made with GITHUB_TOKEN does not trigger deploy.yml, so deploy from here.
   # Manual runs always deploy, so the very first run publishes the site even if data is unchanged.
