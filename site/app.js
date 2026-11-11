@@ -639,6 +639,7 @@ function showMine() {
 const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
 const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
 const SITE_URL = "https://achiyafried.github.io/bingology/";
+const SHARE_TEXT = "wanna binge? join bingology at"; // same wording as lib/account/invite.js (that module loads only for signed-in visitors)
 const inviteBtn = () => `<button class="hbtn" type="button" data-a="hinvite" aria-label="הזמנת חבר"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></button>`;
 /** Header invite: signed in, bring a friend into the circle; signed out, share the site itself. */
 async function headerInvite() {
@@ -648,10 +649,10 @@ async function headerInvite() {
     return;
   }
   if (navigator.share) {
-    try { await navigator.share({ title: "Bingology", text: "תראו את Bingology — עוזר לבחור סדרה לבינג׳", url: SITE_URL }); return; }
+    try { await navigator.share({ title: "Bingology", text: SHARE_TEXT, url: SITE_URL }); return; }
     catch (e) { if (e && e.name === "AbortError") return; }
   }
-  if (await copyText(SITE_URL)) showToast("הקישור הועתק"); else showToast("העתיקו את הקישור ושלחו לחברים.", SITE_URL);
+  if (await copyText(`${SHARE_TEXT} ${SITE_URL}`)) showToast("ההודעה והקישור הועתקו"); else showToast("העתיקו את הקישור ושלחו לחברים.", SITE_URL);
 }
 const acct = fn => import("./views/card.js").then(fn).catch(() => {});
 /** Local mark (as before); when signed in and `write`, the account too. */
