@@ -353,3 +353,13 @@ test("quick add: the current status of an existing entry is pressed", () => {
 test("quick add: no match says so", () => {
   assert.match(signedIn([], { q: "zzzz" }), /לא מצאנו/);
 });
+
+test("profile card: invite button with a circle, without one and while loading; absent signed out and shared", () => {
+  const btn = /data-a="invite-quick"[^>]*>הזמנת חבר</;
+  assert.match(mineHTML({ user, profile, entries: new Map(), S: S8, circle: null }), btn);
+  assert.match(inCircle(), btn);
+  assert.match(signedIn([]), /data-a="invite-quick" disabled>/, "disabled while the circle loads");
+  assert.doesNotMatch(inCircle(), /invite-quick" disabled/);
+  assert.doesNotMatch(mineHTML({ user: null, entries: new Map(), S: S8 }), /invite-quick/);
+  assert.doesNotMatch(sharedHTML({ name: "דנה", entries: [] }, S), /invite-quick/);
+});

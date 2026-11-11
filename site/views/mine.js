@@ -270,7 +270,7 @@ export function mineHTML(state) {
   return `<section class="mine">
     <div class="me"><span class="av" aria-hidden="true">${initial(name)}</span>
       <div class="who"><h2 data-focus tabindex="-1">הבינג׳ים של ${esc(name)}</h2>${circle}${st.created || st.naming ? "" : `<button class="linkbtn rename" data-a="rename">שינוי שם</button>`}</div>
-      ${slug ? "" : `<button class="btn ghost" data-a="share" data-v="on">שיתוף</button>`}</div>
+      <div class="me-btns">${slug ? "" : `<button class="btn ghost" data-a="share" data-v="on">שיתוף</button>`}<button class="btn ghost" data-a="invite-quick"${st.circle === undefined ? " disabled" : ""}>הזמנת חבר</button></div></div>
     ${st.created || st.naming ? nameStepHTML(st, name) : ""}
     ${st.confirm ? confirmHTML(st.confirm) : st.notice ? noticeHTML(st.notice) : ""}
     ${share}
@@ -582,6 +582,15 @@ async function onClick(ev) {
       }
       case "circle-leave": V.confirm = { kind: "leave" }; paint(); focusTop(); break;
       case "circle-invite": await invite(); break;
+      case "invite-quick": { // profile-card invite: open a circle first when there is none, then the same share flow
+        if (V.circle === undefined) break; // still loading (the button is disabled meanwhile)
+        if (V.circle === null) {
+          await doCreate(); // sets the "circle opened" notice and reloads circle state
+          if (!V.circle) break; // reload failed: the account-down state is already showing
+        }
+        await invite(); // navigator.share may reject outside the gesture (NotAllowedError): invite() falls back to clipboard + toast
+        break;
+      }
       case "confirm-no": if (V.confirm && V.confirm.kind === "join") setJoin(null); V.confirm = null; paint(); break;
       case "confirm-yes": {
         const c = V.confirm; if (!c) break;

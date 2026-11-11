@@ -304,6 +304,8 @@ img.poster { object-fit: cover; }
 .mine .me h2 { font-size: 24px; word-break: break-word; }
 .mine .me small { display: block; color: var(--muted); font-size: 14px; }
 .mine .me .btn { padding: 8px 14px; font-size: 15px; flex: none; }
+.mine .me .me-btns { display: flex; flex-direction: column; gap: 6px; flex: none; }
+.mine .me .btn[disabled] { opacity: .55; cursor: default; }
 .mine .shared { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: -8px 0 18px; padding: 0 4px; color: var(--muted); font-size: 14px; font-weight: 600; }
 .mine .shared .linkbtn { color: var(--accent); font-size: 14px; }
 .mine .quick { margin-bottom: 18px; }
