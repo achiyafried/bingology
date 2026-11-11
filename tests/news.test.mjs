@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { diffNews } from "../scripts/lib/news.mjs";
+import { diffNews, mergeNews, buildNews } from "../scripts/lib/news.mjs";
 
 const NOW = "2026-11-12T03:00:00Z";
 const S = (o = {}) => ({ tmdbId: 95396, seasons: 2, status: "airing", next: null,
@@ -62,8 +62,6 @@ test("no news: first run, one-sided series, failed fetch, missing prev fields", 
   assert.deepEqual(diffNews([old], [S({ next, streams: { IL: ["X"], US: [], UK: [] } })], NOW), []);
 });
 
-import { mergeNews, buildNews } from "../scripts/lib/news.mjs";
-
 const N3 = "2026-11-13T03:00:00Z";
 const it = (id, date, extra = {}) => ({ id, date, tmdbId: 1, kind: "ended", ...extra });
 const sr = (kind, date, region = "IL", provider = "Netflix") =>
@@ -107,4 +105,32 @@ test("buildNews: changed flag", () => {
   const diff = buildNews(prevData, [S({ fetchedAt: N3, status: "ended" })], null, N3);
   assert.equal(diff.changed, true);
   assert.equal(diff.news.items[0].kind, "ended");
+});
+
+test("no news from a stale yesterday row left by a failed fetch", () => {
+  const next = { season: 3, episode: 1, date: "2027-03-14" };
+  const stale = P({ fetchedAt: "2026-11-10T03:00:00Z", next: null, streams: null });
+  const other = P({ tmdbId: 2 });
+  const curr = S({ next, streams: { IL: ["Netflix"], US: [], UK: [] } });
+  assert.deepEqual(diffNews([stale, other], [curr], NOW), []);
+});
+
+test("fresh yesterday row with no next still announces", () => {
+  const items = diffNews([P({ next: null }), P({ tmdbId: 2 })],
+    [S({ next: { season: 3, episode: 1, date: "2027-03-14" } })], NOW);
+  assert.deepEqual(items.map((i) => i.kind), ["announced"]);
+});
+
+test("fresh yesterday streams null gives no stream items", () => {
+  assert.deepEqual(diffNews([P({ streams: null })], [S({ streams: { IL: ["X"], US: [], UK: [] } })], NOW), []);
+});
+
+test("premiere from seasons rising alone", () => {
+  const items = diffNews([P({ seasons: 4 })], [S({ seasons: 5 })], NOW);
+  assert.deepEqual(items.map((i) => [i.kind, i.season]), [["premiere", 5]]);
+});
+
+test("flap at exactly 7 days is removed", () => {
+  const r = mergeNews({ items: [sr("stream_removed", "2026-11-06")] }, [sr("stream_added", "2026-11-13")], N3);
+  assert.deepEqual(r.items, []);
 });

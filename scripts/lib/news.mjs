@@ -5,10 +5,12 @@ const REGIONS = ["IL", "US", "UK"];
 export function diffNews(prevSeries, currSeries, now) {
   const date = now.slice(0, 10);
   const prevById = new Map((prevSeries || []).map((s) => [s.tmdbId, s]));
+  // A row whose fetchedAt is older than the previous run is a leftover from a failed fetch.
+  const prevRun = (prevSeries || []).reduce((m, s) => (s.fetchedAt > m ? s.fetchedAt : m), "");
   const out = [];
   for (const c of currSeries || []) {
     const p = prevById.get(c.tmdbId);
-    if (!p || c.fetchedAt !== now) continue;
+    if (!p || c.fetchedAt !== now || p.fetchedAt !== prevRun) continue;
     const seen = new Set();
     const push = (id, extra) => {
       if (seen.has(id)) return;
