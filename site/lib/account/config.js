@@ -1,4 +1,4 @@
-// TEST project — replace with the production project's values BEFORE merging to main (README "אזור אישי" step 4).
+// Production Supabase project ("bingology"). The test project's values live only in .env (SUPABASE_TEST_*).
 // The anon (publishable) key is public by design; never put a service key here.
-export const SUPABASE_URL = "https://kdbcrtniiewfvngyqjdz.supabase.co";
-export const SUPABASE_ANON_KEY = "sb_publishable_hOQ9dwYkRkU42r922nUTTg_x4sKb0mC";
+export const SUPABASE_URL = "https://rpozztbncyymkmpqrloo.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_4vVZa5N6SHopZtHkyapIWA_vmTRq65R";
