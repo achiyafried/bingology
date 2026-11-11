@@ -300,3 +300,56 @@ test("ago: two days is 'לפני יומיים'", () => {
   assert.equal(ago(new Date(NOW - 2 * 86400e3 - 3600e3).toISOString(), NOW), "לפני יומיים");
   assert.equal(ago(new Date(NOW - 2 * 3600e3).toISOString(), NOW), "לפני שעתיים");
 });
+
+/* ── quick add (search at the top of the signed-in tab) ── */
+
+const XSS = [...S, { id: 4, tmdbId: 777, n: `Bad <img src=x onerror=alert(1)> "Q"`, poster: "javascript:alert(1)", se: [8], e: 8, bs: 50, y: 2020 }];
+
+test("quick add: a search field at the top for signed-in users, absent signed out and in the shared view", () => {
+  const h = signedIn([]);
+  assert.match(h, /הוספת סדרה/);
+  assert.match(h, /<input[^>]*id="mine-q"[^>]*placeholder="חיפוש סדרה לפי שם"/);
+  assert.ok(h.indexOf('id="mine-q"') < h.indexOf('class="stats"'), "the search sits above the lists");
+  assert.doesNotMatch(mineHTML({ user: null, S }), /mine-q|הוספת סדרה/);
+  assert.doesNotMatch(sharedHTML({ name: "דנה", entries: [] }, S), /mine-q|הוספת סדרה/);
+});
+
+test("quick add: empty query renders no results", () => {
+  for (const q of [undefined, "", "   "]) {
+    const h = signedIn([], { q });
+    assert.doesNotMatch(h, /data-a="quick"/);
+    assert.match(h, /<div class="qres" id="mine-qr"[^>]*><\/div>/);
+  }
+});
+
+test("quick add: results with poster, name and seen / want / watching buttons; at most 8", () => {
+  const h = signedIn([], { q: "slow" });
+  assert.match(h, /<img src="https:\/\/image\.tmdb\.org\/t\/p\/w342\/slow\.jpg"/);
+  assert.match(h, /Slow Horses/);
+  for (const [v, t] of [["seen", "ראיתי"], ["want", "רוצה"], ["watching", "רואה עכשיו"]])
+    assert.match(h, new RegExp(`data-a="quick" data-id="95480" data-v="${v}" aria-pressed="false">${t}<`));
+  assert.doesNotMatch(h, /data-id="1438"/, "only matches");
+  const many = Array.from({ length: 12 }, (_, k) => ({ id: k, tmdbId: 1000 + k, n: `Show ${k}`, poster: null, bs: k }));
+  const hm = mineHTML({ user, profile, entries: new Map(), S: many, q: "show" });
+  assert.equal(new Set([...hm.matchAll(/data-a="quick" data-id="(\d+)"/g)].map(m => m[1])).size, 8);
+});
+
+test("quick add: names escaped, unsafe posters dropped, the query value escaped", () => {
+  const h = mineHTML({ user, profile, entries: new Map(), S: XSS, q: `bad "<` });
+  const h2 = mineHTML({ user, profile, entries: new Map(), S: XSS, q: "bad" });
+  assert.match(h, /value="bad &quot;&lt;"/);
+  assert.doesNotMatch(h2, /<img src=x/);
+  assert.match(h2, /Bad &lt;img src=x onerror=alert\(1\)&gt; &quot;Q&quot;/);
+  assert.doesNotMatch(h2, /javascript:/);
+});
+
+test("quick add: the current status of an existing entry is pressed", () => {
+  const h = signedIn([{ tmdb_id: 95480, status: "want", title: "Slow Horses", poster: null }], { q: "slow" });
+  assert.match(h, /data-id="95480" data-v="want" aria-pressed="true"/);
+  assert.match(h, /data-id="95480" data-v="seen" aria-pressed="false"/);
+  assert.match(h, /data-id="95480" data-v="watching" aria-pressed="false"/);
+});
+
+test("quick add: no match says so", () => {
+  assert.match(signedIn([], { q: "zzzz" }), /לא מצאנו/);
+});

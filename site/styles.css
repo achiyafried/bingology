@@ -126,6 +126,8 @@ dialog .nm { color: var(--ticket-accent); }
 .count { color: var(--muted); font-size: 15px; min-width: 60px; text-align: end; }
 .qbody h2 { font-size: clamp(27px, 7vw, 34px); margin-bottom: 8px; }
 .qbody .sub { color: var(--muted); margin: 0 0 20px; }
+.qbody .skip-top { display: flex; justify-content: flex-start; margin: -8px 0 16px; }
+.qbody .skip-top .btn { padding: 8px 18px; font-size: 15px; }
 .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: start; padding: 15px 18px; border-radius: 16px; background: var(--surface); border: 2px solid transparent; margin-bottom: 10px; }
 .opt:hover { border-color: var(--line); }
 .opt[aria-pressed="true"] { border-color: var(--accent); }
@@ -304,6 +306,19 @@ img.poster { object-fit: cover; }
 .mine .me .btn { padding: 8px 14px; font-size: 15px; flex: none; }
 .mine .shared { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: -8px 0 18px; padding: 0 4px; color: var(--muted); font-size: 14px; font-weight: 600; }
 .mine .shared .linkbtn { color: var(--accent); font-size: 14px; }
+.mine .quick { margin-bottom: 18px; }
+.mine .quick label { display: block; font-weight: 700; margin-bottom: 6px; }
+.mine .quick .qrow { position: relative; }
+.mine .quick .search { margin: 0; padding-inline-end: 44px; }
+.mine .quick .qx { position: absolute; inset-inline-end: 8px; top: 50%; transform: translateY(-50%); text-decoration: none; font-size: 18px; padding: 6px 8px; }
+.mine .quick .qx[hidden] { display: none; }
+.mine .qres .card { margin-top: 8px; }
+.mine .qres .fine { color: var(--muted); font-size: 14px; margin: 8px 4px 0; }
+.mine .it.qr { flex-wrap: wrap; }
+.mine .it.qr img, .mine .it.qr .noimg { width: 48px; }
+.mine .it.qr .it-main { flex: 1 1 180px; }
+.mine .qb { display: flex; gap: 6px; flex-wrap: wrap; margin-inline-start: auto; }
+.mine .qb .plus[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .mine .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
 .mine .stat { background: var(--surface); border-radius: 14px; padding: 10px; text-align: center; }
 .mine .stat strong { display: block; font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 26px; line-height: 1.1; }
