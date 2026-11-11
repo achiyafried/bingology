@@ -1,7 +1,9 @@
 // Pure helpers for the "מה חדש" (news) UI: Hebrew copy, day groups, upcoming seasons.
-// No DOM. `today` is always passed in as a "YYYY-MM-DD" LOCAL date string. The view computes it:
+// No DOM (the *HTML functions return strings; the bell and the strip render from app.js at boot). `today` is always passed in as a "YYYY-MM-DD" LOCAL date string. The view computes it:
 //   const d = new Date();
 //   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+import { esc, safeImg } from "./esc.js";
 
 const MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
 
@@ -96,4 +98,49 @@ export function stripItems(items, S, today) {
   const up = upcomingSeasons(S, today).filter((u) => !shown.has(u.tmdbId));
   const older = vis.filter((i) => daysAgo(i.date, today) >= 7);
   return [...recent, ...up, ...older].slice(0, 3);
+}
+
+/* ───────── HTML (strings) ───────── */
+
+const KCLS = { announced: "season", premiere: "prem", stream_added: "stream", stream_removed: "stream", ended: "end", canceled: "cancel" };
+const BELL_SVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`;
+// Latin runs (series and service names: "AMC+", "Apple TV+") in their own <bdi>, so RTL doesn't flip a trailing "+".
+const LATIN = /([A-Za-z](?:[^\u0590-\u05FF·,]*[^\u0590-\u05FF·,\s])?)/;
+const bidi = (t) => String(t).split(LATIN).map((x, k) => (k % 2 ? `<bdi>${esc(x)}</bdi>` : esc(x))).join("");
+const flag = (r) => (r ? `<span class="flag">${esc(r)}</span>` : "");
+
+/** The bell beside the logo; a dot when count > 0. */
+export function bellHTML(count) {
+  const label = count > 0 ? "מה חדש, יש ידיעות חדשות" : "מה חדש";
+  return `<a class="bell" href="#news" aria-label="${label}">${BELL_SVG}${count > 0 ? `<i></i>` : ""}</a>`;
+}
+
+function dayWord(date, today) {
+  const d = daysAgo(date, today);
+  return d <= 0 ? "היום" : d === 1 ? "אתמול" : formatDateHe(date);
+}
+
+/** One row: a news item (has `kind`) or an upcoming season ({tmdbId, season, date}). "" when the series is not in S.
+ *  `when` adds the day word to the sub line (the strip; the page has day headings). */
+export function rowHTML(entry, S, today, when) {
+  const i = S.findIndex((x) => x.tmdbId === entry.tmdbId);
+  if (i < 0) return "";
+  const s = S[i];
+  let t;
+  if (entry.kind) t = newsText(entry, S, today);
+  else {
+    const strm = s.strm || {};
+    t = { tag: "עונה חדשה", kind: "announced", title: `${s.n || ""} · עונה ${entry.season} ב-${formatDateHe(entry.date)}`, sub: (list(strm.IL) || list(strm.US) || []).join(", "), region: null };
+  }
+  const src = safeImg(s.poster);
+  const img = src ? `<img class="poster" src="${src}" alt="" loading="lazy" data-pi="${i}" data-pc="">` : `<span class="noimg" aria-hidden="true"></span>`;
+  const subBits = [t.sub ? bidi(t.sub) : "", entry.kind && when ? dayWord(entry.date, today) : ""].filter(Boolean).join(" · ");
+  return `<button class="n" data-a="detail" data-i="${i}">${img}<span class="i"><span class="k ${KCLS[t.kind] || "season"}">${esc(t.tag)}</span><b><bdi dir="rtl">${bidi(t.title)}</bdi>${flag(t.region)}</b>${subBits ? `<small>${subBits}</small>` : ""}</span></button>`;
+}
+
+/** Home-screen strip under "או פשוט תפתיעו אותי"; "" when there is nothing to show. */
+export function stripHTML(entries, S, today) {
+  const rows = (entries || []).map((e) => rowHTML(e, S, today, true)).join("");
+  if (!rows) return "";
+  return `<section class="strip" aria-labelledby="stripH"><div class="sh"><h3 id="stripH">מה חדש</h3><a href="#news">כל החדשות ←</a></div>${rows}</section>`;
 }

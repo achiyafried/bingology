@@ -76,6 +76,7 @@ test("app.js loads the account code and views lazily (no static import)", () => 
   assert.deepEqual(statics.filter(p => /account\/|views\//.test(p)), []);
   assert.doesNotMatch(src, /^\s*import\s*["'][^"']*(account\/|views\/)/m, "no side-effect-only import either");
   assert.match(src, /import\(\s*["']\.\/views\/mine\.js["']\s*\)/, "the tab loads views/mine.js on demand");
+  assert.match(src, /import\(\s*["']\.\/views\/news\.js["']\s*\)/, "#news loads views/news.js on demand");
 });
 
 test("fromData maps next and streams to nx and strm", () => {

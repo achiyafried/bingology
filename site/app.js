@@ -5,6 +5,7 @@ import { esc, safeImg } from "./lib/esc.js";
 import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
 import { searchSeries } from "./lib/search.js";
 import { addSeriesUrl } from "./lib/addlink.js";
+import { bellHTML, stripHTML, stripItems, unseenCount, upcomingSeasons, visibleItems } from "./lib/news.js";
 
 const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "./lib/quiz.js";
@@ -276,8 +277,8 @@ function tile(i, mode, cap) {
 
 /* screens */
 function header() {
-  return `<header class="top"><div class="brand">${LOGO}</div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${st.tab === "mine"}">שלי</button></div></header>`;
+  return `<header class="top"><div class="brandrow"><div class="brand">${LOGO}</div>${bellNow()}</div>
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
 }
 
 function introHTML() {
@@ -287,6 +288,7 @@ function introHTML() {
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
     <p>${QS.length} שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות.</p>
     <div class="stack"><button class="btn primary" data-a="start">מתחילים</button><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
+    ${st.news ? stripHTML(stripItems(st.news, S, today()), S, today()) : ""}
   </section>`;
 }
 
@@ -397,7 +399,8 @@ function listHTML() {
 function render(top) {
   const y = window.scrollY;
   let body;
-  if (st.tab === "mine") body = `<div id="mine"></div>`;
+  if (onNews()) { body = `<div id="news"></div>`; newsSeen(true); }
+  else if (st.tab === "mine") body = `<div id="mine"></div>`;
   else if (st.tab === "list") body = listHTML();
   else if (st.tab === "actors") body = actorsHTML();
   else if (st.tab === "search") body = searchHTML();
@@ -406,7 +409,8 @@ function render(top) {
   else if (st.screen === "plan") body = planHTML();
   else body = resultHTML();
   $("#app").innerHTML = header() + body + footerHTML();
-  if (st.tab === "mine") showMine();
+  if (onNews()) showNews();
+  else if (st.tab === "mine") showMine();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -527,7 +531,7 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
-    case "tab": if (st.share) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
+    case "tab": if (st.share || onNews()) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
@@ -637,6 +641,34 @@ function setSeen(i, on, write) {
   save();
   if (write && hasSession()) acct(m => m.writeSeen(S[i], on));
 }
+/* "מה חדש": st.news = visible news.json items (newest first), null when missing/corrupt, undefined while loading */
+const onNews = () => location.hash === "#news";
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const SEEN_KEY = "bingology:newsSeen";
+function newsSeen(mark) {
+  if (!store) return null;
+  try {
+    if (mark && st.news && st.news[0]) store.setItem(SEEN_KEY, st.news[0].date);
+    return store.getItem(SEEN_KEY);
+  } catch (e) { return null; }
+}
+const bellNow = () => bellHTML(st.news ? unseenCount(st.news, newsSeen(false)) : 0);
+function loadNews() {
+  fetch("news.json", { cache: "no-cache" }).then(r => (r.ok ? r.json() : null)).catch(() => null).then(j => {
+    const ok = j && Array.isArray(j.items) && j.items.every(i => i && typeof i.date === "string" && typeof i.kind === "string" && Number.isInteger(i.tmdbId));
+    st.news = ok ? visibleItems(j.items, S).sort((a, b) => b.date.localeCompare(a.date)) : null;
+    if (onNews() || (st.tab === "pick" && st.screen === "intro")) render(false);
+    else { const b = $(".bell"); if (b) b.outerHTML = bellNow(); }
+  });
+}
+function showNews() {
+  const root = $("#news");
+  if (st.news === undefined) { root.innerHTML = `<div class="empty loading" role="status"><p>טוענים…</p></div>`; return; }
+  const t = today(), items = st.news || [];
+  import("./views/news.js")
+    .then(m => { if (root.isConnected) m.mountNews(root, { S, items, upcoming: st.news ? upcomingSeasons(S, t) : [], today: t }); })
+    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>אין חדשות כרגע</p></div>`; });
+}
 function route() {
   const m = /^#u=([A-Za-z0-9_-]{1,64})$/.exec(location.hash), j = /^#join=(.{1,200})$/.exec(location.hash);
   st.share = m ? m[1] : null;
@@ -660,6 +692,7 @@ async function boot() {
     ACT = null; PHOTO.clear();
     route();
     render(false);
+    loadNews();
     // Signed in: after the first paint, add the account's seen marks (memory only, so "איפוס הנצפו" stays a local reset).
     if (hasSession()) setTimeout(() => acct(m => m.syncSeen(S, st.seen)).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
   } catch (e) {

@@ -117,3 +117,94 @@ test("stripItems: recent, then upcoming, then older items; cap 3", () => {
   assert.deepEqual(mixed.map((x) => x.tmdbId), [4, 9, 3]);
   assert.equal(stripItems([], [], TODAY).length, 0);
 });
+
+/* ───────── render: bell, strip (site/lib/news.js), page (site/views/news.js) ───────── */
+import { bellHTML, stripHTML } from "../site/lib/news.js";
+import { newsPageHTML, FILTERS } from "../site/views/news.js";
+
+const R = [
+  { tmdbId: 1, n: "Severance", s: 2, poster: "https://image.tmdb.org/t/p/w342/a.jpg", strm: { IL: ["Apple TV+"], US: [], UK: [] }, nx: { season: 3, episode: 1, date: "2027-03-14" } },
+  { tmdbId: 3, n: "<b>Bear</b>", s: 3, poster: null, strm: { IL: ["Disney Plus"], US: [], UK: [] }, nx: null },
+  { tmdbId: 4, n: "Succession", s: 4, strm: { IL: ["HBO Max"], US: [], UK: [] }, nx: null },
+  { tmdbId: 5, n: "Gone", s: 2, nx: null },
+];
+const NEWS = [
+  it({ id: "a", tmdbId: 3, kind: "stream_added", region: "IL", provider: "Disney Plus" }),
+  it({ id: "b", tmdbId: 4, kind: "stream_removed", region: "UK", provider: "Sky Go", date: "2026-11-10" }),
+  it({ id: "c", tmdbId: 1, kind: "announced", season: 3, airDate: "2027-03-14", date: "2026-11-06" }),
+  it({ id: "d", tmdbId: 5, kind: "canceled", date: "2026-10-01" }),
+  it({ id: "e", tmdbId: 999, kind: "ended", date: "2026-11-11" }),
+];
+const UP = [{ tmdbId: 1, season: 3, date: "2027-03-14" }];
+const noBdi = (h) => h.replace(/<\/?bdi[^>]*>/g, "");
+
+test("bellHTML: dot only with unseen items", () => {
+  const off = bellHTML(0), on = bellHTML(2);
+  assert.match(off, /href="#news"/);
+  assert.doesNotMatch(off, /<i[ >]/);
+  assert.match(on, /<i[ >]/);
+  assert.match(on, /aria-label="[^"]*חדש[^"]*"/);
+});
+
+test("stripHTML", () => {
+  assert.equal(stripHTML([], R, TODAY), "");
+  const h = stripHTML([NEWS[0], { tmdbId: 1, season: 3, date: "2027-03-14" }], R, TODAY);
+  assert.match(h, /מה חדש/);
+  assert.match(h, /href="#news"/);
+  assert.match(h, /data-a="detail" data-i="1"/, "row opens the card of S[1]");
+  assert.match(h, /data-a="detail" data-i="0"/);
+  assert.match(h, /Bear&lt;\/b&gt;/);
+  assert.doesNotMatch(h, /<b>Bear/);
+  assert.match(h, /class="flag">IL</);
+  assert.match(noBdi(h), /Severance · עונה 3 ב-14 במרץ 2027/);
+  assert.match(h, /<bdi>Apple TV\+<\/bdi>/, "Latin names isolated for RTL");
+  assert.equal(stripHTML([NEWS[4]], R, TODAY), "", "series not in S -> nothing");
+});
+
+test("newsPageHTML: empty", () => {
+  const h = newsPageHTML({ items: [], upcoming: [], filter: "הכל", today: TODAY }, R);
+  assert.match(h, /אין חדשות כרגע/);
+  assert.doesNotMatch(h, /עונות בדרך/);
+  assert.match(newsPageHTML({ items: [NEWS[4]], upcoming: [], filter: "הכל", today: TODAY }, R), /אין חדשות כרגע/);
+});
+
+test("newsPageHTML: all, groups, upcoming, escaping, hidden series", () => {
+  const h = newsPageHTML({ items: NEWS, upcoming: UP, filter: "הכל", today: TODAY }, R);
+  for (const l of ["היום", "אתמול", "השבוע", "קודם", "עונות בדרך"]) assert.match(h, new RegExp(l));
+  assert.ok(h.indexOf("עונות בדרך") < h.indexOf(">היום<"), "upcoming before the items");
+  assert.deepEqual(FILTERS, ["הכל", "עונות חדשות", "סטרימינג", "הסתיימו"]);
+  assert.match(h, /aria-pressed="true"[^>]*>הכל</);
+  assert.match(h, /Bear&lt;\/b&gt;/);
+  assert.doesNotMatch(h, /<b>Bear/);
+  assert.match(h, /class="flag">UK</);
+  assert.match(noBdi(h), /עדיין ב-HBO Max/);
+  assert.doesNotMatch(h, /data-i="-1"/);
+  assert.equal((h.match(/data-a="detail"/g) || []).length, 5, "4 visible items + 1 upcoming; tmdbId 999 dropped");
+});
+
+test("newsPageHTML: filters", () => {
+  const st = newsPageHTML({ items: NEWS, upcoming: UP, filter: "סטרימינג", today: TODAY }, R);
+  assert.doesNotMatch(st, /עונות בדרך/);
+  assert.doesNotMatch(st, /k (season|cancel|end|prem)"/);
+  assert.equal((st.match(/data-a="detail"/g) || []).length, 2);
+  assert.match(st, /aria-pressed="true"[^>]*>סטרימינג</);
+  const se = newsPageHTML({ items: NEWS, upcoming: UP, filter: "עונות חדשות", today: TODAY }, R);
+  assert.match(se, /עונות בדרך/);
+  assert.equal((se.match(/data-a="detail"/g) || []).length, 2, "announced + upcoming");
+  const en = newsPageHTML({ items: NEWS, upcoming: UP, filter: "הסתיימו", today: TODAY }, R);
+  assert.doesNotMatch(en, /עונות בדרך/);
+  assert.match(en, /בוטלה/);
+  assert.equal((en.match(/data-a="detail"/g) || []).length, 1);
+  assert.match(newsPageHTML({ items: [NEWS[0]], upcoming: [], filter: "הסתיימו", today: TODAY }, R), /אין חדשות כרגע/);
+});
+
+test("newsPageHTML: upcoming capped at 10 then עוד N", () => {
+  const S12 = Array.from({ length: 12 }, (_, k) => ({ tmdbId: 100 + k, n: "S" + k, nx: { season: 2, episode: 1, date: "2027-01-" + String(k + 10) } }));
+  const up = upcomingSeasons(S12, TODAY);
+  const h = newsPageHTML({ items: [], upcoming: up, filter: "הכל", today: TODAY }, S12);
+  assert.equal((h.match(/data-a="detail"/g) || []).length, 10);
+  assert.match(h, /עוד 2/);
+  const all = newsPageHTML({ items: [], upcoming: up, filter: "הכל", today: TODAY, more: true }, S12);
+  assert.equal((all.match(/data-a="detail"/g) || []).length, 12);
+  assert.doesNotMatch(all, /עוד 2/);
+});
