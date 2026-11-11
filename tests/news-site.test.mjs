@@ -56,6 +56,8 @@ test("ended / canceled", () => {
   const c = newsText(it({ tmdbId: 5, kind: "canceled" }), S, TODAY);
   assert.equal(c.tag, "בוטלה");
   assert.equal(c.sub, "אחרי 2 עונות");
+  const one = newsText(it({ tmdbId: 9, kind: "canceled" }), [{ tmdbId: 9, n: "X", s: 1, strm: {} }], TODAY);
+  assert.equal(one.sub, "אחרי עונה אחת");
 });
 
 test("groupByDay", () => {

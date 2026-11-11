@@ -125,9 +125,45 @@ test("fresh yesterday streams null gives no stream items", () => {
   assert.deepEqual(diffNews([P({ streams: null })], [S({ streams: { IL: ["X"], US: [], UK: [] } })], NOW), []);
 });
 
-test("premiere from seasons rising alone", () => {
-  const items = diffNews([P({ seasons: 4 })], [S({ seasons: 5 })], NOW);
-  assert.deepEqual(items.map((i) => [i.kind, i.season]), [["premiere", 5]]);
+test("seasons rising alone is not a premiere", () => {
+  assert.deepEqual(diffNews([P({ seasons: 4 })], [S({ seasons: 5 })], NOW), []);
+});
+
+test("Severance shape: seasons already counts the announced season", () => {
+  // TMDB number_of_seasons is 3 while only 2 seasons have episodes.
+  const next = { season: 3, episode: 1, date: "2027-03-14" };
+  const items = diffNews([P({ seasons: 3, next: null })], [S({ seasons: 3, next })], NOW);
+  assert.deepEqual(items.map((i) => [i.kind, i.season, i.id]), [["announced", 3, "95396-announced-3-2027-03-14"]]);
+  // TMDB adds an empty season with no next: nothing.
+  assert.deepEqual(diffNews([P({ seasons: 3, next: null })], [S({ seasons: 4, next: null })], NOW), []);
+});
+
+test("announced: needs season >= 2 and a future date", () => {
+  assert.deepEqual(diffNews([P()], [S({ next: { season: 1, episode: 1, date: "2027-03-14" } })], NOW), []);
+  assert.deepEqual(diffNews([P()], [S({ next: { season: 3, episode: 1, date: "2026-11-12" } })], NOW), []);
+  assert.deepEqual(diffNews([P()], [S({ next: { season: 3, episode: 2, date: "2027-03-14" } })], NOW), []);
+});
+
+test("premiere: fires from yesterday's due S5E1 even if seasons is unchanged", () => {
+  const items = diffNews([P({ seasons: 5, next: { season: 5, episode: 1, date: "2026-11-12" } })],
+    [S({ seasons: 5, next: { season: 5, episode: 2, date: "2026-11-19" } })], NOW);
+  assert.deepEqual(items.map((i) => [i.kind, i.id]), [["premiere", "95396-premiere-5"]]);
+  assert.deepEqual(diffNews([P({ next: { season: 5, episode: 1, date: "2026-11-13" } })], [S()], NOW), []);
+});
+
+test("mergeNews: a re-dated premiere keeps the first-seen copy", () => {
+  const first = { id: "95396-premiere-5", date: "2026-11-12", tmdbId: 95396, kind: "premiere", season: 5 };
+  const again = { ...first, date: "2026-11-13" };
+  const r = mergeNews({ items: [first] }, [again], N3);
+  assert.deepEqual(r.items, [first]);
+  const ann = { id: "1-announced-3-2027-03-14", date: "2026-11-10", tmdbId: 1, kind: "announced", season: 3, airDate: "2027-03-14" };
+  assert.deepEqual(mergeNews({ items: [ann] }, [{ ...ann, date: "2026-11-13" }], N3).items, [ann]);
+});
+
+test("mergeNews: stream items keep the newest copy", () => {
+  const old = { id: "1-stream_added-IL-X", date: "2026-11-01", tmdbId: 1, kind: "stream_added", region: "IL", provider: "X" };
+  const fresh = { ...old, date: "2026-11-13" };
+  assert.deepEqual(mergeNews({ items: [old] }, [fresh], N3).items, [fresh]);
 });
 
 test("flap at exactly 7 days is removed", () => {

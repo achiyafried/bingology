@@ -55,7 +55,7 @@ export function newsText(item, S, today) {
   } else if (kind === "ended") {
     sub = "כל הפרקים זמינים לבינג׳";
   } else if (kind === "canceled") {
-    sub = s.s ? `אחרי ${s.s} עונות` : "";
+    sub = s.s === 1 ? "אחרי עונה אחת" : s.s ? `אחרי ${s.s} עונות` : "";
   }
   return { tag, kind, title, sub, region: kind === "stream_added" || kind === "stream_removed" ? region : null };
 }

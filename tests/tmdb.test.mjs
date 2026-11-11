@@ -155,6 +155,10 @@ test("transformTv reads the next episode to air", () => {
   assert.deepEqual(live.next, { season: 3, episode: 1, date: "2027-03-14" });
   assert.equal(transformTv({ ...partial, next_episode_to_air: null }, { map }).live.next, null);
   assert.equal(transformTv(partial, { map }).live.next, null);
+  const noDate = { season_number: 3, episode_number: 1, air_date: null };
+  assert.equal(transformTv({ ...partial, next_episode_to_air: noDate }, { map }).live.next, null);
+  const { air_date, ...missing } = noDate;
+  assert.equal(transformTv({ ...partial, next_episode_to_air: missing }, { map }).live.next, null);
 });
 
 test("transformTv collects flatrate provider names for IL, US and UK (GB)", () => {

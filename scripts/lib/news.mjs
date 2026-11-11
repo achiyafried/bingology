@@ -18,9 +18,10 @@ export function diffNews(prevSeries, currSeries, now) {
       out.push({ id, date, tmdbId: c.tmdbId, ...extra });
     };
 
+    // Seasons come from `next` only: TMDB's number_of_seasons already counts an announced, empty season.
     if ("next" in p) {
       const n = c.next;
-      if (n && n.episode === 1 && n.season > (p.seasons ?? 0)
+      if (n && n.episode === 1 && n.season >= 2 && n.date > date
           && !(p.next && p.next.season === n.season && p.next.date === n.date)) {
         push(`${c.tmdbId}-announced-${n.season}-${n.date}`,
           { kind: "announced", season: n.season, airDate: n.date });
@@ -28,9 +29,6 @@ export function diffNews(prevSeries, currSeries, now) {
       const pn = p.next;
       if (pn && pn.episode === 1 && pn.season >= 2 && pn.date <= date) {
         push(`${c.tmdbId}-premiere-${pn.season}`, { kind: "premiere", season: pn.season });
-      }
-      if (c.seasons > p.seasons && c.seasons >= 2) {
-        push(`${c.tmdbId}-premiere-${c.seasons}`, { kind: "premiere", season: c.seasons });
       }
     }
 
@@ -81,9 +79,14 @@ function dropFlaps(items) {
 }
 
 export function mergeNews(prevNews, newItems, now) {
+  // Same id twice: stream items keep the newest copy; everything else keeps the first-seen one,
+  // so a premiere TMDB still lists as next on air day doesn't re-fire the next night.
+  const prevItems = prevNews?.items || [];
+  const prevIds = new Set(prevItems.map((i) => i.id));
+  const fresh = newItems.filter((i) => i.kind.startsWith("stream_") || !prevIds.has(i.id));
   const seen = new Set();
   const all = [];
-  for (const item of [...newItems, ...(prevNews?.items || [])]) {
+  for (const item of [...fresh, ...prevItems]) {
     if (seen.has(item.id)) continue;
     seen.add(item.id);
     all.push(item);
