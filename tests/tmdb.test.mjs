@@ -141,3 +141,11 @@ test("each Israeli service is its own category", () => {
   assert.equal("israel" in map, false);
   assert.deepEqual(mapProviders([{ provider_name: "HOT" }, { provider_name: "Kan Box" }], map).cats, ["hot", "kan"]);
 });
+
+test("transformTv lists episodes per regular season, skipping specials and empty seasons", () => {
+  const seasons = [{ season_number: 0, episode_count: 3 }, { season_number: 1, episode_count: 7 }, { season_number: 2, episode_count: 13 }];
+  assert.deepEqual(transformTv({ ...bb, seasons }, { map }).live.seasonEps, [7, 13]);
+  assert.equal(transformTv({ ...bb, seasons: undefined }, { map }).live.seasonEps, null);
+  const withEmpty = [{ season_number: 1, episode_count: 7 }, { season_number: 2, episode_count: 0 }, { season_number: 3, episode_count: 5 }];
+  assert.deepEqual(transformTv({ ...bb, seasons: withEmpty }, { map }).live.seasonEps, [7, 5]);
+});

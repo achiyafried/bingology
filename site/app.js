@@ -277,7 +277,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brand">${LOGO}</div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button></div></header>`;
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${st.tab === "mine"}">שלי</button></div></header>`;
 }
 
 function introHTML() {
@@ -397,7 +397,8 @@ function listHTML() {
 function render(top) {
   const y = window.scrollY;
   let body;
-  if (st.tab === "list") body = listHTML();
+  if (st.tab === "mine") body = `<div id="mine"></div>`;
+  else if (st.tab === "list") body = listHTML();
   else if (st.tab === "actors") body = actorsHTML();
   else if (st.tab === "search") body = searchHTML();
   else if (st.screen === "intro") body = introHTML();
@@ -405,6 +406,7 @@ function render(top) {
   else if (st.screen === "plan") body = planHTML();
   else body = resultHTML();
   $("#app").innerHTML = header() + body + footerHTML();
+  if (st.tab === "mine") showMine();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -487,7 +489,8 @@ function seriesDlgHTML(i) {
   <p class="d-line">${esc(s.l)}</p>
   ${praiseHTML(s)}
   ${trailerHTML(s)}
-  <div class="d-acts"><button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
+  ${hasSession() ? `<div id="acct"></div>` : ""}
+  <div class="d-acts">${hasSession() ? "" : `<button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>`}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
 }
 function actorLinksHTML(n) {
   const e = encodeURIComponent, he = /[\u0590-\u05FF]/.test(n);
@@ -506,6 +509,10 @@ function paintDlg(keep) {
   d.innerHTML = v.t === "s" ? seriesDlgHTML(v.v) : actorDlgHTML(v.v);
   d.scrollTop = keep ? sc : 0;
   if (!d.open) d.showModal();
+  const s = v.t === "s" && S[v.v], box = $("#acct");
+  // views/card.js could not load at all: the local seen toggle instead.
+  if (s && box) acct(m => m.mountCard(box, { s, seen: st.seen.has(v.v), toast: showToast, onSeen: on => { setSeen(v.v, on); render(false); } }))
+    .then(() => { if (box.isConnected && !box.innerHTML) box.outerHTML = `<div class="d-acts"><button class="btn primary" data-a="dseen">${st.seen.has(v.v) ? "עוד לא ראיתי" : "סימון כנצפתה"}</button></div>`; });
 }
 function dlgGo(view) {
   const d = $("#dlg");
@@ -520,7 +527,7 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
-    case "tab": st.tab = v; render(true); break;
+    case "tab": if (st.share) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
@@ -534,7 +541,7 @@ document.addEventListener("click", e => {
     case "chip": { const g = st.ans[el.dataset.q], k = g.indexOf(v); if (k >= 0) g.splice(k, 1); else g.push(v); render(false); break; }
     case "lplat": st.listPlat = v === "all" ? null : v; render(false); break;
     case "next": st.step++; render(true); break;
-    case "toggle": if (st.seen.has(i)) st.seen.delete(i); else st.seen.add(i); save(); render(false); break;
+    case "toggle": setSeen(i, !st.seen.has(i), true); render(false); break;
     case "finish": rank(false); st.screen = "result"; render(true); break;
     case "another": st.idx++; st.chosen = false; render(true); break;
     case "alt": st.idx = +el.dataset.k; st.chosen = false; render(true); break;
@@ -542,13 +549,13 @@ document.addEventListener("click", e => {
     case "pace": st.pace = +v; render(false); break;
     case "backrec": st.chosen = false; st.screen = "result"; render(true); break;
     case "unchoose": st.chosen = false; st.idx++; render(true); break;
-    case "markseen": st.seen.add(i); save(); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
+    case "markseen": setSeen(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
     case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;
-    case "resetseen": st.seen.clear(); save(); rank(false); render(true); break;
+    case "resetseen": st.seen.clear(); if (hasSession()) showToast("הסימונים בחשבון לא נמחקו. הסדרות שסימנתם יחזרו בכניסה הבאה."); else save(); rank(false); render(true); break;
     case "lsrc": st.listSrc = v; render(false); break;
     case "hideseen": st.hideSeen = !st.hideSeen; render(false); break;
     case "detail": openDlg(i); break;
-    case "dseen": { const k = st.dlgId; if (st.seen.has(k)) st.seen.delete(k); else st.seen.add(k); save(); paintDlg(true); render(false); break; }
+    case "dseen": { const k = st.dlgId; setSeen(k, !st.seen.has(k), true); paintDlg(true); render(false); break; }
     case "dback": dlgBack(); break;
     case "actor": dlgGo({ t: "a", v: +el.dataset.k }); break;
     case "actpick": { const a = actorIndex()[+el.dataset.k], un = a.ids.filter(x => !st.seen.has(x)); if (un.length) dlgGo({ t: "s", v: un[Math.floor(Math.random() * un.length)] }); break; }
@@ -612,6 +619,33 @@ function footerHTML() {
   <p>נתוני זמינות: JustWatch</p></footer>`;
 }
 
+/* "שלי" tab: the account code loads only here (or for a #u= / #join= / sign-in return link), never at startup —
+   except for a signed-in visitor, whose "seen" marks live on the account (views/card.js). */
+function showMine() {
+  const root = $("#mine"), join = st.join;
+  st.join = null; // handed over once; mine.js keeps it until the join is done
+  import("./views/mine.js")
+    .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, join, localSeen: () => st.seen.size, toast: showToast, copy: copyText,
+      onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); } }))
+    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
+}
+const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
+const acct = fn => import("./views/card.js").then(fn).catch(() => {});
+/** Local mark (as before); when signed in and `write`, the account too. */
+function setSeen(i, on, write) {
+  if (on) st.seen.add(i); else st.seen.delete(i);
+  save();
+  if (write && hasSession()) acct(m => m.writeSeen(S[i], on));
+}
+function route() {
+  const m = /^#u=([A-Za-z0-9_-]{1,64})$/.exec(location.hash), j = /^#join=(.{1,200})$/.exec(location.hash);
+  st.share = m ? m[1] : null;
+  if (j) { try { st.join = decodeURIComponent(j[1]).slice(0, 64); } catch (e) { st.join = j[1].slice(0, 64); } }
+  if (m || j || /[#&](access_token|error_description)=/.test(location.hash) || /[?&]code=/.test(location.search)) st.tab = "mine";
+}
+window.addEventListener("hashchange", () => { route(); if (S.length) render(true); });
+window.addEventListener("bingology:write-failed", () => showToast("השינוי לא נשמר"));
+
 async function boot() {
   $("#app").innerHTML = `<div class="empty loading" role="status"><p>טוענים את הסדרות…</p></div>`;
   try {
@@ -624,7 +658,10 @@ async function boot() {
     st.updatedAt = json.updatedAt;
     st.seen = loadSeen(store, S);
     ACT = null; PHOTO.clear();
+    route();
     render(false);
+    // Signed in: after the first paint, add the account's seen marks (memory only, so "איפוס הנצפו" stays a local reset).
+    if (hasSession()) setTimeout(() => acct(m => m.syncSeen(S, st.seen)).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
   } catch (e) {
     $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;
   }

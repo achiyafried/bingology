@@ -6,6 +6,7 @@ export function fromData(json) {
     n: x.name,
     y: x.year,
     s: x.seasons,
+    se: x.seasonEps ?? null,
     e: x.episodes,
     m: x.runtime,
     g: x.genres,

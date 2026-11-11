@@ -62,3 +62,18 @@ test("fromData passes the guessed providers through", () => {
   assert.deepEqual(S2[0].providersGuess, ["disney"]);
   assert.deepEqual(S2[1].providersGuess, []);
 });
+
+test("fromData maps seasonEps to se", () => {
+  const r = fromData({ series: [{ name: "X", lists: [], seasonEps: [7, 13] }, { name: "Y", lists: [] }] });
+  assert.deepEqual(r[0].se, [7, 13]);
+  assert.equal(r[1].se, null);
+});
+
+test("app.js loads the account code and views lazily (no static import)", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const statics = [...src.matchAll(/^\s*import\s[^;]*?from\s*["']([^"']+)["']/gm)].map(m => m[1]);
+  assert.ok(statics.length > 0, "found the static imports");
+  assert.deepEqual(statics.filter(p => /account\/|views\//.test(p)), []);
+  assert.doesNotMatch(src, /^\s*import\s*["'][^"']*(account\/|views\/)/m, "no side-effect-only import either");
+  assert.match(src, /import\(\s*["']\.\/views\/mine\.js["']\s*\)/, "the tab loads views/mine.js on demand");
+});
