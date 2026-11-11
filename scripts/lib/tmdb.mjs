@@ -83,6 +83,13 @@ export function transformTv(tv, { map, he } = {}) {
     cast,
     providers: cats,
     providersGuess: guess,
+    next: tv.next_episode_to_air?.air_date
+      ? { season: tv.next_episode_to_air.season_number, episode: tv.next_episode_to_air.episode_number, date: tv.next_episode_to_air.air_date }
+      : null,
+    streams: {
+      IL: flatrate.map(p => p.provider_name), US: us,
+      UK: (tv["watch/providers"]?.results?.GB?.flatrate ?? []).map(p => p.provider_name),
+    },
     // Only the Hebrew response counts: English text is not a Hebrew description.
     overviewHe: he?.overview?.trim() || null,
     imdbId: tv.external_ids?.imdb_id || null,

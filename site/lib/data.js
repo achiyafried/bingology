@@ -32,5 +32,7 @@ export function fromData(json) {
     praise: x.praise ?? null,
     awards: x.awards ?? [],
     castLabel: x.castLabel ?? null,
+    nx: x.next ?? null,
+    strm: x.streams ?? null,
   }));
 }

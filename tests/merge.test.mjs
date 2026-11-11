@@ -157,3 +157,13 @@ test("seasonEps keeps last night's value when live has none", () => {
   assert.deepEqual(mergeEntry(entry, { ...live, seasonEps: null }, null, p, NOW).seasonEps, [7, 13]);
   assert.deepEqual(mergeEntry(entry, { ...live, seasonEps: [8] }, null, p, NOW).seasonEps, [8]);
 });
+
+test("next and streams are live-only: copied from live, never kept from prev", () => {
+  const nx = { season: 3, episode: 1, date: "2027-03-14" }, strm = { IL: ["Apple TV+"], US: [], UK: [] };
+  const s = mergeEntry(entry, { ...live, next: nx, streams: strm }, 9.5, prev, NOW);
+  assert.deepEqual(s.next, nx);
+  assert.deepEqual(s.streams, strm);
+  const off = mergeEntry(entry, null, null, { ...prev, next: nx, streams: strm }, NOW);
+  assert.equal(off.next, null);
+  assert.equal(off.streams, null);
+});

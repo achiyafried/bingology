@@ -26,12 +26,15 @@ jobs:
       - name: Fetch all series
         run: node scripts/fetch-data.mjs
       - id: commit
-        name: Commit data.json if it changed
+        name: Commit data.json and news.json if changed
         run: |
-          if [ -n "$(git status --porcelain site/data.json)" ]; then
+          # news.json does not exist until the first news item; git add of a missing path is fatal.
+          files="site/data.json"
+          if [ -f site/news.json ]; then files="$files site/news.json"; fi
+          if [ -n "$(git status --porcelain $files)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add site/data.json
+            git add $files
             git commit -m "chore: update series data"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"

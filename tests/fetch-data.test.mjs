@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { run } from "../scripts/fetch-data.mjs";
 import { omdbRating, pool } from "../scripts/lib/api.mjs";
+import { writeNews } from "../scripts/lib/news.mjs";
 
 process.env.TMDB_TOKEN = "t";
 process.env.OMDB_KEY = "k";
@@ -227,4 +228,19 @@ test("discovery loosens the threshold only until there are enough candidates", a
   assert.equal(r.data.series.length, 3);
   const tiers = f.calls.filter(u => u.includes("/discover/")).map(u => new URL(u).searchParams.get("vote_average.gte"));
   assert.deepEqual([...new Set(tiers)], ["7.5", "7.3"]);
+});
+
+test("news wiring: rows stamped by run() are diffed by writeNews only with the same now", async () => {
+  const series = [entry(1, "A")];
+  const prevRun = await run({ series, prev: null, fetchImpl: fakeFetch({ tv: { 1: { status: "Returning Series" } } }), now: NOW });
+  const NOW2 = "2026-11-11T03:00:00Z";
+  const ended = { status: "Ended", in_production: false, next_episode_to_air: null };
+  const currRun = await run({ series, prev: prevRun.data, fetchImpl: fakeFetch({ tv: { 1: ended } }), now: NOW2 });
+  assert.equal(currRun.data.series[0].fetchedAt, NOW2);
+  const go = now => { const w = []; writeNews({ prevData: prevRun.data, data: currRun.data, newsPath: "n.json", now,
+    read: () => null, write: (p, s) => w.push(s), warn: () => {} }); return w; };
+  const same = go(NOW2);
+  assert.equal(same.length, 1);
+  assert.equal(JSON.parse(same[0]).items[0].kind, "ended");
+  assert.equal(go("2026-11-11T03:00:05Z").length, 0); // a second timestamp silently drops every row
 });

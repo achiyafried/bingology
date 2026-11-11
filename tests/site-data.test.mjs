@@ -76,6 +76,14 @@ test("app.js loads the account code and views lazily (no static import)", () => 
   assert.deepEqual(statics.filter(p => /account\/|views\//.test(p)), []);
   assert.doesNotMatch(src, /^\s*import\s*["'][^"']*(account\/|views\/)/m, "no side-effect-only import either");
   assert.match(src, /import\(\s*["']\.\/views\/mine\.js["']\s*\)/, "the tab loads views/mine.js on demand");
+  assert.match(src, /import\(\s*["']\.\/views\/news\.js["']\s*\)/, "#news loads views/news.js on demand");
+});
+
+test("fromData maps next and streams to nx and strm", () => {
+  const nx = { season: 2, episode: 1, date: "2027-01-01" }, strm = { IL: ["Netflix"], US: [], UK: [] };
+  const [a, b] = fromData({ series: [{ name: "X", lists: [], next: nx, streams: strm }, { name: "Y", lists: [] }] });
+  assert.deepEqual(a.nx, nx); assert.deepEqual(a.strm, strm);
+  assert.equal(b.nx, null); assert.equal(b.strm, null);
 });
 
 test("seen step: a skip button right under the subtitle, before the grid, plus the bottom button", () => {

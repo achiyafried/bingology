@@ -149,3 +149,20 @@ test("transformTv lists episodes per regular season, skipping specials and empty
   const withEmpty = [{ season_number: 1, episode_count: 7 }, { season_number: 2, episode_count: 0 }, { season_number: 3, episode_count: 5 }];
   assert.deepEqual(transformTv({ ...bb, seasons: withEmpty }, { map }).live.seasonEps, [7, 5]);
 });
+
+test("transformTv reads the next episode to air", () => {
+  const { live } = transformTv({ ...partial, next_episode_to_air: { season_number: 3, episode_number: 1, air_date: "2027-03-14" } }, { map });
+  assert.deepEqual(live.next, { season: 3, episode: 1, date: "2027-03-14" });
+  assert.equal(transformTv({ ...partial, next_episode_to_air: null }, { map }).live.next, null);
+  assert.equal(transformTv(partial, { map }).live.next, null);
+  const noDate = { season_number: 3, episode_number: 1, air_date: null };
+  assert.equal(transformTv({ ...partial, next_episode_to_air: noDate }, { map }).live.next, null);
+  const { air_date, ...missing } = noDate;
+  assert.equal(transformTv({ ...partial, next_episode_to_air: missing }, { map }).live.next, null);
+});
+
+test("transformTv collects flatrate provider names for IL, US and UK (GB)", () => {
+  const tv = { ...partial, "watch/providers": { results: {
+    IL: { flatrate: [{ provider_name: "Apple TV+" }] }, GB: { flatrate: [{ provider_name: "Sky Go" }] } } } };
+  assert.deepEqual(transformTv(tv, { map }).live.streams, { IL: ["Apple TV+"], US: [], UK: ["Sky Go"] });
+});
