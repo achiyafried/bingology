@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { enqueue, pending, flush } from "../site/lib/account/queue.js";
+import { enqueue, dequeue, pending, flush } from "../site/lib/account/queue.js";
 
 const mem = () => { const o = {}; return { getItem: k => (k in o ? o[k] : null), setItem: (k, v) => { o[k] = String(v); }, o }; };
 
@@ -41,4 +41,21 @@ test("throwing storage is harmless", async () => {
   assert.deepEqual(pending(bad), []);
   assert.doesNotThrow(() => enqueue(bad, 1, { tmdb_id: 1 }));
   assert.deepEqual(await flush(bad, async () => {}), { sent: 0, failed: 0, gaveUp: [] });
+});
+
+test("dequeue removes only that tmdbId", () => {
+  const st = mem();
+  enqueue(st, 1, { tmdb_id: 1 }); enqueue(st, 2, { tmdb_id: 2 });
+  dequeue(st, 1);
+  assert.deepEqual(pending(st), [{ tmdb_id: 2 }]);
+  assert.doesNotThrow(() => dequeue({ getItem() { throw new Error("x"); }, setItem() { throw new Error("x"); } }, 1));
+});
+
+test("enqueue with prior attempts: gave up after the 3rd failure overall", async () => {
+  const st = mem();
+  enqueue(st, 1, { tmdb_id: 1 }, 1); // 1 direct failure already
+  const send = async () => { throw new Error("x"); };
+  assert.deepEqual((await flush(st, send)).gaveUp, []);
+  assert.deepEqual((await flush(st, send)).gaveUp, [1]);
+  assert.deepEqual(pending(st), []);
 });

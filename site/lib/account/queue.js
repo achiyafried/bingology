@@ -12,10 +12,15 @@ function write(storage, q) {
   try { storage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch { /* storage unavailable */ }
 }
 
-export function enqueue(storage, tmdbId, row) {
+/** attempts = failures already suffered (e.g. 1 for a direct write that just failed). */
+export function enqueue(storage, tmdbId, row, attempts = 0) {
   const q = read(storage).filter(x => x.tmdbId !== tmdbId);
-  q.push({ tmdbId, row, attempts: 0 });
+  q.push({ tmdbId, row, attempts });
   write(storage, q);
+}
+
+export function dequeue(storage, tmdbId) {
+  write(storage, read(storage).filter(x => x.tmdbId !== tmdbId));
 }
 
 export function pending(storage) {

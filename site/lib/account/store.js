@@ -1,6 +1,6 @@
 import { getClient } from "./client.js";
 import { currentUser } from "./auth.js";
-import { enqueue, pending, flush } from "./queue.js";
+import { enqueue, dequeue, pending, flush } from "./queue.js";
 import { seenToEntries, MIGRATED_KEY } from "../migrate.js";
 
 const COLS = "tmdb_id,status,season,episode,rating,note,finished_on,title,poster,updated_at";
@@ -19,16 +19,35 @@ async function upsert(row) {
   if (error) throw error;
 }
 
-/** Replays queued writes. updated_at is server-set, so rows never carry it. */
-export async function flushQueue() {
-  const st = ls();
-  if (!st || !pending(st).length || !(await currentUser())) return { sent: 0, failed: 0, gaveUp: [] }; // signed out: keep rows, don't burn attempts
-  return flush(st, upsert);
+const POSTER_RE = /^https:\/\/image\.tmdb\.org\/t\/p\/[a-z0-9]+\/[A-Za-z0-9_.-]+$/;
+let flushing = null;
+
+/**
+ * Replays queued writes (updated_at is server-set, so rows never carry it). One flush at a time.
+ * When rows are given up after repeated failures, their optimistic entries are dropped from the
+ * local map and window fires a "bingology:write-failed" CustomEvent with detail { ids: tmdbId[] }.
+ */
+export function flushQueue() {
+  if (flushing) return flushing;
+  flushing = (async () => {
+    const st = ls();
+    if (!st || !pending(st).length || !(await currentUser())) return { sent: 0, failed: 0, gaveUp: [] }; // signed out: keep rows, don't burn attempts
+    const r = await flush(st, upsert);
+    if (r.gaveUp.length) {
+      for (const id of r.gaveUp) mine.delete(id);
+      if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("bingology:write-failed", { detail: { ids: r.gaveUp } }));
+    }
+    return r;
+  })().finally(() => { flushing = null; });
+  return flushing;
 }
 
 export async function loadMine() {
+  const user = await currentUser();
+  if (!user) throw new Error("not signed in");
   const c = await getClient();
-  const { data, error } = await c.from("entries").select(COLS);
+  // RLS also exposes circle-mates' rows; keep only our own.
+  const { data, error } = await c.from("entries").select(COLS).eq("user_id", user.id);
   if (error) throw error;
   mine = new Map((data || []).map(e => [e.tmdb_id, e]));
   return new Map(mine);
@@ -41,9 +60,15 @@ export async function saveEntry(tmdbId, patch) {
   const prev = mine.get(tmdbId) || {};
   const row = { ...prev, ...patch, user_id: user.id, tmdb_id: tmdbId };
   delete row.updated_at;
+  const title = row.title == null ? "" : String(row.title).slice(0, 200);
+  if (!title) throw new Error("saveEntry needs a title (pass it from the series object)");
+  if (row.poster === undefined) throw new Error("saveEntry needs a poster (use null if none)");
+  row.title = title;
+  row.poster = typeof row.poster === "string" && POSTER_RE.test(row.poster) ? row.poster : null;
   mine.set(tmdbId, { ...row, updated_at: new Date().toISOString() });
-  try { await upsert(row); }
-  catch { const st = ls(); if (st) enqueue(st, tmdbId, row); }
+  const st = ls();
+  try { await upsert(row); if (st) dequeue(st, tmdbId); }
+  catch { if (st) enqueue(st, tmdbId, row, 1); } // the direct attempt counts as the first failure
   return mine.get(tmdbId);
 }
 
