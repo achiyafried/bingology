@@ -74,7 +74,9 @@ h1, h2, h3 { font-family: "Secular One", "Assistant", system-ui, sans-serif; fon
 .top { margin-bottom: 20px; }
 .brandrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .brandrow .brand { margin-bottom: 0; }
-.bell { position: relative; width: 44px; height: 44px; flex: none; border-radius: 50%; background: var(--surface); display: inline-flex; align-items: center; justify-content: center; color: var(--ink); }
+.brandrow .hacts { display: flex; align-items: center; gap: 8px; }
+.bell, .hbtn { position: relative; width: 44px; height: 44px; flex: none; border-radius: 50%; background: var(--surface); display: inline-flex; align-items: center; justify-content: center; color: var(--ink); }
+.hbtn { border: 0; padding: 0; cursor: pointer; font: inherit; }
 .bell i { position: absolute; top: 9px; inset-inline-end: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--dot); border: 2px solid var(--surface); }
 .brand { display: flex; direction: ltr; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--ink); }
 .brand .ic { width: 44px; height: 44px; flex: none; }

@@ -277,7 +277,7 @@ function tile(i, mode, cap) {
 
 /* screens */
 function header() {
-  return `<header class="top"><div class="brandrow"><div class="brand">${LOGO}</div>${bellNow()}</div>
+  return `<header class="top"><div class="brandrow"><div class="brand">${LOGO}</div><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
   <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
 }
 
@@ -532,6 +532,7 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
+    case "hinvite": headerInvite(); break;
     case "tab": if (st.share || onNews()) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
@@ -633,9 +634,25 @@ function showMine() {
   import("./views/mine.js")
     .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, join, localSeen: () => st.seen.size, toast: showToast, copy: copyText,
       onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); } }))
-    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
+    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
 }
 const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
+const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
+const SITE_URL = "https://achiyafried.github.io/bingology/";
+const inviteBtn = () => `<button class="hbtn" type="button" data-a="hinvite" aria-label="הזמנת חבר"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></button>`;
+/** Header invite: signed in, bring a friend into the circle; signed out, share the site itself. */
+async function headerInvite() {
+  if (hasSession()) {
+    try { const m = await import("./lib/account/invite.js"); await m.inviteFriend({ toast: showToast, copy: copyText }); }
+    catch (e) { showToast(ACCOUNT_DOWN); }
+    return;
+  }
+  if (navigator.share) {
+    try { await navigator.share({ title: "Bingology", text: "תראו את Bingology — עוזר לבחור סדרה לבינג׳", url: SITE_URL }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  if (await copyText(SITE_URL)) showToast("הקישור הועתק"); else showToast("העתיקו את הקישור ושלחו לחברים.", SITE_URL);
+}
 const acct = fn => import("./views/card.js").then(fn).catch(() => {});
 /** Local mark (as before); when signed in and `write`, the account too. */
 function setSeen(i, on, write) {

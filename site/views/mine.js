@@ -499,14 +499,8 @@ async function doCreate() {
 }
 
 async function invite() {
-  const { circle } = await loadMods();
-  const url = circle.inviteUrl(V.circle.invite_code);
-  if (navigator.share) {
-    try { await navigator.share({ title: "Bingology", text: "בואו למעגל שלי ב-Bingology", url }); return; }
-    catch (e) { if (e && e.name === "AbortError") return; }
-  }
-  const ok = CTX.copy ? await CTX.copy(url) : false;
-  if (CTX.toast) CTX.toast(ok ? "קישור ההזמנה הועתק. שלחו אותו למי שתרצו במעגל." : "זה קישור ההזמנה. העתיקו אותו ושלחו לחברים.", url);
+  const [{ circle }, { shareInvite }] = await Promise.all([loadMods(), import("../lib/account/invite.js")]);
+  await shareInvite(circle.inviteUrl(V.circle.invite_code), CTX);
 }
 
 /** Move focus to the confirm / notice box at the top (now and after the next repaints), so keyboard and screen-reader users meet it. */

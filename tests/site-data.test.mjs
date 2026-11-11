@@ -77,6 +77,7 @@ test("app.js loads the account code and views lazily (no static import)", () => 
   assert.doesNotMatch(src, /^\s*import\s*["'][^"']*(account\/|views\/)/m, "no side-effect-only import either");
   assert.match(src, /import\(\s*["']\.\/views\/mine\.js["']\s*\)/, "the tab loads views/mine.js on demand");
   assert.match(src, /import\(\s*["']\.\/views\/news\.js["']\s*\)/, "#news loads views/news.js on demand");
+  assert.match(src, /import\(\s*["']\.\/lib\/account\/invite\.js["']\s*\)/, "the header invite loads lib/account/invite.js on demand");
 });
 
 test("fromData maps next and streams to nx and strm", () => {
@@ -95,4 +96,16 @@ test("seen step: a skip button right under the subtitle, before the grid, plus t
   assert.ok(sub > 0 && skip > sub && grid > skip, "skip sits between the subtitle and the grid");
   assert.match(step, /<button class="btn ghost[^"]*" data-a="next">דילוג<\/button>/);
   assert.equal((step.match(/data-a="next"/g) || []).length, 2, "the bottom button stays");
+});
+
+test("header: an invite button beside the bell; signed out shares the site, signed in goes through the account module", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const h = /function header\(\) \{[\s\S]*?<\/header>`/.exec(src);
+  assert.ok(h, "found header()");
+  assert.match(h[0], /\$\{inviteBtn\(\)\}\$\{bellNow\(\)\}/, "invite button right beside the bell");
+  assert.match(src, /data-a="hinvite" aria-label="הזמנת חבר"/);
+  const fn = /async function headerInvite\(\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.ok(fn.indexOf("hasSession()") < fn.indexOf("import("), "account code only behind the session check");
+  assert.match(fn, /url: SITE_URL/); assert.match(fn, /AbortError/); assert.match(fn, /הקישור הועתק/); assert.match(fn, /ACCOUNT_DOWN/);
+  assert.match(src, /SITE_URL = "https:\/\/achiyafried\.github\.io\/bingology\/"/);
 });
