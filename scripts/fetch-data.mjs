@@ -136,7 +136,8 @@ async function main() {
   const out = "site/data.json";
   const prev = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : null;
 
-  const r = await run({ series, prev, now: new Date().toISOString(), only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET });
+  const now = new Date().toISOString(); // one stamp: news diffs rows whose fetchedAt === this exact value
+  const r = await run({ series, prev, now, only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET });
   r.warnings.forEach(w => console.warn("warn:", w));
   r.errors.forEach(e => console.error("invalid:", e));
   console.log(`${r.data.series.length} series, ${r.failed.length} failed${r.unreachable ? ", TMDB unreachable" : ""}`);
@@ -144,7 +145,7 @@ async function main() {
   if (r.abort) { console.error("aborting: data.json left unchanged"); process.exit(1); }
   if (only) { console.log("smoke test passed (nothing written)"); return; }
   // News is decided independently of whether data.json changed; failures only warn.
-  writeNews({ prevData: prev, data: r.data, newsPath: "site/news.json", now: new Date().toISOString(),
+  writeNews({ prevData: prev, data: r.data, newsPath: "site/news.json", now,
     read: p => (existsSync(p) ? readFileSync(p, "utf8") : null), write: writeFileSync, warn: m => console.warn("warn:", m) });
   if (sameData(r.data, prev)) { console.log("no changes"); return; }
   writeFileSync(out, JSON.stringify(r.data) + "\n"); // compact: this file is downloaded by every visitor

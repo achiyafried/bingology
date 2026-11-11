@@ -173,3 +173,10 @@ test("writeNews: missing news.json and no items writes nothing", () => {
     read: () => null, write: (...a) => writes.push(a), warn: () => {} });
   assert.equal(writes.length, 0);
 });
+
+test("writeNews: a throwing write only warns", () => {
+  const warns = [];
+  assert.doesNotThrow(() => writeNews({ prevData: wprev(), data: wdata({ status: "ended" }), newsPath: "n.json", now: NOW,
+    read: () => null, write: () => { throw new Error("EACCES"); }, warn: (m) => warns.push(m) }));
+  assert.equal(warns.length, 1);
+});
