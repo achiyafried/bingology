@@ -86,12 +86,13 @@ $$;
 
 -- ───────────────────────────── triggers ─────────────────────────────
 
--- set_finished_on: becoming 'seen' with no date ⇒ today. Later edits of the date are kept.
+-- set_finished_on: an existing row becoming 'seen' with no date ⇒ today. Later edits of the date are kept.
+-- INSERTs keep what the client sends: migrated "seen" marks were finished on an unknown date (null).
 create or replace function public.set_finished_on() returns trigger
 language plpgsql set search_path = '' as $$
 begin
-  if new.status = 'seen' and new.finished_on is null
-     and (tg_op = 'INSERT' or old.status is distinct from 'seen') then
+  if tg_op = 'UPDATE' and new.status = 'seen' and new.finished_on is null
+     and old.status is distinct from 'seen' then
     new.finished_on := current_date;
   end if;
   if tg_op = 'UPDATE' then

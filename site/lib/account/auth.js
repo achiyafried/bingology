@@ -23,18 +23,30 @@ export async function signOut() {
   if (error) throw error;
 }
 
-/** Returns the user's profile row, creating it (name trimmed to 40) when missing. */
+/** Returns { profile, created }: the user's profile row, creating it (name trimmed to 40) when missing. */
 export async function ensureProfile(defaultName) {
   const c = await getClient();
   const user = await currentUser();
   if (!user) throw new Error("not signed in");
   const got = await c.from("profiles").select("id,name,circle_id,share_slug").eq("id", user.id).maybeSingle();
   if (got.error) throw got.error;
-  if (got.data) return got.data;
+  if (got.data) return { profile: got.data, created: false };
   const name = String(defaultName || "").trim().slice(0, 40) || "Bingologist";
   const ins = await c.from("profiles").insert({ id: user.id, name }).select("id,name,circle_id,share_slug").single();
   if (ins.error) throw ins.error;
-  return ins.data;
+  return { profile: ins.data, created: true };
+}
+
+/** Sets the display name (trimmed, 1–40 chars); returns the updated profile row. */
+export async function setName(name) {
+  const n = String(name || "").trim().slice(0, 40);
+  if (!n) throw new Error("empty name");
+  const c = await getClient();
+  const user = await currentUser();
+  if (!user) throw new Error("not signed in");
+  const r = await c.from("profiles").update({ name: n }).eq("id", user.id).select("id,name,circle_id,share_slug").single();
+  if (r.error) throw r.error;
+  return r.data;
 }
 
 /** cb(user|null) on every auth change; returns an unsubscribe function. */

@@ -140,6 +140,12 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
     assert.equal(r.json[0].finished_on, "2024-05-01");
   });
 
+  test("finished_on: inserted as seen stays null (unknown date)", async () => {
+    const r = await rest(C.token, "POST", "entries", { user_id: C.id, tmdb_id: 4242, status: "seen", title: "Old mark", poster: null }, "return=representation");
+    assert.equal(r.status, 201, JSON.stringify(r.json));
+    assert.equal(r.json[0].finished_on, null);
+  });
+
   test("pick_votes: circle reads, own writes only", async () => {
     const circle = (await rest(A.token, "GET", "circles?select=id")).json[0].id;
     const ok = await rest(B.token, "POST", "pick_votes", { circle_id: circle, tmdb_id: SHOW, user_id: B.id, vote: "skip" });

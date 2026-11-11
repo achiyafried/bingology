@@ -117,3 +117,39 @@ test("sharedHTML with no profile says the link is not active", () => {
   assert.match(h, /class="empty"/);
   assert.doesNotMatch(h, /<button/);
 });
+
+test("first sign-in: name step prefilled (escaped), 1-40 chars, save button", () => {
+  const h = mineHTML({ user, profile: { ...profile, name: 'Dan "<x>"' }, created: true, entries: new Map(), S });
+  assert.match(h, /id="mine-name"/);
+  assert.match(h, /value="Dan &quot;&lt;x&gt;&quot;"/);
+  assert.match(h, /maxlength="40"/);
+  assert.match(h, /required/);
+  assert.match(h, /data-a="name-save"[^>]*>שמירה</);
+  assert.doesNotMatch(h, /<x>/);
+});
+
+test("no name step for a returning user; the card offers 'שינוי שם' which opens it", () => {
+  const h = signedIn([]);
+  assert.doesNotMatch(h, /id="mine-name"/);
+  assert.match(h, /data-a="rename"[^>]*>שינוי שם</);
+  assert.match(mineHTML({ user, profile, naming: true, entries: new Map(), S }), /id="mine-name"/);
+});
+
+test("seen rows without finished_on show no year", () => {
+  const h = signedIn([
+    { tmdb_id: 1438, status: "seen", rating: 10, finished_on: null, title: "The Wire", poster: null, updated_at: "2026-11-11T10:00:00Z" },
+    { tmdb_id: 1396, status: "seen", rating: 9, finished_on: "2019-03-02", title: "Breaking Bad", poster: null },
+  ]);
+  assert.doesNotMatch(h, /2026/);
+  assert.match(h, /<small>2019<\/small>/);
+});
+
+test("date sort: newest finished first, unknown dates last", () => {
+  const h = signedIn([
+    { tmdb_id: 1438, status: "seen", rating: 10, finished_on: null, title: "The Wire", poster: null, updated_at: "2026-11-11T10:00:00Z" },
+    { tmdb_id: 1396, status: "seen", rating: 9, finished_on: "2019-03-02", title: "Breaking Bad", poster: null },
+    { tmdb_id: 4607, status: "seen", rating: 5, finished_on: "2023-01-01", title: "Lost", poster: null },
+  ], { seenSort: "date" });
+  const order = ["Lost", "Breaking Bad", "The Wire"].map(t => h.indexOf(t));
+  assert.ok(order[0] > -1 && order[0] < order[1] && order[1] < order[2], JSON.stringify(order));
+});

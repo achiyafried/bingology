@@ -63,9 +63,11 @@ function seenRow(e, s, i, st, ro) {
 }
 
 const ratingOf = e => (e.status === "dropped" ? 0 : e.rating || 0);
-const when = e => String(e.finished_on || e.updated_at || "");
+const newer = (a, b) => String(b.updated_at || "").localeCompare(String(a.updated_at || ""));
+// By date: newest finished_on first; unknown dates (e.g. migrated marks) last.
+const byDate = (a, b) => !a.finished_on !== !b.finished_on ? (a.finished_on ? -1 : 1) : String(b.finished_on || "").localeCompare(String(a.finished_on || "")) || newer(a, b);
 function seenSort(rows, by) {
-  return rows.slice().sort((a, b) => by === "date" ? when(b).localeCompare(when(a)) : ratingOf(b) - ratingOf(a) || String(b.updated_at || "").localeCompare(String(a.updated_at || "")));
+  return rows.slice().sort(by === "date" ? byDate : (a, b) => ratingOf(b) - ratingOf(a) || newer(a, b));
 }
 
 function listsHTML(rows, S, st, ro) {
@@ -97,11 +99,21 @@ function signinHTML(st) {
   </div></section>`;
 }
 
+function nameStepHTML(st, name) {
+  const first = st.created && !st.naming;
+  return `<form class="namestep" data-f="name">
+    <label for="mine-name">${first ? "איך לקרוא לך? כך יראו אותך החברים במעגל." : "השם שלך"}</label>
+    <input class="search" id="mine-name" type="text" required minlength="1" maxlength="40" autocomplete="nickname" value="${esc(name)}">
+    <button class="btn primary" type="submit" data-a="name-save">שמירה</button>
+    ${first ? "" : `<button class="linkbtn" type="button" data-a="rename-cancel">ביטול</button>`}
+  </form>`;
+}
+
 export function unavailableHTML() {
   return `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="mretry">נסו שוב</button></div>`;
 }
 
-/** state: {user, profile, entries, S, scores, circle, feed, pick, localSeen, pace, prompt, seenSort, emailOpen, msg, loading, error} */
+/** state: {user, profile, created, naming, entries, S, scores, circle, feed, pick, localSeen, pace, prompt, seenSort, emailOpen, msg, loading, error} */
 export function mineHTML(state) {
   const st = state || {};
   if (st.error) return unavailableHTML();
@@ -116,8 +128,9 @@ export function mineHTML(state) {
     : "";
   return `<section class="mine">
     <div class="me"><span class="av" aria-hidden="true">${initial(name)}</span>
-      <div class="who"><h2 data-focus tabindex="-1">הבינג׳ים של ${esc(name)}</h2>${circle}</div>
+      <div class="who"><h2 data-focus tabindex="-1">הבינג׳ים של ${esc(name)}</h2>${circle}${st.created || st.naming ? "" : `<button class="linkbtn rename" data-a="rename">שינוי שם</button>`}</div>
       ${slug ? "" : `<button class="btn ghost" data-a="share" data-v="on">שיתוף</button>`}</div>
+    ${st.created || st.naming ? nameStepHTML(st, name) : ""}
     ${share}
     ${listsHTML(rowsOf(st.entries), st.S, st, false)}
     <div class="foot"><button class="linkbtn" data-a="signout">יציאה מהחשבון</button></div>
@@ -137,7 +150,8 @@ export function sharedHTML(data, S) {
 /* ───────── mounting and actions (browser only) ───────── */
 
 let V = { loading: true };       // view state for mineHTML
-let ROOT = null, CTX = null, mod = null, authSub = false, seq = 0;
+let ROOT = null, CTX = null, mod = null, authSub = false, seq = 0, needFocus = false;
+let knownUid; // undefined until the first load resolves the session; then the user id or null
 
 const loadMods = async () => mod || (mod = await Promise.all([import("../lib/account/auth.js"), import("../lib/account/store.js")])
   .then(([auth, store]) => ({ auth, store }))
@@ -147,6 +161,9 @@ function paint() {
   if (!ROOT || !ROOT.isConnected) return;
   ROOT.innerHTML = CTX.share ? (V.sharedErr ? unavailableHTML() : V.shared === undefined ? mineHTML({ loading: true }) : sharedHTML(V.shared, CTX.S))
     : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0 });
+  // First content paint after a mount: move focus to the tab's heading (the loading box has none).
+  const h = needFocus && ROOT.querySelector("[data-focus]");
+  if (h) { needFocus = false; h.focus({ preventScroll: true }); }
 }
 
 async function loadShared() {
@@ -167,16 +184,24 @@ async function load() {
     const { auth, store } = await loadMods();
     if (!authSub) {
       authSub = true;
-      auth.onAuth(u => { if ((u && u.id) !== (V.user && V.user.id) && ROOT && ROOT.isConnected && !CTX.share) { V = { loading: true }; paint(); load(); } }).catch(() => { authSub = false; });
+      // Remount only on a real user change. The initial callback can arrive while load() is still running.
+      auth.onAuth(u => {
+        const id = u ? u.id : null;
+        if (knownUid === undefined || id === knownUid) return;
+        knownUid = id;
+        if (ROOT && ROOT.isConnected && !CTX.share) { V = { loading: true }; needFocus = true; paint(); load(); }
+      }).catch(() => { authSub = false; });
     }
     const user = await auth.currentUser();
+    knownUid = user ? user.id : null;
     if (!user) { if (my === seq) V = { user: null, emailOpen: V.emailOpen, email: V.email, msg: V.msg }; return paint(); }
     const fallback = user.name || (user.email || "").split("@")[0];
-    const profile = await auth.ensureProfile(fallback);
+    const { profile, created } = await auth.ensureProfile(fallback);
     if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
     const entries = await store.loadMine();
     if (my !== seq) return;
-    V = { user, profile, entries, prompt: V.prompt, seenSort: V.seenSort };
+    // created stays true until the name is saved, so a remount keeps showing the name step.
+    V = { user, profile, entries, created: created || (V.created && V.user && V.user.id === user.id), naming: V.naming, prompt: V.prompt, seenSort: V.seenSort };
   } catch (e) {
     if (my !== seq) return;
     V = { error: true };
@@ -212,7 +237,9 @@ async function onClick(ev) {
       case "mretry": V = { loading: true }; paint(); CTX.share ? loadShared() : load(); break;
       case "signin-google": { const { auth } = await loadMods(); await auth.signInGoogle(); break; }
       case "signin-email-open": V.emailOpen = true; paint(); { const f = ROOT.querySelector("#mine-email"); if (f) f.focus(); } break;
-      case "signout": { const { auth } = await loadMods(); await auth.signOut(); V = { user: null }; paint(); break; }
+      case "signout": { const { auth } = await loadMods(); await auth.signOut(); knownUid = null; V = { user: null }; paint(); break; }
+      case "rename": V.naming = true; paint(); { const f = ROOT.querySelector("#mine-name"); if (f) { f.focus(); f.select(); } } break;
+      case "rename-cancel": V.naming = false; paint(); break;
       case "seensort": V.seenSort = V.seenSort === "date" ? "rating" : "date"; paint(); break;
       case "plus": {
         const e = V.entries.get(id); if (!e) break;
@@ -239,7 +266,19 @@ async function onClick(ev) {
   }
 }
 
+async function saveName(f) {
+  const name = (f.querySelector("#mine-name").value || "").trim().slice(0, 40);
+  if (!name) return;
+  try {
+    const { auth } = await loadMods();
+    V.profile = await auth.setName(name);
+    V.created = false; V.naming = false;
+    paint();
+  } catch (e) { if (CTX.toast) CTX.toast(ACCOUNT_DOWN); }
+}
+
 async function onSubmit(ev) {
+  if (ev.target.closest("[data-f=name]")) { ev.preventDefault(); return saveName(ev.target.closest("[data-f=name]")); }
   const f = ev.target.closest("[data-f=signin-email]"); if (!f) return;
   ev.preventDefault();
   const email = (f.querySelector("#mine-email").value || "").trim();
@@ -267,6 +306,7 @@ export async function mountMine(root, ctx) {
   const modeChanged = !CTX || !!CTX.share !== !!ctx.share || (ctx.share && CTX.share !== ctx.share);
   ROOT = root; CTX = ctx;
   if (modeChanged) V = { loading: true };
+  needFocus = true;
   root.addEventListener("click", onClick);
   root.addEventListener("submit", onSubmit);
   paint();

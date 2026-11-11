@@ -320,6 +320,10 @@ img.poster { object-fit: cover; }
 .mine .signin .fine { font-size: 14px; margin: 10px 0 0; }
 .mine .signin .search { margin-bottom: 8px; }
 .mine .foot { margin-top: 26px; }
+.mine .me .rename { padding: 2px 0; font-size: 13px; }
+.mine .namestep { background: var(--surface); border-radius: 18px; padding: 16px; margin: -8px 0 18px; display: grid; gap: 8px; }
+.mine .namestep label { font-weight: 700; }
+.mine .namestep .search { margin: 0; }
 @media (max-width: 420px) {
   .tab { padding-inline: 3px; line-height: 1.25; }
   .tab span[aria-hidden] { display: none; }
