@@ -59,6 +59,15 @@ create table if not exists public.pick_votes (
   primary key (circle_id, tmdb_id, user_id)
 );
 
+-- Extra checks, added separately so re-running upgrades a table created by an earlier version of this file.
+alter table public.profiles drop constraint if exists profiles_name_len;
+alter table public.profiles add constraint profiles_name_len check (char_length(name) between 1 and 40);
+alter table public.entries drop constraint if exists entries_title_len;
+alter table public.entries add constraint entries_title_len check (char_length(title) <= 200);
+alter table public.entries drop constraint if exists entries_poster_url;
+alter table public.entries add constraint entries_poster_url
+  check (poster is null or poster ~ '^https://image\.tmdb\.org/t/p/[a-z0-9]+/[A-Za-z0-9_.-]+$');
+
 -- ───────────────────────────── helpers ─────────────────────────────
 -- security definer so policies can look up the caller's circle without recursing into profiles' own RLS.
 
@@ -283,10 +292,10 @@ drop policy if exists events_select on public.events;
 create policy events_select on public.events for select to authenticated
   using (circle_id = public.my_circle() and public.in_my_circle(user_id));
 
--- pick_votes: circle reads; own votes in my own circle only
+-- pick_votes: circle reads votes of current members; own votes in my own circle only
 drop policy if exists pick_votes_select on public.pick_votes;
 create policy pick_votes_select on public.pick_votes for select to authenticated
-  using (circle_id = public.my_circle());
+  using (circle_id = public.my_circle() and public.in_my_circle(user_id));
 drop policy if exists pick_votes_insert on public.pick_votes;
 create policy pick_votes_insert on public.pick_votes for insert to authenticated
   with check (user_id = auth.uid() and circle_id = public.my_circle());

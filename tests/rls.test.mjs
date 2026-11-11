@@ -3,7 +3,7 @@
 // Run: npm run test:rls   (loads .env)
 import { describe, test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { adminCreateUser, rest, rpc, resetDb } from "./lib/supa.mjs";
 
 const enabled = Boolean(process.env.SUPABASE_TEST_URL);
@@ -33,10 +33,15 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
   after(() => resetDb());
 
   test("a user cannot write another user's profile or set their own circle_id directly", async () => {
-    const other = await rest(C.token, "POST", "profiles", { id: A.id, name: "hijack" });
-    assert.ok(other.status >= 400, `expected failure, got ${other.status}`);
+    const denied = (r) => r.status === 401 || r.status === 403;
+    const fresh = await rest(C.token, "POST", "profiles", { id: randomUUID(), name: "ghost" });
+    assert.ok(denied(fresh), `insert of a profile that is not mine must be refused, got ${fresh.status}`);
+    const upsert = await rest(C.token, "POST", "profiles?on_conflict=id", { id: A.id, name: "hijack" },
+      "return=representation,resolution=merge-duplicates");
+    assert.ok(denied(upsert), `upsert onto another user's profile must be refused, got ${upsert.status}`);
+    assert.deepEqual((await rest(A.token, "GET", `profiles?id=eq.${A.id}&select=name`)).json, [{ name: "Ann" }]);
     const own = await rest(C.token, "PATCH", `profiles?id=eq.${C.id}`, { circle_id: (await rest(A.token, "GET", "circles?select=id")).json[0].id });
-    assert.ok(own.status >= 400, `expected failure, got ${own.status}`);
+    assert.ok(denied(own), `setting circle_id directly must be refused, got ${own.status}`);
     const renamed = await rest(B.token, "PATCH", `profiles?id=eq.${A.id}`, { name: "x" });
     assert.deepEqual(renamed.json, []);
   });
@@ -66,6 +71,25 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
     assert.ok(forged.status >= 400, `expected failure, got ${forged.status}`);
     const mine = (await rest(A.token, "GET", `entries?tmdb_id=eq.${SHOW}&select=rating,status`)).json;
     assert.deepEqual(mine, [{ rating: null, status: "want" }]);
+  });
+
+  test("profile name is 1..40 chars", async () => {
+    const long = await rest(A.token, "PATCH", `profiles?id=eq.${A.id}`, { name: "x".repeat(41) });
+    assert.equal(long.status, 400);
+    assert.equal(long.json.code, "23514", "check violation");
+    const empty = await rest(A.token, "PATCH", `profiles?id=eq.${A.id}`, { name: "" });
+    assert.equal(empty.json.code, "23514");
+    assert.deepEqual((await rest(A.token, "GET", `profiles?id=eq.${A.id}&select=name`)).json, [{ name: "Ann" }]);
+  });
+
+  test("entries checks: title <= 200, poster must be a TMDB image URL", async () => {
+    for (const bad of [{ poster: "javascript:alert(1)" }, { poster: "https://evil.example/t/p/w342/a.jpg" }, { title: "t".repeat(201) }]) {
+      const r = await rest(C.token, "POST", "entries", { user_id: C.id, tmdb_id: 9, status: "want", ...bad });
+      assert.equal(r.status, 400, JSON.stringify(bad));
+      assert.equal(r.json.code, "23514", "check violation");
+    }
+    const ok = await rest(C.token, "POST", "entries", { user_id: C.id, tmdb_id: 9, status: "want", title: "Ok", poster: "https://image.tmdb.org/t/p/w342/abc.jpg" });
+    assert.equal(ok.status, 201, JSON.stringify(ok.json));
   });
 
   test("entries checks: status, rating 1..10, note <= 140", async () => {
@@ -170,12 +194,21 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
     assert.equal((await rpc(null, "shared_profile", { slug: null })).json, null);
   });
 
+  test("leave_circle: a leaver's pick votes disappear for the old circle", async () => {
+    assert.equal((await rest(A.token, "GET", `pick_votes?user_id=eq.${B.id}&select=vote`)).json.length, 1);
+    assert.equal((await rpc(B.token, "leave_circle")).status, 204);
+    assert.deepEqual((await rest(A.token, "GET", `pick_votes?user_id=eq.${B.id}&select=vote`)).json, []);
+  });
+
   test("leave_circle: friends stop seeing my entries and events", async () => {
+    // C (joined A's circle earlier) is the remaining friend and observer.
+    assert.equal((await rest(C.token, "GET", `entries?user_id=eq.${A.id}&select=tmdb_id`)).json.length, 1);
+    assert.equal((await events(C)).length, 4);
     const r = await rpc(A.token, "leave_circle");
     assert.equal(r.status, 204, JSON.stringify(r.json));
-    assert.deepEqual((await rest(B.token, "GET", `entries?user_id=eq.${A.id}&select=tmdb_id`)).json, []);
-    assert.deepEqual(await events(B), []);
-    assert.deepEqual((await rest(B.token, "GET", `profiles?id=eq.${A.id}&select=name`)).json, []);
+    assert.deepEqual((await rest(C.token, "GET", `entries?user_id=eq.${A.id}&select=tmdb_id`)).json, []);
+    assert.deepEqual(await events(C), []);
+    assert.deepEqual((await rest(C.token, "GET", `profiles?id=eq.${A.id}&select=name`)).json, []);
     assert.equal((await rest(A.token, "GET", "entries?select=tmdb_id")).json.length, 1, "own data kept");
   });
 
