@@ -288,7 +288,7 @@ function introHTML() {
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
     <p>${QS.length} שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות.</p>
     <div class="stack"><button class="btn primary" data-a="start">מתחילים</button><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
-    ${st.news ? stripHTML(stripItems(st.news, S, today()), S, today()) : ""}
+    ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
 }
 
@@ -641,7 +641,8 @@ function setSeen(i, on, write) {
   save();
   if (write && hasSession()) acct(m => m.writeSeen(S[i], on));
 }
-/* "מה חדש": st.news = visible news.json items (newest first), null when missing/corrupt, undefined while loading */
+/* "מה חדש": st.news = visible news.json items (newest first), null when missing/corrupt, undefined while loading.
+   Strip and page treat null/undefined as [] — "עונות בדרך" comes from data.json and shows regardless. */
 const onNews = () => location.hash === "#news";
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const SEEN_KEY = "bingology:newsSeen";
@@ -663,10 +664,9 @@ function loadNews() {
 }
 function showNews() {
   const root = $("#news");
-  if (st.news === undefined) { root.innerHTML = `<div class="empty loading" role="status"><p>טוענים…</p></div>`; return; }
   const t = today(), items = st.news || [];
   import("./views/news.js")
-    .then(m => { if (root.isConnected) m.mountNews(root, { S, items, upcoming: st.news ? upcomingSeasons(S, t) : [], today: t }); })
+    .then(m => { if (root.isConnected) m.mountNews(root, { S, items, upcoming: upcomingSeasons(S, t), today: t }); })
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>אין חדשות כרגע</p></div>`; });
 }
 function route() {

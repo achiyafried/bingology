@@ -33,16 +33,23 @@ export function newsPageHTML({ items, upcoming, filter, today, more }, S) {
   <p class="note">החדשות מתעדכנות כל לילה מתוך הנתונים של הסדרות באתר.</p></section>`;
 }
 
-let filter = FILTERS[0];
-let more = false;
-
-/** Paints the page into root and handles the filter chips and "עוד N" (the rows use app.js's data-a="detail"). */
+/** Paints the page into root and handles the filter chips and "עוד N" (the rows use app.js's data-a="detail").
+ *  Filter and "עוד N" reset on every mount. */
 export function mountNews(root, ctx) {
+  let filter = FILTERS[0];
+  let more = false;
   const paint = () => { root.innerHTML = newsPageHTML({ items: ctx.items, upcoming: ctx.upcoming, filter, today: ctx.today, more }, ctx.S); };
   root.onclick = (e) => {
     const c = e.target.closest("[data-nf]");
-    if (c) { filter = c.dataset.nf; paint(); return; }
+    if (c) {
+      filter = c.dataset.nf; paint();
+      const again = [...root.querySelectorAll("[data-nf]")].find((x) => x.dataset.nf === filter);
+      if (again) again.focus();
+      return;
+    }
     if (e.target.closest("[data-nmore]")) { more = true; paint(); }
   };
   paint();
+  const h = root.querySelector("[data-focus]");
+  if (h) h.focus({ preventScroll: true });
 }

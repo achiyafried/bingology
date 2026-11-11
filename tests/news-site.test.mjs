@@ -208,3 +208,11 @@ test("newsPageHTML: upcoming capped at 10 then עוד N", () => {
   assert.equal((all.match(/data-a="detail"/g) || []).length, 12);
   assert.doesNotMatch(all, /עוד 2/);
 });
+
+test("no news.json (null -> []): strip and page still show upcoming seasons", () => {
+  const strip = stripHTML(stripItems([], R, TODAY), R, TODAY);
+  assert.match(noBdi(strip), /Severance · עונה 3 ב-14 במרץ 2027/);
+  const page = newsPageHTML({ items: [], upcoming: upcomingSeasons(R, TODAY), filter: "הכל", today: TODAY }, R);
+  assert.match(page, /עונות בדרך/);
+  assert.doesNotMatch(page, /אין חדשות כרגע/);
+});
