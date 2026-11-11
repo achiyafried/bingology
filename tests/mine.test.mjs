@@ -153,3 +153,114 @@ test("date sort: newest finished first, unknown dates last", () => {
   const order = ["Lost", "Breaking Bad", "The Wire"].map(t => h.indexOf(t));
   assert.ok(order[0] > -1 && order[0] < order[1] && order[1] < order[2], JSON.stringify(order));
 });
+
+/* ───────── Task 8: circle, feed, joint pick, card additions ───────── */
+import { BAD_INVITE, ago } from "../site/views/mine.js";
+import { cardHTML } from "../site/views/card.js";
+import { inviteUrl } from "../site/lib/account/circle.js";
+
+const S8 = [...S, { id: 4, tmdbId: 136315, n: "The Bear", poster: P("bear"), se: [8, 10, 10], e: 28, bs: 91, y: 2022 }];
+const NOW = Date.parse("2026-11-11T12:00:00Z");
+const members = [{ id: "u1", name: "אחיה" }, { id: "u2", name: "דנה" }];
+const circle = { id: "c1", invite_code: "AbCdEf2345", members };
+const text = h => h.replace(/<[^>]+>/g, "");
+const inCircle = (extra = {}) => mineHTML({ user, profile, entries: new Map(), S: S8, circle, now: NOW, ...extra });
+
+test("no circle: open one or use an invite link", () => {
+  const h = mineHTML({ user, profile, entries: new Map(), S: S8, circle: null });
+  assert.match(h, /data-a="circle-create"[^>]*>פתחו מעגל</);
+  assert.match(h, /data-a="circle-have"[^>]*>יש לי קישור הזמנה</);
+  assert.doesNotMatch(signedIn([]), /פתחו מעגל/, "nothing while the circle is still loading");
+});
+
+test("feed: a rating line with relative time; only the 20 newest of 25", () => {
+  const older = Array.from({ length: 24 }, (_, k) => ({ id: k + 2, user_id: "u2", kind: "dropped", tmdb_id: 4607, season: k + 1, created_at: new Date(NOW - (k + 3) * 3600e3).toISOString() }));
+  const feed = [...older.slice(12), { id: 1, user_id: "u2", kind: "rated", rating: 9, tmdb_id: 136315, created_at: new Date(NOW - 2 * 3600e3).toISOString() }, ...older.slice(0, 12)];
+  const h = inCircle({ feed });
+  const t = text(h);
+  assert.match(t, /דנה: ציון 9 ל-The Bear/);
+  assert.match(t, /לפני שעתיים/);
+  assert.equal((h.match(/class="it fe"/g) || []).length, 20);
+  assert.ok(t.indexOf("ציון 9") < t.indexOf("בעונה 1"), "newest first");
+  assert.match(t, /בעונה 19/);
+  assert.doesNotMatch(t, /בעונה 2[0-4]/, "the 5 oldest are not shown");
+});
+
+test("relative times", () => {
+  const at = ms => new Date(NOW - ms).toISOString();
+  assert.equal(ago(at(20e3), NOW), "עכשיו");
+  assert.equal(ago(at(60e3), NOW), "לפני דקה");
+  assert.equal(ago(at(5 * 60e3), NOW), "לפני 5 דקות");
+  assert.equal(ago(at(3600e3), NOW), "לפני שעה");
+  assert.equal(ago(at(2 * 3600e3), NOW), "לפני שעתיים");
+  assert.equal(ago(at(5 * 3600e3), NOW), "לפני 5 שעות");
+  assert.equal(ago(at(30 * 3600e3), NOW), "אתמול");
+  assert.equal(ago(at(3 * 86400e3), NOW), "לפני 3 ימים");
+});
+
+test("joint pick: both names, yalla and another suggestion", () => {
+  const h = inCircle({ pick: { tmdbId: 136315, mode: "shared", partner: "u2" } });
+  assert.match(h, /class="joint"/);
+  assert.match(text(h), /בינג׳ משותף · אחיה ודנה/);
+  assert.match(text(h), /The Bear/);
+  assert.match(h, /data-a="pick-yes" data-id="136315"[^>]*>יאללה</);
+  assert.match(h, /data-a="pick-skip" data-id="136315"[^>]*>הצעה אחרת</);
+});
+
+test("joint pick fallback: header says nobody in the circle has seen it", () => {
+  const h = inCircle({ pick: { tmdbId: 136315, mode: "fallback", partner: "u2" } });
+  assert.match(text(h.slice(h.indexOf('class="joint"'))), /^[^>]*>?אף אחד במעגל עוד לא ראה/);
+});
+
+test("circle: faces for every member, invite and leave; names escaped", () => {
+  const evil = { id: "u3", name: "<img src=x>" };
+  const h = inCircle({ circle: { ...circle, members: [...members, evil] }, feed: [{ id: 1, user_id: "u3", kind: "wanted", tmdb_id: 1438, created_at: new Date(NOW).toISOString() }] });
+  assert.equal((h.match(/class="face f\d"/g) || []).length, 3 + 1, "3 faces + 1 in the feed");
+  assert.doesNotMatch(h, /<img src=x>/);
+  assert.match(text(h), /&lt;img src=x&gt;: רוצה לראות את/);
+  assert.match(h, /data-a="circle-invite"[^>]*>הזמנת חבר למעגל</);
+  assert.match(h, /data-a="circle-leave"/);
+});
+
+test("alone in a circle: no joint pick, an invite prompt", () => {
+  const h = inCircle({ circle: { ...circle, members: [members[0]] } });
+  assert.doesNotMatch(h, /class="joint"/);
+  assert.match(h, /data-a="circle-invite"/);
+});
+
+test("invite: bad code shows the verbatim copy; in another circle asks first", () => {
+  assert.equal(BAD_INVITE, "הקישור לא תקין או שפג תוקפו");
+  assert.match(inCircle({ notice: BAD_INVITE }), /הקישור לא תקין או שפג תוקפו/);
+  const h = inCircle({ confirm: { kind: "join", names: ["דנה", "יואב"] } });
+  assert.match(text(h), /אתם כבר במעגל עם דנה ויואב\. לעבור\?/);
+  assert.match(h, /data-a="confirm-yes"/);
+  assert.match(h, /data-a="confirm-no"/);
+  const c = inCircle({ confirm: { kind: "create", names: ["דנה", "יואב", "מיכל"] } });
+  assert.match(text(c), /אתם כבר במעגל עם דנה, יואב ומיכל\. לפתוח מעגל חדש\?/);
+});
+
+test("inviteUrl builds a #join= link", () => {
+  assert.equal(inviteUrl("AbC23", "https://x.example/bingology/"), "https://x.example/bingology/#join=AbC23");
+});
+
+test("series card (signed in): 4 statuses, rating 1-10 when seen, friends chips", () => {
+  const h = cardHTML({ entry: { status: "seen", rating: 9 }, friends: [
+    { id: "u2", name: "דנה", status: "seen", rating: 8 },
+    { id: "u3", name: "יואב", status: "want" },
+    { id: "u4", name: "<b>x</b>", status: "watching" },
+  ] });
+  const st = [...h.matchAll(/data-a="cst" data-v="(\w+)" aria-pressed="(\w+)"/g)].map(m => m[1] + ":" + m[2]);
+  assert.deepEqual(st, ["want:false", "watching:false", "seen:true", "dropped:false"]);
+  assert.equal((h.match(/data-a="crate"/g) || []).length, 10);
+  assert.match(h, /data-a="crate" data-v="9" aria-pressed="true"/);
+  assert.match(text(h), /דנה 8/);
+  assert.match(text(h), /יואב רוצה לראות/);
+  assert.doesNotMatch(h, /<b>x<\/b>/);
+});
+
+test("series card: no rating row before seen; no friends block when none", () => {
+  const h = cardHTML({ entry: { status: "want" }, friends: [] });
+  assert.doesNotMatch(h, /data-a="crate"/);
+  assert.doesNotMatch(h, /class="friends"/);
+  assert.match(cardHTML({ entry: null, friends: [] }), /data-a="cst" data-v="want" aria-pressed="false"/);
+});

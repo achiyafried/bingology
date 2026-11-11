@@ -7,6 +7,7 @@ const COLS = "tmdb_id,status,season,episode,rating,note,finished_on,title,poster
 const SLUG_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 const ls = () => { try { return localStorage; } catch { return null; } };
 let mine = new Map();
+let mineFor = null; // user id the map was loaded for
 
 function newSlug(n = 16) {
   const b = crypto.getRandomValues(new Uint8Array(n));
@@ -50,7 +51,28 @@ export async function loadMine() {
   const { data, error } = await c.from("entries").select(COLS).eq("user_id", user.id);
   if (error) throw error;
   mine = new Map((data || []).map(e => [e.tmdb_id, e]));
+  mineFor = user.id;
   return new Map(mine);
+}
+
+/** Like loadMine, but reuses the map already loaded for this user (it tracks every saveEntry/removeEntry). */
+export async function myEntries() {
+  const user = await currentUser();
+  if (!user) throw new Error("not signed in");
+  return mineFor === user.id ? new Map(mine) : loadMine();
+}
+
+/** Deletes my row for a series ("not seen after all"); a queued write for it is dropped first. */
+export async function removeEntry(tmdbId) {
+  const user = await currentUser();
+  if (!user) throw new Error("not signed in");
+  const st = ls();
+  if (st) dequeue(st, tmdbId);
+  const prev = mine.get(tmdbId);
+  mine.delete(tmdbId);
+  const c = await getClient();
+  const { error } = await c.from("entries").delete().eq("user_id", user.id).eq("tmdb_id", tmdbId);
+  if (error) { if (prev) mine.set(tmdbId, prev); throw error; }
 }
 
 /** Optimistic: local map updates at once; the write goes to the server, or the queue on failure. */

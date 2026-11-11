@@ -3,9 +3,13 @@
 // so a broken CDN or Supabase outage shows one box here and nothing else on the site changes.
 import { esc, safeImg } from "../lib/esc.js";
 import { nextEpisode, progress } from "../lib/progress.js";
+import { pickPartner, jointPick } from "../lib/jointpick.js";
 
 export const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
+export const BAD_INVITE = "הקישור לא תקין או שפג תוקפו";
 const PACE = 2;
+const FEED_N = 20;
+const BUSY = new Set(["seen", "watching", "dropped"]);
 
 /* ───────── pure rendering ───────── */
 
@@ -96,6 +100,7 @@ function signinHTML(st) {
     <p>שומרים מה ראיתם ומה נתתם, ורואים מה החברים בוחרים.</p>
     <button class="btn primary block" data-a="signin-google">כניסה עם Google</button>
     ${mail}${msg}${move}
+    ${st.joinWait ? `<p class="fine">אחרי הכניסה נצרף אתכם למעגל שהוזמנתם אליו.</p>` : ""}
   </div></section>`;
 }
 
@@ -109,11 +114,118 @@ function nameStepHTML(st, name) {
   </form>`;
 }
 
+/* ── the circle ── */
+
+/** "א", "א וב", "א, ב וג" (items already escaped). */
+const andList = xs => xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " ו" + xs[xs.length - 1];
+
+/** Relative time in Hebrew, for the feed. */
+export function ago(iso, now = Date.now()) {
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return "";
+  const m = Math.max(0, Math.floor((now - t) / 60e3)), h = Math.floor(m / 60), d = Math.floor(h / 24);
+  if (m < 1) return "עכשיו";
+  if (m < 60) return m === 1 ? "לפני דקה" : `לפני ${m} דקות`;
+  if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`;
+  if (d < 2) return "אתמול";
+  if (d < 7) return `לפני ${d} ימים`;
+  return new Date(t).toLocaleDateString("he-IL", { day: "numeric", month: "long" });
+}
+
+const faceOf = (members, uid) => {
+  const k = members.findIndex(m => m.id === uid);
+  const m = members[k];
+  return `<span class="face f${(Math.max(0, k) % 4) + 1}" aria-hidden="true">${initial(m ? m.name : "?")}</span>`;
+};
+
+function feedLine(ev, who, t) {
+  const n = ev.rating ? +ev.rating : null;
+  switch (ev.kind) {
+    case "rated": return `${who}: ציון ${n} ל-${t}`;
+    case "finished": return `${who}: סיום של ${t}${n ? ` · ${n}` : ""}`;
+    case "started": return `${who}: התחלה של ${t}`;
+    case "wanted": return `${who}: רוצה לראות את ${t}`;
+    case "dropped": return `${who}: נטישה של ${t}${ev.season ? ` בעונה ${+ev.season}` : ""}`;
+    default: return "";
+  }
+}
+
+/** The 20 newest events; a 'rated' that came with the same 'finished' write is folded into it. */
+function feedHTML(st, members) {
+  const idx = indexById(st.S);
+  const evs = (st.feed || []).slice().sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)) || (b.id || 0) - (a.id || 0)).slice(0, FEED_N);
+  const twin = r => evs.some(f => f.kind === "finished" && f.user_id === r.user_id && f.tmdb_id === r.tmdb_id && f.rating === r.rating
+    && Math.abs(Date.parse(f.created_at) - Date.parse(r.created_at)) < 60e3);
+  const rows = evs.filter(e => !(e.kind === "rated" && twin(e))).map(e => {
+    const m = members.find(x => x.id === e.user_id);
+    const i = idx.get(e.tmdb_id);
+    const title = i !== undefined ? st.S[i].n : (st.titles && st.titles.get(e.tmdb_id)) || "סדרה";
+    const line = feedLine(e, `<bdi>${esc(m ? m.name : "")}</bdi>`, `<bdi>${esc(title)}</bdi>`);
+    return line ? `<div class="it fe">${faceOf(members, e.user_id)}<div class="i"><b>${line}</b><small>${ago(e.created_at, st.now)}</small></div></div>` : "";
+  }).join("");
+  return rows ? `<div class="sh"><h3>מה קורה במעגל</h3></div><div class="card feed">${rows}</div>` : "";
+}
+
+function jointHTML(st, members) {
+  const p = st.pick; if (!p) return "";
+  const idx = indexById(st.S), i = idx.get(p.tmdbId);
+  if (i === undefined) return "";
+  const s = st.S[i];
+  const me = members.find(m => m.id === st.user.id), them = members.find(m => m.id === p.partner);
+  const pair = `<bdi>${esc(me ? me.name : "")}</bdi> ו<bdi>${esc(them ? them.name : "")}</bdi>`;
+  const k = p.mode === "fallback" ? `אף אחד במעגל עוד לא ראה · הצעה ל${pair}` : `בינג׳ משותף · ${pair}`;
+  const why = p.mode === "fallback" ? "" : p.mode === "yes" ? `<p><bdi>${esc(them ? them.name : "")}</bdi> כבר רואה. מצטרפים?</p>` : `<p>אף אחד מכם לא ראה · שניכם רוצים</p>`;
+  const ev = progress({ season: 1, episode: 0 }, s, st.pace || PACE).eveningsLeft;
+  const facts = [ev ? (ev === 1 ? "ערב אחד" : `${ev} ערבים`) : "", s.bs != null ? `בינג׳ ${Math.round(s.bs)}` : ""].filter(Boolean).join(" · ");
+  const src = safeImg(s.poster);
+  return `<div class="joint"><div class="k">${k}</div>
+    <div class="t">${src ? `<img src="${src}" alt="" loading="lazy">` : ""}<div><h3><button class="ttl" data-a="detail" data-i="${i}"><bdi>${esc(s.n)}</bdi></button></h3>${why}${facts ? `<p>${facts}</p>` : ""}</div></div>
+    <div class="row2"><button class="btn primary" data-a="pick-yes" data-id="${s.tmdbId}">יאללה</button><button class="btn ghost" data-a="pick-skip" data-id="${s.tmdbId}">הצעה אחרת</button></div></div>`;
+}
+
+function circleHTML(st) {
+  if (st.circleErr) return `<div class="sh"><h3>המעגל</h3></div><div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn ghost" data-a="mretry">נסו שוב</button></div>`;
+  if (st.circle === undefined) return "";
+  if (!st.circle) {
+    const form = st.joinOpen ? `<form class="joinf" data-f="join"><label for="mine-join">הדביקו את קישור ההזמנה שקיבלתם</label>
+      <input class="search" id="mine-join" type="text" dir="ltr" required autocomplete="off" placeholder="https://…#join=…">
+      <button class="btn primary" type="submit">הצטרפות</button></form>` : "";
+    return `<div class="sh"><h3>המעגל</h3></div><div class="card circle0">
+      <p>מעגל הוא כמה חברים שרואים מה כל אחד ראה ורוצה לראות, ומקבלים הצעה לבינג׳ משותף.</p>
+      <div class="row2"><button class="btn primary" data-a="circle-create">פתחו מעגל</button><button class="btn ghost" data-a="circle-have" aria-expanded="${!!st.joinOpen}">יש לי קישור הזמנה</button></div>${form}</div>`;
+  }
+  const members = st.circle.members || [];
+  const faces = `<div class="faces">${members.map(m => `<span class="face f${(members.indexOf(m) % 4) + 1}" title="${esc(m.name)}">${initial(m.name)}</span>`).join("")}</div>`;
+  const alone = members.filter(m => m.id !== st.user.id).length === 0;
+  return `<div class="sh"><h3>המעגל</h3>${faces}</div>
+    ${alone ? `<div class="card circle0"><p>עוד אין אף אחד במעגל. שלחו לחברים קישור הזמנה.</p></div>` : jointHTML(st, members)}
+    ${feedHTML(st, members)}
+    <div class="invite"><button class="btn ghost block" data-a="circle-invite">הזמנת חבר למעגל</button><button class="linkbtn" data-a="circle-leave">עזיבת המעגל</button></div>`;
+}
+
+function confirmHTML(c) {
+  const names = andList((c.names || []).map(n => `<bdi>${esc(n)}</bdi>`));
+  const where = names ? `אתם כבר במעגל עם ${names}.` : "אתם כבר במעגל אחר.";
+  const [q, yes, no] = c.kind === "join" ? [`${where} לעבור?`, "לעבור", "להישאר"]
+    : c.kind === "create" ? [`${where} לפתוח מעגל חדש?`, "לפתוח מעגל חדש", "ביטול"]
+    : ["לעזוב את המעגל? החברים יפסיקו לראות את הרשימות שלך, ואת שלהם כבר לא תראו.", "לעזוב", "ביטול"];
+  return `<div class="confirm" role="group" aria-labelledby="mine-cq"><p id="mine-cq">${q}</p>
+    <div class="row2"><button class="btn primary" data-a="confirm-yes">${yes}</button><button class="btn ghost" data-a="confirm-no">${no}</button></div></div>`;
+}
+
+function noticeHTML(msg) {
+  return `<div class="confirm notice" role="status"><p>${esc(msg)}</p><button class="linkbtn" data-a="notice-x">סגירה</button></div>`;
+}
+
 export function unavailableHTML() {
   return `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="mretry">נסו שוב</button></div>`;
 }
 
-/** state: {user, profile, created, naming, entries, S, scores, circle, feed, pick, localSeen, pace, prompt, seenSort, emailOpen, msg, loading, error} */
+/**
+ * state: {user, profile, created, naming, entries, S, scores, localSeen, pace, prompt, seenSort, emailOpen, msg, loading, error,
+ *   circle: undefined (loading) | null (none) | {id, invite_code, members}, feed: Event[], pick: {tmdbId, mode, partner} | null,
+ *   titles: Map<tmdbId, title>, confirm: {kind: 'join'|'create'|'leave', names}, notice, joinOpen, joinWait, circleErr, now}
+ */
 export function mineHTML(state) {
   const st = state || {};
   if (st.error) return unavailableHTML();
@@ -121,8 +233,8 @@ export function mineHTML(state) {
   if (!st.user) return signinHTML(st);
   const name = (st.profile && st.profile.name) || st.user.name || "";
   const slug = st.profile && st.profile.share_slug;
-  const circle = st.circle && st.circle.members && st.circle.members.length
-    ? `<small>במעגל עם ${st.circle.members.filter(m => m.id !== st.user.id).map(m => esc(m.name)).join(", ")}</small>` : "";
+  const others = st.circle && st.circle.members ? st.circle.members.filter(m => m.id !== st.user.id) : [];
+  const circle = others.length ? `<small>במעגל עם ${andList(others.map(m => `<bdi>${esc(m.name)}</bdi>`))}</small>` : "";
   const share = slug
     ? `<div class="shared"><span>הקישור לשיתוף פעיל</span><button class="linkbtn" data-a="share" data-v="copy">העתקה</button><button class="linkbtn" data-a="share" data-v="off">כיבוי</button></div>`
     : "";
@@ -131,8 +243,10 @@ export function mineHTML(state) {
       <div class="who"><h2 data-focus tabindex="-1">הבינג׳ים של ${esc(name)}</h2>${circle}${st.created || st.naming ? "" : `<button class="linkbtn rename" data-a="rename">שינוי שם</button>`}</div>
       ${slug ? "" : `<button class="btn ghost" data-a="share" data-v="on">שיתוף</button>`}</div>
     ${st.created || st.naming ? nameStepHTML(st, name) : ""}
+    ${st.confirm ? confirmHTML(st.confirm) : st.notice ? noticeHTML(st.notice) : ""}
     ${share}
     ${listsHTML(rowsOf(st.entries), st.S, st, false)}
+    ${circleHTML(st)}
     <div class="foot"><button class="linkbtn" data-a="signout">יציאה מהחשבון</button></div>
   </section>`;
 }
@@ -151,19 +265,21 @@ export function sharedHTML(data, S) {
 
 let V = { loading: true };       // view state for mineHTML
 let ROOT = null, CTX = null, mod = null, authSub = false, seq = 0, needFocus = false;
+let wantTop = false; // focus the confirm/notice box on each paint until the user acts
 let knownUid; // undefined until the first load resolves the session; then the user id or null
 
-const loadMods = async () => mod || (mod = await Promise.all([import("../lib/account/auth.js"), import("../lib/account/store.js")])
-  .then(([auth, store]) => ({ auth, store }))
+const loadMods = async () => mod || (mod = await Promise.all([import("../lib/account/auth.js"), import("../lib/account/store.js"), import("../lib/account/circle.js")])
+  .then(([auth, store, circle]) => ({ auth, store, circle }))
   .catch(e => { mod = null; throw e; }));
 
 function paint() {
   if (!ROOT || !ROOT.isConnected) return;
   ROOT.innerHTML = CTX.share ? (V.sharedErr ? unavailableHTML() : V.shared === undefined ? mineHTML({ loading: true }) : sharedHTML(V.shared, CTX.S))
-    : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0 });
+    : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0, joinWait: !V.user && !!pendingJoin(), now: Date.now() });
   // First content paint after a mount: move focus to the tab's heading (the loading box has none).
   const h = needFocus && ROOT.querySelector("[data-focus]");
   if (h) { needFocus = false; h.focus({ preventScroll: true }); }
+  placeTop();
 }
 
 async function loadShared() {
@@ -195,18 +311,119 @@ async function load() {
     const user = await auth.currentUser();
     knownUid = user ? user.id : null;
     if (!user) { if (my === seq) V = { user: null, emailOpen: V.emailOpen, email: V.email, msg: V.msg }; return paint(); }
+    const same = V.user && V.user.id === user.id;
     const fallback = user.name || (user.email || "").split("@")[0];
     const { profile, created } = await auth.ensureProfile(fallback);
     if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
     const entries = await store.loadMine();
     if (my !== seq) return;
     // created stays true until the name is saved, so a remount keeps showing the name step.
-    V = { user, profile, entries, created: created || (V.created && V.user && V.user.id === user.id), naming: V.naming, prompt: V.prompt, seenSort: V.seenSort };
+    const keep = same ? { naming: V.naming, prompt: V.prompt, seenSort: V.seenSort, confirm: V.confirm, notice: V.notice, joinOpen: V.joinOpen,
+      circle: V.circle, cs: V.cs, feed: V.feed, titles: V.titles, pick: V.pick, skipLocal: V.skipLocal } : {};
+    V = { ...keep, user, profile, entries, created: created || (V.created && same) };
   } catch (e) {
     if (my !== seq) return;
     V = { error: true };
+    return paint();
   }
   paint();
+  const code = pendingJoin();
+  if (code) await doJoin(code, false);
+  await refreshCircle();
+}
+
+/* ── circle: invite links, loading, joint pick ── */
+
+const JOIN_KEY = "bingology:join";
+const ls = () => { try { return localStorage; } catch (e) { return null; } };
+function pendingJoin() { try { return (ls() && ls().getItem(JOIN_KEY)) || null; } catch (e) { return null; } }
+function setJoin(code) { try { const s = ls(); if (s) code ? s.setItem(JOIN_KEY, code) : s.removeItem(JOIN_KEY); } catch (e) { /* storage unavailable */ } }
+/** The code from a pasted invite link (…#join=<code>) or a bare code; null when it is neither. */
+function codeFrom(text) {
+  const t = String(text || "").trim();
+  const m = /#join=([^&\s#]+)/.exec(t) || /^([A-Za-z0-9]{4,64})$/.exec(t);
+  if (!m) return null;
+  try { return decodeURIComponent(m[1]).slice(0, 64); } catch (e) { return null; }
+}
+
+async function refreshCircle() {
+  if (!V.user) return;
+  const uid = V.user.id;
+  try {
+    const { circle } = await loadMods();
+    const cs = await circle.loadCircle();
+    if (!V.user || V.user.id !== uid) return;
+    const titles = new Map();
+    for (const rows of cs.rows.values()) for (const [id, e] of rows) if (e.title) titles.set(id, e.title);
+    Object.assign(V, { cs, circle: cs.circle ? { ...cs.circle, members: cs.members } : null, feed: cs.feed, titles, circleErr: false });
+    computePick();
+  } catch (e) {
+    if (V.user && V.user.id === uid) V.circleErr = true;
+  }
+  paint();
+}
+
+/** Me + the member I share the most "want" with; votes from either of us steer the pick. */
+function computePick() {
+  const cs = V.cs, me = V.user && V.user.id;
+  V.pick = null;
+  if (!cs || !cs.circle || !me) return;
+  const lists = new Map(cs.lists);
+  lists.set(me, new Map([...V.entries.values()].map(e => [e.tmdb_id, e.status])));
+  const partner = pickPartner(me, lists);
+  if (!partner) return;
+  const skipped = new Set(V.skipLocal || []);
+  for (const v of cs.votes) if (v.vote === "skip" && (v.user_id === me || v.user_id === partner)) skipped.add(v.tmdb_id);
+  const mine = lists.get(me);
+  // The partner already said "יאללה" (and started it): offer that first, until I answer it.
+  const yes = cs.votes.find(v => v.vote === "yes" && v.user_id === partner && !skipped.has(v.tmdb_id) && !BUSY.has(mine.get(v.tmdb_id))
+    && seriesOf(v.tmdb_id) && !cs.votes.some(w => w.user_id === me && w.tmdb_id === v.tmdb_id));
+  if (yes) { V.pick = { tmdbId: yes.tmdb_id, mode: "yes", partner }; return; }
+  const S = CTX.S || [];
+  const p = jointPick(S, S.map(s => ({ score: s.bs })), lists, [me, partner], skipped);
+  V.pick = p ? { ...p, partner } : null;
+}
+
+async function doJoin(code, force) {
+  const { circle } = await loadMods();
+  let r;
+  try { r = await circle.joinCircle(code, force); }
+  catch (e) { V.notice = ACCOUNT_DOWN; return paint(); } // keep the code: retried on the next load
+  setJoin(null);
+  V.confirm = null; V.joinOpen = false;
+  if (r && r.error === "in_other_circle") V.confirm = { kind: "join", code, names: r.circle_names || [] };
+  else if (r && r.ok) { V.notice = r.noop ? "אתם כבר במעגל הזה." : "הצטרפתם למעגל!"; V.skipLocal = new Set(); }
+  else V.notice = BAD_INVITE;
+  paint();
+  focusTop();
+}
+
+async function doCreate() {
+  const { circle } = await loadMods();
+  await circle.createCircle();
+  V.confirm = null; V.skipLocal = new Set();
+  V.notice = "המעגל נפתח. עכשיו שלחו לחברים קישור הזמנה.";
+  await refreshCircle();
+}
+
+async function invite() {
+  const { circle } = await loadMods();
+  const url = circle.inviteUrl(V.circle.invite_code);
+  if (navigator.share) {
+    try { await navigator.share({ title: "Bingology", text: "בואו למעגל שלי ב-Bingology", url }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  const ok = CTX.copy ? await CTX.copy(url) : false;
+  if (CTX.toast) CTX.toast(ok ? "קישור ההזמנה הועתק. שלחו אותו למי שתרצו במעגל." : "זה קישור ההזמנה. העתיקו אותו ושלחו לחברים.", url);
+}
+
+/** Move focus to the confirm / notice box at the top (now and after the next repaints), so keyboard and screen-reader users meet it. */
+function focusTop() { wantTop = true; placeTop(); }
+function placeTop() {
+  const b = wantTop && ROOT && ROOT.querySelector(".confirm button");
+  if (!b) return;
+  b.focus({ preventScroll: true });
+  b.closest(".confirm").scrollIntoView({ block: "nearest" });
 }
 
 const seriesOf = id => { const S = CTX.S || []; return S.find(s => s.tmdbId === id) || null; };
@@ -217,7 +434,11 @@ async function save(id, patch) {
   const prev = V.entries.get(id);
   V.entries.set(id, { ...prev, ...patch, tmdb_id: id }); // optimistic
   paint();
-  try { V.entries.set(id, await store.saveEntry(id, { ...meta(id, prev), ...patch })); }
+  try {
+    const row = await store.saveEntry(id, { ...meta(id, prev), ...patch });
+    V.entries.set(id, row);
+    if (CTX.onSeen) CTX.onSeen(id, row.status === "seen" || row.status === "dropped");
+  }
   catch (e) { if (prev) V.entries.set(id, prev); else V.entries.delete(id); if (CTX.toast) CTX.toast("השינוי לא נשמר"); }
   paint();
 }
@@ -231,6 +452,7 @@ async function copyShare(slug) {
 
 async function onClick(ev) {
   const el = ev.target.closest("[data-a]"); if (!el || !ROOT.contains(el)) return;
+  wantTop = false;
   const a = el.dataset.a, v = el.dataset.v, id = el.dataset.id !== undefined ? +el.dataset.id : null;
   try {
     switch (a) {
@@ -250,6 +472,48 @@ async function onClick(ev) {
       }
       case "rate": V.prompt = null; await save(id, { status: "seen", rating: +v || null }); break;
       case "rate-cancel": V.prompt = null; paint(); break;
+      case "circle-have": V.joinOpen = !V.joinOpen; paint(); { const f = ROOT.querySelector("#mine-join"); if (f) f.focus(); } break;
+      case "circle-create": {
+        const { circle } = await loadMods();
+        const cs = await circle.loadCircle(); // fresh: another device may have joined a circle meanwhile
+        if (cs.circle) { V.confirm = { kind: "create", names: cs.members.filter(m => m.id !== V.user.id).map(m => m.name) }; paint(); focusTop(); }
+        else await doCreate();
+        break;
+      }
+      case "circle-leave": V.confirm = { kind: "leave" }; paint(); focusTop(); break;
+      case "circle-invite": await invite(); break;
+      case "confirm-no": if (V.confirm && V.confirm.kind === "join") setJoin(null); V.confirm = null; paint(); break;
+      case "confirm-yes": {
+        const c = V.confirm; if (!c) break;
+        if (c.kind === "join") { await doJoin(c.code, true); await refreshCircle(); }
+        else if (c.kind === "create") await doCreate();
+        else {
+          const { circle } = await loadMods();
+          await circle.leaveCircle();
+          V.confirm = null; V.pick = null; V.skipLocal = new Set();
+          V.notice = "עזבתם את המעגל. החברים כבר לא רואים את הרשימות שלך.";
+          await refreshCircle();
+        }
+        break;
+      }
+      case "notice-x": V.notice = null; paint(); break;
+      case "pick-skip": {
+        (V.skipLocal = V.skipLocal || new Set()).add(id);
+        computePick(); paint();
+        const { circle } = await loadMods();
+        circle.vote(id, "skip").catch(() => { if (CTX.toast) CTX.toast("השינוי לא נשמר"); });
+        break;
+      }
+      case "pick-yes": {
+        // RLS lets me write only my own row: the partner gets it on their own "יאללה".
+        const { circle } = await loadMods();
+        await circle.vote(id, "yes");
+        if (V.cs) V.cs.votes.push({ tmdb_id: id, user_id: V.user.id, vote: "yes" });
+        await save(id, { status: "watching", season: 1, episode: 1 });
+        computePick(); paint();
+        if (CTX.toast && (V.entries.get(id) || {}).status === "watching") CTX.toast("נוסף ל\"רואה עכשיו\". בהצלחה!");
+        break;
+      }
       case "share": {
         const { store } = await loadMods();
         if (v === "copy") { await copyShare(V.profile.share_slug); break; }
@@ -278,6 +542,14 @@ async function saveName(f) {
 }
 
 async function onSubmit(ev) {
+  const jf = ev.target.closest("[data-f=join]");
+  if (jf) {
+    ev.preventDefault();
+    const code = codeFrom(jf.querySelector("#mine-join").value);
+    if (!code) { V.notice = BAD_INVITE; paint(); return focusTop(); }
+    try { await doJoin(code, false); await refreshCircle(); } catch (e) { if (CTX.toast) CTX.toast(ACCOUNT_DOWN); }
+    return;
+  }
   if (ev.target.closest("[data-f=name]")) { ev.preventDefault(); return saveName(ev.target.closest("[data-f=name]")); }
   const f = ev.target.closest("[data-f=signin-email]"); if (!f) return;
   ev.preventDefault();
@@ -299,10 +571,12 @@ if (typeof window !== "undefined") {
 }
 
 /**
- * ctx: {S, storage, pace, share (slug|null), localSeen() -> number, toast(msg, url?), copy(text) -> Promise<bool>}
+ * ctx: {S, storage, pace, share (slug|null), join (invite code from #join=|null), localSeen() -> number,
+ *   toast(msg, url?), copy(text) -> Promise<bool>, onSeen(tmdbId, seenOrDropped)}
  * Paints cached state at once (app.js re-renders the whole page often), then refreshes.
  */
 export async function mountMine(root, ctx) {
+  if (ctx.join) { setJoin(String(ctx.join).slice(0, 64)); history.replaceState(null, "", location.pathname + location.search); }
   const modeChanged = !CTX || !!CTX.share !== !!ctx.share || (ctx.share && CTX.share !== ctx.share);
   ROOT = root; CTX = ctx;
   if (modeChanged) V = { loading: true };

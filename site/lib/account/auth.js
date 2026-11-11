@@ -33,6 +33,12 @@ export async function ensureProfile(defaultName) {
   if (got.data) return { profile: got.data, created: false };
   const name = String(defaultName || "").trim().slice(0, 40) || "Bingologist";
   const ins = await c.from("profiles").insert({ id: user.id, name }).select("id,name,circle_id,share_slug").single();
+  if (ins.error && ins.error.code === "23505") {
+    // A parallel mount (the sign-in return clears the hash, which re-renders) created it first.
+    const again = await c.from("profiles").select("id,name,circle_id,share_slug").eq("id", user.id).single();
+    if (again.error) throw again.error;
+    return { profile: again.data, created: true };
+  }
   if (ins.error) throw ins.error;
   return { profile: ins.data, created: true };
 }
