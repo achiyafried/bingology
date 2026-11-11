@@ -617,7 +617,8 @@ function footerHTML() {
   const d = st.updatedAt ? new Date(st.updatedAt).toLocaleDateString("he-IL", { day: "numeric", month: "long", year: "numeric" }) : "";
   return `<footer class="credits">${d ? `<p>הנתונים עודכנו ב-${d}</p>` : ""}
   <p dir="ltr"><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" height="12"> This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-  <p>נתוני זמינות: JustWatch</p></footer>`;
+  <p>נתוני זמינות: JustWatch</p>
+  <p><a href="privacy.html">מדיניות פרטיות · Privacy</a></p></footer>`;
 }
 
 /* "שלי" tab: the account code loads only here (or for a #u= / #join= / sign-in return link), never at startup —
