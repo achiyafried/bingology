@@ -4,11 +4,14 @@
 import { esc, safeImg } from "../lib/esc.js";
 import { nextEpisode, progress } from "../lib/progress.js";
 import { pickPartner, jointPick } from "../lib/jointpick.js";
+import { searchSeries } from "../lib/search.js";
 
 export const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
 export const BAD_INVITE = "הקישור לא תקין או שפג תוקפו";
 const PACE = 2;
 const FEED_N = 20;
+const QUICK_N = 8;
+const QUICK = [["seen", "ראיתי"], ["want", "רוצה"], ["watching", "רואה עכשיו"]];
 const BUSY = new Set(["seen", "watching", "dropped"]);
 
 /* ───────── pure rendering ───────── */
@@ -85,6 +88,31 @@ function listsHTML(rows, S, st, ro) {
   const body = sec("רואה עכשיו", watching, watchingRow) + sec("רוצה לראות", want, wantRow) + sec("ראיתי", seen, seenRow, sortBtn);
   return `<div class="stats">${stats.map(([t, n]) => `<div class="stat"><strong>${n}</strong><span>${t}</span></div>`).join("")}</div>`
     + (body || `<div class="empty"><p>${ro ? "עוד אין כאן סדרות." : "עוד אין כאן סדרות. סמנו \"כבר ראיתי\" ברשימה, או פתחו סדרה והוסיפו אותה."}</p></div>`);
+}
+
+/* ── quick add: search a series and mark it without leaving the tab ── */
+
+/** The results under the search field: "" for an empty query, else up to 8 rows with status buttons. */
+export function quickResultsHTML(st) {
+  const q = String(st.q || "").trim();
+  if (!q) return "";
+  const S = st.S || [];
+  const ids = searchSeries(S, q, QUICK_N);
+  if (!ids.length) return q.length < 2 ? "" : `<p class="fine">לא מצאנו סדרה בשם הזה</p>`;
+  const mine = new Map(rowsOf(st.entries).map(e => [e.tmdb_id, e.status]));
+  return `<div class="card">${ids.map(i => {
+    const s = S[i], cur = mine.get(s.tmdbId), src = safeImg(s.poster);
+    const img = src ? `<img src="${src}" alt="" loading="lazy">` : `<span class="noimg" aria-hidden="true"></span>`;
+    const btns = QUICK.map(([v, t]) => `<button class="plus" data-a="quick" data-id="${s.tmdbId}" data-v="${v}" aria-pressed="${cur === v}">${t}</button>`).join("");
+    return `<div class="it qr"><div class="it-main">${img}<span class="i"><b><bdi>${esc(s.n)}</bdi></b></span></div><div class="qb" role="group" aria-label="${esc(s.n)}">${btns}</div></div>`;
+  }).join("")}</div>`;
+}
+
+function quickHTML(st) {
+  const q = st.q || "";
+  return `<div class="quick"><label for="mine-q">הוספת סדרה</label>
+    <div class="qrow"><input class="search" id="mine-q" type="text" autocomplete="off" enterkeyhint="search" placeholder="חיפוש סדרה לפי שם" value="${esc(q)}"><button class="linkbtn qx" type="button" data-a="q-clear" aria-label="ניקוי החיפוש"${q ? "" : " hidden"}>✕</button></div>
+    <div class="qres" id="mine-qr" aria-live="polite">${quickResultsHTML(st)}</div></div>`;
 }
 
 function signinHTML(st) {
@@ -246,6 +274,7 @@ export function mineHTML(state) {
     ${st.created || st.naming ? nameStepHTML(st, name) : ""}
     ${st.confirm ? confirmHTML(st.confirm) : st.notice ? noticeHTML(st.notice) : ""}
     ${share}
+    ${quickHTML(st)}
     ${listsHTML(rowsOf(st.entries), st.S, st, false)}
     ${circleHTML(st)}
     <div class="foot"><button class="linkbtn" data-a="signout">יציאה מהחשבון</button></div>
@@ -273,14 +302,51 @@ const loadMods = async () => mod || (mod = await Promise.all([import("../lib/acc
   .then(([auth, store, circle]) => ({ auth, store, circle }))
   .catch(e => { mod = null; throw e; }));
 
+/** The quick-add field or status button that has focus, so a repaint can hand focus back to its twin. */
+function quickFocus() {
+  const a = ROOT && document.activeElement;
+  if (!a || !ROOT.contains(a)) return null;
+  if (a.id === "mine-q") return { sel: "#mine-q", start: a.selectionStart, end: a.selectionEnd };
+  if (a.dataset.a === "quick") return { sel: `[data-a="quick"][data-id="${+a.dataset.id}"][data-v="${a.dataset.v}"]` };
+  return null;
+}
+
 function paint() {
   if (!ROOT || !ROOT.isConnected) return;
+  const qf = !needFocus && quickFocus();
   ROOT.innerHTML = CTX.share ? (V.sharedErr ? unavailableHTML() : V.shared === undefined ? mineHTML({ loading: true }) : sharedHTML(V.shared, CTX.S))
     : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0, joinWait: !V.user && !!pendingJoin(), now: Date.now() });
   // First content paint after a mount: move focus to the tab's heading (the loading box has none).
   const h = needFocus && ROOT.querySelector("[data-focus]");
   if (h) { needFocus = false; h.focus({ preventScroll: true }); }
+  const back = qf && ROOT.querySelector(qf.sel);
+  if (back) { back.focus({ preventScroll: true }); if (qf.start != null) back.setSelectionRange(qf.start, qf.end); }
   placeTop();
+}
+
+/* ── quick add: the field repaints only its results, so typing keeps focus and caret ── */
+let qTimer = 0;
+function paintQuick() {
+  const box = ROOT && ROOT.querySelector("#mine-qr"), x = ROOT && ROOT.querySelector(".qx");
+  if (!box) return;
+  box.innerHTML = quickResultsHTML({ q: V.q, entries: V.entries, S: CTX.S });
+  if (x) x.hidden = !V.q;
+}
+function onInput(ev) {
+  if (ev.target.id !== "mine-q") return;
+  V.q = ev.target.value;
+  clearTimeout(qTimer);
+  qTimer = setTimeout(paintQuick, 120);
+}
+function clearQuick() {
+  clearTimeout(qTimer);
+  V.q = "";
+  const f = ROOT.querySelector("#mine-q");
+  if (f) { f.value = ""; f.focus(); }
+  paintQuick();
+}
+function onKey(ev) {
+  if (ev.key === "Escape" && ev.target.id === "mine-q" && ev.target.value) { ev.preventDefault(); clearQuick(); }
 }
 
 async function loadShared() {
@@ -319,7 +385,7 @@ async function load() {
     const entries = await store.loadMine();
     if (my !== seq) return;
     // created stays true until the name is saved, so a remount keeps showing the name step.
-    const keep = same ? { naming: V.naming, prompt: V.prompt, seenSort: V.seenSort, confirm: V.confirm, notice: V.notice, joinOpen: V.joinOpen,
+    const keep = same ? { q: V.q, naming: V.naming, prompt: V.prompt, seenSort: V.seenSort, confirm: V.confirm, notice: V.notice, joinOpen: V.joinOpen,
       circle: V.circle, cs: V.cs, feed: V.feed, titles: V.titles, pick: V.pick, skipLocal: V.skipLocal } : {};
     V = { ...keep, user, profile, entries, created: created || (V.created && same) };
   } catch (e) {
@@ -488,6 +554,14 @@ async function onClick(ev) {
       case "signout": { const { auth } = await loadMods(); await auth.signOut(); knownUid = null; V = { user: null }; paint(); break; }
       case "rename": V.naming = true; paint(); { const f = ROOT.querySelector("#mine-name"); if (f) { f.focus(); f.select(); } } break;
       case "rename-cancel": V.naming = false; paint(); break;
+      case "q-clear": clearQuick(); break;
+      case "quick": {
+        // Same save path as every status change: meta() adds title + poster from today's data on the first write.
+        const e = V.entries.get(id);
+        if (!seriesOf(id) || (e && e.status === v)) break;
+        await save(id, { status: v });
+        break;
+      }
       case "seensort": V.seenSort = V.seenSort === "date" ? "rating" : "date"; paint(); break;
       case "plus": {
         const e = V.entries.get(id); if (!e) break;
@@ -609,6 +683,8 @@ export async function mountMine(root, ctx) {
   needFocus = true;
   root.addEventListener("click", onClick);
   root.addEventListener("submit", onSubmit);
+  root.addEventListener("input", onInput);
+  root.addEventListener("keydown", onKey);
   paint();
   await (ctx.share ? loadShared() : load());
 }
