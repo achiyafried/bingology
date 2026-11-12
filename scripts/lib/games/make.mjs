@@ -15,7 +15,7 @@ const ATTEMPTS = 50;
 // No-repeat windows in days. `actors` (blur) keeps the full recentDays window;
 // odd keeps its own actor list so its fast rotation doesn't starve blur.
 export const ODD_RECENT_DAYS = 14;
-export const GROUPS_RECENT_DAYS = 7;
+export const GROUPS_RECENT_DAYS = 5;
 const FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
 const KEYS = ["series", "actors", "pairs", "oddActors", "groups"];
 const WINDOWS = { oddActors: ODD_RECENT_DAYS, groups: GROUPS_RECENT_DAYS };
