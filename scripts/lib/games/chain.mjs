@@ -56,7 +56,7 @@ export function make(pool, rng, recent) {
       [...dist].filter(([id, x]) => x === d && !recent.pairs.has(pairKey(from, id))).map(([id]) => id);
     const threes = ok(3);
     const twos = ok(2);
-    const shortest = threes.length ? 3 : twos.length ? 2 : 0;
+    const shortest = threes.length && twos.length ? (rng() < 0.5 ? 2 : 3) : threes.length ? 3 : twos.length ? 2 : 0;
     if (!shortest) continue;
     const cands = shortest === 3 ? threes : twos;
     const to = cands[Math.floor(rng() * cands.length)];

@@ -46,7 +46,7 @@ test("shortest is 2 or 3 and matches shortestActors; limit = shortest + 2", () =
     assert.equal(puzzle.limit, puzzle.shortest + 2);
     assert.ok(p.knownIds.has(puzzle.from) && p.knownIds.has(puzzle.to));
   }
-  assert.ok(seen.size >= 1);
+  assert.deepEqual([...seen].sort(), [2, 3]);
 });
 
 test("series map is complete within limit, minimal beyond, and reaches the target", () => {
