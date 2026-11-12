@@ -242,3 +242,10 @@ test("riddleHTML done: answer, escaped explain, series button only when the seri
 test("howHTML explains the riddle", () => {
   assert.ok(howHTML("riddle", riddle).includes("התשובה היא שם של סדרה"));
 });
+
+test("riddleHTML done: the boxes spell the answer with its final letters", () => {
+  const p = { clue: "c", answer: "הנותרים", words: [7], tmdbId: 54344 };
+  const boxes = h => [...h.matchAll(/class="g-box[^"]*">([^<]*)</g)].map(m => m[1]).join("");
+  assert.equal(boxes(riddleHTML(p, rs({ letters: [..."הנותרימ"], done: true }))), "הנותרים");
+  assert.equal(boxes(riddleHTML(p, rs({ done: true, gaveUp: true }))), "הנותרים");
+});

@@ -220,7 +220,8 @@ export function riddleHTML(p, s, x = {}) {
   const r = riddle.result(s, p), n = p.words.reduce((a, b) => a + b, 0), full = s.letters.length >= n;
   let k = 0;
   const box = () => {
-    const i = k++, ch = s.done && !r.win ? riddle.letters(p.answer)[i] : s.letters[i];
+    // Once over, the boxes spell the answer as written, final letters included.
+    const i = k++, ch = s.done ? [...p.answer].filter(c => /[א-ת]/.test(c))[i] : s.letters[i];
     const cls = i < s.hints ? " hint" : i === s.letters.length && !s.done ? " cur" : "";
     return `<span class="g-box${cls}">${ch ? esc(ch) : ""}</span>`;
   };
