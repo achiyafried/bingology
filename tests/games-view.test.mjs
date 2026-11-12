@@ -240,7 +240,7 @@ test("riddleHTML done: answer, escaped explain, series button only when the seri
 });
 
 test("howHTML explains the riddle", () => {
-  assert.ok(howHTML("riddle", riddle).includes("התשובה היא שם של סדרה"));
+  assert.ok(howHTML("riddle", riddle).includes("התשובה היא שם של סדרה, כתוב בעברית"));
 });
 
 test("riddleHTML done: the boxes spell the answer with its final letters", () => {
