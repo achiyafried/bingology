@@ -26,7 +26,7 @@ test("3 rounds, distinct actors, odd one lacks the actor", () => {
       assert.ok(round.odd >= 0 && round.odd <= 3);
       assert.equal(round.actor.photo, p.photo.get(round.actor.name) ?? null);
       round.series.forEach((c, k) => {
-        assert.ok(p.knownIds.has(c.id));
+        assert.ok(k === round.odd ? p.knownIds.has(c.id) : p.byId.has(c.id));
         assert.equal(has(p.byId.get(c.id), round.actor.name), k !== round.odd);
       });
     }
@@ -56,8 +56,39 @@ test("skips recent actors", () => {
   for (const n of r.used.actors) assert.ok(!recent.actors.has(n));
 });
 
-test("null when no actor has 3 known series, or pool is empty", () => {
-  const p = buildPool(fixtureSeries(), { known: 2 });
+test("null when no actor has 2 known series, or pool is empty", () => {
+  const p = buildPool(fixtureSeries(), { known: 1 });
   assert.equal(make(p, makeRng("x"), emptyRecent()), null);
   assert.equal(make(buildPool([], { known: 5 }), makeRng("x"), emptyRecent()), null);
+});
+
+const withActors = (names, ids) => {
+  const series = fixtureSeries();
+  for (const s of series) if (ids.includes(s.tmdbId)) for (const n of names) s.cast.push({ name: n, photo: null });
+  return series;
+};
+const onlyRecentExcept = (p, keep) => {
+  const recent = emptyRecent();
+  for (const s of p.all) for (const c of s.cast) if (!keep.includes(c.name)) recent.actors.add(c.name);
+  return recent;
+};
+
+test("an actor with 3 series but only 1 known is never chosen", () => {
+  const p = buildPool(withActors(["Solo Actor"], [1, 59, 60]), { known: 58 });
+  for (let i = 0; i < 30; i++) {
+    const r = make(p, makeRng("solo" + i), emptyRecent());
+    assert.ok(!r.used.actors.includes("Solo Actor"));
+  }
+});
+
+test("an actor with 2 known + 1 unknown series is chosen and the unknown one appears", () => {
+  const stars = ["Star A", "Star B", "Star C"];
+  const p = buildPool(withActors(stars, [1, 2, 60]), { known: 58 });
+  assert.ok(!p.knownIds.has(60));
+  const r = make(p, makeRng("star"), onlyRecentExcept(p, stars));
+  assert.deepEqual([...r.used.actors].sort(), stars);
+  for (const round of r.puzzle.rounds) {
+    assert.ok(round.series.some((c) => c.id === 60));
+    assert.ok(p.knownIds.has(round.series[round.odd].id));
+  }
 });

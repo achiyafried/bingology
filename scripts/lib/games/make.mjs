@@ -12,17 +12,19 @@ import * as blur from "./blur.mjs";
 
 const GENERATORS = { guess, odd, chain, groups, blur };
 const ATTEMPTS = 50;
+export const ODD_RECENT_DAYS = 20;
 const FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
 const KEYS = ["series", "actors", "pairs"];
 
-export function buildDay(pool, date, recent, log = console, gens = GENERATORS) {
+export function buildDay(pool, date, recent, log = console, gens = GENERATORS, oddRecent = null) {
   const games = {};
   const used = { series: [], actors: [], pairs: [] };
   for (const { id } of GAMES) {
     let result = null;
     for (let attempt = 0; attempt < ATTEMPTS && !result; attempt++) {
       try {
-        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), recent) ?? null;
+        const r = id === "odd" && oddRecent ? { ...recent, actors: oddRecent.actors } : recent;
+        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), r) ?? null;
       } catch {
         result = null;
       }
@@ -64,7 +66,9 @@ export function makeDays({
     const date = addDays(today, i);
     const file = path.join(dir, date + ".json");
     if (fs.existsSync(file)) continue;
-    const day = buildDay(pool, date, recentFor(dir, date, recentDays, log), log, gens);
+    const recent = recentFor(dir, date, recentDays, log);
+    const oddRecent = recentFor(dir, date, Math.min(ODD_RECENT_DAYS, recentDays), log);
+    const day = buildDay(pool, date, recent, log, gens, oddRecent);
     fs.writeFileSync(file, JSON.stringify(day) + "\n");
     created.push(date);
     const gone = GAMES.map((g) => g.id).filter((id) => !(id in day.games));

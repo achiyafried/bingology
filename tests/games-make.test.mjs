@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { makeDays, buildDay } from "../scripts/lib/games/make.mjs";
+import { makeDays, buildDay, ODD_RECENT_DAYS } from "../scripts/lib/games/make.mjs";
 import { buildPool, emptyRecent } from "../scripts/lib/games/pool.mjs";
 import { GAMES, addDays, israelToday } from "../site/lib/games/day.js";
 import { fixtureSeries } from "./lib/games-fixture.mjs";
@@ -101,14 +101,35 @@ test("today at 22:30Z is already tomorrow in Israel", () => {
   assert.equal(created[0], "2026-11-13");
 });
 
+test("odd actors use a 20-day window, other games keep 60", () => {
+  assert.equal(ODD_RECENT_DAYS, 20);
+  const dir = tmp();
+  const put = (n, used) => fs.writeFileSync(path.join(dir, addDays(TODAY, -n) + ".json"), JSON.stringify({ used }));
+  put(21, { actors: ["Old"], series: [101] });
+  put(19, { actors: ["Fresh"], series: [102] });
+  const seen = {};
+  const spy = (id) => ({ make: (pool, rng, recent) => {
+    seen[id] ??= { actors: [...recent.actors], series: [...recent.series] };
+    return null;
+  } });
+  makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), chain, groups, blur } }));
+  assert.deepEqual(seen.odd.actors, ["Fresh"]);
+  assert.deepEqual(seen.guess.series.sort(), [101, 102]);
+  assert.deepEqual(seen.guess.actors.sort(), ["Fresh", "Old"]);
+});
+
 const dataPath = new URL("../site/data.json", import.meta.url);
 test("real data: each game present on >= 27 of 30 days", { skip: !fs.existsSync(dataPath) }, () => {
   const series = JSON.parse(fs.readFileSync(dataPath, "utf8")).series;
   const pool = buildPool(series);
   const recent = emptyRecent();
   const counts = Object.fromEntries(GAMES.map((g) => [g.id, 0]));
+  const days = [];
   for (let i = 0; i < 30; i++) {
-    const day = buildDay(pool, addDays("2026-12-01", i), recent, silent);
+    const oddRecent = emptyRecent();
+    for (const d of days.slice(-ODD_RECENT_DAYS)) for (const a of d.used.actors ?? []) oddRecent.actors.add(a);
+    const day = buildDay(pool, addDays("2026-12-01", i), recent, silent, undefined, oddRecent);
+    days.push(day);
     for (const id of Object.keys(day.games)) counts[id]++;
     for (const s of day.used.series ?? []) recent.series.add(s);
     for (const a of day.used.actors ?? []) recent.actors.add(a);
