@@ -1,15 +1,19 @@
-import { card, langName } from "./pool.mjs";
+import { card, langName, leadNames } from "./pool.mjs";
 import { shuffle, sample } from "./rng.mjs";
 
 const TRIES = 200;
 const SIZE = 4;
+// An actor group only gathers series where the actor is billed in the first LEAD names.
+export const LEAD = 5;
+
+export const decadeOf = (year) => (Number.isInteger(year) ? Math.floor(year / 10) * 10 : null);
 
 const castNames = (s) => [...new Set((s.cast ?? []).map((c) => (typeof c === "string" ? c : c.name)))];
 
 export function fits(kind, key, s) {
   if (kind === "actor") return castNames(s).includes(key);
   if (kind === "creator") return (s.creators ?? []).includes(key);
-  if (kind === "year") return s.year === key;
+  if (kind === "decade") return s.year != null && decadeOf(s.year) === key;
   if (kind === "lang") return s.lang === key;
   return false;
 }
@@ -17,7 +21,7 @@ export function fits(kind, key, s) {
 function label(kind, key) {
   if (kind === "actor") return `שחקן/ית משותף/ת: ${key}`;
   if (kind === "creator") return `יוצר/ת: ${key}`;
-  if (kind === "year") return `בכורה ב-${key}`;
+  if (kind === "decade") return `שנות ה-${key}`;
   return `בשפה: ${langName(key)}`;
 }
 
@@ -32,9 +36,9 @@ function candidates(known) {
     buckets.get(k).ids.add(s.tmdbId);
   };
   for (const s of known) {
-    for (const n of castNames(s)) add("actor", n, s);
+    for (const n of leadNames(s, LEAD)) add("actor", n, s);
     for (const c of new Set(s.creators ?? [])) add("creator", c, s);
-    add("year", s.year, s);
+    add("decade", decadeOf(s.year), s);
     if (s.lang && s.lang !== "en" && langName(s.lang)) add("lang", s.lang, s);
   }
   return [...buckets.values()].filter((c) => c.ids.size >= SIZE);
