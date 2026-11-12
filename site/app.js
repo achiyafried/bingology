@@ -279,7 +279,7 @@ function tile(i, mode, cap) {
 
 /* screens */
 function header() {
-  return `<header class="top"><div class="brandrow"><div class="brand">${LOGO}</div><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
+  return `<header class="top"><div class="brandrow"><button class="brand" data-a="home" aria-label="Bingology, לעמוד הבית">${LOGO}</button><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
   <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-label="חיפוש" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span><span class="tl"> חיפוש</span></button><button class="tab" role="tab" data-a="tab" data-v="games" aria-selected="${!onNews() && st.tab === "games"}">משחקים</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
 }
 
@@ -543,6 +543,9 @@ document.addEventListener("click", e => {
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
     case "hinvite": headerInvite(); break;
+    case "home": // the logo: back to the start screen from anywhere (quiz answers are kept, like "לדף הראשי")
+      if (st.share || location.hash) { st.share = null; history.replaceState(null, "", location.pathname + location.search); }
+      st.tab = "pick"; st.screen = "intro"; st.step = 0; render(true); break;
     case "tab": if (st.share || onNews() || (location.hash === "#games" && v !== "games")) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
