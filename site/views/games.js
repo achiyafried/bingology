@@ -73,7 +73,8 @@ export function hubHTML(day, states, streak, opts = {}) {
 }
 
 export function summaryHTML(day, states, streak, opts = {}) {
-  const text = shareText({ date: day.date, streak: opts.practice ? 0 : streak, results: results(day, states) });
+  // On screen the result lines only: the link is added to the shared text, where it is useful.
+  const text = shareText({ date: day.date, streak: opts.practice ? 0 : streak, results: results(day, states) }).split("\n").filter(l => !/^https?:/.test(l)).join("\n");
   return `<div class="g-sum"><h3>${opts.practice ? "סיימתם את התרגול" : "סיימתם להיום"}</h3>
   ${!opts.practice && streak > 0 ? `<p class="g-streak">רצף ${streak} 🔥</p>` : ""}
   <pre class="g-share" dir="auto">${esc(text)}</pre>
@@ -89,7 +90,7 @@ export function howHTML(id, p) {
     chain: () => `המטרה: להגיע מ-${name(p.from)} ל-${name(p.to)}. בכל צעד בוחרים שחקן/ית מהסדרה שאתם בה, ועוברים לסדרה אחרת שהוא/היא שיחקו בה.`,
     groups: () => "שבצו את 16 הסדרות לארבע הקבוצות שלמעלה. בחרו 4 ולחצו שליחה. מותר לטעות 4 פעמים.",
     blur: () => "מי השחקן/ית? כל טעות מחדדת את התמונה וחושפת רמז. יש 5 ניסיונות.",
-    riddle: () => "פתרו את החידה. התשובה היא שם של סדרה. כל רמז חושף אות.",
+    riddle: () => "פתרו את החידה. התשובה היא שם של סדרה, כתוב בעברית (גם שמות לועזיים, כמו פארגו). כל רמז חושף אות.",
   }[id];
   return text ? `<p class="g-how">${text()}</p>` : "";
 }
