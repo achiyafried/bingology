@@ -80,6 +80,7 @@ test("pair recorded sorted and avoided when recent", () => {
   const recent = emptyRecent();
   for (let i = 0; i < 30; i++) {
     const m = make(p, makeRng("r" + i), recent);
+    assert.ok(m);
     assert.ok(!recent.pairs.has(m.used.pairs[0]));
     recent.pairs.add(m.used.pairs[0]);
   }
@@ -108,4 +109,63 @@ test("shortestActors: shared actor = 1, unreachable = Infinity", () => {
   assert.equal(shortestActors(m, 1, 2), 1);
   assert.equal(shortestActors(m, "1", "3"), 2);
   assert.equal(shortestActors(m, 1, 4), Infinity);
+});
+
+// Path 1-2-3-4: pairs 1-3 and 2-4 at 2 actors, 1-4 at 3 actors, the rest at 1.
+const path4 = () =>
+  buildPool(
+    [
+      { tmdbId: 1, name: "A", tmdbVotes: 4, cast: [{ name: "x" }] },
+      { tmdbId: 2, name: "B", tmdbVotes: 3, cast: [{ name: "x" }, { name: "y" }] },
+      { tmdbId: 3, name: "C", tmdbVotes: 2, cast: [{ name: "y" }, { name: "z" }] },
+      { tmdbId: 4, name: "D", tmdbVotes: 1, cast: [{ name: "z" }] },
+    ],
+    { known: 4 },
+  );
+const recentOf = (...pairs) => ({ ...emptyRecent(), pairs: new Set(pairs) });
+
+test("recent pairs: all 2-3 pairs excluded -> null", () => {
+  assert.equal(make(path4(), makeRng("a"), recentOf("1-3", "2-4", "1-4")), null);
+});
+
+test("recent pairs: only one pair left -> that pair comes back", () => {
+  for (const keep of ["1-3", "2-4", "1-4"]) {
+    const recent = recentOf(...["1-3", "2-4", "1-4"].filter((k) => k !== keep));
+    for (let i = 0; i < 10; i++) {
+      const m = make(path4(), makeRng("k" + i), recent);
+      assert.deepEqual(m.used, { pairs: [keep] });
+    }
+  }
+});
+
+test("only distance 2 exists -> shortest 2", () => {
+  const p = buildPool(
+    [
+      { tmdbId: 1, name: "A", tmdbVotes: 3, cast: [{ name: "x" }] },
+      { tmdbId: 2, name: "B", tmdbVotes: 2, cast: [{ name: "x" }, { name: "y" }] },
+      { tmdbId: 3, name: "C", tmdbVotes: 1, cast: [{ name: "y" }] },
+    ],
+    { known: 3 },
+  );
+  for (let i = 0; i < 10; i++) {
+    const m = make(p, makeRng("d2" + i), emptyRecent());
+    assert.equal(m.puzzle.shortest, 2);
+    assert.equal(m.puzzle.limit, 4);
+    assert.deepEqual(m.used, { pairs: ["1-3"] });
+  }
+});
+
+test("recent filter empties distance 2 -> distance 3 is used", () => {
+  for (let i = 0; i < 10; i++) {
+    const m = make(path4(), makeRng("d3" + i), recentOf("1-3", "2-4"));
+    assert.equal(m.puzzle.shortest, 3);
+    assert.deepEqual(m.used, { pairs: ["1-4"] });
+  }
+});
+
+test("recent filter empties distance 3 -> distance 2 is used", () => {
+  for (let i = 0; i < 10; i++) {
+    const m = make(path4(), makeRng("d4" + i), recentOf("1-4"));
+    assert.equal(m.puzzle.shortest, 2);
+  }
 });

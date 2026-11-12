@@ -27,7 +27,7 @@ function distances(neighbors, from, max = Infinity) {
 export function shortestActors(seriesMap, from, to) {
   const byActor = new Map();
   for (const [id, s] of Object.entries(seriesMap)) {
-    for (const a of s.cast) {
+    for (const a of s.cast ?? []) {
       if (!byActor.has(a)) byActor.set(a, []);
       byActor.get(a).push(String(id));
     }
