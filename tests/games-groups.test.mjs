@@ -61,7 +61,11 @@ test("labels follow the Hebrew formats", () => {
       seen.add(g.kind);
       if (g.kind === "actor") assert.equal(g.label, `שחקן/ית משותף/ת: ${g.key}`);
       if (g.kind === "creator") assert.equal(g.label, `יוצר/ת: ${g.key}`);
-      if (g.kind === "year") assert.equal(g.label, `בכורה ב-${g.key}`);
+      assert.notEqual(g.kind, "year");
+      if (g.kind === "decade") {
+        assert.equal(g.key % 10, 0);
+        assert.equal(g.label, `שנות ה-${g.key}`);
+      }
       if (g.kind === "lang") {
         assert.notEqual(g.key, "en");
         assert.match(g.label, /^בשפה: \S/);
@@ -73,10 +77,12 @@ test("labels follow the Hebrew formats", () => {
 });
 
 test("fits matches each kind", () => {
-  const s = { cast: [{ name: "A" }], creators: ["C"], year: 2001, lang: "ko" };
+  const s = { cast: [{ name: "A" }], creators: ["C"], year: 2009, lang: "ko" };
   assert.ok(fits("actor", "A", s) && !fits("actor", "B", s));
   assert.ok(fits("creator", "C", s) && !fits("creator", "D", s));
-  assert.ok(fits("year", 2001, s) && !fits("year", 2002, s));
+  assert.ok(fits("decade", 2000, s) && !fits("decade", 2010, s) && !fits("decade", 2009, s));
+  assert.ok(!fits("year", 2009, s));
+  assert.ok(fits("decade", 2010, { year: 2010 }) && !fits("decade", 2000, { year: null }));
   assert.ok(fits("lang", "ko", s) && !fits("lang", "en", s));
 });
 
@@ -97,19 +103,51 @@ test("draws from the wide pool, beyond known", () => {
 test("skips recent group keys; null when all are recent", () => {
   const p = pool();
   const recent = emptyRecent();
+  // The fixture has only 3 keys outside actor/creator (lang:ko and two decades) and each day needs one.
+  let days = 0;
   for (let i = 0; i < 5; i++) {
-    const { used } = make(p, makeRng("k" + i), recent);
+    const r = make(p, makeRng("k" + i), recent);
+    if (!r) break;
+    days++;
+    const { used } = r;
     for (const k of used.groups) {
       assert.ok(!recent.groups.has(k), k);
       recent.groups.add(k);
     }
   }
+  assert.ok(days >= 2, `${days} days`);
   const all = emptyRecent();
   for (const s of p.all) {
     for (const c of s.cast) all.groups.add(`actor:${c.name}`);
     for (const c of s.creators) all.groups.add(`creator:${c}`);
-    all.groups.add(`year:${s.year}`);
+    all.groups.add(`decade:${Math.floor(s.year / 10) * 10}`);
     all.groups.add(`lang:${s.lang}`);
   }
   assert.equal(make(p, makeRng("k"), all), null);
+});
+
+test("decade groups: label for 2000 and 2010", () => {
+  const seen = new Map();
+  const p = pool();
+  for (let i = 0; i < 60; i++) for (const g of make(p, makeRng("d" + i), emptyRecent()).puzzle.groups) if (g.kind === "decade") seen.set(g.key, g.label);
+  assert.ok(seen.size > 0);
+  if (seen.has(2000)) assert.equal(seen.get(2000), "שנות ה-2000");
+  if (seen.has(2010)) assert.equal(seen.get(2010), "שנות ה-2010");
+});
+
+test("actor groups only hold series where the actor is billed in the first 5 names", () => {
+  const series = fixtureSeries();
+  // "Deep" sits 6th or lower in 6 series and first in 3: never enough for a group of 4.
+  for (const s of series) {
+    if (s.tmdbId <= 3) s.cast.unshift({ name: "Deep", photo: null });
+    else if (s.tmdbId <= 9) s.cast.push({ name: "Deep", photo: null });
+  }
+  const p = buildPool(series, { known: 60 });
+  for (let i = 0; i < 40; i++) {
+    for (const g of make(p, makeRng("a" + i), emptyRecent()).puzzle.groups) {
+      assert.notEqual(g.key, "Deep");
+      if (g.kind !== "actor") continue;
+      for (const id of g.ids) assert.ok(p.byId.get(id).cast.findIndex((c) => c.name === g.key) < 5, `${g.key} in ${id}`);
+    }
+  }
 });

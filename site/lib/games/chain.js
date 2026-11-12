@@ -1,4 +1,5 @@
 // chain: walk from series `from` to `to` through shared actors. Puzzle: { from, to, shortest, limit, series }.
+// State: { path, via, steps, done, hinted? }. A hint (shown by the view) sets `hinted`: the best label is then "הצלחה".
 export function init(puzzle) {
   return { path: [puzzle.from], via: [], steps: 0, done: false };
 }
@@ -11,6 +12,7 @@ export function play(state, puzzle, move) {
     if (state.path.length < 2) return state;
     return { ...state, path: state.path.slice(0, -1), via: state.via.slice(0, -1) };
   }
+  if (move.type === "hint") return state.hinted ? state : { ...state, hinted: true };
   if (move.type !== "step") return state;
   const from = puzzle.series[String(cur(state))];
   const to = puzzle.series[String(move.to)];
@@ -19,11 +21,11 @@ export function play(state, puzzle, move) {
   const path = [...state.path, move.to];
   const steps = state.steps + 1;
   const arrived = String(move.to) === String(puzzle.to);
-  return { path, via: [...state.via, move.actor], steps, done: arrived || steps >= puzzle.limit };
+  return { ...state, path, via: [...state.via, move.actor], steps, done: arrived || steps >= puzzle.limit };
 }
 
 export function result(state, puzzle) {
   const win = state.done && String(cur(state)) === String(puzzle.to);
-  const label = !state.done ? "" : !win ? "נתקעת" : state.steps === puzzle.shortest ? "מושלם" : "הצלחה";
+  const label = !state.done ? "" : !win ? "נתקעת" : state.steps === puzzle.shortest && !state.hinted ? "מושלם" : "הצלחה";
   return { done: state.done, win, score: state.steps, label };
 }

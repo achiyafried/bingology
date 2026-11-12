@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hubHTML, summaryHTML, guessHTML, oddHTML, chainHTML, groupsHTML, blurHTML } from "../site/views/games.js";
+import { hubHTML, summaryHTML, guessHTML, oddHTML, chainHTML, groupsHTML, blurHTML, howHTML, chainRoute } from "../site/views/games.js";
 import { shareText } from "../site/lib/games/share.js";
 import { esc } from "../site/lib/esc.js";
 
@@ -10,7 +10,7 @@ const guess = { answer: card(1, "<b>Bold</b>"), clues: [{ kind: "genreYear", tex
 const odd = { rounds: [0, 1, 2].map(r => ({ actor: { name: "Actor " + r, photo: IMG }, series: [card(10 + r, "A"), card(20 + r, "NoPoster", null), card(30 + r, "C"), card(40 + r, "D")], odd: 1 })) };
 const chain = { from: 1, to: 3, shortest: 2, limit: 4, series: { 1: { name: "From", poster: IMG, cast: ["X"] }, 2: { name: "Mid", poster: null, cast: ["X", "Y"] }, 3: { name: "To", poster: IMG, cast: ["Y"] } } };
 const items = Array.from({ length: 16 }, (_, i) => card(100 + i, "S" + i));
-const groups = { items, groups: [0, 1, 2, 3].map(g => ({ kind: "year", label: "שנה " + g, level: g + 1, ids: items.slice(g * 4, g * 4 + 4).map(x => x.id) })) };
+const groups = { items, groups: [0, 1, 2, 3].map(g => ({ kind: "decade", label: "שנה " + g, level: g + 1, ids: items.slice(g * 4, g * 4 + 4).map(x => x.id) })) };
 const blur = { actor: { name: "Patton Oswalt", photo: IMG }, count: 2, series: ["The Sandman", "BoJack Horseman"] };
 const day = { date: "2026-11-13", v: 1, games: { guess, odd, chain, groups, blur } };
 
@@ -112,4 +112,85 @@ test("chainRoute finds the shortest route through shared actors", async () => {
   const { chainRoute } = await import("../site/views/games.js");
   assert.deepEqual(chainRoute(chain), [{ id: "1", via: null }, { id: "2", via: "X" }, { id: "3", via: "Y" }]);
   assert.equal(chainRoute({ ...chain, series: { ...chain.series, 3: { name: "To", poster: null, cast: ["Z"] } } }), null);
+});
+
+test("howHTML: one muted line per game; chain names the start and goal, escaped", () => {
+  assert.equal(howHTML("guess", guess), `<p class="g-how">נחשו את הסדרה. כל טעות חושפת רמז נוסף. יש 6 ניסיונות.</p>`);
+  assert.match(howHTML("odd", odd), /שלוש מהסדרות הן של השחקן\/ית, אחת מתחזה\. מצאו אותה\./);
+  assert.match(howHTML("groups", groups), /שבצו את 16 הסדרות לארבע הקבוצות שלמעלה\. בחרו 4 ולחצו שליחה\. מותר לטעות 4 פעמים\./);
+  assert.match(howHTML("blur", blur), /מי השחקן\/ית\? כל טעות מחדדת את התמונה וחושפת רמז\. יש 5 ניסיונות\./);
+  const c = howHTML("chain", { ...chain, series: { ...chain.series, 1: { ...chain.series[1], name: "<i>From</i>" } } });
+  assert.match(c, /^<p class="g-how">המטרה: להגיע מ-<bdi>&lt;i&gt;From&lt;\/i&gt;<\/bdi> ל-<bdi>To<\/bdi>\. בכל צעד בוחרים שחקן\/ית מהסדרה שאתם בה, ועוברים לסדרה אחרת שהוא\/היא שיחקו בה\.<\/p>$/);
+  for (const id of ["guess", "odd", "chain", "groups", "blur"]) assert.match(howHTML(id, { guess, odd, chain, groups, blur }[id]), /^<p class="g-how">/);
+});
+
+// 1 -X- 2 -Y- 3 is the shortest route; 1 -Z- 4 -W- 5 -V- 3 is longer. D (in 1 only) has nowhere to go.
+const chain2 = { from: 1, to: 3, shortest: 2, limit: 4, series: {
+  1: { name: "From", poster: IMG, cast: ["D", "Z", "X"] },
+  2: { name: "Mid", poster: null, cast: ["X", "Y"] },
+  3: { name: "To", poster: IMG, cast: ["Y", "V"] },
+  4: { name: "Side", poster: null, cast: ["Z", "W"] },
+  5: { name: "Far", poster: null, cast: ["W", "V"] },
+} };
+const s0 = { path: [1], via: [], steps: 0, done: false };
+
+test("chainHTML: start and goal labels, start first (right in RTL), counter", () => {
+  const h = chainHTML(chain2, s0, {});
+  const a = h.indexOf("התחלה"), b = h.indexOf("יעד");
+  assert.ok(a > 0 && b > a);
+  assert.ok(h.indexOf("From") > a && h.indexOf("From") < b);
+  assert.match(h, /נשארו 4 צעדים · אפשר ב-2/);
+  assert.doesNotMatch(h, /מתוך/);
+  assert.match(chainHTML(chain2, { path: [1, 4], via: ["Z"], steps: 1, done: false }, {}), /נשארו 3 צעדים · אפשר ב-2/);
+});
+
+test("chainHTML: actors with somewhere to go first, dead ends last and disabled", () => {
+  const h = chainHTML(chain2, s0, {});
+  const order = [...h.matchAll(/data-gact="(\w+)"/g)].map(m => m[1]);
+  assert.deepEqual(order, ["Z", "X", "D"]);
+  assert.match(h, /data-gact="D" disabled/);
+  assert.doesNotMatch(h, /data-gact="[XZ]" disabled/);
+});
+
+test("chainHTML: hint button highlights the actor on a shortest route from the current series", () => {
+  const h = chainHTML(chain2, s0, {});
+  assert.match(h, /data-ghint[^>]*>רמז</);
+  assert.doesNotMatch(h, /is-hint/);
+  const hinted = chainHTML(chain2, { ...s0, hinted: true }, { hint: "1" });
+  assert.match(hinted, /class="chip is-hint" data-gact="X"/);
+  assert.equal((hinted.match(/is-hint/g) || []).length, 1);
+  assert.match(hinted, /data-ghint disabled/);
+  // From series 4 the shortest way on is W (4 -W- 5 -V- 3).
+  const at4 = chainHTML(chain2, { path: [1, 4], via: ["Z"], steps: 1, done: false, hinted: true }, { hint: "4" });
+  assert.match(at4, /class="chip is-hint" data-gact="W"/);
+  // A hint shown for another series is not shown here.
+  assert.doesNotMatch(chainHTML(chain2, { path: [1, 4], via: ["Z"], steps: 1, done: false, hinted: true }, { hint: "1" }), /is-hint/);
+  // Choosing the hinted actor highlights the series on the route.
+  const pick = chainHTML(chain2, { ...s0, hinted: true }, { hint: "1", actor: "X" });
+  assert.match(pick, /data-gto="2" class="[^"]*\bis-hint/);
+});
+
+test("chainRoute from a given series", () => {
+  assert.deepEqual(chainRoute(chain2, 4).map(r => r.id), ["4", "5", "3"]);
+  assert.deepEqual(chainRoute(chain2).map(r => r.id), ["1", "2", "3"]);
+});
+
+test("chain: a hinted win at the shortest length reads as success, not perfect", () => {
+  const h = chainHTML(chain2, { path: [1, 2, 3], via: ["X", "Y"], steps: 2, done: true, hinted: true }, {});
+  assert.match(h, /הגעתם!/);
+  assert.doesNotMatch(h, /מושלם/);
+});
+
+test("groupsHTML: the four labels are listed from the start; solved ones are coloured and checked", () => {
+  const h = groupsHTML(groups, { solved: [], mistakes: 0, tried: [], last: null, done: false }, { sel: [] });
+  const list = h.slice(h.indexOf('<ul class="g-labels"'), h.indexOf("</ul>") + 5);
+  for (const g of groups.groups) assert.ok(list.includes(esc(g.label)), g.label);
+  assert.doesNotMatch(list, /lv\d/);
+  assert.ok(h.indexOf("g-labels") < h.indexOf("g-grid"));
+  const one = groupsHTML(groups, { solved: [2], mistakes: 0, tried: [], last: "ok", done: false }, { sel: [] });
+  const l2 = one.slice(one.indexOf('<ul class="g-labels"'), one.indexOf("</ul>") + 5);
+  assert.match(l2, /<li class="lv3 ok">✓ <bdi>שנה 2<\/bdi><\/li>/);
+  assert.equal((l2.match(/lv\d/g) || []).length, 1);
+  const lbl = groupsHTML({ ...groups, groups: groups.groups.map((g, i) => (i ? g : { ...g, label: "<s>x</s>" })) }, { solved: [], mistakes: 0, tried: [], last: null, done: false }, {});
+  assert.ok(!lbl.includes("<s>x</s>"));
 });

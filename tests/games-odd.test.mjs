@@ -63,15 +63,19 @@ test("ignores blur's recent actors", () => {
   assert.deepEqual(make(p, makeRng("r"), recent), make(p, makeRng("r"), emptyRecent()));
 });
 
-test("null when no actor has 2 known series, or pool is empty", () => {
-  const p = buildPool(fixtureSeries(), { known: 1 });
+test("null when no actor has 2 top-600 lead series, or pool is empty", () => {
+  const p = narrowWide(buildPool(fixtureSeries(), { known: 60 }), fixtureSeries().map((s) => s.tmdbId).slice(1));
   assert.equal(make(p, makeRng("x"), emptyRecent()), null);
   assert.equal(make(buildPool([], { known: 5 }), makeRng("x"), emptyRecent()), null);
 });
 
-const withActors = (names, ids) => {
+const withActors = (names, ids, { lead = true } = {}) => {
   const series = fixtureSeries();
-  for (const s of series) if (ids.includes(s.tmdbId)) for (const n of names) s.cast.push({ name: n, photo: null });
+  for (const s of series) {
+    if (!ids.includes(s.tmdbId)) continue;
+    const add = names.map((n) => ({ name: n, photo: null }));
+    s.cast = lead ? [...add, ...s.cast] : [...s.cast, ...add];
+  }
   return series;
 };
 const onlyRecentExcept = (p, keep) => {
@@ -79,23 +83,64 @@ const onlyRecentExcept = (p, keep) => {
   for (const s of p.all) for (const c of s.cast) if (!keep.includes(c.name)) recent.oddActors.add(c.name);
   return recent;
 };
+// The fixture has 60 series, all inside the top 600: narrow `wide` to test the "2 of them in the top 600" rule.
+const narrowWide = (p, out) => ({ ...p, wide: p.wide.filter((s) => !out.includes(s.tmdbId)) });
+const billing = (s, name) => s.cast.findIndex((c) => c.name === name);
 
-test("an actor with 3 series but only 1 known is never chosen", () => {
-  const p = buildPool(withActors(["Solo Actor"], [1, 59, 60]), { known: 58 });
+test("every shown actor is billed in the first 5 names of the 3 series shown", () => {
+  const p = pool();
+  for (let i = 0; i < 20; i++) {
+    for (const round of make(p, makeRng("b" + i), emptyRecent()).puzzle.rounds) {
+      round.series.forEach((c, k) => {
+        if (k !== round.odd) assert.ok(billing(p.byId.get(c.id), round.actor.name) < 5);
+      });
+    }
+  }
+});
+
+test("an actor with 3 lead series but only 1 in the top 600 is never chosen", () => {
+  const p = narrowWide(buildPool(withActors(["Solo Actor"], [1, 59, 60]), { known: 60 }), [59, 60]);
   for (let i = 0; i < 30; i++) {
     const r = make(p, makeRng("solo" + i), emptyRecent());
     assert.ok(!r.used.oddActors.includes("Solo Actor"));
   }
 });
 
-test("an actor with 2 known + 1 unknown series is chosen and the unknown one appears", () => {
+test("an actor billed below the first 5 names does not count those series", () => {
+  const series = withActors(["Deep Actor"], [1, 2]);
+  const s3 = series.find((s) => s.tmdbId === 3);
+  s3.cast = [...s3.cast.slice(0, 5), { name: "Deep Actor", photo: null }, ...s3.cast.slice(5)];
+  const p = buildPool(series, { known: 60 });
+  assert.equal(billing(p.byId.get(3), "Deep Actor"), 5);
+  for (let i = 0; i < 30; i++) {
+    const r = make(p, makeRng("deep" + i), emptyRecent());
+    assert.ok(!r.used.oddActors.includes("Deep Actor"));
+  }
+  assert.equal(make(p, makeRng("deep"), onlyRecentExcept(p, ["Deep Actor"])), null);
+});
+
+test("an actor with 2 top-600 + 1 other lead series is chosen and the other one appears", () => {
   const stars = ["Star A", "Star B", "Star C"];
-  const p = buildPool(withActors(stars, [1, 2, 60]), { known: 58 });
+  const p = narrowWide(buildPool(withActors(stars, [1, 2, 60]), { known: 58 }), [60]);
   assert.ok(!p.knownIds.has(60));
   const r = make(p, makeRng("star"), onlyRecentExcept(p, stars));
   assert.deepEqual([...r.used.oddActors].sort(), stars);
   for (const round of r.puzzle.rounds) {
     assert.ok(round.series.some((c) => c.id === 60));
     assert.ok(p.knownIds.has(round.series[round.odd].id));
+  }
+});
+
+test("the three series are the actor's most-voted lead series, not a higher-voted minor role", () => {
+  const series = withActors(["Lead A", "Lead B", "Lead C"], [10, 20, 30, 40]);
+  // A minor role in series 1 (the most voted): it must not be shown, and is not an impostor.
+  const s1 = series.find((s) => s.tmdbId === 1);
+  for (const n of ["Lead A", "Lead B", "Lead C"]) s1.cast.push({ name: n, photo: null });
+  const p = buildPool(series, { known: 60 });
+  const r = make(p, makeRng("top"), onlyRecentExcept(p, ["Lead A", "Lead B", "Lead C"]));
+  for (const round of r.puzzle.rounds) {
+    const own = round.series.filter((_, k) => k !== round.odd).map((c) => c.id).sort((a, b) => a - b);
+    assert.deepEqual(own, [10, 20, 30]);
+    assert.notEqual(round.series[round.odd].id, 1);
   }
 });

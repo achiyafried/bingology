@@ -1,13 +1,21 @@
 import { pick } from "./rng.mjs";
+import { leadNames } from "./pool.mjs";
 import { safeImg } from "../../../site/lib/esc.js";
+
+// Only lead roles count: billing (index in `cast`) below this, in MIN_SERIES series of the wide (top-600) pool.
+// Top-300 has only ~53 such actors, fewer than the 60-day no-repeat window needs.
+export const LEAD = 3;
+const MIN_SERIES = 2;
 
 const hasActor = (s, name) => (s.cast ?? []).some((c) => c.name === name);
 
 export function make(pool, rng, recent) {
   try {
+    const leads = new Map();
+    for (const s of pool.wide) for (const n of leadNames(s, LEAD)) leads.set(n, (leads.get(n) ?? 0) + 1);
     const cands = [];
-    for (const [name, ids] of pool.actorsKnown) {
-      if (new Set(ids).size < 2 || recent.actors.has(name)) continue;
+    for (const [name, n] of leads) {
+      if (n < MIN_SERIES || recent.actors.has(name)) continue;
       const photo = safeImg((pool.photo.get(name) ?? "").replace("/w185/", "/w342/"));
       if (photo) cands.push({ name, photo });
     }

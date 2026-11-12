@@ -1,24 +1,28 @@
-import { card } from "./pool.mjs";
+import { card, leadNames } from "./pool.mjs";
 import { shuffle } from "./rng.mjs";
 
 const ROUNDS = 3;
 const YEAR_GAP = 5;
 const MIN_SERIES = 3;
 const MIN_KNOWN = 2;
+// Only lead roles count: billing (index in `cast`) below this.
+export const LEAD = 5;
 
-// actor name -> distinct series ids across the whole pool, most-voted first (cached per pool).
+// actor name -> distinct series where they are billed in the first LEAD names, across the whole pool,
+// most-voted first; kept only with MIN_SERIES of them, MIN_KNOWN in the wide (top-600) pool. Cached per pool.
 const byActor = new WeakMap();
 function actorSeries(pool) {
   if (byActor.has(pool)) return byActor.get(pool);
+  const wideIds = new Set(pool.wide.map((s) => s.tmdbId));
   const m = new Map();
   for (const s of pool.all) {
-    for (const c of new Set((s.cast ?? []).map((x) => x.name))) {
+    for (const c of leadNames(s, LEAD)) {
       if (!m.has(c)) m.set(c, []);
       m.get(c).push(s);
     }
   }
   for (const [name, list] of m) {
-    if (list.length < MIN_SERIES || list.filter((s) => pool.knownIds.has(s.tmdbId)).length < MIN_KNOWN) m.delete(name);
+    if (list.length < MIN_SERIES || list.filter((s) => wideIds.has(s.tmdbId)).length < MIN_KNOWN) m.delete(name);
     else list.sort((x, y) => (y.tmdbVotes ?? 0) - (x.tmdbVotes ?? 0) || x.tmdbId - y.tmdbId);
   }
   byActor.set(pool, m);

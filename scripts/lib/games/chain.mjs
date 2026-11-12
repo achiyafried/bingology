@@ -1,6 +1,8 @@
 import { card } from "./pool.mjs";
 import { shuffle } from "./rng.mjs";
 
+// The goal is always exactly SHORTEST actors away; the player may use EXTRA more.
+export const SHORTEST = 2;
 const EXTRA = 2;
 // Fewer series than this makes a near-forced path; skip that start.
 export const MIN_SERIES = 8;
@@ -53,16 +55,14 @@ export function make(pool, rng, recent, { minSeries = MIN_SERIES } = {}) {
   const neighbors = (id) => cast.get(id).flatMap((a) => byActor.get(a));
 
   for (const from of shuffle(rng, pool.known.map((s) => s.tmdbId))) {
-    const dist = distances(neighbors, from, 3);
-    const ok = (d) =>
-      [...dist].filter(([id, x]) => x === d && !recent.pairs.has(pairKey(from, id))).map(([id]) => id);
-    const threes = ok(3);
-    const twos = ok(2);
-    const shortest = threes.length && twos.length ? (rng() < 0.5 ? 2 : 3) : threes.length ? 3 : twos.length ? 2 : 0;
-    if (!shortest) continue;
-    const cands = shortest === 3 ? threes : twos;
+    const dist = distances(neighbors, from, SHORTEST);
+    const cands = [...dist]
+      .filter(([id, d]) => d === SHORTEST && !recent.pairs.has(pairKey(from, id)))
+      .map(([id]) => id);
+    if (!cands.length) continue;
     const to = cands[Math.floor(rng() * cands.length)];
-    const limit = shortest + EXTRA;
+    const shortest = SHORTEST;
+    const limit = SHORTEST + EXTRA;
     const reach = distances(neighbors, from, limit);
     if (reach.size < minSeries) continue;
     const series = {};

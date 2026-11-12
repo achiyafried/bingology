@@ -2,6 +2,11 @@ export const KNOWN = 300;
 // groups needs a wider pool: top-300 has no actor in 4 series that fits a puzzle.
 export const GROUPS_KNOWN = 600;
 
+// Billing = index in a series' `cast` (0 = first credited). Names within the first `n` of a series.
+export function leadNames(s, n) {
+  return new Set((s.cast ?? []).slice(0, n).map((c) => (typeof c === "string" ? c : c.name)));
+}
+
 const LANG = new Intl.DisplayNames(["he"], { type: "language", fallback: "none" });
 
 // Hebrew language name, or undefined for codes ICU doesn't know (e.g. "cn", "xx").

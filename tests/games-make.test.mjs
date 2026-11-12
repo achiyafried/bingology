@@ -116,14 +116,14 @@ test("today at 22:30Z is already tomorrow in Israel", () => {
   assert.equal(created[0], "2026-11-13");
 });
 
-test("windows: odd actors 20 days, groups 7, other keys 60; odd and blur actors are separate", () => {
-  assert.equal(ODD_RECENT_DAYS, 20);
-  assert.equal(GROUPS_RECENT_DAYS, 7);
+test("windows: odd actors 14 days, groups 4, other keys 60; odd and blur actors are separate", () => {
+  assert.equal(ODD_RECENT_DAYS, 14);
+  assert.equal(GROUPS_RECENT_DAYS, 4);
   const dir = tmp();
   const put = (n, used) => fs.writeFileSync(path.join(dir, addDays(TODAY, -n) + ".json"), JSON.stringify({ used }));
-  put(21, { oddActors: ["OldOdd"], actors: ["BlurA"], series: [101], groups: ["year:1999"] });
-  put(8, { groups: ["year:2000"] });
-  put(6, { oddActors: ["FreshOdd"], actors: ["BlurB"], series: [102], groups: ["year:2001"] });
+  put(15, { oddActors: ["OldOdd"], actors: ["BlurA"], series: [101], groups: ["decade:1990"] });
+  put(5, { oddActors: ["FreshOdd"], actors: ["BlurB"], series: [102], groups: ["decade:2000"] });
+  put(4, { groups: ["decade:2010"] });
   const seen = {};
   const spy = (id) => ({ make: (pool, rng, recent) => {
     seen[id] ??= Object.fromEntries(Object.entries(recent).map(([k, v]) => [k, [...v].sort()]));
@@ -132,7 +132,7 @@ test("windows: odd actors 20 days, groups 7, other keys 60; odd and blur actors 
   makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), chain, groups: spy("groups"), blur: spy("blur") } }));
   assert.deepEqual(seen.odd.oddActors, ["FreshOdd"]);
   assert.deepEqual(seen.blur.actors, ["BlurA", "BlurB"]);
-  assert.deepEqual(seen.groups.groups, ["year:2001"]);
+  assert.deepEqual(seen.groups.groups, ["decade:2010"]);
   assert.deepEqual(seen.guess.series, [101, 102]);
 });
 
@@ -169,7 +169,6 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
   const days = Array.from({ length: 30 }, (_, i) => read(dir, addDays(start, i)));
   const counts = Object.fromEntries(GAMES.map((g) => [g.id, 0]));
   for (const d of days) for (const id of Object.keys(d.games)) counts[id]++;
-  for (const [id, n] of Object.entries(counts)) assert.ok(n >= 27, `${id} present on ${n}/30 days`);
 
   days.forEach((d, i) => {
     for (const k of d.used.groups) {
@@ -191,4 +190,30 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
   for (const d of days) {
     if (d.games.chain) assert.ok(Object.keys(d.games.chain.series).length >= 8, `${d.date} chain size`);
   }
+
+  // Easier games: lead roles only, chain always 2 actors, decades instead of single years.
+  const byVotes = [...series].filter((s) => s && s.tmdbId != null).sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0));
+  const top600 = new Set(byVotes.slice(0, 600).map((s) => s.tmdbId));
+  const leadIn = (name, n) => series.filter((s) => s && (s.cast ?? []).slice(0, n).some((c) => c.name === name));
+  for (const d of days) {
+    for (const r of d.games.odd?.rounds ?? []) {
+      const leads = leadIn(r.actor.name, 5);
+      assert.ok(leads.length >= 3, `${d.date} odd ${r.actor.name}: ${leads.length} lead series`);
+      assert.ok(leads.filter((s) => top600.has(s.tmdbId)).length >= 2, `${d.date} odd ${r.actor.name}: top-600 leads`);
+      const shown = r.series.filter((_, k) => k !== r.odd).map((c) => c.id).sort();
+      const most = leads.sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0) || a.tmdbId - b.tmdbId).slice(0, 3).map((s) => s.tmdbId).sort();
+      assert.deepEqual(shown, most, `${d.date} odd ${r.actor.name}: most-voted lead series`);
+    }
+    if (d.games.blur) {
+      const name = d.games.blur.actor.name;
+      assert.ok(leadIn(name, 3).filter((s) => top600.has(s.tmdbId)).length >= 2, `${d.date} blur ${name}`);
+    }
+    if (d.games.chain) {
+      assert.equal(d.games.chain.shortest, 2, `${d.date} chain shortest`);
+      assert.equal(d.games.chain.limit, 4, `${d.date} chain limit`);
+    }
+    for (const g of d.games.groups?.groups ?? []) assert.notEqual(g.kind, "year", `${d.date} year group`);
+  }
+  // Last, so a short game doesn't hide the rule checks above.
+  for (const [id, n] of Object.entries(counts)) assert.ok(n >= 27, `${id} present on ${n}/30 days`);
 });

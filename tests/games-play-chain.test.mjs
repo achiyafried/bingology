@@ -46,3 +46,23 @@ test("invalid moves are ignored; string ids accepted", () => {
   assert.equal(play(s0, puzzle, { type: "back" }), s0);
   assert.equal(step(s0, "x", "2").steps, 1);
 });
+
+test("hint: sets hinted, keeps the rest; a shortest win is then only success", () => {
+  const s0 = init(puzzle);
+  assert.equal(s0.hinted, undefined);
+  const h = play(s0, puzzle, { type: "hint" });
+  assert.deepEqual(h, { ...s0, hinted: true });
+  assert.equal(play(h, puzzle, { type: "hint" }), h);
+  let s = step(h, "x", 2);
+  assert.equal(s.hinted, true);
+  s = step(s, "z", 3);
+  assert.deepEqual(result(s, puzzle), { done: true, win: true, score: 2, label: "הצלחה" });
+  assert.equal(play(s, puzzle, { type: "hint" }), s);
+  assert.equal(s0.hinted, undefined, "pure");
+});
+
+test("hint after a back keeps hinted", () => {
+  let s = play(step(init(puzzle), "x", 2), puzzle, { type: "hint" });
+  s = play(s, puzzle, { type: "back" });
+  assert.equal(s.hinted, true);
+});

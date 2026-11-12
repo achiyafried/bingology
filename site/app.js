@@ -10,7 +10,7 @@ import { israelToday } from "./lib/games/day.js";
 import { dayProgress, loadTotal, streak as gamesStreak } from "./lib/games/store.js";
 
 const REPO = "achiyafried/bingology";
-import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "./lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
 
@@ -19,7 +19,7 @@ const poolIds = (src, plats) => poolIn(S, src, plats);
 const store = (() => { try { return window.localStorage; } catch (e) { return null; } })();
 function save() { saveSeen(store, st.seen, S); }
 const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", yes: "yes", hot: "HOT", partner: "פרטנר", cellcom: "סלקום", kan: "כאן", other: "אחר" };
-const platsInUse = () => Object.keys(PLAT_LABEL).filter(k => ALWAYS_SHOWN.includes(k) || S.some(s => s.providers.includes(k)));
+const platsInUse = () => quizPlatforms(Object.keys(PLAT_LABEL), S);
 const platLine = s => s.providers.length ? "זמין ב: " + s.providers.map(p => `<bdi>${PLAT_LABEL[p]}</bdi>` + (s.providersGuess.includes(p) ? " (כנראה)" : "")).join(", ") : "לא זמינה כרגע בסטרימינג בישראל";
 // Official logos from TMDB (offered by TMDB for this use). TMDB has no Israeli services, so those get a letter mark.
 const PLAT_LOGO = { netflix: "/rK1KljqmbvO9HQa1PBFLILWah72.png", hbo: "/skypuy7SXuugIQeYg0IglmzoKaS.png", apple: "/9icYBfYFcwgCbky5VdGUIKJ4C5i.png", prime: "/gMZdpavHmxFNnLpMHwVxfqeux2g.png", disney: "/5eZ872CghnHFLB1j8grszbrx0dx.png" };
@@ -37,7 +37,7 @@ const ALL_QS = [
     ["mine", "⭐", "הרשימה האישית שלי", "הסדרות שבחרתם בעצמכם"],
     ["nyt", "📰", "הניו יורק טיימס", "100 הסדרות הטובות של המאה ה-21, דירוג ספטמבר 2026"],
     ["pool", "🌍", "המאגר הרחב", "500 הסדרות המדורגות ביותר ב-TMDB, מעבר לרשימות"] ] },
-  { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. Disney+ מוערך לפי הזמינות בארה״ב, ושירותים ישראליים מסומנים ידנית. אפשר לבחור כמה או לדלג." },
+  { id: "platforms", multi: true, t: "באילו שירותים אתם צופים?", d: "לפי הזמינות בישראל, מתעדכן כל יום. Disney+ מוערך לפי הזמינות בארה״ב. שירותים ישראליים כמו yes ו-HOT יתווספו בהמשך. אפשר לבחור כמה או לדלג." },
   { id: "genres", multi: true, t: "איזה ז׳אנר מתחשק?", d: "אפשר לבחור כמה, או לדלג." },
   { id: "eras", multi: true, t: "מאיזו תקופה?", d: "לפי שנת הבכורה. אפשר לבחור כמה, או לדלג." },
   { id: "mood", t: "איזה מצב רוח אתם מחפשים הערב?", d: "מה הסדרה צריכה לעשות לכם?", o: [
