@@ -1,5 +1,5 @@
 const FALLBACK_FIELDS = ["year", "seasons", "episodes", "lang"];
-const SCALAR_FIELDS = ["status", "poster", "overviewHe", "tmdbVote", "tmdbVotes", "minAge", "seasonEps"];
+const SCALAR_FIELDS = ["status", "poster", "overviewHe", "overviewEn", "tmdbVote", "tmdbVotes", "minAge", "seasonEps"];
 // People lists: an empty list from TMDB usually means missing data, so keep looking.
 const PEOPLE_FIELDS = ["creators", "cast"];
 
@@ -61,4 +61,15 @@ const strip = d => JSON.stringify({ ...d, updatedAt: undefined, series: (d.serie
 export function sameData(a, b) {
   if (!a || !b) return false;
   return strip(a) === strip(b);
+}
+
+/**
+ * Last touch on a series' text: a pool series takes its hand-written Hebrew blurb from
+ * scripts/pool-blurbs.json (curated blurbs live in series.json and are never overridden), and the
+ * English overview is kept only as a last resort, when there is no Hebrew text at all.
+ */
+export function finishText(s, blurbs = {}) {
+  if (s.lists?.includes("pool") && blurbs[s.tmdbId]) s.blurb = blurbs[s.tmdbId];
+  if (s.blurb || s.overviewHe || !s.overviewEn) delete s.overviewEn;
+  return s;
 }

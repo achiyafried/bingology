@@ -13,7 +13,8 @@ export function fromData(json) {
     mo: x.moods,
     h: x.weight,
     solo: !!x.solo,
-    l: x.blurb || x.overviewHe || "",
+    l: x.blurb || x.overviewHe || x.overviewEn || "",
+    lEn: !x.blurb && !x.overviewHe && !!x.overviewEn, // English fallback: shown left-to-right
     imdb: x.imdb,
     tmdbVote: x.tmdbVote ?? null,
     tmdbVotes: x.tmdbVotes ?? null,

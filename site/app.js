@@ -336,7 +336,7 @@ function ticketHTML(r) {
     <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
     ${ratesHTML(s)}
     <p class="avail">${platLine(s)}</p>
-    <p class="t-line">${esc(s.l)}</p>
+    <p class="t-line"${s.lEn ? ' dir="ltr" lang="en"' : ""}>${esc(s.l)}</p>
     ${praiseHTML(s)}
     ${trailerHTML(s)}
     <ul class="why">${r.why.map(w => `<li class="${w.ok ? "" : "miss"}">${w.ok ? CHECK : CROSS}<span>${w.t}</span></li>`).join("")}</ul>
@@ -501,7 +501,7 @@ function seriesDlgHTML(i) {
   return `<div class="t-top">${poster(i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
   ${ratesHTML(s)}
   <p class="avail">${platLine(s)}</p>
-  <p class="d-line">${esc(s.l)}</p>
+  <p class="d-line"${s.lEn ? ' dir="ltr" lang="en"' : ""}>${esc(s.l)}</p>
   ${praiseHTML(s)}
   ${trailerHTML(s)}
   ${hasSession() ? `<div id="acct"></div>` : ""}

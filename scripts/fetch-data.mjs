@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
 import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
-import { mergeEntry, validateData, shouldAbort, sameData } from "./lib/merge.mjs";
+import { mergeEntry, validateData, shouldAbort, sameData, finishText } from "./lib/merge.mjs";
 import { writeNews } from "./lib/news.mjs";
 import { discoverParams, rankPool, poolEntry, poolSizeFor, TIERS } from "./lib/discover.mjs";
 
@@ -53,7 +53,7 @@ async function discoverPool(curatedIds, size, fetchImpl) {
   return ranked;
 }
 
-export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity }) {
+export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity, blurbs = readJson("./pool-blurbs.json") }) {
   const ctx = { now, budget: omdbBudget };
   const list = only ? series.slice(0, only) : series;
   const prevById = new Map((prev?.series ?? []).map(s => [s.tmdbId, s]));
@@ -116,7 +116,7 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
     }
   }
 
-  const data = { updatedAt: now, series: curated.concat(poolSeries) };
+  const data = { updatedAt: now, series: curated.concat(poolSeries).map(s => finishText(s, blurbs)) };
   const abort = !offline && (unreachable || shouldAbort(failed.length, list.length)) || errors.length > 0;
   return { data, failed, warnings: [...warnings], errors, abort, unreachable };
 }

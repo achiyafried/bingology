@@ -93,6 +93,7 @@ export function transformTv(tv, { map, he } = {}) {
     },
     // Only the Hebrew response counts: English text is not a Hebrew description.
     overviewHe: he?.overview?.trim() || null,
+    overviewEn: tv.overview?.trim() || null, // shown only when there is no Hebrew text
     imdbId: tv.external_ids?.imdb_id || null,
     minAge: minAgeOf(tv),
     tmdbVote: tv.vote_count > 0 ? Math.round(tv.vote_average * 10) / 10 : null,

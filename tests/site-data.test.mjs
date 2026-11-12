@@ -123,3 +123,9 @@ test("fromData carries providersOther", () => {
   assert.deepEqual(fromData({ series: [{ providersOther: ["Shahid VIP"] }] })[0].po, ["Shahid VIP"]);
   assert.deepEqual(fromData({ series: [{}] })[0].po, []);
 });
+
+test("fromData falls back to the English overview, flagged for LTR display", () => {
+  const [en, he] = fromData({ series: [{ blurb: "", overviewHe: null, overviewEn: "A show." }, { blurb: "שלי", overviewEn: "A show." }] });
+  assert.equal(en.l, "A show."); assert.equal(en.lEn, true);
+  assert.equal(he.l, "שלי"); assert.equal(he.lEn, false);
+});
