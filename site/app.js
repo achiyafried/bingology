@@ -6,6 +6,8 @@ import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
 import { searchSeries } from "./lib/search.js";
 import { addSeriesUrl } from "./lib/addlink.js";
 import { bellHTML, stripHTML, stripItems, unseenCount, upcomingSeasons, visibleItems } from "./lib/news.js";
+import { israelToday } from "./lib/games/day.js";
+import { dayProgress, streak as gamesStreak } from "./lib/games/store.js";
 
 const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "./lib/quiz.js";
@@ -278,7 +280,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brandrow"><div class="brand">${LOGO}</div><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span> חיפוש</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה (${S.length})</button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">שחקנים/ניות</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-label="חיפוש" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span><span class="tl"> חיפוש</span></button><button class="tab" role="tab" data-a="tab" data-v="games" aria-selected="${!onNews() && st.tab === "games"}">משחקים</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
 }
 
 function introHTML() {
@@ -288,8 +290,14 @@ function introHTML() {
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
     <p>${QS.length} שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות.</p>
     <div class="stack"><button class="btn primary" data-a="start">מתחילים</button><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
+    ${gamesCardHTML()}
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
+}
+/** Home card: today's games (Israel date, recomputed on every render), progress and streak. */
+function gamesCardHTML() {
+  const t = israelToday(), n = dayProgress(store, t), k = gamesStreak(store, t);
+  return `<button class="gcard" data-a="tab" data-v="games"><span class="gc-ic" aria-hidden="true">🧩</span><span class="gc-t"><b>המשחקים של היום</b><small>${n}/5${k > 0 ? ` · רצף ${k} 🔥` : ""}</small></span><span class="gc-go" aria-hidden="true">‹</span></button>`;
 }
 
 function qHTML() {
@@ -402,6 +410,7 @@ function render(top) {
   let body;
   if (onNews()) { body = `<div id="news"></div>`; newsSeen(true); }
   else if (st.tab === "mine") body = `<div id="mine"></div>`;
+  else if (st.tab === "games") body = `<div id="games"></div>`;
   else if (st.tab === "list") body = listHTML();
   else if (st.tab === "actors") body = actorsHTML();
   else if (st.tab === "search") body = searchHTML();
@@ -412,6 +421,7 @@ function render(top) {
   $("#app").innerHTML = header() + body + footerHTML();
   if (onNews()) showNews();
   else if (st.tab === "mine") showMine();
+  else if (st.tab === "games") showGames();
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -533,7 +543,7 @@ document.addEventListener("click", e => {
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
     case "hinvite": headerInvite(); break;
-    case "tab": if (st.share || onNews()) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
+    case "tab": if (st.share || onNews() || (location.hash === "#games" && v !== "games")) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
     case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
@@ -636,6 +646,16 @@ function showMine() {
       onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); } }))
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
 }
+/* "משחקים" tab: views/games.js loads only here. */
+function showGames() {
+  const root = $("#games");
+  import("./views/games.js")
+    .then(m => { if (root.isConnected) m.mountGames(root, { S, storage: store, actorNames: actorIndex().map(a => a.n), today: () => israelToday(), fetch: (u, o) => fetch(u, o),
+      openSeries: id => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) openDlg(k); },
+      openActor: n => { actorIndex(); const k = ACTMAP.get(n); if (k !== undefined) dlgGo({ t: "a", v: k }); },
+      toast: showToast, copy: copyText }); })
+    .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>המשחקים לא נטענו</p><button class="btn primary" data-a="tab" data-v="games">לנסות שוב</button></div>`; });
+}
 const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
 const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
 const SITE_URL = "https://achiyafried.github.io/bingology/";
@@ -694,6 +714,7 @@ function route() {
   st.share = m ? m[1] : null;
   if (j) { try { st.join = decodeURIComponent(j[1]).slice(0, 64); } catch (e) { st.join = j[1].slice(0, 64); } }
   if (m || j || /[#&](access_token|error_description)=/.test(location.hash) || /[?&]code=/.test(location.search)) st.tab = "mine";
+  else if (location.hash === "#games") st.tab = "games";
 }
 window.addEventListener("hashchange", () => { route(); if (S.length) render(true); });
 window.addEventListener("bingology:write-failed", () => showToast("השינוי לא נשמר"));
