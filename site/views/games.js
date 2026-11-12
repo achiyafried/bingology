@@ -3,7 +3,7 @@
 import { esc, safeImg } from "../lib/esc.js";
 import { searchSeries } from "../lib/search.js";
 import { hebKey, latKey, keyMatch } from "../lib/phonetic.js";
-import { GAMES, loadGamesDay } from "../lib/games/day.js";
+import { GAMES, loadGamesDay, addDays } from "../lib/games/day.js";
 import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as streakOf, prune, saveTotal } from "../lib/games/store.js";
 import { shareText } from "../lib/games/share.js";
 import * as guess from "../lib/games/guess.js";
@@ -221,7 +221,7 @@ export function riddleHTML(p, s, x = {}) {
   if (!s.done) return `${clue}<div class="g-rplay">${riddlePlayHTML(p, s, x)}</div>
   <input id="gr" class="g-hidden" type="text" value="${SENTINEL}" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="rtl" lang="he" aria-label="הקלדת אותיות">`;
   const r = riddle.result(s, p), explain = p.explain ? `<p class="g-explain">${esc(p.explain)}</p>` : "";
-  return `${clue}${riddleRow(p, s)}<div class="g-end" aria-live="polite"><p class="g-res">${r.win ? (r.score ? `פתרתם עם ${r.label}` : "פתרתם בלי רמזים!") : "התשובה:"}</p><p class="g-name"><bdi>${esc(p.answer)}</bdi></p>${explain}${seriesBtn(p.tmdbId, x.hasSeries)}</div>`;
+  return `${clue}${riddleRow(p, s)}<div class="g-end" aria-live="polite"><p class="g-res">${r.win ? (r.score ? `פתרתם עם ${r.label}` : "פתרתם בלי רמזים!") : "התשובה:"}</p><p class="g-name"><bdi>${esc(p.answer)}</bdi></p>${explain}${seriesBtn(p.tmdbId, x.hasSeries)}${x.bonusOffer ? `<button type="button" class="btn primary" data-rbonus>עוד 2 חידות ←</button>` : ""}</div>`;
 }
 
 const letterCount = p => p.words.reduce((a, b) => a + b, 0);
@@ -308,9 +308,10 @@ function paint(top) {
   else if (ses.screen === "hub") {
     if (C.today() !== ses.today) { load(); return; } // midnight passed: today's file
     h = hubHTML(ses.day, ses.states, streakNow(), { practice: ses.practice });
-  } else {
+  } else if (ses.screen === "rbonus") h = bonusHTML();
+  else {
     const id = ses.screen, g = GAMES.find(x => x.id === id), p = ses.day.games[id];
-    const x = { ...ses.ui, nameOf, hasSeries, hasActor };
+    const x = { ...ses.ui, nameOf, hasSeries, hasActor, bonusOffer: id === "riddle" && !ses.practice };
     h = `<div class="g-top"><button type="button" class="linkbtn" data-ghub>חזרה למשחקים</button></div>
     <h2 class="g-title" data-focus tabindex="-1"><span aria-hidden="true">${g.icon}</span> ${g.name}</h2>${howHTML(id, p)}
     <div class="g-body g-${id}">${SCREEN[id](p, stateOf(id, p, ses.states), x)}</div>`;
@@ -376,7 +377,7 @@ function onClick(e) {
   if (!t || !R.contains(t) || t.disabled) return;
   const d = t.dataset, ui = ses.ui;
   if (d.g) { ses.screen = d.g; ses.ui = {}; paint(true); }
-  else if ("ghub" in d) { ses.screen = "hub"; ses.ui = {}; paint(true); }
+  else if ("ghub" in d) { ses.screen = "hub"; ses.bonus = null; ses.ui = {}; paint(true); }
   else if ("gretry" in d) load();
   else if ("gpractice" in d) startPractice();
   else if ("gshare" in d) share();
@@ -406,6 +407,9 @@ function onClick(e) {
     paint(false);
   } else if ("gclear" in d) { ui.sel = []; paint(false); }
   else if ("rfocus" in d) focusRiddle();
+  else if ("rbonus" in d) openBonus();
+  else if ("rbback" in d) { ses.screen = "riddle"; ses.bonus = null; ses.ui = {}; paint(true); }
+  else if (d.rbi != null) { ses.bonus.i = Number(d.rbi); ses.ui = {}; paint(false); }
   else if ("rcheck" in d) riddleMoves([{ type: "check" }]);
   else if ("rhint" in d) riddleMoves([{ type: "hint" }]);
   else if ("rreveal" in d) {
@@ -416,20 +420,57 @@ function onClick(e) {
 
 function focusRiddle() { const i = R.querySelector("#gr"); if (i) i.focus({ preventScroll: true }); }
 
+/* bonus riddles: tomorrow's and the day after's, solved early and saved to their own day */
+const BONUS_LABEL = ["החידה של מחר", "החידה של מחרתיים"];
+
+/** The riddle on screen: today's, or the open bonus one with its own day's saved state. */
+function riddleNow() {
+  if (ses.screen !== "rbonus") return { p: ses.day.games.riddle, s: stateOf("riddle", ses.day.games.riddle, ses.states) };
+  const it = ses.bonus.items[ses.bonus.i];
+  return { p: it.p, s: stateOf("riddle", it.p, loadDay(storage(), it.date)), date: it.date };
+}
+
+async function openBonus() {
+  ses.screen = "rbonus"; ses.ui = {};
+  const today = ses.today, bonus = ses.bonus = { status: "loading", items: [], i: 0 };
+  paint(true);
+  const days = [1, 2].map(n => addDays(today, n));
+  const loaded = await Promise.all(days.map(d => loadGamesDay(C.fetch, d)));
+  if (ses.bonus !== bonus) return; // left or reloaded meanwhile
+  bonus.items = loaded.map((r, k) => (r.status === "ok" && r.day.games && r.day.games.riddle ? { date: days[k], label: BONUS_LABEL[k], p: r.day.games.riddle } : null)).filter(Boolean);
+  bonus.status = "ok";
+  if (ses.screen === "rbonus") paint(true);
+}
+
+function bonusHTML() {
+  const b = ses.bonus, top = `<div class="g-top"><button type="button" class="linkbtn" data-rbback>חזרה לחידה של היום</button></div>
+  <h2 class="g-title" data-focus tabindex="-1"><span aria-hidden="true">🧠</span> עוד חידות</h2>`;
+  if (b.status === "loading") return `${top}<div class="empty loading" role="status"><p>טוענים חידות…</p></div>`;
+  if (!b.items.length) return `${top}<div class="empty"><p>אין עוד חידות כרגע, חזרו מחר.</p></div>`;
+  const tabs = b.items.map((it, k) => `<button type="button" class="chip" data-rbi="${k}" aria-pressed="${k === b.i}">${it.label}</button>`).join("");
+  const { p, s } = riddleNow();
+  return `${top}<p class="g-how">פתרון מוקדם נשמר ליום של החידה, ושם הוא נספר.</p><div class="chips g-rtabs">${tabs}</div>
+  <div class="g-body g-riddle">${riddleHTML(p, s, { ...ses.ui, hasSeries })}</div>`;
+}
+
 /** Redraws the riddle: only the play area while the game goes on (keeps the focused input), the whole screen once it ends. */
 function refreshRiddle() {
-  const p = ses.day.games.riddle, s = stateOf("riddle", p, ses.states), box = R.querySelector(".g-rplay");
+  const { p, s } = riddleNow(), box = R.querySelector(".g-rplay");
   if (s.done || !box) { paint(false); return; }
   box.innerHTML = riddlePlayHTML(p, s, ses.ui);
 }
 
 function riddleMoves(moves) {
   let changed = false;
-  for (const m of moves) if (move(m)) changed = true;
+  if (ses.screen === "rbonus") {
+    const { p, s: s0, date } = riddleNow();
+    const s1 = moves.reduce((s, m) => riddle.play(s, p, m), s0);
+    if (s1 !== s0) { saveDay(storage(), date, { ...loadDay(storage(), date), riddle: s1 }); changed = true; }
+  } else for (const m of moves) if (move(m)) changed = true;
   if (!changed) return;
   ses.ui.sure = false;
   refreshRiddle();
-  if (!stateOf("riddle", ses.day.games.riddle, ses.states).done) focusRiddle();
+  if (!riddleNow().s.done) focusRiddle();
 }
 
 function readHidden(el, inputType) {
