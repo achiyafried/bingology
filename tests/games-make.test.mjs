@@ -136,6 +136,19 @@ test("windows: odd actors 20 days, groups 7, other keys 60; odd and blur actors 
   assert.deepEqual(seen.guess.series, [101, 102]);
 });
 
+test("blur avoids the same day's odd actors, without changing other games' recent", () => {
+  const dir = tmp();
+  fs.writeFileSync(path.join(dir, addDays(TODAY, -1) + ".json"), JSON.stringify({ used: { actors: ["Yesterday"] } }));
+  const seen = {};
+  const spy = (id, used) => ({ make: (pool, rng, recent) => { seen[id] = [...recent.actors].sort(); return { puzzle: {}, used }; } });
+  const gens = { guess: spy("guess", {}), odd: spy("odd", { oddActors: ["O1", "O2", "O3"] }), chain: spy("chain", {}), groups: spy("groups", {}), blur: spy("blur", { actors: ["B"] }) };
+  makeDays(opts(dir, { days: 2, gens }));
+  // seen = the second day: earlier blur actors are recent for everyone; that day's odd actors only for blur.
+  assert.deepEqual(seen.blur, ["B", "O1", "O2", "O3", "Yesterday"]);
+  assert.deepEqual(seen.chain, ["B", "Yesterday"]);
+  assert.deepEqual(read(dir, TODAY).used.actors, ["B"]);
+});
+
 test("day file records every used key", () => {
   const dir = tmp();
   makeDays(opts(dir, { days: 1 }));
@@ -171,6 +184,10 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
   const blurCounts = days.filter((d) => d.games.blur).map((d) => d.games.blur.count);
   assert.ok(blurCounts.some((c) => c > 2), `blur counts ${blurCounts}`);
 
+  for (const d of days) {
+    const oddNames = d.games.odd?.rounds.map((r) => r.actor.name) ?? [];
+    if (d.games.blur) assert.ok(!oddNames.includes(d.games.blur.actor.name), `${d.date} blur actor shown in odd`);
+  }
   for (const d of days) {
     if (d.games.chain) assert.ok(Object.keys(d.games.chain.series).length >= 8, `${d.date} chain size`);
   }

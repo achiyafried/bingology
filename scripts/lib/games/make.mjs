@@ -24,10 +24,12 @@ export function buildDay(pool, date, recent, log = console, gens = GENERATORS) {
   const games = {};
   const used = Object.fromEntries(KEYS.map((k) => [k, []]));
   for (const { id } of GAMES) {
+    // odd (earlier in GAMES) shows its actors by name and photo: blur must not pick one the same day.
+    const r = id === "blur" ? { ...recent, actors: new Set([...recent.actors, ...used.oddActors]) } : recent;
     let result = null, lastError = null;
     for (let attempt = 0; attempt < ATTEMPTS && !result; attempt++) {
       try {
-        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), recent) ?? null;
+        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), r) ?? null;
       } catch (e) {
         result = null;
         lastError = e;
