@@ -217,32 +217,52 @@ export function blurHTML(p, s, x = {}) {
 
 /** The riddle: the clue, one box per letter grouped by word, and a hidden input that brings up the keyboard. */
 export function riddleHTML(p, s, x = {}) {
-  const r = riddle.result(s, p), n = p.words.reduce((a, b) => a + b, 0), full = s.letters.length >= n;
+  const clue = `<p class="g-clue">${esc(p.clue)}</p>`;
+  if (!s.done) return `${clue}<div class="g-rplay">${riddlePlayHTML(p, s, x)}</div>
+  <input id="gr" class="g-hidden" type="text" value="${SENTINEL}" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="rtl" lang="he" aria-label="הקלדת אותיות">`;
+  const r = riddle.result(s, p), explain = p.explain ? `<p class="g-explain">${esc(p.explain)}</p>` : "";
+  return `${clue}${riddleRow(p, s)}<div class="g-end" aria-live="polite"><p class="g-res">${r.win ? (r.score ? `פתרתם עם ${r.label}` : "פתרתם בלי רמזים!") : "התשובה:"}</p><p class="g-name"><bdi>${esc(p.answer)}</bdi></p>${explain}${seriesBtn(p.tmdbId, x.hasSeries)}</div>`;
+}
+
+const letterCount = p => p.words.reduce((a, b) => a + b, 0);
+
+/** The boxes, one per letter, grouped by word. Once over, they spell the answer as written, final letters included. */
+function riddleRow(p, s) {
+  const answer = [...p.answer].filter(c => /[א-ת]/.test(c));
   let k = 0;
   const box = () => {
-    // Once over, the boxes spell the answer as written, final letters included.
-    const i = k++, ch = s.done ? [...p.answer].filter(c => /[א-ת]/.test(c))[i] : s.letters[i];
+    const i = k++, ch = s.done ? answer[i] : s.letters[i];
     const cls = i < s.hints ? " hint" : i === s.letters.length && !s.done ? " cur" : "";
     return `<span class="g-box${cls}">${ch ? esc(ch) : ""}</span>`;
   };
   const words = p.words.map(len => `<span class="g-word">${Array.from({ length: len }, box).join("")}</span>`).join("");
-  const label = `${n} אותיות, הוזנו: ${s.letters.join("")}`;
-  const row = `<button type="button" class="g-boxes${s.last === "wrong" ? " shake" : ""}" data-rfocus dir="rtl" aria-label="${esc(label)}">${words}</button>`;
-  const clue = `<p class="g-clue">${esc(p.clue)}</p>`;
-  if (s.done) {
-    const explain = p.explain ? `<p class="g-explain">${esc(p.explain)}</p>` : "";
-    return `${clue}${row}<div class="g-end" aria-live="polite"><p class="g-res">${r.win ? (r.score ? `פתרתם עם ${r.label}` : "פתרתם בלי רמזים!") : "התשובה:"}</p><p class="g-name"><bdi>${esc(p.answer)}</bdi></p>${explain}${seriesBtn(p.tmdbId, x.hasSeries)}</div>`;
-  }
-  return `${clue}${row}
-  <input id="gr" class="g-hidden" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="rtl" lang="he" aria-label="הקלדת אותיות">
+  const label = `${letterCount(p)} אותיות, הוזנו: ${s.letters.join("")}`;
+  return `<button type="button" class="g-boxes${s.last === "wrong" ? " shake" : ""}" data-rfocus dir="rtl" aria-label="${esc(label)}">${words}</button>`;
+}
+
+/** The part of the riddle screen that changes while playing. The hidden input sits outside it, so a phone
+ *  keyboard stays open: typing patches this part only, never the focused input. */
+function riddlePlayHTML(p, s, x) {
+  const n = letterCount(p);
+  return `${riddleRow(p, s)}
   <p class="g-msg" aria-live="polite">${s.last === "wrong" ? "לא בדיוק, נסו שוב" : ""}</p>
-  <div class="g-acts"><button type="button" class="btn primary" data-rcheck${full ? "" : " disabled"}>בדיקה</button><button type="button" class="btn ghost" data-rhint${s.hints >= n - 1 ? " disabled" : ""}>רמז</button><button type="button" class="btn ghost" data-rreveal>${x.sure ? "בטוחים? לגלות" : "גילוי התשובה"}</button></div>`;
+  <div class="g-acts"><button type="button" class="btn primary" data-rcheck${s.letters.length >= n ? "" : " disabled"}>בדיקה</button><button type="button" class="btn ghost" data-rhint${s.hints >= n - 1 ? " disabled" : ""}>רמז</button><button type="button" class="btn ghost" data-rreveal>${x.sure ? "בטוחים? לגלות" : "גילוי התשובה"}</button></div>`;
+}
+
+/** The hidden input always holds one invisible character, so a delete on an "empty" field is still an edit the page sees. */
+export const SENTINEL = "\u200b";
+
+/** Moves from the hidden input's value after an input event: the sentinel gone means a delete; any other character is typed. */
+export function hiddenMoves(value, inputType) {
+  if (inputType === "deleteContentBackward" || !value.includes(SENTINEL)) return [{ type: "del" }];
+  return [...value.split(SENTINEL).join("")].map(ch => ({ type: "type", ch }));
 }
 
 const SCREEN = { guess: guessHTML, odd: oddHTML, chain: chainHTML, groups: groupsHTML, blur: blurHTML, riddle: riddleHTML };
 
 /* mount: one session per module load, kept across re-renders of the tab (app.js repaints on many actions) */
 let ses = null, R = null, C = null, ACTS = null;
+const COMPOSING = new WeakSet(); // roots that already listen for compositionend
 
 const storage = () => C.storage;
 const hasSeries = id => C.S.some(x => String(x.tmdbId) === String(id));
@@ -386,23 +406,42 @@ function onClick(e) {
     paint(false);
   } else if ("gclear" in d) { ui.sel = []; paint(false); }
   else if ("rfocus" in d) focusRiddle();
-  else if ("rcheck" in d) { move({ type: "check" }); paint(false); focusRiddle(); }
-  else if ("rhint" in d) { ui.sure = false; move({ type: "hint" }); paint(false); focusRiddle(); }
+  else if ("rcheck" in d) riddleMoves([{ type: "check" }]);
+  else if ("rhint" in d) riddleMoves([{ type: "hint" }]);
   else if ("rreveal" in d) {
-    if (!ui.sure) { ui.sure = true; paint(false); const b = R.querySelector("[data-rreveal]"); if (b) b.focus(); }
-    else { ui.sure = false; move({ type: "reveal" }); paint(false); }
+    if (!ui.sure) { ui.sure = true; refreshRiddle(); const b = R.querySelector("[data-rreveal]"); if (b) b.focus(); }
+    else riddleMoves([{ type: "reveal" }]);
   }
 }
 
 function focusRiddle() { const i = R.querySelector("#gr"); if (i) i.focus({ preventScroll: true }); }
 
+/** Redraws the riddle: only the play area while the game goes on (keeps the focused input), the whole screen once it ends. */
+function refreshRiddle() {
+  const p = ses.day.games.riddle, s = stateOf("riddle", p, ses.states), box = R.querySelector(".g-rplay");
+  if (s.done || !box) { paint(false); return; }
+  box.innerHTML = riddlePlayHTML(p, s, ses.ui);
+}
+
+function riddleMoves(moves) {
+  let changed = false;
+  for (const m of moves) if (move(m)) changed = true;
+  if (!changed) return;
+  ses.ui.sure = false;
+  refreshRiddle();
+  if (!stateOf("riddle", ses.day.games.riddle, ses.states).done) focusRiddle();
+}
+
+function readHidden(el, inputType) {
+  const moves = hiddenMoves(el.value, inputType);
+  el.value = SENTINEL;
+  riddleMoves(moves);
+}
+
 function onInput(e) {
   if (e.target.id === "gr") {
-    // Every character typed (or pasted) is one move; the field itself always stays empty.
-    const typed = e.target.value; e.target.value = "";
-    let changed = false;
-    for (const ch of typed) if (move({ type: "type", ch })) changed = true;
-    if (changed) { ses.ui.sure = false; paint(false); focusRiddle(); }
+    // Mid-composition (Android/iOS Hebrew keyboards) the text is not final yet: compositionend reads it.
+    if (!e.isComposing) readHidden(e.target, e.inputType);
     return;
   }
   if (e.target.id !== "gq") return;
@@ -411,11 +450,10 @@ function onInput(e) {
 }
 function onKey(e) {
   if (e.target.id === "gr") {
-    // The field is always empty, so Backspace never reaches onInput: it is handled here.
-    if (e.key === "Backspace" || e.key === "Enter") {
+    // A real Backspace or Enter key; keyboards that send neither still delete through onInput (the sentinel).
+    if (!e.isComposing && (e.key === "Backspace" || e.key === "Enter")) {
       e.preventDefault();
-      move({ type: e.key === "Enter" ? "check" : "del" });
-      paint(false); focusRiddle();
+      riddleMoves([{ type: e.key === "Enter" ? "check" : "del" }]);
     }
     return;
   }
@@ -435,6 +473,7 @@ export function mountGames(root, ctx) {
   root.onclick = onClick;
   root.oninput = onInput;
   root.onkeydown = onKey;
+  if (!COMPOSING.has(root)) { COMPOSING.add(root); root.addEventListener("compositionend", e => { if (e.target && e.target.id === "gr") readHidden(e.target, "insertText"); }); }
   // A photo or poster that fails: the name (or the initials, unhidden only now) stays.
   root.addEventListener("error", e => {
     const t = e.target;
