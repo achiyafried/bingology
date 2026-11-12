@@ -116,14 +116,14 @@ test("today at 22:30Z is already tomorrow in Israel", () => {
   assert.equal(created[0], "2026-11-13");
 });
 
-test("windows: odd actors 14 days, groups 5, other keys 60; odd and blur actors are separate", () => {
+test("windows: odd actors 14 days, groups 4, other keys 60; odd and blur actors are separate", () => {
   assert.equal(ODD_RECENT_DAYS, 14);
-  assert.equal(GROUPS_RECENT_DAYS, 5);
+  assert.equal(GROUPS_RECENT_DAYS, 4);
   const dir = tmp();
   const put = (n, used) => fs.writeFileSync(path.join(dir, addDays(TODAY, -n) + ".json"), JSON.stringify({ used }));
   put(15, { oddActors: ["OldOdd"], actors: ["BlurA"], series: [101], groups: ["decade:1990"] });
-  put(6, { groups: ["decade:2000"] });
-  put(5, { oddActors: ["FreshOdd"], actors: ["BlurB"], series: [102], groups: ["decade:2010"] });
+  put(5, { oddActors: ["FreshOdd"], actors: ["BlurB"], series: [102], groups: ["decade:2000"] });
+  put(4, { groups: ["decade:2010"] });
   const seen = {};
   const spy = (id) => ({ make: (pool, rng, recent) => {
     seen[id] ??= Object.fromEntries(Object.entries(recent).map(([k, v]) => [k, [...v].sort()]));
