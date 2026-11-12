@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  loadDay, saveDay, loadPractice, savePractice, markComplete, streak, dayProgress, prune,
+  loadDay, saveDay, loadPractice, savePractice, markComplete, streak, dayProgress, prune, saveTotal, loadTotal,
 } from "../site/lib/games/store.js";
 
 function mem(init = {}) {
@@ -127,4 +127,16 @@ test("valid JSON of the wrong shape is ignored", () => {
   assert.deepEqual(loadDay(s, "2026-11-13"), {});
   assert.equal(streak(s, "2026-11-13"), 0);
   assert.equal(markComplete(s, "2026-11-13"), 1);
+});
+
+test("total games of a day: one slot, null for another date or bad data", () => {
+  const s = mem();
+  assert.equal(loadTotal(s, "2026-11-13"), null);
+  saveTotal(s, "2026-11-13", 4);
+  assert.equal(loadTotal(s, "2026-11-13"), 4);
+  assert.equal(loadTotal(s, "2026-11-14"), null);
+  saveTotal(s, "2026-11-14", 5);
+  assert.equal(loadTotal(s, "2026-11-13"), null);
+  assert.equal(loadTotal(mem({ "bingology:games:total": "{oops" }), "2026-11-13"), null);
+  assert.equal(loadTotal(mem({ "bingology:games:total": '{"date":"2026-11-13","n":"5"}' }), "2026-11-13"), null);
 });

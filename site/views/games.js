@@ -4,7 +4,7 @@ import { esc, safeImg } from "../lib/esc.js";
 import { searchSeries } from "../lib/search.js";
 import { hebKey, latKey, keyMatch } from "../lib/phonetic.js";
 import { GAMES, loadGamesDay } from "../lib/games/day.js";
-import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as streakOf, prune } from "../lib/games/store.js";
+import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as streakOf, prune, saveTotal } from "../lib/games/store.js";
 import { shareText } from "../lib/games/share.js";
 import * as guess from "../lib/games/guess.js";
 import * as odd from "../lib/games/odd.js";
@@ -177,7 +177,8 @@ export function groupsHTML(p, s, x = {}) {
 
 export function blurHTML(p, s, x = {}) {
   const img = safeImg(p.actor.photo), r = blur.result(s, p);
-  const photo = `<div class="g-photo"><span class="g-ini" aria-hidden="true">${esc(initials(p.actor.name))}</span>${img ? `<img src="${img}" alt="${s.done ? esc(p.actor.name) : "תמונה מטושטשת"}" style="filter: blur(${blur.blurPx(s)}px)">` : ""}</div>`;
+  // Initials only when the photo fails (the error handler unhides them): while it loads they'd give the answer away.
+  const photo = `<div class="g-photo"><span class="g-ini" aria-hidden="true"${img ? " hidden" : ""}>${esc(initials(p.actor.name))}</span>${img ? `<img src="${img}" alt="${s.done ? esc(p.actor.name) : "תמונה מטושטשת"}" style="filter: blur(${blur.blurPx(s)}px)">` : ""}</div>`;
   const hints = blur.hints(s, p).map(h => `<li><bdi>${esc(h)}</bdi></li>`).join("");
   const wrong = s.guesses.filter(g => g.trim().toLowerCase() !== p.actor.name.trim().toLowerCase()).map(g => `<li class="no"><bdi>${esc(g)}</bdi></li>`).join("");
   const end = `<div class="g-end"><p class="g-res">${r.win ? `ניחשתם ב-${r.score} ניסיונות` : "לא הפעם. זה היה:"}</p><p class="g-name"><bdi>${esc(p.actor.name)}</bdi></p>${actorBtn(p.actor.name, x.hasActor)}</div>`;
@@ -195,20 +196,29 @@ let ses = null, R = null, C = null, ACTS = null;
 const storage = () => C.storage;
 const hasSeries = id => C.S.some(x => String(x.tmdbId) === String(id));
 const hasActor = n => C.actorNames.includes(n);
-const nameOf = id => { const x = C.S.find(s => String(s.tmdbId) === String(id)); return x ? x.n : "#" + id; };
+const nameOf = id => {
+  const x = C.S.find(s => String(s.tmdbId) === String(id)), a = ses.day.games.guess && ses.day.games.guess.answer;
+  return x ? x.n : a && String(a.id) === String(id) ? a.name : "#" + id;
+};
 
 function guessSug(q) {
-  const s = stateOf("guess", ses.day.games.guess, ses.states);
-  return searchSeries(C.S, q, SUG + s.guesses.length).filter(i => !s.guesses.some(g => String(g) === String(C.S[i].tmdbId)))
+  const p = ses.day.games.guess, s = stateOf("guess", p, ses.states);
+  const out = searchSeries(C.S, q, SUG + s.guesses.length).filter(i => !s.guesses.some(g => String(g) === String(C.S[i].tmdbId)))
     .slice(0, SUG).map(i => ({ v: C.S[i].tmdbId, label: C.S[i].n }));
+  // The answer may have left the series list since the file was made; it must stay guessable.
+  if (!hasSeries(p.answer.id) && searchSeries([{ n: p.answer.name }], q).length) out.unshift({ v: p.answer.id, label: p.answer.name });
+  return out.slice(0, SUG);
 }
+const actEntry = n => { const kw = /[֐-׿]/.test(n) ? hebKey(n) : latKey(n); return { n, l: n.toLowerCase(), kw, kf: kw.join("") }; };
 /** Actor names by the actors tab's rules: text match first, then Hebrew pronunciation. */
 function actorSug(q) {
   q = q.trim().toLowerCase();
   if (q.length < 2) return [];
-  if (!ACTS) ACTS = C.actorNames.map(n => { const kw = /[֐-׿]/.test(n) ? hebKey(n) : latKey(n); return { n, l: n.toLowerCase(), kw, kf: kw.join("") }; });
+  if (!ACTS) ACTS = C.actorNames.map(actEntry);
+  const answer = ses.day.games.blur.actor.name;
+  const list = hasActor(answer) ? ACTS : [...ACTS, actEntry(answer)]; // the answer may have left the actor list
   const heb = /[֐-׿]/.test(q), qk = heb ? hebKey(q) : [];
-  return ACTS.map(a => ({ a, r: a.l.startsWith(q) ? 0 : a.l.includes(q) ? 1 : heb && keyMatch(a, qk) ? 2 : 9 }))
+  return list.map(a => ({ a, r: a.l.startsWith(q) ? 0 : a.l.includes(q) ? 1 : heb && keyMatch(a, qk) ? 2 : 9 }))
     .filter(o => o.r < 9).sort((x, y) => x.r - y.r || x.a.n.localeCompare(y.a.n)).slice(0, SUG).map(o => ({ v: o.a.n, label: o.a.n }));
 }
 
@@ -246,7 +256,10 @@ async function load() {
   paint(false);
   const r = await loadGamesDay(C.fetch, today);
   if (!ses || ses.today !== today || ses.status !== "loading") return;
-  if (r.status === "ok") ses = { today, status: "ok", day: r.day, practice: false, states: loadDay(storage(), r.day.date), screen: "hub", ui: {} };
+  if (r.status === "ok") {
+    ses = { today, status: "ok", day: r.day, practice: false, states: loadDay(storage(), r.day.date), screen: "hub", ui: {} };
+    saveTotal(storage(), r.day.date, available(r.day).length);
+  }
   else ses = { today, status: r.status, practice: r.status === "missing" ? r.practice : null };
   paint(true);
 }
@@ -280,7 +293,11 @@ async function share() {
     try { await navigator.share({ text }); return; }
     catch (e) { if (e && e.name === "AbortError") return; }
   }
-  if (await C.copy(text)) C.toast("התוצאות הועתקו"); else C.toast("העתיקו את התוצאות ושלחו לחברים.", text);
+  if (await C.copy(text)) { C.toast("התוצאות הועתקו"); return; }
+  // The toast's field is one line; the full text is already on screen in the summary, so select it there.
+  const pre = R && R.querySelector(".g-share");
+  try { if (pre && window.getSelection) window.getSelection().selectAllChildren(pre); } catch (e) {}
+  C.toast("אי אפשר להעתיק מהמסך הזה. סמנו את התוצאות והעתיקו אותן ידנית.");
 }
 
 function onClick(e) {
@@ -326,17 +343,27 @@ function onKey(e) {
   if (first) pick(first.dataset.gpick);
 }
 
-/** ctx = { S, storage, actorNames, today: () => date, fetch, openSeries(tmdbId), openActor(name), toast, copy } */
+/** ctx = { S, storage, actorNames, today: () => date, fetch, openSeries(tmdbId), openActor(name), toast, copy, nav }
+ *  nav: true when the tab was just entered (scroll to top and focus the heading), false on a re-render. */
 export function mountGames(root, ctx) {
   if (C && C.actorNames !== ctx.actorNames) ACTS = null;
+  const old = R && R !== root && R.querySelector("#gq"), typed = old ? old.value : "";
   R = root; C = ctx;
   prune(ctx.storage, ctx.today());
   root.onclick = onClick;
   root.oninput = onInput;
   root.onkeydown = onKey;
-  // A photo or poster that fails: the name (or the initials under the photo) stays.
-  root.addEventListener("error", e => { const t = e.target; if (t && t.tagName === "IMG" && t.closest(".games")) { const c = t.closest(".g-s"); if (c) c.classList.add("noimg"); t.remove(); } }, true);
-  if (!ses || ses.today !== ctx.today()) load();
-  else if (ses.status === "loading") paint(false);
-  else paint(true);
+  // A photo or poster that fails: the name (or the initials, unhidden only now) stays.
+  root.addEventListener("error", e => {
+    const t = e.target;
+    if (!t || t.tagName !== "IMG" || !t.closest(".games")) return;
+    const c = t.closest(".g-s"); if (c) c.classList.add("noimg");
+    const ini = t.parentNode && t.parentNode.querySelector(".g-ini"); if (ini) ini.hidden = false;
+    t.remove();
+  }, true);
+  if (!ses || ses.today !== ctx.today()) { load(); return; }
+  // app.js re-renders the whole page on many actions: only a real navigation (ctx.nav) jumps to the top.
+  paint(!!ctx.nav && ses.status !== "loading");
+  const q = !ctx.nav && typed && R.querySelector("#gq");
+  if (q) q.value = typed;
 }

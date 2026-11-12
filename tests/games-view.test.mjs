@@ -69,7 +69,8 @@ test("blurHTML: blur(24px) at the start, initials when safeImg rejects the photo
   const bad = blurHTML({ ...blur, actor: { name: "Patton Oswalt", photo: "javascript:alert(1)" } }, { guesses: [], done: false }, {});
   assert.doesNotMatch(bad, /<img/);
   assert.doesNotMatch(bad, /javascript:/);
-  assert.match(bad, />PO</);
+  assert.match(bad, /<span class="g-ini" aria-hidden="true">PO</);
+  assert.match(h, /<span class="g-ini" aria-hidden="true" hidden>/, "initials stay hidden while the photo loads");
   const one = blurHTML(blur, { guesses: ["Nope"], done: false }, {});
   assert.match(one, /filter: blur\(16px\)/);
   assert.match(one, /2 סדרות במאגר/);

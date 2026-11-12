@@ -3,6 +3,7 @@ import { addDays } from "./day.js";
 const P = "bingology:games:";
 const STREAK = P + "streak";
 const PRACTICE = P + "practice";
+const TOTAL = P + "total";
 const DAY_KEY = /^bingology:games:(\d{4}-\d{2}-\d{2})$/;
 
 const isObj = v => v && typeof v === "object" && !Array.isArray(v);
@@ -57,6 +58,17 @@ export function streak(storage, today) {
 /** Number of games finished on `date`. */
 export function dayProgress(storage, date) {
   return Object.values(loadDay(storage, date)).filter(s => s && s.done === true).length;
+}
+
+/** How many games `date`'s file has (one slot, written by the games view), for the home card. */
+export function saveTotal(storage, date, n) {
+  write(storage, TOTAL, { date, n });
+}
+
+/** The saved game count for `date`, or null when unknown. */
+export function loadTotal(storage, date) {
+  const v = read(storage, TOTAL);
+  return isObj(v) && v.date === date && Number.isInteger(v.n) ? v.n : null;
 }
 
 /** Removes stored day states older than `keep` days. */

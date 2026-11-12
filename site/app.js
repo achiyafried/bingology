@@ -7,7 +7,7 @@ import { searchSeries } from "./lib/search.js";
 import { addSeriesUrl } from "./lib/addlink.js";
 import { bellHTML, stripHTML, stripItems, unseenCount, upcomingSeasons, visibleItems } from "./lib/news.js";
 import { israelToday } from "./lib/games/day.js";
-import { dayProgress, streak as gamesStreak } from "./lib/games/store.js";
+import { dayProgress, loadTotal, streak as gamesStreak } from "./lib/games/store.js";
 
 const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "./lib/quiz.js";
@@ -296,8 +296,8 @@ function introHTML() {
 }
 /** Home card: today's games (Israel date, recomputed on every render), progress and streak. */
 function gamesCardHTML() {
-  const t = israelToday(), n = dayProgress(store, t), k = gamesStreak(store, t);
-  return `<button class="gcard" data-a="tab" data-v="games"><span class="gc-ic" aria-hidden="true">🧩</span><span class="gc-t"><b>המשחקים של היום</b><small>${n}/5${k > 0 ? ` · רצף ${k} 🔥` : ""}</small></span><span class="gc-go" aria-hidden="true">‹</span></button>`;
+  const t = israelToday(), n = dayProgress(store, t), total = loadTotal(store, t), k = gamesStreak(store, t);
+  return `<button class="gcard" data-a="tab" data-v="games"><span class="gc-ic" aria-hidden="true">🧩</span><span class="gc-t"><b>המשחקים של היום</b><small>${total != null ? `${n}/${total}` : `${n} הושלמו`}${k > 0 ? ` · רצף ${k} 🔥` : ""}</small></span><span class="gc-go" aria-hidden="true">‹</span></button>`;
 }
 
 function qHTML() {
@@ -421,7 +421,7 @@ function render(top) {
   $("#app").innerHTML = header() + body + footerHTML();
   if (onNews()) showNews();
   else if (st.tab === "mine") showMine();
-  else if (st.tab === "games") showGames();
+  else if (st.tab === "games") showGames(top);
   if (top) { window.scrollTo(0, 0); const f = $("[data-focus]"); if (f) f.focus({ preventScroll: true }); }
   else window.scrollTo(0, y);
 }
@@ -647,13 +647,13 @@ function showMine() {
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
 }
 /* "משחקים" tab: views/games.js loads only here. */
-function showGames() {
+function showGames(nav) {
   const root = $("#games");
   import("./views/games.js")
     .then(m => { if (root.isConnected) m.mountGames(root, { S, storage: store, actorNames: actorIndex().map(a => a.n), today: () => israelToday(), fetch: (u, o) => fetch(u, o),
       openSeries: id => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) openDlg(k); },
       openActor: n => { actorIndex(); const k = ACTMAP.get(n); if (k !== undefined) dlgGo({ t: "a", v: k }); },
-      toast: showToast, copy: copyText }); })
+      toast: showToast, copy: copyText, nav: !!nav }); })
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>המשחקים לא נטענו</p><button class="btn primary" data-a="tab" data-v="games">לנסות שוב</button></div>`; });
 }
 const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
