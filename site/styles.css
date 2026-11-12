@@ -538,3 +538,18 @@ button.g-s:disabled { cursor: default; }
   .tab { font-size: 14px; }
   .g-it { font-size: 12px; }
 }
+
+/* riddle: letter boxes (right to left, a gap between words), hinted letters tinted, a shake on a wrong answer */
+.g-clue { font-family: "Secular One", "Assistant", sans-serif; font-size: 22px; line-height: 1.4; text-align: center; margin: 4px 0 16px; }
+.g-boxes { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; width: 100%; background: none; border: 0; padding: 4px 0; cursor: text; font: inherit; color: inherit; }
+.g-word { display: flex; gap: 5px; }
+.g-box { width: 38px; height: 46px; display: grid; place-items: center; border: 2px solid var(--muted); border-radius: 10px; background: var(--surface); font-size: 24px; font-weight: 700; }
+.g-box.cur { border-color: var(--accent); }
+.g-box.hint { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.g-hidden { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.g-riddle .g-msg { text-align: center; margin-top: 10px; }
+.g-explain { margin: 0; color: var(--muted); }
+.shake { animation: g-shake .35s; }
+@keyframes g-shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .shake { animation: none; } }
+@media (max-width: 380px) { .g-box { width: 30px; height: 40px; font-size: 20px; } .g-word { gap: 3px; } .g-boxes { gap: 10px; } }

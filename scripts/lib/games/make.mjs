@@ -24,6 +24,7 @@ export function buildDay(pool, date, recent, log = console, gens = GENERATORS) {
   const games = {};
   const used = Object.fromEntries(KEYS.map((k) => [k, []]));
   for (const { id } of GAMES) {
+    if (!gens[id]) continue; // the riddle has no generator: scripts/lib/games/riddles.mjs fills it in afterwards
     // odd (earlier in GAMES) shows its actors by name and photo: blur must not pick one the same day.
     const r = id === "blur" ? { ...recent, actors: new Set([...recent.actors, ...used.oddActors]) } : recent;
     let result = null, lastError = null;
@@ -79,7 +80,7 @@ export function makeDays({
     const day = buildDay(pool, date, recent, log, gens);
     fs.writeFileSync(file, JSON.stringify(day) + "\n");
     created.push(date);
-    const gone = GAMES.map((g) => g.id).filter((id) => !(id in day.games));
+    const gone = GAMES.map((g) => g.id).filter((id) => gens[id] && !(id in day.games));
     if (gone.length) missing[date] = gone;
   }
   const cutoff = addDays(today, -keepDays);

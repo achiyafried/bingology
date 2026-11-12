@@ -5,6 +5,7 @@ export const GAMES = [
   { id: "chain", name: "שרשרת", icon: "🔗" },
   { id: "groups", name: "ארבע קבוצות", icon: "🧩" },
   { id: "blur", name: "השחקן המטושטש", icon: "👤" },
+  { id: "riddle", name: "חידת היגיון", icon: "🧠" }, // hand-written: assigned from riddles.json, not generated
 ];
 
 const fmt = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" });

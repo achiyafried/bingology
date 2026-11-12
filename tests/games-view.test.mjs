@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hubHTML, summaryHTML, guessHTML, oddHTML, chainHTML, groupsHTML, blurHTML, howHTML, chainRoute } from "../site/views/games.js";
+import { hubHTML, summaryHTML, guessHTML, oddHTML, chainHTML, groupsHTML, blurHTML, riddleHTML, howHTML, chainRoute } from "../site/views/games.js";
 import { shareText } from "../site/lib/games/share.js";
 import { esc } from "../site/lib/esc.js";
 
@@ -193,4 +193,52 @@ test("groupsHTML: the four labels are listed from the start; solved ones are col
   assert.equal((l2.match(/lv\d/g) || []).length, 1);
   const lbl = groupsHTML({ ...groups, groups: groups.groups.map((g, i) => (i ? g : { ...g, label: "<s>x</s>" })) }, { solved: [], mistakes: 0, tried: [], last: null, done: false }, {});
   assert.ok(!lbl.includes("<s>x</s>"));
+});
+
+const riddle = { clue: "הוא נשאר בתוך הים אז הם שרדו", answer: "שובר שורות", words: [4, 5], tmdbId: 1396, explain: "<i>הסבר</i>" };
+const rs = (o = {}) => ({ letters: [], hints: 0, tries: 0, done: false, gaveUp: false, ...o });
+
+test("riddleHTML: clue, one box per letter grouped by word, hidden input for the keyboard", () => {
+  const h = riddleHTML(riddle, rs({ letters: ["ש", "ו"] }));
+  assert.ok(h.includes("הוא נשאר בתוך הים אז הם שרדו"));
+  const words = h.split('class="g-word"').slice(1);
+  assert.equal(words.length, 2);
+  assert.deepEqual(words.map(w => (w.match(/class="g-box/g) || []).length), [4, 5]);
+  assert.match(h, /<input id="gr"[^>]*inputmode="text"[^>]*autocomplete="off"/);
+  assert.match(h, /aria-label="9 אותיות, הוזנו: שו"/);
+});
+
+test("riddleHTML: hinted boxes carry .hint; check is disabled until all boxes are full", () => {
+  const h = riddleHTML(riddle, rs({ letters: ["ש", "ו", "ב"], hints: 2 }));
+  assert.equal((h.match(/g-box hint/g) || []).length, 2);
+  assert.match(h, /data-rcheck disabled/);
+  const full = riddleHTML(riddle, rs({ letters: [..."שוברשורות"] }));
+  assert.doesNotMatch(full, /data-rcheck disabled/);
+});
+
+test("riddleHTML: last='wrong' shows the retry message and shakes", () => {
+  const h = riddleHTML(riddle, rs({ letters: [..."שוברשורזת"], tries: 1, last: "wrong" }));
+  assert.ok(h.includes("לא בדיוק, נסו שוב"));
+  assert.match(h, /g-boxes shake/);
+  assert.doesNotMatch(riddleHTML(riddle, rs()), /shake|לא בדיוק/);
+});
+
+test("riddleHTML: reveal asks to confirm first", () => {
+  assert.match(riddleHTML(riddle, rs()), /data-rreveal>גילוי התשובה</);
+  assert.match(riddleHTML(riddle, rs(), { sure: true }), /data-rreveal>בטוחים\? לגלות</);
+});
+
+test("riddleHTML done: answer, escaped explain, series button only when the series exists", () => {
+  const h = riddleHTML(riddle, rs({ letters: [..."שוברשורות"], done: true }), { hasSeries: id => id === 1396 });
+  assert.ok(h.includes("שובר שורות"));
+  assert.ok(h.includes(esc("<i>הסבר</i>")));
+  assert.match(h, /data-gs="1396"/);
+  assert.doesNotMatch(h, /<input id="gr"/);
+  const gone = riddleHTML(riddle, rs({ done: true, gaveUp: true }), { hasSeries: () => false });
+  assert.doesNotMatch(gone, /data-gs=/);
+  assert.ok(gone.includes("התשובה"));
+});
+
+test("howHTML explains the riddle", () => {
+  assert.ok(howHTML("riddle", riddle).includes("התשובה היא שם של סדרה"));
 });

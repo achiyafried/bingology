@@ -11,8 +11,9 @@ import * as odd from "../lib/games/odd.js";
 import * as chain from "../lib/games/chain.js";
 import * as groups from "../lib/games/groups.js";
 import * as blur from "../lib/games/blur.js";
+import * as riddle from "../lib/games/riddle.js";
 
-const LOGIC = { guess, odd, chain, groups, blur };
+const LOGIC = { guess, odd, chain, groups, blur, riddle };
 // A stored state of the wrong shape (old or edited by hand) starts the game over instead of breaking it.
 const SHAPE = {
   guess: s => Array.isArray(s.guesses),
@@ -20,6 +21,7 @@ const SHAPE = {
   chain: s => Array.isArray(s.path) && s.path.length > 0 && Array.isArray(s.via) && Number.isInteger(s.steps) && (s.hinted === undefined || typeof s.hinted === "boolean"),
   groups: s => Array.isArray(s.solved) && Array.isArray(s.tried) && Number.isInteger(s.mistakes),
   blur: s => Array.isArray(s.guesses),
+  riddle: s => Array.isArray(s.letters) && Number.isInteger(s.hints) && Number.isInteger(s.tries) && typeof s.gaveUp === "boolean",
 };
 const GUESS_MAX = 6, BLUR_MAX = 5, SUG = 8;
 
@@ -87,6 +89,7 @@ export function howHTML(id, p) {
     chain: () => `המטרה: להגיע מ-${name(p.from)} ל-${name(p.to)}. בכל צעד בוחרים שחקן/ית מהסדרה שאתם בה, ועוברים לסדרה אחרת שהוא/היא שיחקו בה.`,
     groups: () => "שבצו את 16 הסדרות לארבע הקבוצות שלמעלה. בחרו 4 ולחצו שליחה. מותר לטעות 4 פעמים.",
     blur: () => "מי השחקן/ית? כל טעות מחדדת את התמונה וחושפת רמז. יש 5 ניסיונות.",
+    riddle: () => "פתרו את החידה. התשובה היא שם של סדרה. כל רמז חושף אות.",
   }[id];
   return text ? `<p class="g-how">${text()}</p>` : "";
 }
@@ -212,7 +215,30 @@ export function blurHTML(p, s, x = {}) {
   ${s.done ? end : input("ניחוש שחקן", "שם השחקן/ית, באנגלית או בעברית")}`;
 }
 
-const SCREEN = { guess: guessHTML, odd: oddHTML, chain: chainHTML, groups: groupsHTML, blur: blurHTML };
+/** The riddle: the clue, one box per letter grouped by word, and a hidden input that brings up the keyboard. */
+export function riddleHTML(p, s, x = {}) {
+  const r = riddle.result(s, p), n = p.words.reduce((a, b) => a + b, 0), full = s.letters.length >= n;
+  let k = 0;
+  const box = () => {
+    const i = k++, ch = s.done && !r.win ? riddle.letters(p.answer)[i] : s.letters[i];
+    const cls = i < s.hints ? " hint" : i === s.letters.length && !s.done ? " cur" : "";
+    return `<span class="g-box${cls}">${ch ? esc(ch) : ""}</span>`;
+  };
+  const words = p.words.map(len => `<span class="g-word">${Array.from({ length: len }, box).join("")}</span>`).join("");
+  const label = `${n} אותיות, הוזנו: ${s.letters.join("")}`;
+  const row = `<button type="button" class="g-boxes${s.last === "wrong" ? " shake" : ""}" data-rfocus dir="rtl" aria-label="${esc(label)}">${words}</button>`;
+  const clue = `<p class="g-clue">${esc(p.clue)}</p>`;
+  if (s.done) {
+    const explain = p.explain ? `<p class="g-explain">${esc(p.explain)}</p>` : "";
+    return `${clue}${row}<div class="g-end" aria-live="polite"><p class="g-res">${r.win ? (r.score ? `פתרתם עם ${r.label}` : "פתרתם בלי רמזים!") : "התשובה:"}</p><p class="g-name"><bdi>${esc(p.answer)}</bdi></p>${explain}${seriesBtn(p.tmdbId, x.hasSeries)}</div>`;
+  }
+  return `${clue}${row}
+  <input id="gr" class="g-hidden" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="rtl" lang="he" aria-label="הקלדת אותיות">
+  <p class="g-msg" aria-live="polite">${s.last === "wrong" ? "לא בדיוק, נסו שוב" : ""}</p>
+  <div class="g-acts"><button type="button" class="btn primary" data-rcheck${full ? "" : " disabled"}>בדיקה</button><button type="button" class="btn ghost" data-rhint${s.hints >= n - 1 ? " disabled" : ""}>רמז</button><button type="button" class="btn ghost" data-rreveal>${x.sure ? "בטוחים? לגלות" : "גילוי התשובה"}</button></div>`;
+}
+
+const SCREEN = { guess: guessHTML, odd: oddHTML, chain: chainHTML, groups: groupsHTML, blur: blurHTML, riddle: riddleHTML };
 
 /* mount: one session per module load, kept across re-renders of the tab (app.js repaints on many actions) */
 let ses = null, R = null, C = null, ACTS = null;
@@ -358,14 +384,40 @@ function onClick(e) {
     if (s && s.last === "ok") ui.sel = [];
     paint(false);
   } else if ("gclear" in d) { ui.sel = []; paint(false); }
+  else if ("rfocus" in d) focusRiddle();
+  else if ("rcheck" in d) { move({ type: "check" }); paint(false); focusRiddle(); }
+  else if ("rhint" in d) { ui.sure = false; move({ type: "hint" }); paint(false); focusRiddle(); }
+  else if ("rreveal" in d) {
+    if (!ui.sure) { ui.sure = true; paint(false); const b = R.querySelector("[data-rreveal]"); if (b) b.focus(); }
+    else { ui.sure = false; move({ type: "reveal" }); paint(false); }
+  }
 }
 
+function focusRiddle() { const i = R.querySelector("#gr"); if (i) i.focus({ preventScroll: true }); }
+
 function onInput(e) {
+  if (e.target.id === "gr") {
+    // Every character typed (or pasted) is one move; the field itself always stays empty.
+    const typed = e.target.value; e.target.value = "";
+    let changed = false;
+    for (const ch of typed) if (move({ type: "type", ch })) changed = true;
+    if (changed) { ses.ui.sure = false; paint(false); focusRiddle(); }
+    return;
+  }
   if (e.target.id !== "gq") return;
   const q = e.target.value, box = R.querySelector("#gsug");
   if (box) box.innerHTML = sugHTML(ses.screen === "guess" ? guessSug(q) : actorSug(q));
 }
 function onKey(e) {
+  if (e.target.id === "gr") {
+    // The field is always empty, so Backspace never reaches onInput: it is handled here.
+    if (e.key === "Backspace" || e.key === "Enter") {
+      e.preventDefault();
+      move({ type: e.key === "Enter" ? "check" : "del" });
+      paint(false); focusRiddle();
+    }
+    return;
+  }
   if (e.target.id !== "gq" || e.key !== "Enter") return;
   e.preventDefault();
   const first = R.querySelector("[data-gpick]");

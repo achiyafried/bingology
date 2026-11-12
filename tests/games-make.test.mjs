@@ -27,7 +27,7 @@ test("creates exactly the 8 missing dates", () => {
   const f = read(dir, TODAY);
   assert.equal(f.date, TODAY);
   assert.equal(f.v, 1);
-  assert.deepEqual(Object.keys(f.games), GAMES.map((g) => g.id));
+  assert.deepEqual(Object.keys(f.games), GAMES.map((g) => g.id).filter((id) => id !== "riddle"), "riddle is assigned separately, from riddles.json");
 });
 
 test("an existing file is never rewritten", async () => {
@@ -215,5 +215,5 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
     for (const g of d.games.groups?.groups ?? []) assert.notEqual(g.kind, "year", `${d.date} year group`);
   }
   // Last, so a short game doesn't hide the rule checks above.
-  for (const [id, n] of Object.entries(counts)) assert.ok(n >= 27, `${id} present on ${n}/30 days`);
+  for (const [id, n] of Object.entries(counts)) if (id !== "riddle") assert.ok(n >= 27, `${id} present on ${n}/30 days`);
 });
