@@ -59,7 +59,7 @@ test("israelToday and addDays", () => {
 });
 
 test("GAMES ids and order", () => {
-  assert.deepEqual(GAMES.map((g) => g.id), ["guess", "odd", "chain", "groups", "blur"]);
+  assert.deepEqual(GAMES.map((g) => g.id), ["guess", "odd", "chain", "groups", "blur", "riddle"]);
   assert.equal(GAMES[3].name, "ארבע קבוצות");
 });
 

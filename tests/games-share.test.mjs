@@ -25,3 +25,8 @@ test("missing games are omitted, and no results leaves no empty line", () => {
   assert.equal(out.split("\n")[1], "🎬 X/6  👤 X/5");
   assert.equal(shareText({ date: "2026-11-13", streak: 1, results: [] }), `Bingology · 13.11 · רצף 1 🔥\n${URL}`);
 });
+
+test("the riddle prints last, with its brain icon", () => {
+  const out = shareText({ date: "2026-11-13", streak: 0, results: [{ id: "riddle", label: "✓" }, { id: "guess", label: "2/6" }] });
+  assert.equal(out.split("\n")[1], "🎬 2/6  🧠 ✓");
+});
