@@ -17,7 +17,7 @@ const LOGIC = { guess, odd, chain, groups, blur };
 const SHAPE = {
   guess: s => Array.isArray(s.guesses),
   odd: s => Array.isArray(s.picks),
-  chain: s => Array.isArray(s.path) && s.path.length > 0 && Array.isArray(s.via) && Number.isInteger(s.steps),
+  chain: s => Array.isArray(s.path) && s.path.length > 0 && Array.isArray(s.via) && Number.isInteger(s.steps) && (s.hinted === undefined || typeof s.hinted === "boolean"),
   groups: s => Array.isArray(s.solved) && Array.isArray(s.tried) && Number.isInteger(s.mistakes),
   blur: s => Array.isArray(s.guesses),
 };
@@ -78,6 +78,19 @@ export function summaryHTML(day, states, streak, opts = {}) {
   ${opts.practice ? "" : `<button type="button" class="btn primary block" data-gshare>שיתוף</button>`}</div>`;
 }
 
+/** One-line "how to play" under the game's title. */
+export function howHTML(id, p) {
+  const name = k => `<bdi>${esc(p && p.series && p.series[String(k)] && p.series[String(k)].name)}</bdi>`;
+  const text = {
+    guess: () => "נחשו את הסדרה. כל טעות חושפת רמז נוסף. יש 6 ניסיונות.",
+    odd: () => "בכל סיבוב: שלוש מהסדרות הן של השחקן/ית, אחת מתחזה. מצאו אותה.",
+    chain: () => `המטרה: להגיע מ-${name(p.from)} ל-${name(p.to)}. בכל צעד בוחרים שחקן/ית מהסדרה שאתם בה, ועוברים לסדרה אחרת שהוא/היא שיחקו בה.`,
+    groups: () => "שבצו את 16 הסדרות לארבע הקבוצות שלמעלה. בחרו 4 ולחצו שליחה. מותר לטעות 4 פעמים.",
+    blur: () => "מי השחקן/ית? כל טעות מחדדת את התמונה וחושפת רמז. יש 5 ניסיונות.",
+  }[id];
+  return text ? `<p class="g-how">${text()}</p>` : "";
+}
+
 /* game screens: (puzzle, state, extra) → HTML */
 export function guessHTML(p, s, x = {}) {
   const nameOf = x.nameOf || (id => "#" + id);
@@ -116,9 +129,10 @@ export function oddHTML(p, s, x = {}) {
   <div class="g-four">${cards}</div>${after}`;
 }
 
-/** Shortest route in the puzzle's subgraph: [{ id, via }] from `from` to `to` (via = actor into that series), or null. */
-export function chainRoute(p) {
-  const ids = Object.keys(p.series), from = String(p.from), to = String(p.to);
+/** Shortest route in the puzzle's subgraph: [{ id, via }] from `start` (default p.from) to `to` (via = actor into that series), or null. */
+export function chainRoute(p, start = p.from) {
+  const ids = Object.keys(p.series), from = String(start), to = String(p.to);
+  if (!p.series[from]) return null;
   const prev = new Map([[from, null]]), q = [from];
   while (q.length && !prev.has(to)) {
     const c = q.shift();
@@ -137,21 +151,28 @@ const routeHTML = (p, path, via) => `<ol class="g-path">${path.map((id, i) => `$
 export function chainHTML(p, s, x = {}) {
   const ser = id => ({ id, ...p.series[String(id)] });
   const cur = s.path[s.path.length - 1], r = chain.result(s, p);
-  const head = `<div class="g-ends">${seriesCard(ser(p.from))}<span class="g-arrow" aria-hidden="true">←</span>${seriesCard(ser(p.to))}</div>
-  <p class="g-count">צעדים: ${s.steps} מתוך ${p.limit} (המסלול הקצר: ${p.shortest})</p>${routeHTML(p, s.path, s.via)}`;
+  const end = (label, id) => `<div class="g-pt"><span class="g-lbl">${label}</span>${seriesCard(ser(id))}</div>`;
+  const head = `<div class="g-ends">${end("התחלה", p.from)}<span class="g-arrow" aria-hidden="true">←</span>${end("יעד", p.to)}</div>
+  <p class="g-count">נשארו ${p.limit - s.steps} צעדים · אפשר ב-${p.shortest}</p>${routeHTML(p, s.path, s.via)}`;
   if (s.done) {
     const best = r.label === "מושלם" ? null : chainRoute(p);
     return `${head}<div class="g-end"><p class="g-res">${r.win ? (r.label === "מושלם" ? "מושלם! המסלול הקצר ביותר" : "הגעתם!") : "נתקעתם הפעם"}</p>
     ${best ? `<p class="g-ask">מסלול קצר:</p>${routeHTML(p, best.map(b => b.id), best.slice(1).map(b => b.via))}` : ""}${seriesBtn(p.to, x.hasSeries)}</div>`;
   }
   const back = `<button type="button" class="btn ghost" data-gback${!x.actor && s.path.length < 2 ? " disabled" : ""}>${x.actor ? "ביטול" : "צעד אחורה"}</button>`;
+  // A hint is shown for the series it was asked in (x.hint): the next hop of a shortest route from there.
+  const shown = s.hinted && x.hint != null && String(x.hint) === String(cur);
+  const next = shown ? (chainRoute(p, cur) || [])[1] : null;
   if (x.actor) {
-    const list = others(p, cur, x.actor).map(k => seriesCard(ser(k), `data-gto="${esc(k)}"`)).join("");
+    const list = others(p, cur, x.actor).map(k => seriesCard(ser(k), `data-gto="${esc(k)}"`, next && next.via === x.actor && next.id === k ? "is-hint" : "")).join("");
     return `${head}<p class="g-ask">לאיזו סדרה של <bdi>${esc(x.actor)}</bdi>?</p><div class="g-four">${list}</div><div class="g-acts">${back}</div>`;
   }
-  const cast = (p.series[String(cur)] ? p.series[String(cur)].cast : []).map(a =>
-    `<button type="button" class="chip" data-gact="${esc(a)}"${others(p, cur, a).length ? "" : " disabled"}><bdi>${esc(a)}</bdi></button>`).join("");
-  return `${head}<p class="g-ask">בחרו שחקן/ית מ-<bdi>${esc(p.series[String(cur)] && p.series[String(cur)].name)}</bdi></p><div class="chips g-cast">${cast}</div><div class="g-acts">${back}</div>`;
+  const names = p.series[String(cur)] ? p.series[String(cur)].cast : [];
+  const go = names.filter(a => others(p, cur, a).length);
+  const cast = [...go, ...names.filter(a => !go.includes(a))].map(a =>
+    `<button type="button" class="chip${next && next.via === a ? " is-hint" : ""}" data-gact="${esc(a)}"${go.includes(a) ? "" : " disabled"}>${next && next.via === a ? `<span class="sr">רמז: </span>` : ""}<bdi>${esc(a)}</bdi></button>`).join("");
+  const hint = `<button type="button" class="btn ghost" data-ghint${shown ? " disabled" : ""}>רמז</button>`;
+  return `${head}<p class="g-ask">בחרו שחקן/ית מ-<bdi>${esc(p.series[String(cur)] && p.series[String(cur)].name)}</bdi></p><div class="chips g-cast">${cast}</div><div class="g-acts">${back}${hint}</div>`;
 }
 
 const FEEDBACK = { "one-away": "שלוש מתוך ארבע!", wrong: "לא נכון", repeat: "את הרביעייה הזו כבר ניסיתם" };
@@ -167,9 +188,12 @@ export function groupsHTML(p, s, x = {}) {
   }).join("");
   const r = groups.result(s, p), left = 4 - s.mistakes;
   if (s.done) return `${grp}<div class="g-end"><p class="g-res">${r.win ? (s.mistakes ? `פתרתם עם ${r.label}` : "פתרתם בלי טעויות!") : "נגמרו הטעויות. הנה הקבוצות:"}</p></div>`;
+  const labels = p.groups.map((g, i) => s.solved.includes(i)
+    ? `<li class="lv${Math.min(4, Math.max(1, g.level | 0))} ok">✓ <bdi>${esc(g.label)}</bdi></li>`
+    : `<li><bdi>${esc(g.label)}</bdi></li>`).join("");
   const tiles = p.items.filter(i => !solvedIds.has(String(i.id))).map(i =>
     `<button type="button" class="g-it" data-gid="${esc(i.id)}" aria-pressed="${sel.has(String(i.id))}"><bdi>${esc(i.name)}</bdi></button>`).join("");
-  return `${grp}<div class="g-grid">${tiles}</div>
+  return `<ul class="g-labels" aria-label="הקבוצות">${labels}</ul>${grp}<div class="g-grid">${tiles}</div>
   <p class="g-count">נשארו ${left} טעויות <span class="g-dots" aria-hidden="true">${"●".repeat(left)}${"○".repeat(s.mistakes)}</span></p>
   <p class="g-msg" role="status">${FEEDBACK[s.last] || ""}</p>
   <div class="g-acts"><button type="button" class="btn primary" data-gsubmit${sel.size === 4 ? "" : " disabled"}>שליחה</button><button type="button" class="btn ghost" data-gclear${sel.size ? "" : " disabled"}>ניקוי</button></div>`;
@@ -241,7 +265,7 @@ function paint(top) {
     const id = ses.screen, g = GAMES.find(x => x.id === id), p = ses.day.games[id];
     const x = { ...ses.ui, nameOf, hasSeries, hasActor };
     h = `<div class="g-top"><button type="button" class="linkbtn" data-ghub>חזרה למשחקים</button></div>
-    <h2 class="g-title" data-focus tabindex="-1"><span aria-hidden="true">${g.icon}</span> ${g.name}</h2>
+    <h2 class="g-title" data-focus tabindex="-1"><span aria-hidden="true">${g.icon}</span> ${g.name}</h2>${howHTML(id, p)}
     <div class="g-body g-${id}">${SCREEN[id](p, stateOf(id, p, ses.states), x)}</div>`;
   }
   const y = window.scrollY;
@@ -320,6 +344,11 @@ function onClick(e) {
   else if (d.gact != null) { ui.actor = d.gact; paint(false); }
   else if (d.gto != null) { move({ type: "step", actor: ui.actor, to: Number(d.gto) }); ui.actor = null; paint(false); }
   else if ("gback" in d) { if (ui.actor) ui.actor = null; else move({ type: "back" }); paint(false); }
+  else if ("ghint" in d) {
+    const s = stateOf("chain", ses.day.games.chain, ses.states);
+    move({ type: "hint" }); ui.hint = String(s.path[s.path.length - 1]); paint(false);
+    const h = R.querySelector(".g-cast .is-hint"); if (h) h.focus();
+  }
   else if (d.gid != null) {
     const sel = ui.sel || (ui.sel = []), k = sel.indexOf(d.gid);
     if (k >= 0) sel.splice(k, 1); else if (sel.length < 4) sel.push(d.gid);
