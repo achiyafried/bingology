@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fromData } from "../site/lib/data.js";
+import { fromData, providerNames } from "../site/lib/data.js";
 import { loadSeen, saveSeen } from "../site/lib/seen.js";
 
 const S = fromData(JSON.parse(readFileSync("tests/fixtures/data-small.json", "utf8")));
@@ -108,4 +108,18 @@ test("header: an invite button beside the bell; signed out shares the site, sign
   assert.ok(fn.indexOf("hasSession()") < fn.indexOf("import("), "account code only behind the session check");
   assert.match(fn, /url: SITE_URL/); assert.match(fn, /AbortError/); assert.match(fn, /הקישור הועתק/); assert.match(fn, /ACCOUNT_DOWN/);
   assert.match(src, /SITE_URL = "https:\/\/achiyafried\.github\.io\/bingology\/"/);
+});
+
+test("providerNames shows real service names instead of \"other\"", () => {
+  const L = { netflix: "Netflix", disney: "Disney+", other: "אחר" };
+  assert.deepEqual(providerNames({ providers: ["netflix", "other"], providersGuess: [], po: ["Rakuten Viki", "Tencent Video"] }, L),
+    [{ name: "Netflix", guess: false }, { name: "Rakuten Viki", guess: false }, { name: "Tencent Video", guess: false }]);
+  assert.deepEqual(providerNames({ providers: ["disney"], providersGuess: ["disney"], po: [] }, L), [{ name: "Disney+", guess: true }]);
+  // Old data without the names: "other" is dropped rather than shown as a meaningless label.
+  assert.deepEqual(providerNames({ providers: ["other"], providersGuess: [], po: [] }, L), []);
+});
+
+test("fromData carries providersOther", () => {
+  assert.deepEqual(fromData({ series: [{ providersOther: ["Shahid VIP"] }] })[0].po, ["Shahid VIP"]);
+  assert.deepEqual(fromData({ series: [{}] })[0].po, []);
 });

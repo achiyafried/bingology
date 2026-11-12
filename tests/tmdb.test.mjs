@@ -54,6 +54,7 @@ test("transformTv reports unknown providers as warnings", () => {
   const tv = { ...bb, "watch/providers": { results: { IL: { flatrate: [{ provider_name: "Mystery+" }] } } } };
   const { live, warnings } = transformTv(tv, { map });
   assert.deepEqual(live.providers, ["other"]);
+  assert.deepEqual(live.providersOther, ["Mystery+"]);
   assert.ok(warnings.some(w => w.includes("Mystery+")));
 });
 

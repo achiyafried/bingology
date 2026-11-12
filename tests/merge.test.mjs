@@ -152,6 +152,12 @@ test("providersGuess follows the live data, else a real previous fetch", () => {
   assert.deepEqual(mergeEntry(entry, null, null, null, NOW).providersGuess, []);
 });
 
+test("providersOther follows the live data, else a real previous fetch", () => {
+  assert.deepEqual(mergeEntry(entry, { ...live, providersOther: ["Rakuten Viki"] }, 9.5, null, NOW).providersOther, ["Rakuten Viki"]);
+  assert.deepEqual(mergeEntry(entry, null, null, { ...prev, providersOther: ["Shahid VIP"] }, NOW).providersOther, ["Shahid VIP"]);
+  assert.deepEqual(mergeEntry(entry, null, null, null, NOW).providersOther, []);
+});
+
 test("seasonEps keeps last night's value when live has none", () => {
   const p = { ...prev, seasonEps: [7, 13] };
   assert.deepEqual(mergeEntry(entry, { ...live, seasonEps: null }, null, p, NOW).seasonEps, [7, 13]);

@@ -83,6 +83,7 @@ export function transformTv(tv, { map, he } = {}) {
     cast,
     providers: cats,
     providersGuess: guess,
+    providersOther: [...new Set(unknown)], // the real names behind "other", shown on cards
     next: tv.next_episode_to_air?.air_date
       ? { season: tv.next_episode_to_air.season_number, episode: tv.next_episode_to_air.episode_number, date: tv.next_episode_to_air.air_date }
       : null,
