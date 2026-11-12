@@ -4,3 +4,4 @@ node_modules/
 .superpowers/
 add-result.json
 msg.txt
+_site/

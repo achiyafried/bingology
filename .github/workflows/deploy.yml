@@ -3,7 +3,7 @@ name: Deploy site
 on:
   push:
     branches: [main]
-    paths: ["site/**"]
+    paths: ["site/**", "scripts/stamp.mjs", ".github/workflows/deploy.yml"]
   workflow_dispatch:
   workflow_call:
 
@@ -28,8 +28,11 @@ jobs:
         with:
           ref: main
       - uses: actions/configure-pages@v5
+      # Version every module URL with the commit SHA so a cached old module never meets a new app.js
+      # (HEAD, not github.sha: a nightly call checks out main after its own data commit)
+      - run: node scripts/stamp.mjs site _site "$(git rev-parse --short HEAD)"
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
