@@ -14,7 +14,7 @@ const GENERATORS = { guess, odd, chain, groups, blur };
 const ATTEMPTS = 50;
 // No-repeat windows in days. `actors` (blur) keeps the full recentDays window;
 // odd keeps its own actor list so its fast rotation doesn't starve blur.
-export const ODD_RECENT_DAYS = 20;
+export const ODD_RECENT_DAYS = 14;
 export const GROUPS_RECENT_DAYS = 7;
 const FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
 const KEYS = ["series", "actors", "pairs", "oddActors", "groups"];
