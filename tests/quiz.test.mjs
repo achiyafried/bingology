@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { quizSteps, resetQuiz, orderResults, emptyPlatforms, ALWAYS_SHOWN } from "../site/lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults, emptyPlatforms, HIDDEN_PLATFORMS, quizPlatforms } from "../site/lib/quiz.js";
 
 const QS = [{ id: "src" }, { id: "platforms" }, { id: "genres" }];
 
@@ -57,8 +57,11 @@ test("orderResults by score sorts the best matches by binge score, unknown last"
   assert.deepEqual(orderResults(ranked, S5, "score").map(r => r.i), [1, 3, 0, 4, 2]);
 });
 
-test("the Israeli services are always offered", () => {
-  assert.deepEqual(ALWAYS_SHOWN, ["yes", "hot", "partner", "cellcom", "kan"]);
+test("quizPlatforms offers only services with series, and never the Israeli ones for now", () => {
+  assert.deepEqual(HIDDEN_PLATFORMS, ["yes", "hot", "partner", "cellcom", "kan"]);
+  const S = [{ providers: ["netflix", "yes"] }, { providers: ["hot", "disney"] }];
+  const keys = ["netflix", "hbo", "disney", "yes", "hot", "partner", "kan"];
+  assert.deepEqual(quizPlatforms(keys, S), ["netflix", "disney"]);
 });
 
 test("emptyPlatforms lists chosen services that have no series", () => {
