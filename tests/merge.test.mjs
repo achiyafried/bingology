@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mergeEntry, validateData, shouldAbort, sameData } from "../scripts/lib/merge.mjs";
+import { mergeEntry, validateData, shouldAbort, sameData, finishText } from "../scripts/lib/merge.mjs";
 
 const NOW = "2026-11-10T03:00:00Z";
 const entry = {
@@ -172,4 +172,25 @@ test("next and streams are live-only: copied from live, never kept from prev", (
   const off = mergeEntry(entry, null, null, { ...prev, next: nx, streams: strm }, NOW);
   assert.equal(off.next, null);
   assert.equal(off.streams, null);
+});
+
+test("finishText: a pool series takes its hand-written Hebrew blurb", () => {
+  const s = finishText({ tmdbId: 7, lists: ["pool"], blurb: "", overviewHe: null, overviewEn: "A show." }, { 7: "תיאור בעברית." });
+  assert.equal(s.blurb, "תיאור בעברית.");
+  assert.equal("overviewEn" in s, false, "English is dropped once Hebrew exists");
+});
+
+test("finishText: curated blurbs are never overridden by the pool file", () => {
+  assert.equal(finishText({ tmdbId: 7, lists: ["mine"], blurb: "שלי", overviewEn: "x" }, { 7: "אחר" }).blurb, "שלי");
+});
+
+test("finishText: English overview stays only when there is no Hebrew text at all", () => {
+  assert.equal(finishText({ tmdbId: 8, lists: ["pool"], blurb: "", overviewHe: null, overviewEn: "A show." }, {}).overviewEn, "A show.");
+  assert.equal("overviewEn" in finishText({ tmdbId: 8, lists: ["pool"], blurb: "", overviewHe: "עברית", overviewEn: "A show." }, {}), false);
+  assert.equal("overviewEn" in finishText({ tmdbId: 8, lists: ["pool"], blurb: "", overviewHe: null, overviewEn: null }, {}), false);
+});
+
+test("overviewEn follows the live data, else a real previous fetch", () => {
+  assert.equal(mergeEntry(entry, { ...live, overviewEn: "Live." }, 9.5, null, NOW).overviewEn, "Live.");
+  assert.equal(mergeEntry(entry, null, null, { ...prev, overviewEn: "Prev." }, NOW).overviewEn, "Prev.");
 });

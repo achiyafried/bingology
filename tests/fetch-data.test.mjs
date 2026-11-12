@@ -149,6 +149,15 @@ test("if discovery fails, last night's pool is kept", async () => {
   assert.ok(r.warnings.some(w => w.includes("discover")));
 });
 
+test("pool blurbs from the hand-written file apply to fetched and kept pool series alike", async () => {
+  const prevPool = { ...entry(500, "Old Pool"), lists: ["pool"], blurb: "", seasons: 2, episodes: 10, runtime: 40, year: 2010, lang: "en", imdb: 8, status: "ended", poster: null, creators: [], cast: [], providers: [], fetchedAt: "old" };
+  delete prevPool.fallback;
+  const kept = await run({ series: [entry(1, "A")], prev: { series: [prevPool] }, fetchImpl: fakeFetch({ discover: "net" }), now: NOW, poolSize: 5, blurbs: { 500: "תיאור ישן." } });
+  assert.equal(kept.data.series[1].blurb, "תיאור ישן.");
+  const fresh = await run({ series: [entry(1, "A")], prev: null, fetchImpl: fakeFetch({ discover: [[d(101)]] }), now: NOW, poolSize: 1, blurbs: { 101: "תיאור חדש." } });
+  assert.equal(fresh.data.series[1].blurb, "תיאור חדש.");
+});
+
 test("offline keeps the previous pool and never calls the network", async () => {
   const prevPool = { tmdbId: 500, name: "Old Pool", lists: ["pool"], genres: ["drama"], moods: ["feel"], weight: 2, solo: false, blurb: "", rt: null, seasons: 2, episodes: 10, runtime: 40, imdb: 8, fetchedAt: "old" };
   const f = fakeFetch();
