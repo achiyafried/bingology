@@ -1,5 +1,12 @@
 export const KNOWN = 300;
 
+const LANG = new Intl.DisplayNames(["he"], { type: "language", fallback: "none" });
+
+// Hebrew language name, or undefined for codes ICU doesn't know (e.g. "cn", "xx").
+export function langName(code) {
+  try { return LANG.of(code) ?? undefined; } catch { return undefined; }
+}
+
 export function buildPool(series, { known = KNOWN } = {}) {
   const all = series.filter((s) => s && s.tmdbId != null);
   const knownList = [...all].sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0)).slice(0, known);

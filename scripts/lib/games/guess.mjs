@@ -1,16 +1,11 @@
 import { GENRES } from "../../../site/lib/score.js";
-import { card } from "./pool.mjs";
+import { card, langName } from "./pool.mjs";
 import { shuffle } from "./rng.mjs";
 
-const LANG = new Intl.DisplayNames(["he"], { type: "language" });
 const MASK = "███";
 const MAX = 220;
 
 const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-function langName(code) {
-  try { return LANG.of(code); } catch { return null; }
-}
 
 function maskOverview(s) {
   let t = s.overviewHe;
