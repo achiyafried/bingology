@@ -19,26 +19,39 @@ export function toPuzzle(r) {
 
 const validDate = d => DATE_RE.test(d) && !Number.isNaN(Date.parse(d + "T00:00:00Z")) && new Date(d + "T00:00:00Z").toISOString().startsWith(d);
 
-/** Problems in the bank, one message per problem naming the row index; [] when the file is good. */
-export function validateRiddles(list, ids) {
-  if (!Array.isArray(list)) return ["riddles.json must be an array"];
-  const errs = [], keys = new Set(), dates = new Set();
-  list.forEach((r, i) => {
-    if (!r || typeof r !== "object") { errs.push(`row ${i}: not an object`); return; }
-    if (typeof r.clue !== "string" || !r.clue.trim()) errs.push(`row ${i}: clue is missing`);
-    if (typeof r.answer !== "string" || !ANSWER_RE.test(r.answer)) errs.push(`row ${i}: answer must be Hebrew letters with single spaces between words`);
-    if (!Number.isInteger(r.tmdbId) || !ids.has(r.tmdbId)) errs.push(`row ${i}: tmdbId ${r.tmdbId} is not a series on the site`);
-    if (r.explain !== undefined && typeof r.explain !== "string") errs.push(`row ${i}: explain must be text`);
-    if (r.date !== undefined) {
-      if (typeof r.date !== "string" || !validDate(r.date)) errs.push(`row ${i}: date must be YYYY-MM-DD`);
-      else if (dates.has(r.date)) errs.push(`row ${i}: date ${r.date} is already taken by another riddle`);
-      else dates.add(r.date);
-    }
-    const k = riddleKey(r);
-    if (keys.has(k)) errs.push(`row ${i}: duplicate riddle ${k}`);
-    keys.add(k);
-  });
+/** Problems with one row's shape, or [] when it is fine. Whether the series is on the site is not checked here. */
+function rowErrors(r, i) {
+  if (!r || typeof r !== "object") return [`row ${i}: not an object`];
+  const errs = [];
+  if (typeof r.clue !== "string" || !r.clue.trim()) errs.push(`row ${i}: clue is missing`);
+  if (typeof r.answer !== "string" || !ANSWER_RE.test(r.answer)) errs.push(`row ${i}: answer must be Hebrew letters with single spaces between words`);
+  if (!Number.isInteger(r.tmdbId) || r.tmdbId <= 0) errs.push(`row ${i}: tmdbId must be a TMDB series number`);
+  if (r.explain !== undefined && typeof r.explain !== "string") errs.push(`row ${i}: explain must be text`);
+  if (r.date !== undefined && (typeof r.date !== "string" || !validDate(r.date))) errs.push(`row ${i}: date must be YYYY-MM-DD`);
   return errs;
+}
+
+/** The rows that can be played, in file order: malformed rows and repeats (same riddle, or a date already taken) are left out. */
+export function usableRiddles(list) {
+  if (!Array.isArray(list)) return { rows: [], errors: ["riddles.json must be an array"] };
+  const rows = [], errors = [], keys = new Set(), dates = new Set();
+  list.forEach((r, i) => {
+    const errs = rowErrors(r, i);
+    if (!errs.length && keys.has(riddleKey(r))) errs.push(`row ${i}: duplicate riddle ${riddleKey(r)}`);
+    if (!errs.length && r.date && dates.has(r.date)) errs.push(`row ${i}: date ${r.date} is already taken by another riddle`);
+    if (errs.length) { errors.push(...errs); return; }
+    keys.add(riddleKey(r)); if (r.date) dates.add(r.date);
+    rows.push(r);
+  });
+  return { rows, errors };
+}
+
+/** Problems in the bank, one message per problem naming the row index; [] when the file is good. */
+export const validateRiddles = list => usableRiddles(list).errors;
+
+/** Rows whose series is not on the site: a warning only (the riddle still plays, without a series button). */
+export function unknownSeries(list, ids) {
+  return (Array.isArray(list) ? list : []).flatMap((r, i) => (r && Number.isInteger(r.tmdbId) && !ids.has(r.tmdbId) ? [`row ${i}: tmdbId ${r.tmdbId} is not a series on the site`] : []));
 }
 
 function usedKeys(dir, log) {
@@ -51,25 +64,41 @@ function usedKeys(dir, log) {
   return used;
 }
 
+const readDay = file => (fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : null);
+const writeDay = (file, d) => fs.writeFileSync(file, JSON.stringify(d) + "\n");
+
 /**
  * Writes a riddle into each existing day file from today to today+days-1 that has none: the riddle dated
- * for that day, else the first undated one never used. A day that already has a riddle is not touched.
+ * for that day, else the next undated one in file order. Day files are pruned after 90 days, so "used" is
+ * also a position: undated riddles up to the last one still on record count as played (new riddles go at
+ * the end of the file). A dated riddle takes over its day from a queued riddle if that day is still in the
+ * future; the queued riddle goes back to the queue. Today's riddle is never changed.
  */
 export function assignRiddles({ riddles, dir, today, days = 8, log = console }) {
-  const used = usedKeys(dir, log), assigned = {}, empty = [];
+  const used = usedKeys(dir, log), assigned = {}, empty = [], back = new Set();
+  const undated = riddles.filter(r => !r.date), datedKeys = new Set(riddles.filter(r => r.date).map(riddleKey));
+  // 1. A dated riddle takes its future day back from a queued one.
+  for (const r of riddles) {
+    if (!r.date || r.date <= today || r.date >= addDays(today, days) || used.has(riddleKey(r))) continue;
+    const file = path.join(dir, r.date + ".json"), d = readDay(file);
+    const cur = d?.games?.riddle && riddleKey(d.games.riddle);
+    if (!cur || datedKeys.has(cur)) continue;
+    const { riddle, ...games } = d.games;
+    writeDay(file, { ...d, games, used: { ...d.used, riddles: (d.used?.riddles ?? []).filter(k => k !== cur) } });
+    used.delete(cur); back.add(cur);
+  }
+  // 2. Fill every day without a riddle.
+  let mark = -1;
+  undated.forEach((r, i) => { if (used.has(riddleKey(r))) mark = i; });
+  const free = r => !used.has(riddleKey(r)) && (r.date ? r.date >= today : back.has(riddleKey(r)) || undated.indexOf(r) > mark);
   for (let i = 0; i < days; i++) {
-    const date = addDays(today, i), file = path.join(dir, date + ".json");
-    if (!fs.existsSync(file)) continue;
-    const d = JSON.parse(fs.readFileSync(file, "utf8"));
-    if (d.games?.riddle) continue;
-    const free = r => !used.has(riddleKey(r));
+    const date = addDays(today, i), file = path.join(dir, date + ".json"), d = readDay(file);
+    if (!d || d.games?.riddle) continue;
     const r = riddles.find(x => x.date === date && free(x)) ?? riddles.find(x => !x.date && free(x));
     if (!r) { empty.push(date); log.warn(`make-games: no riddle for ${date}`); continue; }
     const key = riddleKey(r);
-    d.games = { ...d.games, riddle: toPuzzle(r) };
-    d.used = { ...d.used, riddles: [...(d.used?.riddles ?? []), key] };
-    fs.writeFileSync(file, JSON.stringify(d) + "\n");
-    used.add(key);
+    writeDay(file, { ...d, games: { ...d.games, riddle: toPuzzle(r) }, used: { ...d.used, riddles: [...(d.used?.riddles ?? []), key] } });
+    used.add(key); back.delete(key);
     assigned[date] = key;
   }
   return { assigned, empty };

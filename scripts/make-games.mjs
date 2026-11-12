@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { makeDays } from "./lib/games/make.mjs";
-import { assignRiddles, validateRiddles } from "./lib/games/riddles.mjs";
+import { assignRiddles, usableRiddles, unknownSeries } from "./lib/games/riddles.mjs";
 import { israelToday } from "../site/lib/games/day.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -12,12 +12,13 @@ const { created, deleted, missing } = makeDays({ series, dir, today });
 console.log(`make-games: created ${created.length}, deleted ${deleted.length}`);
 for (const [date, ids] of Object.entries(missing)) console.warn(`make-games: ${date} missing ${ids.join(", ")}`);
 
-// Riddles are best effort: a missing or broken bank never stops the other games.
+// Riddles are best effort: a missing file, a broken row or a series that left the site never stops the other games.
 let riddles = null;
 try {
-  riddles = JSON.parse(fs.readFileSync(root + "riddles.json", "utf8"));
-  const errs = validateRiddles(riddles, new Set(series.map(s => s.tmdbId)));
-  if (errs.length) { console.warn(`make-games: riddles skipped: ${errs.join("; ")}`); riddles = null; }
+  const { rows, errors } = usableRiddles(JSON.parse(fs.readFileSync(root + "riddles.json", "utf8")));
+  for (const e of errors) console.warn(`make-games: riddle skipped: ${e}`);
+  for (const w of unknownSeries(rows, new Set(series.map(s => s.tmdbId)))) console.warn(`make-games: riddle without a series card: ${w}`);
+  riddles = rows;
 } catch (e) {
   console.warn(`make-games: riddles skipped: ${e.message}`);
 }

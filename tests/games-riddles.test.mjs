@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { riddleKey, toPuzzle, validateRiddles, assignRiddles } from "../scripts/lib/games/riddles.mjs";
+import { riddleKey, toPuzzle, validateRiddles, unknownSeries, usableRiddles, assignRiddles } from "../scripts/lib/games/riddles.mjs";
 import { addDays } from "../site/lib/games/day.js";
 
 const TODAY = "2026-11-12";
@@ -17,22 +17,23 @@ const week = dir => { for (let i = 0; i < 8; i++) write(dir, day(addDays(TODAY, 
 const silent = () => { const warns = []; return { warns, warn: m => warns.push(m), log() {} }; };
 
 test("validateRiddles accepts a good file and flags each kind of bad row", () => {
-  assert.deepEqual(validateRiddles([R(1), R(2, { date: "2026-11-20", explain: "הסבר" })], IDS), []);
+  assert.deepEqual(validateRiddles([R(1), R(2, { date: "2026-11-20", explain: "הסבר" })]), []);
+  assert.deepEqual(validateRiddles([{ ...R(1), tmdbId: 99 }]), [], "a series missing from the site is not a file error");
   const bad = [
     [{ answer: "אבג", tmdbId: 1 }, /0.*clue/],
     [{ clue: "x", tmdbId: 1 }, /0.*answer/],
     [{ clue: "x", answer: "abc", tmdbId: 1 }, /0.*answer/],
     [{ clue: "x", answer: "   ", tmdbId: 1 }, /0.*answer/],
-    [{ clue: "x", answer: "אבג", tmdbId: 99 }, /0.*tmdbId/],
+    [{ clue: "x", answer: "אבג", tmdbId: "12" }, /0.*tmdbId/],
     [{ clue: "x", answer: "אבג", tmdbId: 1, date: "20-11-2026" }, /0.*date/],
   ];
   for (const [row, re] of bad) {
-    const errs = validateRiddles([row], IDS);
+    const errs = validateRiddles([row]);
     assert.ok(errs.some(e => re.test(e)), `${JSON.stringify(row)} → ${errs}`);
   }
-  assert.ok(validateRiddles([R(1), R(1)], IDS).some(e => /1.*duplicate/.test(e)));
-  assert.ok(validateRiddles([R(1, { date: "2026-11-20" }), R(2, { date: "2026-11-20" })], IDS).some(e => /1.*date/.test(e)));
-  assert.ok(validateRiddles({}, IDS).length > 0, "not an array");
+  assert.ok(validateRiddles([R(1), R(1)]).some(e => /1.*duplicate/.test(e)));
+  assert.ok(validateRiddles([R(1, { date: "2026-11-20" }), R(2, { date: "2026-11-20" })]).some(e => /1.*date/.test(e)));
+  assert.ok(validateRiddles({}).length > 0, "not an array");
 });
 
 test("riddleKey and toPuzzle", () => {
@@ -99,4 +100,46 @@ test("a missing day file in the window is skipped, not created", () => {
   const { assigned } = assignRiddles({ riddles: [R(1), R(2)], dir, today: TODAY, log: silent() });
   assert.deepEqual(Object.keys(assigned), [TODAY]);
   assert.equal(fs.existsSync(path.join(dir, addDays(TODAY, 1) + ".json")), false);
+});
+
+test("unknownSeries lists rows whose series is not on the site, as warnings", () => {
+  assert.deepEqual(unknownSeries([R(1), { ...R(2), tmdbId: 99 }], IDS), ["row 1: tmdbId 99 is not a series on the site"]);
+});
+
+test("usableRiddles drops only the broken rows and keeps the rest of the bank", () => {
+  const { rows, errors } = usableRiddles([R(1), { clue: "x", answer: "abc", tmdbId: 2 }, R(1), R(3)]);
+  assert.deepEqual(rows.map(riddleKey), ["1:אבג", "3:זחט"]);
+  assert.equal(errors.length, 2);
+  assert.deepEqual(usableRiddles({}).rows, []);
+});
+
+test("riddles from pruned days are not replayed: the queue continues after the last one used", () => {
+  const dir = tmp(); week(dir);
+  // Riddles 1 and 2 were played more than 90 days ago (their files are gone); 3 is still on record.
+  write(dir, day(addDays(TODAY, -5), {}, { riddles: ["3:זחט"] }));
+  const { assigned } = assignRiddles({ riddles: [R(1), R(2), R(3), R(4)], dir, today: TODAY, log: silent() });
+  assert.deepEqual(Object.values(assigned), ["4:יכל"]);
+});
+
+test("a dated riddle takes over its future day from a queued riddle, which goes back to the queue", () => {
+  const dir = tmp(); week(dir);
+  assignRiddles({ riddles: [R(1), R(2), R(3)], dir, today: TODAY, log: silent() });
+  const dated = addDays(TODAY, 1);
+  const { assigned } = assignRiddles({ riddles: [R(1), R(2), R(3), R(4, { date: dated })], dir, today: TODAY, log: silent() });
+  assert.equal(read(dir, dated).games.riddle.tmdbId, 4);
+  assert.deepEqual(read(dir, dated).used.riddles, ["4:יכל"]);
+  assert.equal(assigned[addDays(TODAY, 3)], "2:דהו", "the displaced riddle is played on the next free day");
+});
+
+test("today's riddle is never replaced, even by a riddle dated today", () => {
+  const dir = tmp(); week(dir);
+  assignRiddles({ riddles: [R(1)], dir, today: TODAY, log: silent() });
+  assignRiddles({ riddles: [R(1), R(2, { date: TODAY })], dir, today: TODAY, log: silent() });
+  assert.equal(read(dir, TODAY).games.riddle.tmdbId, 1);
+});
+
+test("a riddle whose series left the site is still assigned", () => {
+  const dir = tmp(); week(dir);
+  const { assigned } = assignRiddles({ riddles: [{ ...R(1), tmdbId: 99 }], dir, today: TODAY, log: silent() });
+  assert.equal(assigned[TODAY], "99:אבג");
 });
