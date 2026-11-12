@@ -26,6 +26,7 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   const extra = manual.extraProviders ?? [];
   s.providers = [...new Set([...s.providers, ...extra])]; // manual "also on" (e.g. yes, HOT) that TMDB does not know
   s.providersGuess = (live ? live.providersGuess ?? [] : prev?.providersGuess ?? []).filter(p => !extra.includes(p));
+  s.providersOther = live ? live.providersOther ?? [] : prev?.providersOther ?? [];
   // Live-only: a night without a fetch has no news to report, so these never fall back to prev.
   s.next = live ? live.next ?? null : null;
   s.streams = live ? live.streams ?? null : null;

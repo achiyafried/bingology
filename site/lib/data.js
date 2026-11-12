@@ -24,6 +24,7 @@ export function fromData(json) {
     lists: x.lists,
     providers: x.providers ?? [],
     providersGuess: x.providersGuess ?? [],
+    po: x.providersOther ?? [],
     poster: x.poster ?? null,
     cast: x.cast ?? [],
     creators: x.creators ?? [],
@@ -36,3 +37,8 @@ export function fromData(json) {
     strm: x.streams ?? null,
   }));
 }
+
+/** A series' services for display: our labels, with "other" replaced by the real service names. */
+export const providerNames = (s, labels) => s.providers.flatMap(p => p === "other"
+  ? s.po.map(name => ({ name, guess: false }))
+  : [{ name: labels[p], guess: s.providersGuess.includes(p) }]);

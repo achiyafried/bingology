@@ -57,10 +57,10 @@ test("orderResults by score sorts the best matches by binge score, unknown last"
   assert.deepEqual(orderResults(ranked, S5, "score").map(r => r.i), [1, 3, 0, 4, 2]);
 });
 
-test("quizPlatforms offers only services with series, and never the Israeli ones for now", () => {
-  assert.deepEqual(HIDDEN_PLATFORMS, ["yes", "hot", "partner", "cellcom", "kan"]);
-  const S = [{ providers: ["netflix", "yes"] }, { providers: ["hot", "disney"] }];
-  const keys = ["netflix", "hbo", "disney", "yes", "hot", "partner", "kan"];
+test("quizPlatforms offers only services with series, never the Israeli ones or \"other\"", () => {
+  assert.deepEqual(HIDDEN_PLATFORMS, ["yes", "hot", "partner", "cellcom", "kan", "other"]);
+  const S = [{ providers: ["netflix", "yes"] }, { providers: ["hot", "disney", "other"] }];
+  const keys = ["netflix", "hbo", "disney", "yes", "hot", "partner", "kan", "other"];
   assert.deepEqual(quizPlatforms(keys, S), ["netflix", "disney"]);
 });
 

@@ -30,10 +30,11 @@ export function orderResults(ranked, S, mode) {
   return top.concat(ranked.slice(n));
 }
 
-/** Israeli services: TMDB/JustWatch has no data for them, so they are hidden from the quiz for now (hand marks stay in the data and on cards). */
-export const HIDDEN_PLATFORMS = ["yes", "hot", "partner", "cellcom", "kan"];
+/** Not offered as a choice: the Israeli services (TMDB/JustWatch has no data for them; hand marks stay in the data and on cards),
+ *  and "other", a catch-all that means nothing to pick by (cards name the real services instead). */
+export const HIDDEN_PLATFORMS = ["yes", "hot", "partner", "cellcom", "kan", "other"];
 
-/** Services the quiz offers: those some series is listed on, minus the hidden Israeli ones. */
+/** Services the quiz and the platform filter offer: those some series is listed on, minus the hidden ones. */
 export const quizPlatforms = (keys, S) => keys.filter(k => !HIDDEN_PLATFORMS.includes(k) && S.some(s => s.providers.includes(k)));
 
 /** Chosen services that no series is listed on (to explain an empty result). */

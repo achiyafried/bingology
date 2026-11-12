@@ -1,5 +1,5 @@
 import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries } from "./lib/score.js";
-import { fromData } from "./lib/data.js";
+import { fromData, providerNames } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
 import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
@@ -20,7 +20,7 @@ const store = (() => { try { return window.localStorage; } catch (e) { return nu
 function save() { saveSeen(store, st.seen, S); }
 const PLAT_LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", yes: "yes", hot: "HOT", partner: "פרטנר", cellcom: "סלקום", kan: "כאן", other: "אחר" };
 const platsInUse = () => quizPlatforms(Object.keys(PLAT_LABEL), S);
-const platLine = s => s.providers.length ? "זמין ב: " + s.providers.map(p => `<bdi>${PLAT_LABEL[p]}</bdi>` + (s.providersGuess.includes(p) ? " (כנראה)" : "")).join(", ") : "לא זמינה כרגע בסטרימינג בישראל";
+const platLine = s => { const ps = providerNames(s, PLAT_LABEL); return ps.length ? "זמין ב: " + ps.map(p => `<bdi>${esc(p.name)}</bdi>` + (p.guess ? " (כנראה)" : "")).join(", ") : "לא זמינה כרגע בסטרימינג בישראל"; };
 // Official logos from TMDB (offered by TMDB for this use). TMDB has no Israeli services, so those get a letter mark.
 const PLAT_LOGO = { netflix: "/rK1KljqmbvO9HQa1PBFLILWah72.png", hbo: "/skypuy7SXuugIQeYg0IglmzoKaS.png", apple: "/9icYBfYFcwgCbky5VdGUIKJ4C5i.png", prime: "/gMZdpavHmxFNnLpMHwVxfqeux2g.png", disney: "/5eZ872CghnHFLB1j8grszbrx0dx.png" };
 const PLAT_MARK = { yes: "y", hot: "H", partner: "פ", cellcom: "ס", kan: "כ", other: "…" };
