@@ -32,8 +32,10 @@ jobs:
         name: Commit data.json, news.json and daily games if changed
         run: |
           # news.json does not exist until the first news item; git add of a missing path is fatal.
-          files="site/data.json site/games"
+          files="site/data.json"
           if [ -f site/news.json ]; then files="$files site/news.json"; fi
+          # site/games is missing if make-games failed before creating it.
+          if [ -d site/games ]; then files="$files site/games"; fi
           if [ -n "$(git status --porcelain $files)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

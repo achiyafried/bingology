@@ -77,14 +77,30 @@ test("files older than 90 days are deleted, only .json", () => {
   assert.ok(fs.existsSync(path.join(dir, old + ".txt")));
 });
 
-test("a day created in the same run feeds the next day's recent", () => {
+test("days created in the same run feed later days' recent", () => {
   const dir = tmp();
-  makeDays(opts(dir));
-  const d1 = read(dir, TODAY), d2 = read(dir, addDays(TODAY, 1));
-  assert.ok(d1.games.guess && d2.games.guess);
-  assert.notEqual(d1.games.guess.answer.id, d2.games.guess.answer.id);
-  assert.ok(d1.used.series.includes(d1.games.guess.answer.id));
-  assert.equal(new Set(d1.used.series).size, d1.used.series.length);
+  const answers = [];
+  const seen = [];
+  const spy = {
+    make: (pool, rng, recent) => {
+      seen.push([...recent.series]);
+      const id = 1000 + answers.length;
+      answers.push(id);
+      return { puzzle: { id }, used: { series: [id] } };
+    },
+  };
+  makeDays(opts(dir, { gens: { guess: spy, odd, chain, groups, blur } }));
+  assert.equal(seen.length, 8);
+  assert.deepEqual(seen[0], []);
+  assert.deepEqual(seen[1], [answers[0]]);
+  assert.deepEqual([...seen[7]].sort(), answers.slice(0, 7));
+});
+
+test("a throwing generator's message appears in the warning", () => {
+  const warns = [];
+  const gens = { guess, odd, chain, groups, blur: { make: () => { throw new Error("boom"); } } };
+  makeDays(opts(tmp(), { gens, days: 1, log: { warn: (m) => warns.push(m), log() {} } }));
+  assert.ok(warns.some((w) => w.includes("blur") && w.includes("boom")));
 });
 
 test("unreadable files are skipped with a warning", () => {

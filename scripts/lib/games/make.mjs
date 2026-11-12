@@ -20,17 +20,18 @@ export function buildDay(pool, date, recent, log = console, gens = GENERATORS, o
   const games = {};
   const used = { series: [], actors: [], pairs: [] };
   for (const { id } of GAMES) {
-    let result = null;
+    let result = null, lastError = null;
     for (let attempt = 0; attempt < ATTEMPTS && !result; attempt++) {
       try {
         const r = id === "odd" && oddRecent ? { ...recent, actors: oddRecent.actors } : recent;
         result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), r) ?? null;
-      } catch {
+      } catch (e) {
         result = null;
+        lastError = e;
       }
     }
     if (!result) {
-      log.warn(`make-games: ${date}: no ${id} puzzle after ${ATTEMPTS} attempts, shipping without it`);
+      log.warn(`make-games: ${date}: no ${id} puzzle after ${ATTEMPTS} attempts, shipping without it${lastError ? ` (last error: ${lastError.message})` : ""}`);
       continue;
     }
     games[id] = result.puzzle;
