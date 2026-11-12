@@ -21,6 +21,8 @@ function label(kind, key) {
   return `בשפה: ${langName(key)}`;
 }
 
+export const groupKey = (kind, key) => `${kind}:${key}`;
+
 function candidates(known) {
   const buckets = new Map();
   const add = (kind, key, s) => {
@@ -39,7 +41,7 @@ function candidates(known) {
 }
 
 export function make(pool, rng, recent) {
-  const cands = candidates(pool.known);
+  const cands = candidates(pool.wide).filter((c) => !recent.groups.has(groupKey(c.kind, c.key)));
   if (cands.length < SIZE) return null;
   for (let t = 0; t < TRIES; t++) {
     const picked = sample(rng, cands, SIZE);
@@ -47,7 +49,7 @@ export function make(pool, rng, recent) {
     const groups = [];
     for (const c of picked) {
       const others = picked.filter((o) => o !== c);
-      const eligible = pool.known.filter(
+      const eligible = pool.wide.filter(
         (s) => c.ids.has(s.tmdbId) && !others.some((o) => fits(o.kind, o.key, s)),
       );
       if (eligible.length < SIZE) break;
@@ -64,7 +66,7 @@ export function make(pool, rng, recent) {
       ids: g.series.map((s) => s.tmdbId),
     }));
     const items = shuffle(rng, groups.flatMap((g) => g.series)).map(card);
-    return { puzzle: { items, groups: out }, used: {} };
+    return { puzzle: { items, groups: out }, used: { groups: out.map((g) => groupKey(g.kind, g.key)) } };
   }
   return null;
 }

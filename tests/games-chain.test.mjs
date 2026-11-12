@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makeRng } from "../scripts/lib/games/rng.mjs";
 import { buildPool, emptyRecent } from "../scripts/lib/games/pool.mjs";
-import { make, shortestActors } from "../scripts/lib/games/chain.mjs";
+import { make, shortestActors, MIN_SERIES } from "../scripts/lib/games/chain.mjs";
 import { fixtureSeries } from "./lib/games-fixture.mjs";
 
 const pool = () => buildPool(fixtureSeries(), { known: 60 });
@@ -122,17 +122,18 @@ const path4 = () =>
     ],
     { known: 4 },
   );
+const tiny0 = { minSeries: 0 };
 const recentOf = (...pairs) => ({ ...emptyRecent(), pairs: new Set(pairs) });
 
 test("recent pairs: all 2-3 pairs excluded -> null", () => {
-  assert.equal(make(path4(), makeRng("a"), recentOf("1-3", "2-4", "1-4")), null);
+  assert.equal(make(path4(), makeRng("a"), recentOf("1-3", "2-4", "1-4"), tiny0), null);
 });
 
 test("recent pairs: only one pair left -> that pair comes back", () => {
   for (const keep of ["1-3", "2-4", "1-4"]) {
     const recent = recentOf(...["1-3", "2-4", "1-4"].filter((k) => k !== keep));
     for (let i = 0; i < 10; i++) {
-      const m = make(path4(), makeRng("k" + i), recent);
+      const m = make(path4(), makeRng("k" + i), recent, tiny0);
       assert.deepEqual(m.used, { pairs: [keep] });
     }
   }
@@ -148,7 +149,7 @@ test("only distance 2 exists -> shortest 2", () => {
     { known: 3 },
   );
   for (let i = 0; i < 10; i++) {
-    const m = make(p, makeRng("d2" + i), emptyRecent());
+    const m = make(p, makeRng("d2" + i), emptyRecent(), tiny0);
     assert.equal(m.puzzle.shortest, 2);
     assert.equal(m.puzzle.limit, 4);
     assert.deepEqual(m.used, { pairs: ["1-3"] });
@@ -157,7 +158,7 @@ test("only distance 2 exists -> shortest 2", () => {
 
 test("recent filter empties distance 2 -> distance 3 is used", () => {
   for (let i = 0; i < 10; i++) {
-    const m = make(path4(), makeRng("d3" + i), recentOf("1-3", "2-4"));
+    const m = make(path4(), makeRng("d3" + i), recentOf("1-3", "2-4"), tiny0);
     assert.equal(m.puzzle.shortest, 3);
     assert.deepEqual(m.used, { pairs: ["1-4"] });
   }
@@ -165,7 +166,15 @@ test("recent filter empties distance 2 -> distance 3 is used", () => {
 
 test("recent filter empties distance 3 -> distance 2 is used", () => {
   for (let i = 0; i < 10; i++) {
-    const m = make(path4(), makeRng("d4" + i), recentOf("1-4"));
+    const m = make(path4(), makeRng("d4" + i), recentOf("1-4"), tiny0);
     assert.equal(m.puzzle.shortest, 2);
   }
+});
+
+test("puzzles hold at least MIN_SERIES (8) series; smaller subgraphs are skipped", () => {
+  assert.equal(MIN_SERIES, 8);
+  const p = pool();
+  for (let i = 0; i < 20; i++) assert.ok(Object.keys(make(p, makeRng("m" + i), emptyRecent()).puzzle.series).length >= 8);
+  assert.equal(make(path4(), makeRng("m"), emptyRecent()), null);
+  assert.ok(make(path4(), makeRng("m"), emptyRecent(), tiny0));
 });

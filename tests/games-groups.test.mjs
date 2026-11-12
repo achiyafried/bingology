@@ -16,7 +16,7 @@ test("16 distinct items in 4 groups of 4 spanning at least 3 kinds", () => {
   const p = pool();
   for (let i = 0; i < 20; i++) {
     const { puzzle, used } = make(p, makeRng("s" + i), emptyRecent());
-    assert.deepEqual(used, {});
+    assert.deepEqual(used, { groups: puzzle.groups.map((g) => `${g.kind}:${g.key}`) });
     assert.equal(puzzle.items.length, 16);
     assert.equal(new Set(puzzle.items.map((c) => c.id)).size, 16);
     assert.equal(puzzle.groups.length, 4);
@@ -82,4 +82,34 @@ test("fits matches each kind", () => {
 
 test("returns null on a tiny pool", () => {
   assert.equal(make(buildPool(fixtureSeries().slice(0, 10), { known: 10 }), makeRng("s"), emptyRecent()), null);
+});
+
+test("draws from the wide pool, beyond known", () => {
+  const p = buildPool(fixtureSeries(), { known: 10 });
+  let outside = 0;
+  for (let i = 0; i < 10; i++) {
+    const { puzzle } = make(p, makeRng("w" + i), emptyRecent());
+    for (const c of puzzle.items) if (!p.knownIds.has(c.id)) outside++;
+  }
+  assert.ok(outside > 0);
+});
+
+test("skips recent group keys; null when all are recent", () => {
+  const p = pool();
+  const recent = emptyRecent();
+  for (let i = 0; i < 5; i++) {
+    const { used } = make(p, makeRng("k" + i), recent);
+    for (const k of used.groups) {
+      assert.ok(!recent.groups.has(k), k);
+      recent.groups.add(k);
+    }
+  }
+  const all = emptyRecent();
+  for (const s of p.all) {
+    for (const c of s.cast) all.groups.add(`actor:${c.name}`);
+    for (const c of s.creators) all.groups.add(`creator:${c}`);
+    all.groups.add(`year:${s.year}`);
+    all.groups.add(`lang:${s.lang}`);
+  }
+  assert.equal(make(p, makeRng("k"), all), null);
 });

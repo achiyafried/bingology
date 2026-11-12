@@ -51,13 +51,13 @@ function makeRound(pool, rng, actor, list) {
 
 export function make(pool, rng, recent) {
   const eligible = actorSeries(pool);
-  const names = shuffle(rng, [...eligible.keys()].filter((n) => !recent.actors.has(n)));
+  const names = shuffle(rng, [...eligible.keys()].filter((n) => !recent.oddActors.has(n)));
   const rounds = [];
   for (const n of names) {
     const r = makeRound(pool, rng, n, eligible.get(n));
     if (r) rounds.push(r);
     if (rounds.length === ROUNDS) {
-      return { puzzle: { rounds }, used: { actors: rounds.map((x) => x.actor.name) } };
+      return { puzzle: { rounds }, used: { oddActors: rounds.map((x) => x.actor.name) } };
     }
   }
   return null;

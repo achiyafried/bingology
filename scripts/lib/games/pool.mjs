@@ -1,4 +1,6 @@
 export const KNOWN = 300;
+// groups needs a wider pool: top-300 has no actor in 4 series that fits a puzzle.
+export const GROUPS_KNOWN = 600;
 
 const LANG = new Intl.DisplayNames(["he"], { type: "language", fallback: "none" });
 
@@ -9,7 +11,9 @@ export function langName(code) {
 
 export function buildPool(series, { known = KNOWN } = {}) {
   const all = series.filter((s) => s && s.tmdbId != null);
-  const knownList = [...all].sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0)).slice(0, known);
+  const byVotes = [...all].sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0));
+  const knownList = byVotes.slice(0, known);
+  const wide = byVotes.slice(0, GROUPS_KNOWN);
   const byId = new Map(all.map((s) => [s.tmdbId, s]));
   const knownIds = new Set(knownList.map((s) => s.tmdbId));
   const actorsKnown = new Map();
@@ -23,7 +27,7 @@ export function buildPool(series, { known = KNOWN } = {}) {
   for (const s of all) {
     for (const c of s.cast ?? []) if (c.photo && !photo.has(c.name)) photo.set(c.name, c.photo);
   }
-  return { all, known: knownList, byId, knownIds, actorsKnown, photo };
+  return { all, known: knownList, wide, byId, knownIds, actorsKnown, photo };
 }
 
 export function card(s) {
@@ -31,5 +35,5 @@ export function card(s) {
 }
 
 export function emptyRecent() {
-  return { series: new Set(), actors: new Set(), pairs: new Set() };
+  return { series: new Set(), actors: new Set(), pairs: new Set(), oddActors: new Set(), groups: new Set() };
 }

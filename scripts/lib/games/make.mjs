@@ -12,19 +12,22 @@ import * as blur from "./blur.mjs";
 
 const GENERATORS = { guess, odd, chain, groups, blur };
 const ATTEMPTS = 50;
+// No-repeat windows in days. `actors` (blur) keeps the full recentDays window;
+// odd keeps its own actor list so its fast rotation doesn't starve blur.
 export const ODD_RECENT_DAYS = 20;
+export const GROUPS_RECENT_DAYS = 7;
 const FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
-const KEYS = ["series", "actors", "pairs"];
+const KEYS = ["series", "actors", "pairs", "oddActors", "groups"];
+const WINDOWS = { oddActors: ODD_RECENT_DAYS, groups: GROUPS_RECENT_DAYS };
 
-export function buildDay(pool, date, recent, log = console, gens = GENERATORS, oddRecent = null) {
+export function buildDay(pool, date, recent, log = console, gens = GENERATORS) {
   const games = {};
-  const used = { series: [], actors: [], pairs: [] };
+  const used = Object.fromEntries(KEYS.map((k) => [k, []]));
   for (const { id } of GAMES) {
     let result = null, lastError = null;
     for (let attempt = 0; attempt < ATTEMPTS && !result; attempt++) {
       try {
-        const r = id === "odd" && oddRecent ? { ...recent, actors: oddRecent.actors } : recent;
-        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), r) ?? null;
+        result = gens[id].make(pool, makeRng(`${date}:${id}:${attempt}`), recent) ?? null;
       } catch (e) {
         result = null;
         lastError = e;
@@ -48,7 +51,10 @@ function recentFor(dir, date, recentDays, log) {
     if (!fs.existsSync(file)) continue;
     try {
       const used = JSON.parse(fs.readFileSync(file, "utf8")).used ?? {};
-      for (const k of KEYS) for (const v of used[k] ?? []) recent[k].add(v);
+      for (const k of KEYS) {
+        if (i > (WINDOWS[k] ?? recentDays)) continue;
+        for (const v of used[k] ?? []) recent[k].add(v);
+      }
     } catch (e) {
       log.warn(`make-games: skipping unreadable ${d}.json (${e.message})`);
     }
@@ -68,8 +74,7 @@ export function makeDays({
     const file = path.join(dir, date + ".json");
     if (fs.existsSync(file)) continue;
     const recent = recentFor(dir, date, recentDays, log);
-    const oddRecent = recentFor(dir, date, Math.min(ODD_RECENT_DAYS, recentDays), log);
-    const day = buildDay(pool, date, recent, log, gens, oddRecent);
+    const day = buildDay(pool, date, recent, log, gens);
     fs.writeFileSync(file, JSON.stringify(day) + "\n");
     created.push(date);
     const gone = GAMES.map((g) => g.id).filter((id) => !(id in day.games));

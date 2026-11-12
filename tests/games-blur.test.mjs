@@ -46,6 +46,13 @@ test("null when no actor has a usable photo", () => {
   assert.equal(make(buildPool(s, { known: 60 }), makeRng("n"), emptyRecent()), null);
 });
 
+test("ignores odd's recent actors", () => {
+  const p = pool();
+  const recent = emptyRecent();
+  for (const [n] of p.actorsKnown) recent.oddActors.add(n);
+  assert.deepEqual(make(p, makeRng("o"), recent), make(p, makeRng("o"), emptyRecent()));
+});
+
 test("null when every eligible actor is recent", () => {
   const p = pool();
   const recent = emptyRecent();

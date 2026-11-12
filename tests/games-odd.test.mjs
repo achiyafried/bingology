@@ -19,7 +19,7 @@ test("3 rounds, distinct actors, odd one lacks the actor", () => {
     assert.equal(r.puzzle.rounds.length, 3);
     const names = r.puzzle.rounds.map((x) => x.actor.name);
     assert.equal(new Set(names).size, 3);
-    assert.deepEqual(r.used, { actors: names });
+    assert.deepEqual(r.used, { oddActors: names });
     for (const round of r.puzzle.rounds) {
       assert.equal(round.series.length, 4);
       assert.equal(new Set(round.series.map((c) => c.id)).size, 4);
@@ -51,9 +51,16 @@ test("skips recent actors", () => {
   const p = pool();
   const first = make(p, makeRng("r"), emptyRecent());
   const recent = emptyRecent();
-  for (const n of first.used.actors) recent.actors.add(n);
+  for (const n of first.used.oddActors) recent.oddActors.add(n);
   const r = make(p, makeRng("r"), recent);
-  for (const n of r.used.actors) assert.ok(!recent.actors.has(n));
+  for (const n of r.used.oddActors) assert.ok(!recent.oddActors.has(n));
+});
+
+test("ignores blur's recent actors", () => {
+  const p = pool();
+  const recent = emptyRecent();
+  for (const s of p.all) for (const c of s.cast) recent.actors.add(c.name);
+  assert.deepEqual(make(p, makeRng("r"), recent), make(p, makeRng("r"), emptyRecent()));
 });
 
 test("null when no actor has 2 known series, or pool is empty", () => {
@@ -69,7 +76,7 @@ const withActors = (names, ids) => {
 };
 const onlyRecentExcept = (p, keep) => {
   const recent = emptyRecent();
-  for (const s of p.all) for (const c of s.cast) if (!keep.includes(c.name)) recent.actors.add(c.name);
+  for (const s of p.all) for (const c of s.cast) if (!keep.includes(c.name)) recent.oddActors.add(c.name);
   return recent;
 };
 
@@ -77,7 +84,7 @@ test("an actor with 3 series but only 1 known is never chosen", () => {
   const p = buildPool(withActors(["Solo Actor"], [1, 59, 60]), { known: 58 });
   for (let i = 0; i < 30; i++) {
     const r = make(p, makeRng("solo" + i), emptyRecent());
-    assert.ok(!r.used.actors.includes("Solo Actor"));
+    assert.ok(!r.used.oddActors.includes("Solo Actor"));
   }
 });
 
@@ -86,7 +93,7 @@ test("an actor with 2 known + 1 unknown series is chosen and the unknown one app
   const p = buildPool(withActors(stars, [1, 2, 60]), { known: 58 });
   assert.ok(!p.knownIds.has(60));
   const r = make(p, makeRng("star"), onlyRecentExcept(p, stars));
-  assert.deepEqual([...r.used.actors].sort(), stars);
+  assert.deepEqual([...r.used.oddActors].sort(), stars);
   for (const round of r.puzzle.rounds) {
     assert.ok(round.series.some((c) => c.id === 60));
     assert.ok(p.knownIds.has(round.series[round.odd].id));

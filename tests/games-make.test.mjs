@@ -3,8 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { makeDays, buildDay, ODD_RECENT_DAYS } from "../scripts/lib/games/make.mjs";
-import { buildPool, emptyRecent } from "../scripts/lib/games/pool.mjs";
+import { makeDays, ODD_RECENT_DAYS, GROUPS_RECENT_DAYS } from "../scripts/lib/games/make.mjs";
 import { GAMES, addDays, israelToday } from "../site/lib/games/day.js";
 import { fixtureSeries } from "./lib/games-fixture.mjs";
 import * as guess from "../scripts/lib/games/guess.mjs";
@@ -117,39 +116,62 @@ test("today at 22:30Z is already tomorrow in Israel", () => {
   assert.equal(created[0], "2026-11-13");
 });
 
-test("odd actors use a 20-day window, other games keep 60", () => {
+test("windows: odd actors 20 days, groups 7, other keys 60; odd and blur actors are separate", () => {
   assert.equal(ODD_RECENT_DAYS, 20);
+  assert.equal(GROUPS_RECENT_DAYS, 7);
   const dir = tmp();
   const put = (n, used) => fs.writeFileSync(path.join(dir, addDays(TODAY, -n) + ".json"), JSON.stringify({ used }));
-  put(21, { actors: ["Old"], series: [101] });
-  put(19, { actors: ["Fresh"], series: [102] });
+  put(21, { oddActors: ["OldOdd"], actors: ["BlurA"], series: [101], groups: ["year:1999"] });
+  put(8, { groups: ["year:2000"] });
+  put(6, { oddActors: ["FreshOdd"], actors: ["BlurB"], series: [102], groups: ["year:2001"] });
   const seen = {};
   const spy = (id) => ({ make: (pool, rng, recent) => {
-    seen[id] ??= { actors: [...recent.actors], series: [...recent.series] };
+    seen[id] ??= Object.fromEntries(Object.entries(recent).map(([k, v]) => [k, [...v].sort()]));
     return null;
   } });
-  makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), chain, groups, blur } }));
-  assert.deepEqual(seen.odd.actors, ["Fresh"]);
-  assert.deepEqual(seen.guess.series.sort(), [101, 102]);
-  assert.deepEqual(seen.guess.actors.sort(), ["Fresh", "Old"]);
+  makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), chain, groups: spy("groups"), blur: spy("blur") } }));
+  assert.deepEqual(seen.odd.oddActors, ["FreshOdd"]);
+  assert.deepEqual(seen.blur.actors, ["BlurA", "BlurB"]);
+  assert.deepEqual(seen.groups.groups, ["year:2001"]);
+  assert.deepEqual(seen.guess.series, [101, 102]);
+});
+
+test("day file records every used key", () => {
+  const dir = tmp();
+  makeDays(opts(dir, { days: 1 }));
+  const f = read(dir, TODAY);
+  assert.deepEqual(Object.keys(f.used).sort(), ["actors", "groups", "oddActors", "pairs", "series"]);
+  assert.equal(f.used.groups.length, 4);
+  assert.equal(f.used.oddActors.length, 3);
+  assert.deepEqual(f.used.oddActors, f.games.odd.rounds.map((r) => r.actor.name));
+  assert.deepEqual(f.used.actors, [f.games.blur.actor.name]);
 });
 
 const dataPath = new URL("../site/data.json", import.meta.url);
-test("real data: each game present on >= 27 of 30 days", { skip: !fs.existsSync(dataPath) }, () => {
+test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }, () => {
   const series = JSON.parse(fs.readFileSync(dataPath, "utf8")).series;
-  const pool = buildPool(series);
-  const recent = emptyRecent();
+  const dir = tmp();
+  const start = "2026-12-01";
+  makeDays({ series, dir, today: start, days: 30, log: silent });
+  const days = Array.from({ length: 30 }, (_, i) => read(dir, addDays(start, i)));
   const counts = Object.fromEntries(GAMES.map((g) => [g.id, 0]));
-  const days = [];
-  for (let i = 0; i < 30; i++) {
-    const oddRecent = emptyRecent();
-    for (const d of days.slice(-ODD_RECENT_DAYS)) for (const a of d.used.actors ?? []) oddRecent.actors.add(a);
-    const day = buildDay(pool, addDays("2026-12-01", i), recent, silent, undefined, oddRecent);
-    days.push(day);
-    for (const id of Object.keys(day.games)) counts[id]++;
-    for (const s of day.used.series ?? []) recent.series.add(s);
-    for (const a of day.used.actors ?? []) recent.actors.add(a);
-    for (const p of day.used.pairs ?? []) recent.pairs.add(p);
-  }
+  for (const d of days) for (const id of Object.keys(d.games)) counts[id]++;
   for (const [id, n] of Object.entries(counts)) assert.ok(n >= 27, `${id} present on ${n}/30 days`);
+
+  days.forEach((d, i) => {
+    for (const k of d.used.groups) {
+      for (const prev of days.slice(Math.max(0, i - GROUPS_RECENT_DAYS), i)) {
+        assert.ok(!prev.used.groups.includes(k), `${k} repeats ${d.date} after ${prev.date}`);
+      }
+    }
+  });
+  const actorDays = days.filter((d) => d.games.groups?.groups.some((g) => g.kind === "actor")).length;
+  assert.ok(actorDays >= 5, `actor groups on ${actorDays}/30 days`);
+
+  const blurCounts = days.filter((d) => d.games.blur).map((d) => d.games.blur.count);
+  assert.ok(blurCounts.some((c) => c > 2), `blur counts ${blurCounts}`);
+
+  for (const d of days) {
+    if (d.games.chain) assert.ok(Object.keys(d.games.chain.series).length >= 8, `${d.date} chain size`);
+  }
 });
