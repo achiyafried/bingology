@@ -43,7 +43,9 @@ test("summaryHTML contains the share text and a share button", () => {
   const d = { ...day, games: { guess, blur } };
   const h = summaryHTML(d, states, 3);
   const text = shareText({ date: d.date, streak: 3, results: [{ id: "guess", label: "1/6" }, { id: "blur", label: "X/5" }] });
-  assert.ok(h.includes(esc(text)), h);
+  const [head, line, url] = text.split("\n");
+  assert.ok(h.includes(esc(head + "\n" + line)), h);
+  assert.ok(!h.includes(url), "the link goes into the shared text, not the box on screen");
   assert.match(h, /שיתוף/);
   assert.doesNotMatch(summaryHTML(d, states, 0, { practice: true }), /data-gshare/);
   assert.match(hubHTML(d, states, 3), /data-gshare/);

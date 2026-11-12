@@ -73,7 +73,8 @@ export function hubHTML(day, states, streak, opts = {}) {
 }
 
 export function summaryHTML(day, states, streak, opts = {}) {
-  const text = shareText({ date: day.date, streak: opts.practice ? 0 : streak, results: results(day, states) });
+  // On screen the result lines only: the link is added to the shared text, where it is useful.
+  const text = shareText({ date: day.date, streak: opts.practice ? 0 : streak, results: results(day, states) }).split("\n").filter(l => !/^https?:/.test(l)).join("\n");
   return `<div class="g-sum"><h3>${opts.practice ? "סיימתם את התרגול" : "סיימתם להיום"}</h3>
   ${!opts.practice && streak > 0 ? `<p class="g-streak">רצף ${streak} 🔥</p>` : ""}
   <pre class="g-share" dir="auto">${esc(text)}</pre>
