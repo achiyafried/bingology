@@ -79,6 +79,7 @@ h1, h2, h3 { font-family: "Secular One", "Assistant", system-ui, sans-serif; fon
 .hbtn { border: 0; padding: 0; cursor: pointer; font: inherit; }
 .bell i { position: absolute; top: 9px; inset-inline-end: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--dot); border: 2px solid var(--surface); }
 .brand { display: flex; direction: ltr; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--ink); }
+button.brand { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; border-radius: 12px; }
 .brand .ic { width: 44px; height: 44px; flex: none; }
 .brand .wm { height: 36px; width: auto; }
 .wm .acc { fill: var(--accent); }
