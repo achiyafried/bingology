@@ -32,6 +32,12 @@ export function poolIds(S, src, plats) {
   return ids;
 }
 
+/** Percentile (0..1) of each series' TMDB vote count within the list: how well known it is. No votes = 0. */
+export function popularity(S) {
+  const v = S.map(s => s.tmdbVotes || 0), sorted = [...v].sort((x, y) => x - y), n = v.length;
+  return v.map(x => (n < 2 ? 1 : sorted.indexOf(x) / (n - 1)));
+}
+
 /** How well one series fits the quiz answers `a`: normalized score, percent, and reasons. */
 export function scoreSeries(s, a) {
   let sc = 0, max = 0; const items = [];
@@ -93,6 +99,17 @@ export function scoreSeries(s, a) {
     add(1.5, got, s.status === "canceled" ? "בוטלה, אז אולי אין לה סוף סגור" : "הסתיימה, אפשר לראות עד הסוף", "עדיין משודרת");
   } else if (a.status === "airing") {
     add(1.5, s.status === "airing" ? 1.5 : 0, "עדיין משודרת, יש למה לחכות", "כבר לא משודרת");
+  }
+  if (a.fame && s.pop != null) {
+    const p = s.pop, hit = a.fame === "hit";
+    const got = hit ? (p >= 0.75 ? 1.5 : p >= 0.5 ? 0.75 : 0) : (p <= 0.35 ? 1.5 : p <= 0.55 ? 0.75 : 0);
+    add(1.5, got, hit ? "סדרה מוכרת שהרבה מדברים עליה" : "פנינה פחות מוכרת", hit ? "פחות מוכרת" : "סדרה מוכרת מאוד");
+  }
+  if (a.mature) {
+    const age = s.minAge, mild = a.mature === "mild";
+    const got = age == null ? 0.75 : mild ? (age <= 14 ? 1.5 : age < 17 ? 0.75 : 0) : (age >= 17 ? 1.5 : age >= 15 ? 0.75 : 0);
+    const ageT = age == null ? "גיל הצפייה לא ידוע" : age ? `מגיל ${age}` : "לכל הגילים";
+    add(1.5, got, mild ? `תוכן מתון (${ageT})` : `נועזת ובוטה (${ageT})`, mild ? `תוכן קשה (${ageT})` : `מתונה יחסית (${ageT})`);
   }
   const norm = max ? sc / max : 1;
   const pct = Math.min(100, Math.round(100 * norm));

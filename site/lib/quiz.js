@@ -42,8 +42,8 @@ export const emptyPlatforms = (S, plats) => plats.filter(p => !S.some(s => s.pro
 
 /** The quick quiz: five questions straight to a recommendation (no "seen" or sort step). */
 export const QUICK_IDS = ["platforms", "genres", "mood", "weight", "company"];
-/** Only the detailed quiz asks these. */
-export const FULL_ONLY = ["avoid", "status"];
+/** Only the detailed quiz asks these (the normal one also skips "which list": it picks from all series). */
+export const FULL_ONLY = ["src", "avoid", "status", "fame", "mature"];
 
 /** The questions one quiz length asks, in order, out of the questions available for this data. */
 export function modeSteps(qs, mode) {

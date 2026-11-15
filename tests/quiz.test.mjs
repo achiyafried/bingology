@@ -71,13 +71,14 @@ test("emptyPlatforms lists chosen services that have no series", () => {
   assert.deepEqual(emptyPlatforms(S, []), []);
 });
 
-test("modeSteps: quick asks 5, normal the classic ones, full adds avoid and status; missing questions drop out", async () => {
+test("modeSteps: quick asks 5, normal 10 (no source question), full all 15; missing questions drop out", async () => {
   const { modeSteps, QUICK_IDS } = await import("../site/lib/quiz.js");
-  const qs = ["src", "platforms", "genres", "eras", "mood", "weight", "company", "quality", "len", "seasons", "lang", "avoid", "status"].map(id => ({ id }));
+  const ids = ["src", "platforms", "genres", "eras", "mood", "weight", "company", "quality", "len", "seasons", "lang", "avoid", "status", "fame", "mature"];
+  const qs = ids.map(id => ({ id }));
   assert.deepEqual(modeSteps(qs, "quick").map(q => q.id), QUICK_IDS);
   assert.equal(QUICK_IDS.length, 5);
-  assert.deepEqual(modeSteps(qs, "normal").map(q => q.id), qs.slice(0, 11).map(q => q.id));
-  assert.deepEqual(modeSteps(qs, "full").map(q => q.id), qs.map(q => q.id));
+  assert.deepEqual(modeSteps(qs, "normal").map(q => q.id), ids.slice(1, 11));
+  assert.equal(modeSteps(qs, "full").length, 15);
   assert.deepEqual(modeSteps(qs.filter(q => q.id !== "platforms"), "quick").map(q => q.id), QUICK_IDS.filter(id => id !== "platforms"));
   assert.deepEqual(modeSteps(qs, "nonsense").map(q => q.id), modeSteps(qs, "normal").map(q => q.id));
 });

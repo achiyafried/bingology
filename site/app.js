@@ -1,4 +1,4 @@
-import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries } from "./lib/score.js";
+import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries, popularity } from "./lib/score.js";
 import { fromData, providerNames } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
@@ -83,11 +83,19 @@ const ALL_QS = [
   { id: "status", t: "סדרה שהסתיימה או שעדיין משודרת?", d: "יש מי שרוצה סוף סגור, ויש מי שאוהב לחכות לעונה הבאה.", o: [
     ["done", "🏁", "שהסתיימה", "אפשר לראות עד הסוף"],
     ["airing", "📡", "שעדיין משודרת", "יש למה לחכות"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "fame", t: "להיט או פנינה נסתרת?", d: "לפי כמה אנשים דירגו את הסדרה ב-TMDB.", o: [
+    ["hit", "🔥", "להיט", "מה שכולם מדברים עליו"],
+    ["gem", "💎", "פנינה נסתרת", "משהו שעוד לא כולם גילו"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  { id: "mature", t: "כמה בוטה מותר להיות?", d: "לפי גיל הצפייה המומלץ: אלימות, מין ושפה.", o: [
+    ["mild", "🌱", "מתון", "מתאים מגיל 14 ומטה"],
+    ["intense", "🔞", "נועז", "תוכן למבוגרים בלבד, בלי הנחות"],
     ["any", "🤷", "לא משנה", ""] ] }
 ];
 let AVAIL = ALL_QS; // the questions this dataset supports, set in boot()
 let QS = ALL_QS; // the questions of the chosen quiz length, set on start
-const MODES = [["quick", "⚡", "מהיר", "ישר להמלצה"], ["normal", "🎯", "רגיל", "השאלון המלא"], ["full", "🔬", "מפורט", "עוד שאלות, התאמה מדויקת יותר"]];
+const MODES = [["quick", "⚡", "מהיר", "ישר להמלצה"], ["normal", "🎯", "רגיל", "האיזון הקלאסי"], ["full", "🔬", "מפורט", "עוד שאלות, התאמה מדויקת יותר"]];
 // questions, then (except in the quick quiz) "what have you seen" + "how to sort"
 const totalSteps = () => QS.length + (st.mode === "quick" ? 0 : 2);
 const SORTS = [
@@ -101,7 +109,7 @@ const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסת�
 
 /* state */
 const st = { tab: "pick", screen: "intro", mode: "normal", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
-function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, avoid: [], status: null, sort: null }; }
+function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, avoid: [], status: null, fame: null, mature: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
 const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -223,7 +231,7 @@ function stepOn() {
 function rank(surprise) {
   const rnd = mulberry(Math.floor(Math.random() * 1e9));
   const a = st.ans;
-  const answered = a.genres.length || a.eras.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang || (a.avoid && a.avoid.length) || a.status;
+  const answered = a.genres.length || a.eras.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang || (a.avoid && a.avoid.length) || a.status || a.fame || a.mature;
   const out = [];
   const pool = new Set(poolIds(a.src, a.platforms));
   S.forEach((s, i) => {
@@ -748,6 +756,7 @@ async function boot() {
     const json = await res.json();
     S = fromData(json);
     bingeScores(S).forEach((b, i) => { S[i].bs = b.score; S[i].bsParts = b.parts; });
+    popularity(S).forEach((p, i) => { S[i].pop = p; });
     AVAIL = quizSteps(ALL_QS, S); QS = modeSteps(AVAIL, st.mode);
     st.updatedAt = json.updatedAt;
     st.seen = loadSeen(store, S);

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { scoreSeries, poolIds, eraOf } from "../site/lib/score.js";
+import { scoreSeries, poolIds, eraOf, popularity } from "../site/lib/score.js";
 import { fromData } from "../site/lib/data.js";
 
 const S = fromData(JSON.parse(readFileSync("tests/fixtures/data-small.json", "utf8")));
@@ -100,4 +100,27 @@ test("status: ended fits 'done', airing fits 'airing', canceled is half a fit fo
   assert.equal(scoreSeries({ ...base, status: "airing" }, a("done")).pct, 0);
   assert.equal(scoreSeries({ ...base, status: "airing" }, a("airing")).pct, 100);
   assert.equal(scoreSeries({ ...base, status: "canceled" }, a("done")).pct, 50);
+});
+
+test("popularity: percentile of TMDB votes in the list; no votes counts as least known", () => {
+  const p = popularity([{ tmdbVotes: 10 }, { tmdbVotes: 1000 }, { tmdbVotes: null }, { tmdbVotes: 100 }]);
+  assert.deepEqual(p, [1 / 3, 1, 0, 2 / 3]);
+});
+
+test("fame: hits fit 'hit', little-known series fit 'gem', the middle is half a fit", () => {
+  const base = byName("Breaking Bad"), a = f => ({ genres: [], fame: f, platforms: [] });
+  assert.equal(scoreSeries({ ...base, pop: 0.9 }, a("hit")).pct, 100);
+  assert.equal(scoreSeries({ ...base, pop: 0.6 }, a("hit")).pct, 50);
+  assert.equal(scoreSeries({ ...base, pop: 0.1 }, a("hit")).pct, 0);
+  assert.equal(scoreSeries({ ...base, pop: 0.1 }, a("gem")).pct, 100);
+  assert.equal(scoreSeries({ ...base, pop: 0.9 }, a("gem")).pct, 0);
+});
+
+test("mature: 'mild' fits age 14 and under, 'intense' fits 17+, unknown age is half a fit", () => {
+  const base = byName("Breaking Bad"), a = m => ({ genres: [], mature: m, platforms: [] });
+  assert.equal(scoreSeries({ ...base, minAge: 12 }, a("mild")).pct, 100);
+  assert.equal(scoreSeries({ ...base, minAge: 17 }, a("mild")).pct, 0);
+  assert.equal(scoreSeries({ ...base, minAge: 18 }, a("intense")).pct, 100);
+  assert.equal(scoreSeries({ ...base, minAge: 10 }, a("intense")).pct, 0);
+  assert.equal(scoreSeries({ ...base, minAge: null }, a("mild")).pct, 50);
 });
