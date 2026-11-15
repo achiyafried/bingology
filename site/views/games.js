@@ -8,17 +8,15 @@ import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as s
 import { shareText } from "../lib/games/share.js";
 import * as guess from "../lib/games/guess.js";
 import * as odd from "../lib/games/odd.js";
-import * as chain from "../lib/games/chain.js";
 import * as groups from "../lib/games/groups.js";
 import * as blur from "../lib/games/blur.js";
 import * as riddle from "../lib/games/riddle.js";
 
-const LOGIC = { guess, odd, chain, groups, blur, riddle };
+const LOGIC = { guess, odd, groups, blur, riddle };
 // A stored state of the wrong shape (old or edited by hand) starts the game over instead of breaking it.
 const SHAPE = {
   guess: s => Array.isArray(s.guesses),
   odd: s => Array.isArray(s.picks),
-  chain: s => Array.isArray(s.path) && s.path.length > 0 && Array.isArray(s.via) && Number.isInteger(s.steps) && (s.hinted === undefined || typeof s.hinted === "boolean"),
   groups: s => Array.isArray(s.solved) && Array.isArray(s.tried) && Number.isInteger(s.mistakes),
   blur: s => Array.isArray(s.guesses),
   riddle: s => Array.isArray(s.letters) && Number.isInteger(s.hints) && Number.isInteger(s.tries) && typeof s.gaveUp === "boolean",
@@ -83,14 +81,12 @@ export function summaryHTML(day, states, streak, opts = {}) {
 
 /** One-line "how to play" under the game's title. */
 export function howHTML(id, p) {
-  const name = k => `<bdi>${esc(p && p.series && p.series[String(k)] && p.series[String(k)].name)}</bdi>`;
   const text = {
     guess: () => "נחשו את הסדרה. כל טעות חושפת רמז נוסף. יש 6 ניסיונות.",
     odd: () => "בכל סיבוב: שלוש מהסדרות הן של השחקן/ית, אחת מתחזה. מצאו אותה.",
-    chain: () => `המטרה: להגיע מ-${name(p.from)} ל-${name(p.to)}. בכל צעד בוחרים שחקן/ית מהסדרה שאתם בה, ועוברים לסדרה אחרת שהוא/היא שיחקו בה.`,
     groups: () => "שבצו את 16 הסדרות לארבע הקבוצות שלמעלה. בחרו 4 ולחצו שליחה. מותר לטעות 4 פעמים.",
     blur: () => "מי השחקן/ית? כל טעות מחדדת את התמונה וחושפת רמז. יש 5 ניסיונות.",
-    riddle: () => "פתרו את החידה. התשובה היא שם של סדרה, כתוב בעברית (גם שמות לועזיים, כמו פארגו). כל רמז חושף אות.",
+    riddle: () => "פתרו את החידה. התשובה היא השם שבו הסדרה מוכרת בעברית: לפעמים תרגום (שובר שורות), ולפעמים השם הלועזי באותיות עבריות (סיינפלד). כל רמז חושף אות.",
   }[id];
   return text ? `<p class="g-how">${text()}</p>` : "";
 }
@@ -131,52 +127,6 @@ export function oddHTML(p, s, x = {}) {
   <div class="g-actor">${actorBadge(rd.actor)}<b><bdi>${esc(rd.actor.name)}</bdi></b></div>
   <p class="g-ask">באיזו סדרה לא שיחק/ה?</p>
   <div class="g-four">${cards}</div>${after}`;
-}
-
-/** Shortest route in the puzzle's subgraph: [{ id, via }] from `start` (default p.from) to `to` (via = actor into that series), or null. */
-export function chainRoute(p, start = p.from) {
-  const ids = Object.keys(p.series), from = String(start), to = String(p.to);
-  if (!p.series[from]) return null;
-  const prev = new Map([[from, null]]), q = [from];
-  while (q.length && !prev.has(to)) {
-    const c = q.shift();
-    for (const a of p.series[c].cast) for (const o of ids) {
-      if (!prev.has(o) && p.series[o].cast.includes(a)) { prev.set(o, { from: c, via: a }); q.push(o); }
-    }
-  }
-  if (!prev.has(to)) return null;
-  const out = [];
-  for (let k = to; k != null; k = prev.get(k) && prev.get(k).from) out.unshift({ id: k, via: prev.get(k) ? prev.get(k).via : null });
-  return out;
-}
-const others = (p, cur, actor) => Object.keys(p.series).filter(k => k !== String(cur) && p.series[k].cast.includes(actor));
-const routeHTML = (p, path, via) => `<ol class="g-path">${path.map((id, i) => `${i ? `<li class="g-via">דרך <bdi>${esc(via[i - 1])}</bdi></li>` : ""}<li class="g-node${String(id) === String(p.to) ? " end" : ""}"><bdi>${esc(p.series[String(id)] && p.series[String(id)].name)}</bdi></li>`).join("")}</ol>`;
-
-export function chainHTML(p, s, x = {}) {
-  const ser = id => ({ id, ...p.series[String(id)] });
-  const cur = s.path[s.path.length - 1], r = chain.result(s, p);
-  const end = (label, id) => `<div class="g-pt"><span class="g-lbl">${label}</span>${seriesCard(ser(id))}</div>`;
-  const head = `<div class="g-ends">${end("התחלה", p.from)}<span class="g-arrow" aria-hidden="true">←</span>${end("יעד", p.to)}</div>
-  <p class="g-count">נשארו ${p.limit - s.steps} צעדים · אפשר ב-${p.shortest}</p>${routeHTML(p, s.path, s.via)}`;
-  if (s.done) {
-    const best = r.label === "מושלם" ? null : chainRoute(p);
-    return `${head}<div class="g-end"><p class="g-res">${r.win ? (r.label === "מושלם" ? "מושלם! המסלול הקצר ביותר" : "הגעתם!") : "נתקעתם הפעם"}</p>
-    ${best ? `<p class="g-ask">מסלול קצר:</p>${routeHTML(p, best.map(b => b.id), best.slice(1).map(b => b.via))}` : ""}${seriesBtn(p.to, x.hasSeries)}</div>`;
-  }
-  const back = `<button type="button" class="btn ghost" data-gback${!x.actor && s.path.length < 2 ? " disabled" : ""}>${x.actor ? "ביטול" : "צעד אחורה"}</button>`;
-  // A hint is shown for the series it was asked in (x.hint): the next hop of a shortest route from there.
-  const shown = s.hinted && x.hint != null && String(x.hint) === String(cur);
-  const next = shown ? (chainRoute(p, cur) || [])[1] : null;
-  if (x.actor) {
-    const list = others(p, cur, x.actor).map(k => seriesCard(ser(k), `data-gto="${esc(k)}"`, next && next.via === x.actor && next.id === k ? "is-hint" : "")).join("");
-    return `${head}<p class="g-ask">לאיזו סדרה של <bdi>${esc(x.actor)}</bdi>?</p><div class="g-four">${list}</div><div class="g-acts">${back}</div>`;
-  }
-  const names = p.series[String(cur)] ? p.series[String(cur)].cast : [];
-  const go = names.filter(a => others(p, cur, a).length);
-  const cast = [...go, ...names.filter(a => !go.includes(a))].map(a =>
-    `<button type="button" class="chip${next && next.via === a ? " is-hint" : ""}" data-gact="${esc(a)}"${go.includes(a) ? "" : " disabled"}>${next && next.via === a ? `<span class="sr">רמז: </span>` : ""}<bdi>${esc(a)}</bdi></button>`).join("");
-  const hint = `<button type="button" class="btn ghost" data-ghint${shown ? " disabled" : ""}>רמז</button>`;
-  return `${head}<p class="g-ask">בחרו שחקן/ית מ-<bdi>${esc(p.series[String(cur)] && p.series[String(cur)].name)}</bdi></p><div class="chips g-cast">${cast}</div><div class="g-acts">${back}${hint}</div>`;
 }
 
 const FEEDBACK = { "one-away": "שלוש מתוך ארבע!", wrong: "לא נכון", repeat: "את הרביעייה הזו כבר ניסיתם" };
@@ -246,7 +196,7 @@ function riddleRow(p, s) {
 function riddlePlayHTML(p, s, x) {
   const n = letterCount(p);
   return `${riddleRow(p, s)}
-  <p class="g-msg" aria-live="polite">${s.last === "wrong" ? "לא בדיוק, נסו שוב" : ""}</p>
+  <p class="g-msg" aria-live="polite">${s.last === "wrong" ? "לא בדיוק, נסו שוב. זיהיתם את הסדרה? נסו את השם השני שלה: תרגום, או השם הלועזי באותיות עבריות." : ""}</p>
   <div class="g-acts"><button type="button" class="btn primary" data-rcheck${s.letters.length >= n ? "" : " disabled"}>בדיקה</button><button type="button" class="btn ghost" data-rhint${s.hints >= n - 1 ? " disabled" : ""}>רמז</button><button type="button" class="btn ghost" data-rreveal>${x.sure ? "בטוחים? לגלות" : "גילוי התשובה"}</button></div>`;
 }
 
@@ -259,7 +209,7 @@ export function hiddenMoves(value, inputType) {
   return [...value.split(SENTINEL).join("")].map(ch => ({ type: "type", ch }));
 }
 
-const SCREEN = { guess: guessHTML, odd: oddHTML, chain: chainHTML, groups: groupsHTML, blur: blurHTML, riddle: riddleHTML };
+const SCREEN = { guess: guessHTML, odd: oddHTML, groups: groupsHTML, blur: blurHTML, riddle: riddleHTML };
 
 /* mount: one session per module load, kept across re-renders of the tab (app.js repaints on many actions) */
 let ses = null, R = null, C = null, ACTS = null;
@@ -390,14 +340,6 @@ function onClick(e) {
     if (move({ index: Number(d.gi) })) ui.reveal = before;
     paint(false); const n = R.querySelector("[data-gnext]"); if (n) n.focus();
   } else if ("gnext" in d) { ui.reveal = null; paint(false); const f = R.querySelector(".g-body button, .g-body [data-focus]"); if (f) f.focus(); }
-  else if (d.gact != null) { ui.actor = d.gact; paint(false); }
-  else if (d.gto != null) { move({ type: "step", actor: ui.actor, to: Number(d.gto) }); ui.actor = null; paint(false); }
-  else if ("gback" in d) { if (ui.actor) ui.actor = null; else move({ type: "back" }); paint(false); }
-  else if ("ghint" in d) {
-    const s = stateOf("chain", ses.day.games.chain, ses.states);
-    move({ type: "hint" }); ui.hint = String(s.path[s.path.length - 1]); paint(false);
-    const h = R.querySelector(".g-cast .is-hint"); if (h) h.focus();
-  }
   else if (d.gid != null) {
     const sel = ui.sel || (ui.sel = []), k = sel.indexOf(d.gid);
     if (k >= 0) sel.splice(k, 1); else if (sel.length < 4) sel.push(d.gid);

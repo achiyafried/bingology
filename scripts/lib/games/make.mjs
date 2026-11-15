@@ -6,18 +6,17 @@ import { makeRng } from "./rng.mjs";
 import { buildPool, emptyRecent, KNOWN } from "./pool.mjs";
 import * as guess from "./guess.mjs";
 import * as odd from "./odd.mjs";
-import * as chain from "./chain.mjs";
 import * as groups from "./groups.mjs";
 import * as blur from "./blur.mjs";
 
-const GENERATORS = { guess, odd, chain, groups, blur };
+const GENERATORS = { guess, odd, groups, blur };
 const ATTEMPTS = 50;
 // No-repeat windows in days. `actors` (blur) keeps the full recentDays window;
 // odd keeps its own actor list so its fast rotation doesn't starve blur.
 export const ODD_RECENT_DAYS = 14;
 export const GROUPS_RECENT_DAYS = 4;
 const FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
-const KEYS = ["series", "actors", "pairs", "oddActors", "groups"];
+const KEYS = ["series", "actors", "oddActors", "groups"];
 const WINDOWS = { oddActors: ODD_RECENT_DAYS, groups: GROUPS_RECENT_DAYS };
 
 export function buildDay(pool, date, recent, log = console, gens = GENERATORS) {

@@ -48,7 +48,7 @@ test("series without tmdbId are dropped; card shape; emptyRecent", () => {
   assert.deepEqual(card({ tmdbId: 7, name: "N", poster: "/p.jpg", year: 1 }), { id: 7, name: "N", poster: "/p.jpg" });
   assert.deepEqual(card({ tmdbId: 7, name: "N" }), { id: 7, name: "N", poster: null });
   const r = emptyRecent();
-  for (const k of ["series", "actors", "pairs", "oddActors", "groups"]) assert.ok(r[k] instanceof Set, k);
+  for (const k of ["series", "actors", "oddActors", "groups"]) assert.ok(r[k] instanceof Set, k);
 });
 
 test("israelToday and addDays", () => {
@@ -59,8 +59,8 @@ test("israelToday and addDays", () => {
 });
 
 test("GAMES ids and order", () => {
-  assert.deepEqual(GAMES.map((g) => g.id), ["guess", "odd", "chain", "groups", "blur", "riddle"]);
-  assert.equal(GAMES[3].name, "ארבע קבוצות");
+  assert.deepEqual(GAMES.map((g) => g.id), ["guess", "odd", "groups", "blur", "riddle"]);
+  assert.equal(GAMES[2].name, "ארבע קבוצות");
 });
 
 test("fixture sanity: rich enough for generators with known = all 60", () => {
