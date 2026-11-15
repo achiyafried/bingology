@@ -305,7 +305,7 @@ function introHTML() {
     <div class="fan" aria-hidden="true">${fan.map(f => `<div class="fcard" style="--k:${f[1]};--r:${f[2]}">${poster(f[0], "")}</div>`).join("")}</div>
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
     <p>כמה שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות. כמה זמן יש לכם?</p>
-    <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "normal" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
+    <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "quick" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
     <div class="stack"><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
     ${gamesCardHTML()}
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
