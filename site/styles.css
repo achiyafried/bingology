@@ -123,7 +123,7 @@ dialog .nm { color: var(--ticket-accent); }
 .hero .stack { display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .hero .btn.primary { min-width: 230px; }
 .hero .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 460px; margin: 0 auto 14px; }
-.hero .mode { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 6px 12px; border-radius: 16px; background: var(--surface); border: 2px solid var(--line); color: var(--ink); }
+.hero .mode { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 6px 12px; border-radius: 16px; background: var(--surface); border: 2px solid var(--line); color: var(--ink); }
 .hero .mode.main { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .hero .mode .em { font-size: 24px; line-height: 1.2; }
 .hero .mode b { font-size: 18px; }

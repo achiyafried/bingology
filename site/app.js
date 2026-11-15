@@ -95,7 +95,7 @@ const ALL_QS = [
 ];
 let AVAIL = ALL_QS; // the questions this dataset supports, set in boot()
 let QS = ALL_QS; // the questions of the chosen quiz length, set on start
-const MODES = [["quick", "⚡", "מהיר", "ישר להמלצה"], ["normal", "🎯", "רגיל", "האיזון הקלאסי"], ["full", "🔬", "מפורט", "עוד שאלות, התאמה מדויקת יותר"]];
+const MODES = [["quick", "⚡", "מהיר", "ישר להמלצה"], ["normal", "🎯", "רגיל", "האיזון הקלאסי"], ["full", "🔬", "מפורט", "התאמה מדויקת יותר"]];
 // questions, then (except in the quick quiz) "what have you seen" + "how to sort"
 const totalSteps = () => QS.length + (st.mode === "quick" ? 0 : 2);
 const SORTS = [
