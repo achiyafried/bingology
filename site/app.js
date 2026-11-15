@@ -10,7 +10,7 @@ import { israelToday } from "./lib/games/day.js";
 import { dayProgress, loadTotal, streak as gamesStreak } from "./lib/games/store.js";
 
 const REPO = "achiyafried/bingology";
-import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms } from "./lib/quiz.js";
+import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms, modeSteps } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
 
@@ -77,11 +77,19 @@ const ALL_QS = [
     ["en", "🗽", "אנגלית", ""],
     ["he", "🇮🇱", "עברית", "סדרות ישראליות"],
     ["other", "🌍", "שפה אחרת", "קוריאנית, צרפתית או יפנית, עם כתוביות"],
+    ["any", "🤷", "לא משנה", ""] ] },
+  // Detailed quiz only (FULL_ONLY in lib/quiz.js).
+  { id: "avoid", multi: true, t: "משהו שממש לא בא לכם?", d: "ז׳אנרים שנרחיק מההמלצות. אפשר לבחור כמה, או לדלג." },
+  { id: "status", t: "סדרה שהסתיימה או שעדיין משודרת?", d: "יש מי שרוצה סוף סגור, ויש מי שאוהב לחכות לעונה הבאה.", o: [
+    ["done", "🏁", "שהסתיימה", "אפשר לראות עד הסוף"],
+    ["airing", "📡", "שעדיין משודרת", "יש למה לחכות"],
     ["any", "🤷", "לא משנה", ""] ] }
 ];
-let QS = ALL_QS; // set per dataset in boot()
-// questions + "what have you seen" + "how to sort"
-const totalSteps = () => QS.length + 2;
+let AVAIL = ALL_QS; // the questions this dataset supports, set in boot()
+let QS = ALL_QS; // the questions of the chosen quiz length, set on start
+const MODES = [["quick", "⚡", "מהיר", "ישר להמלצה"], ["normal", "🎯", "רגיל", "השאלון המלא"], ["full", "🔬", "מפורט", "עוד שאלות, התאמה מדויקת יותר"]];
+// questions, then (except in the quick quiz) "what have you seen" + "how to sort"
+const totalSteps = () => QS.length + (st.mode === "quick" ? 0 : 2);
 const SORTS = [
   ["match", "🎯", "הכי מתאימות קודם", "לפי אחוז ההתאמה לתשובות שלכם"],
   ["old", "📼", "הוותיקות קודם", "מבין ההתאמות הכי טובות, מהסדרה הוותיקה לחדשה"],
@@ -92,8 +100,8 @@ const BS_NAME = { imdb: "IMDb", tmdb: "TMDB", rt: "רוטן טומייטו", nyt
 const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסתיימה", "st-end"], canceled: ["בוטלה", "st-cxl"] };
 
 /* state */
-const st = { tab: "pick", screen: "intro", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
-function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, sort: null }; }
+const st = { tab: "pick", screen: "intro", mode: "normal", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
+function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, avoid: [], status: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
 const CHECK = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -205,10 +213,17 @@ function poster(i, cls) {
 /* ranking */
 const CROSS = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
 
+/** Next question; the quick quiz goes straight from its last question to the results, best match first. */
+function stepOn() {
+  st.step++;
+  if (st.mode === "quick" && st.step >= QS.length) { st.ans.sort = "match"; rank(false); st.screen = "result"; }
+  render(true);
+}
+
 function rank(surprise) {
   const rnd = mulberry(Math.floor(Math.random() * 1e9));
   const a = st.ans;
-  const answered = a.genres.length || a.eras.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang;
+  const answered = a.genres.length || a.eras.length || a.mood || a.weight || a.company || a.quality || a.len || a.seasons || a.lang || (a.avoid && a.avoid.length) || a.status;
   const out = [];
   const pool = new Set(poolIds(a.src, a.platforms));
   S.forEach((s, i) => {
@@ -273,7 +288,8 @@ function tagsHTML(s) { return `<div class="tags">${s.lists.includes("mine") ? `<
 function bulbs(n) { let h = ""; for (let i = 0; i < totalSteps(); i++) h += `<i class="bulb${i <= n ? " on" : ""}"></i>`; return `<div class="bulbs" role="img" aria-label="שלב ${n + 1} מתוך ${totalSteps()}">${h}</div>`; }
 function tile(i, mode, cap) {
   const s = S[i], seen = st.seen.has(i);
-  const pre = st.tab === "list" && st.listSrc === "nyt" && s.nyt ? s.nyt + ". " : "";
+  const nytOrder = st.tab === "list" ? st.listSrc === "nyt" : st.ans.src === "nyt"; // NYT lists show the rank
+  const pre = nytOrder && s.nyt ? s.nyt + ". " : "";
   return `<button class="tile${seen ? " seen" : ""}" data-a="${mode}" data-i="${i}" ${mode === "toggle" ? `aria-pressed="${seen}"` : ""} aria-label="${esc(s.n)}${seen ? ", סומנה כנצפתה" : ""}">${poster(i, "")}<span class="badge">${CHECK}</span>${cap ? `<span class="cap">${pre}<bdi>${esc(s.n)}</bdi></span>` : ""}</button>`;
 }
 
@@ -288,8 +304,9 @@ function introHTML() {
   return `<section class="hero">
     <div class="fan" aria-hidden="true">${fan.map(f => `<div class="fcard" style="--k:${f[1]};--r:${f[2]}">${poster(f[0], "")}</div>`).join("")}</div>
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
-    <p>${QS.length} שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות.</p>
-    <div class="stack"><button class="btn primary" data-a="start">מתחילים</button><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
+    <p>כמה שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות. כמה זמן יש לכם?</p>
+    <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "normal" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
+    <div class="stack"><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
     ${gamesCardHTML()}
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
@@ -304,10 +321,11 @@ function qHTML() {
   const step = st.step;
   const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : step === QS.length ? "כמעט שם" : "אחרון"}</span></div>`;
   if (step === QS.length) {
+    // A long grid: one floating button skips or continues, so it never scrolls out of reach.
+    const ids = poolIds(st.ans.src, st.ans.platforms), marked = ids.filter(i => st.seen.has(i)).length;
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
-    <div class="skip-top"><button class="btn ghost" data-a="next">דילוג</button></div>
-    <div class="grid">${poolIds(st.ans.src, st.ans.platforms).map(i => tile(i, "toggle", false)).join("")}</div>
-    <div class="sticky-cta"><button class="btn primary block" data-a="next">הראו לי את ההמלצה</button></div></div>`;
+    <div class="grid">${ids.map(i => tile(i, "toggle", true)).join("")}</div>
+    <div class="sticky-cta"><button class="btn primary block" data-a="next">${marked ? `הראו לי את ההמלצה (סימנתם ${marked})` : "דילוג, הראו לי את ההמלצה"}</button></div></div>`;
   }
   if (step === QS.length + 1) {
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">שנייה לפני התוצאות</h2><p class="sub">לפי מה לסדר את ההמלצות?</p>
@@ -315,7 +333,7 @@ function qHTML() {
   }
   const q = QS[step];
   if (q.multi) {
-    const chips = q.id === "genres" ? GENRES : q.id === "eras" ? ERAS : PLAT_LABEL, keys = q.id === "genres" ? Object.keys(GENRES) : q.id === "eras" ? ERA_KEYS : platsInUse(), sel = st.ans[q.id];
+    const chips = q.id === "genres" || q.id === "avoid" ? GENRES : q.id === "eras" ? ERAS : PLAT_LABEL, keys = q.id === "genres" || q.id === "avoid" ? Object.keys(GENRES) : q.id === "eras" ? ERA_KEYS : platsInUse(), sel = st.ans[q.id];
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">${q.t}</h2><p class="sub">${q.d}</p>
     <div class="chips">${keys.map(g => `<button class="chip${q.id === "platforms" ? " plat" : ""}" data-a="chip" data-q="${q.id}" data-v="${g}" aria-pressed="${sel.includes(g)}">${q.id === "platforms" ? platChipHTML(g) : chips[g]}</button>`).join("")}</div>
     <button class="btn primary block" data-a="next">${sel.length ? "המשך" : "דלגו על השאלה"}</button></div>`;
@@ -547,7 +565,7 @@ document.addEventListener("click", e => {
       if (st.share || location.hash) { st.share = null; history.replaceState(null, "", location.pathname + location.search); }
       st.tab = "pick"; st.screen = "intro"; st.step = 0; render(true); break;
     case "tab": if (st.share || onNews() || (location.hash === "#games" && v !== "games")) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
-    case "start": st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
+    case "start": st.mode = MODES.some(m => m[0] === v) ? v : "normal"; QS = modeSteps(AVAIL, st.mode); st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
     case "opt": {
@@ -555,11 +573,11 @@ document.addEventListener("click", e => {
       const q = el.dataset.q; st.touched = st.touched || {}; st.touched[q] = true;
       const val = v === "any" ? null : (isNaN(+v) ? v : +v);
       st.ans[q] = val; render(false);
-      setTimeout(() => { st.advancing = false; st.step++; render(true); }, 180);
+      setTimeout(() => { st.advancing = false; stepOn(); }, 180);
       break; }
     case "chip": { const g = st.ans[el.dataset.q], k = g.indexOf(v); if (k >= 0) g.splice(k, 1); else g.push(v); render(false); break; }
     case "lplat": st.listPlat = v === "all" ? null : v; render(false); break;
-    case "next": st.step++; render(true); break;
+    case "next": stepOn(); break;
     case "toggle": setSeen(i, !st.seen.has(i), true); render(false); break;
     case "finish": rank(false); st.screen = "result"; render(true); break;
     case "another": st.idx++; st.chosen = false; render(true); break;
@@ -730,7 +748,7 @@ async function boot() {
     const json = await res.json();
     S = fromData(json);
     bingeScores(S).forEach((b, i) => { S[i].bs = b.score; S[i].bsParts = b.parts; });
-    QS = quizSteps(ALL_QS, S);
+    AVAIL = quizSteps(ALL_QS, S); QS = modeSteps(AVAIL, st.mode);
     st.updatedAt = json.updatedAt;
     st.seen = loadSeen(store, S);
     ACT = null; PHOTO.clear();
