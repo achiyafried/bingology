@@ -84,6 +84,16 @@ export function scoreSeries(s, a) {
     const label = e ? `${ERAS[e]} (${s.y})` : "שנת הבכורה לא ידועה";
     add(2, d === 0 ? 2 : d === 1 ? 1 : 0, `מהתקופה שבחרתם: ${label}`, `מתקופה אחרת: ${label}`);
   }
+  if (a.avoid && a.avoid.length) {
+    const bad = s.g.filter(x => a.avoid.includes(x));
+    add(3, bad.length ? 0 : 3, "בלי הז׳אנרים שביקשתם להימנע מהם", "בז׳אנר שביקשתם להימנע ממנו: " + bad.map(x => GENRES[x]).join(", "));
+  }
+  if (a.status === "done") {
+    const got = s.status === "ended" ? 1.5 : s.status === "canceled" ? 0.75 : 0;
+    add(1.5, got, s.status === "canceled" ? "בוטלה, אז אולי אין לה סוף סגור" : "הסתיימה, אפשר לראות עד הסוף", "עדיין משודרת");
+  } else if (a.status === "airing") {
+    add(1.5, s.status === "airing" ? 1.5 : 0, "עדיין משודרת, יש למה לחכות", "כבר לא משודרת");
+  }
   const norm = max ? sc / max : 1;
   const pct = Math.min(100, Math.round(100 * norm));
   return { norm, pct, items };

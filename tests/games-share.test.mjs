@@ -8,11 +8,11 @@ test("full line equals the spec example", () => {
   const out = shareText({
     date: "2026-11-13", streak: 4,
     results: [
-      { id: "guess", label: "3/6" }, { id: "odd", label: "2/3" }, { id: "chain", label: "מושלם" },
+      { id: "guess", label: "3/6" }, { id: "odd", label: "2/3" }, { id: "chain", label: "מושלם" }, // an old saved chain result is left out
       { id: "groups", label: "1 טעות" }, { id: "blur", label: "2/5" },
     ],
   });
-  assert.equal(out, `Bingology · 13.11 · רצף 4 🔥\n🎬 3/6  🕵️ 2/3  🔗 מושלם  🧩 1 טעות  👤 2/5\n${URL}`);
+  assert.equal(out, `Bingology · 13.11 · רצף 4 🔥\n🎬 3/6  🕵️ 2/3  🧩 1 טעות  👤 2/5\n${URL}`);
 });
 
 test("streak 0 omits the streak part; day and month are not padded", () => {

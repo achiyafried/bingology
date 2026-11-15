@@ -8,7 +8,6 @@ import { GAMES, addDays, israelToday } from "../site/lib/games/day.js";
 import { fixtureSeries } from "./lib/games-fixture.mjs";
 import * as guess from "../scripts/lib/games/guess.mjs";
 import * as odd from "../scripts/lib/games/odd.mjs";
-import * as chain from "../scripts/lib/games/chain.mjs";
 import * as groups from "../scripts/lib/games/groups.mjs";
 import * as blur from "../scripts/lib/games/blur.mjs";
 
@@ -47,7 +46,7 @@ test("an existing file is never rewritten", async () => {
 test("a generator that always returns null drops that game, warns, never throws", () => {
   const dir = tmp();
   const warns = [];
-  const gens = { guess, odd, chain, groups, blur: { make: () => null } };
+  const gens = { guess, odd, groups, blur: { make: () => null } };
   const { created, missing } = makeDays(opts(dir, { gens, log: { warn: (m) => warns.push(m), log() {} } }));
   assert.equal(created.length, 8);
   const f = read(dir, TODAY);
@@ -59,7 +58,7 @@ test("a generator that always returns null drops that game, warns, never throws"
 
 test("a generator that throws counts as a failed attempt", () => {
   const dir = tmp();
-  const gens = { guess, odd, chain, groups, blur: { make: () => { throw new Error("bad data"); } } };
+  const gens = { guess, odd, groups, blur: { make: () => { throw new Error("bad data"); } } };
   const { missing } = makeDays(opts(dir, { gens, days: 1 }));
   assert.deepEqual(missing[TODAY], ["blur"]);
 });
@@ -88,7 +87,7 @@ test("days created in the same run feed later days' recent", () => {
       return { puzzle: { id }, used: { series: [id] } };
     },
   };
-  makeDays(opts(dir, { gens: { guess: spy, odd, chain, groups, blur } }));
+  makeDays(opts(dir, { gens: { guess: spy, odd, groups, blur } }));
   assert.equal(seen.length, 8);
   assert.deepEqual(seen[0], []);
   assert.deepEqual(seen[1], [answers[0]]);
@@ -97,7 +96,7 @@ test("days created in the same run feed later days' recent", () => {
 
 test("a throwing generator's message appears in the warning", () => {
   const warns = [];
-  const gens = { guess, odd, chain, groups, blur: { make: () => { throw new Error("boom"); } } };
+  const gens = { guess, odd, groups, blur: { make: () => { throw new Error("boom"); } } };
   makeDays(opts(tmp(), { gens, days: 1, log: { warn: (m) => warns.push(m), log() {} } }));
   assert.ok(warns.some((w) => w.includes("blur") && w.includes("boom")));
 });
@@ -129,7 +128,7 @@ test("windows: odd actors 14 days, groups 4, other keys 60; odd and blur actors 
     seen[id] ??= Object.fromEntries(Object.entries(recent).map(([k, v]) => [k, [...v].sort()]));
     return null;
   } });
-  makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), chain, groups: spy("groups"), blur: spy("blur") } }));
+  makeDays(opts(dir, { days: 1, gens: { guess: spy("guess"), odd: spy("odd"), groups: spy("groups"), blur: spy("blur") } }));
   assert.deepEqual(seen.odd.oddActors, ["FreshOdd"]);
   assert.deepEqual(seen.blur.actors, ["BlurA", "BlurB"]);
   assert.deepEqual(seen.groups.groups, ["decade:2010"]);
@@ -141,11 +140,11 @@ test("blur avoids the same day's odd actors, without changing other games' recen
   fs.writeFileSync(path.join(dir, addDays(TODAY, -1) + ".json"), JSON.stringify({ used: { actors: ["Yesterday"] } }));
   const seen = {};
   const spy = (id, used) => ({ make: (pool, rng, recent) => { seen[id] = [...recent.actors].sort(); return { puzzle: {}, used }; } });
-  const gens = { guess: spy("guess", {}), odd: spy("odd", { oddActors: ["O1", "O2", "O3"] }), chain: spy("chain", {}), groups: spy("groups", {}), blur: spy("blur", { actors: ["B"] }) };
+  const gens = { guess: spy("guess", {}), odd: spy("odd", { oddActors: ["O1", "O2", "O3"] }), groups: spy("groups", {}), blur: spy("blur", { actors: ["B"] }) };
   makeDays(opts(dir, { days: 2, gens }));
   // seen = the second day: earlier blur actors are recent for everyone; that day's odd actors only for blur.
   assert.deepEqual(seen.blur, ["B", "O1", "O2", "O3", "Yesterday"]);
-  assert.deepEqual(seen.chain, ["B", "Yesterday"]);
+  assert.deepEqual(seen.groups, ["B", "Yesterday"]);
   assert.deepEqual(read(dir, TODAY).used.actors, ["B"]);
 });
 
@@ -153,7 +152,7 @@ test("day file records every used key", () => {
   const dir = tmp();
   makeDays(opts(dir, { days: 1 }));
   const f = read(dir, TODAY);
-  assert.deepEqual(Object.keys(f.used).sort(), ["actors", "groups", "oddActors", "pairs", "series"]);
+  assert.deepEqual(Object.keys(f.used).sort(), ["actors", "groups", "oddActors", "series"]);
   assert.equal(f.used.groups.length, 4);
   assert.equal(f.used.oddActors.length, 3);
   assert.deepEqual(f.used.oddActors, f.games.odd.rounds.map((r) => r.actor.name));
@@ -187,11 +186,8 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
     const oddNames = d.games.odd?.rounds.map((r) => r.actor.name) ?? [];
     if (d.games.blur) assert.ok(!oddNames.includes(d.games.blur.actor.name), `${d.date} blur actor shown in odd`);
   }
-  for (const d of days) {
-    if (d.games.chain) assert.ok(Object.keys(d.games.chain.series).length >= 8, `${d.date} chain size`);
-  }
 
-  // Easier games: lead roles only, chain always 2 actors, decades instead of single years.
+  // Easier games: lead roles only, decades instead of single years.
   const byVotes = [...series].filter((s) => s && s.tmdbId != null).sort((a, b) => (b.tmdbVotes ?? 0) - (a.tmdbVotes ?? 0));
   const top600 = new Set(byVotes.slice(0, 600).map((s) => s.tmdbId));
   const leadIn = (name, n) => series.filter((s) => s && (s.cast ?? []).slice(0, n).some((c) => c.name === name));
@@ -207,10 +203,6 @@ test("real data: 30 nights through makeDays", { skip: !fs.existsSync(dataPath) }
     if (d.games.blur) {
       const name = d.games.blur.actor.name;
       assert.ok(leadIn(name, 3).filter((s) => top600.has(s.tmdbId)).length >= 2, `${d.date} blur ${name}`);
-    }
-    if (d.games.chain) {
-      assert.equal(d.games.chain.shortest, 2, `${d.date} chain shortest`);
-      assert.equal(d.games.chain.limit, 4, `${d.date} chain limit`);
     }
     for (const g of d.games.groups?.groups ?? []) assert.notEqual(g.kind, "year", `${d.date} year group`);
   }

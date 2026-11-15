@@ -84,3 +84,20 @@ test("pool source picks only wide-pool series; any includes everything", () => {
   assert.equal(poolIds(SP, "any", []).length, 4);
   assert.ok(!poolIds(SP, "mine", []).some(i => SP[i].n === "Pool Show"));
 });
+
+test("avoid: a series in a genre to avoid loses that item; one outside it keeps it", () => {
+  const s = { ...byName("Breaking Bad"), g: ["crime", "drama"] };
+  const bad = scoreSeries(s, { genres: [], avoid: ["crime"], platforms: [] });
+  assert.equal(bad.pct, 0);
+  assert.match(bad.items[0].t, /להימנע/);
+  const ok = scoreSeries(s, { genres: [], avoid: ["comedy"], platforms: [] });
+  assert.equal(ok.pct, 100);
+});
+
+test("status: ended fits 'done', airing fits 'airing', canceled is half a fit for 'done'", () => {
+  const base = byName("Breaking Bad"), a = st => ({ genres: [], status: st, platforms: [] });
+  assert.equal(scoreSeries({ ...base, status: "ended" }, a("done")).pct, 100);
+  assert.equal(scoreSeries({ ...base, status: "airing" }, a("done")).pct, 0);
+  assert.equal(scoreSeries({ ...base, status: "airing" }, a("airing")).pct, 100);
+  assert.equal(scoreSeries({ ...base, status: "canceled" }, a("done")).pct, 50);
+});

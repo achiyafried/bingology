@@ -2,7 +2,6 @@
 export const GAMES = [
   { id: "guess", name: "נחשו את הסדרה", icon: "🎬" },
   { id: "odd", name: "מי לא שייך", icon: "🕵️" },
-  { id: "chain", name: "שרשרת", icon: "🔗" },
   { id: "groups", name: "ארבע קבוצות", icon: "🧩" },
   { id: "blur", name: "השחקן המטושטש", icon: "👤" },
   { id: "riddle", name: "חידת היגיון", icon: "🧠" }, // hand-written: assigned from riddles.json, not generated

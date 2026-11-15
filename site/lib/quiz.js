@@ -39,3 +39,14 @@ export const quizPlatforms = (keys, S) => keys.filter(k => !HIDDEN_PLATFORMS.inc
 
 /** Chosen services that no series is listed on (to explain an empty result). */
 export const emptyPlatforms = (S, plats) => plats.filter(p => !S.some(s => s.providers.includes(p)));
+
+/** The quick quiz: five questions straight to a recommendation (no "seen" or sort step). */
+export const QUICK_IDS = ["platforms", "genres", "mood", "weight", "company"];
+/** Only the detailed quiz asks these. */
+export const FULL_ONLY = ["avoid", "status"];
+
+/** The questions one quiz length asks, in order, out of the questions available for this data. */
+export function modeSteps(qs, mode) {
+  if (mode === "quick") return QUICK_IDS.map(id => qs.find(q => q.id === id)).filter(Boolean);
+  return mode === "full" ? qs : qs.filter(q => !FULL_ONLY.includes(q.id));
+}

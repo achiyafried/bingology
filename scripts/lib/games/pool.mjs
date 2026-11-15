@@ -40,5 +40,5 @@ export function card(s) {
 }
 
 export function emptyRecent() {
-  return { series: new Set(), actors: new Set(), pairs: new Set(), oddActors: new Set(), groups: new Set() };
+  return { series: new Set(), actors: new Set(), oddActors: new Set(), groups: new Set() };
 }

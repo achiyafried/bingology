@@ -87,15 +87,18 @@ test("fromData maps next and streams to nx and strm", () => {
   assert.equal(b.nx, null); assert.equal(b.strm, null);
 });
 
-test("seen step: a skip button right under the subtitle, before the grid, plus the bottom button", () => {
+test("seen step: names under the posters, and one floating button that skips or continues", () => {
   const src = readFileSync("site/app.js", "utf8");
   const m = /מה כבר ראיתם\?[\s\S]*?<\/div><\/div>`;/.exec(src);
   assert.ok(m, "found the seen step");
   const step = m[0];
-  const sub = step.indexOf("אפשר לדלג.</p>"), skip = step.indexOf(">דילוג</button>"), grid = step.indexOf('<div class="grid">');
-  assert.ok(sub > 0 && skip > sub && grid > skip, "skip sits between the subtitle and the grid");
-  assert.match(step, /<button class="btn ghost[^"]*" data-a="next">דילוג<\/button>/);
-  assert.equal((step.match(/data-a="next"/g) || []).length, 2, "the bottom button stays");
+  assert.match(step, /tile\(i, "toggle", true\)/, "tiles show the series name");
+  assert.equal((step.match(/data-a="next"/g) || []).length, 1, "a single skip/continue button");
+  const grid = step.indexOf('<div class="grid">'), cta = step.indexOf('<div class="sticky-cta">');
+  assert.ok(grid > 0 && cta > grid, "the button sits after the grid, in the floating bar");
+  assert.match(step, /דילוג, הראו לי את ההמלצה/, "says skip while nothing is marked");
+  const css = readFileSync("site/styles.css", "utf8");
+  assert.match(css, /\.sticky-cta \{[^}]*position: sticky;[^}]*bottom: 0/, "the bar floats at the bottom");
 });
 
 test("header: an invite button beside the bell; signed out shares the site, signed in goes through the account module", () => {

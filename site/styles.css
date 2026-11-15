@@ -122,6 +122,13 @@ dialog .nm { color: var(--ticket-accent); }
 .hero p { color: var(--muted); max-width: 34ch; margin: 0 auto 26px; }
 .hero .stack { display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .hero .btn.primary { min-width: 230px; }
+.hero .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 460px; margin: 0 auto 14px; }
+.hero .mode { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 6px 12px; border-radius: 16px; background: var(--surface); border: 2px solid var(--line); color: var(--ink); }
+.hero .mode.main { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.hero .mode .em { font-size: 24px; line-height: 1.2; }
+.hero .mode b { font-size: 18px; }
+.hero .mode .cnt { font-size: 14px; font-weight: 600; }
+.hero .mode small { font-size: 12px; line-height: 1.25; opacity: .8; }
 
 /* quiz */
 .qhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; min-height: 36px; }
@@ -131,8 +138,6 @@ dialog .nm { color: var(--ticket-accent); }
 .count { color: var(--muted); font-size: 15px; min-width: 60px; text-align: end; }
 .qbody h2 { font-size: clamp(27px, 7vw, 34px); margin-bottom: 8px; }
 .qbody .sub { color: var(--muted); margin: 0 0 20px; }
-.qbody .skip-top { display: flex; justify-content: flex-start; margin: -8px 0 16px; }
-.qbody .skip-top .btn { padding: 8px 18px; font-size: 15px; }
 .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: start; padding: 15px 18px; border-radius: 16px; background: var(--surface); border: 2px solid transparent; margin-bottom: 10px; }
 .opt:hover { border-color: var(--line); }
 .opt[aria-pressed="true"] { border-color: var(--accent); }
@@ -157,7 +162,7 @@ dialog .nm { color: var(--ticket-accent); }
 .listbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .listbar h2 { font-size: 26px; }
 .note { color: var(--muted); font-size: 14px; margin-top: 22px; }
-.sticky-cta { margin-top: 22px; display: flex; gap: 10px; flex-direction: column; }
+.sticky-cta { position: sticky; bottom: 0; z-index: 5; margin-top: 22px; padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; gap: 10px; flex-direction: column; }
 
 /* ticket */
 .ticket { position: relative; background: var(--ticket); color: var(--ticket-ink); border-radius: 20px; box-shadow: var(--shadow); }
@@ -499,19 +504,6 @@ button.g-s:disabled { cursor: default; }
 .g-rinfo b, .g-rinfo small { display: block; }
 .g-rinfo small { color: var(--muted); }
 .g-rounds .btn { padding: 8px 14px; font-size: 15px; }
-.g-ends { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin-bottom: 12px; }
-.g-pt { display: grid; gap: 4px; justify-items: center; }
-.g-pt .g-s { max-width: 150px; width: 100%; }
-.g-lbl { font-size: 13px; font-weight: 700; color: var(--muted); }
-.g-arrow { font-size: 26px; color: var(--accent); font-weight: 700; }
-.g-path { list-style: none; padding: 0; margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.g-node { background: var(--surface); border-radius: 999px; padding: 3px 12px; font-weight: 700; font-size: 15px; }
-.g-node.end { background: var(--accent); color: var(--accent-ink); }
-.g-via { color: var(--muted); font-size: 14px; }
-.g-cast { gap: 8px; margin-bottom: 0; }
-.g-cast .chip { font-size: 15px; padding: 7px 13px; }
-.g-cast .chip.is-hint { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-.g-s.is-hint { border-color: var(--accent); }
 .g-labels { list-style: none; padding: 0; margin: 0 0 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
 .g-labels li { border-radius: 10px; padding: 5px 10px; border: 2px dashed var(--line); background: transparent; font-size: 14px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
 .g-labels li.ok { border-style: solid; border-color: transparent; color: #1A1640; text-decoration: line-through; }
