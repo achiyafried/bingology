@@ -453,6 +453,10 @@ img.poster { object-fit: cover; }
 .games .g-date { color: var(--muted); font-weight: 700; }
 .games .g-pnote { margin: -6px 0 14px; }
 .g-cards { display: grid; gap: 10px; }
+.g-friend { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 18px; text-align: center; }
+.g-friend small { color: var(--muted); }
+.games .g-guest { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin: -6px 0 14px; padding: 10px 12px; border-radius: 12px; background: var(--surface); border: 1px dashed var(--line); }
+.games .g-guest .note { margin: 0; }
 .g-card { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border-radius: 16px; border: 2px solid transparent; background: var(--surface); text-align: start; }
 .g-card:hover { border-color: var(--line); }
 .g-card .g-ic { font-size: 26px; line-height: 1; flex: none; }

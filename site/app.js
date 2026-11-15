@@ -572,7 +572,11 @@ document.addEventListener("click", e => {
     case "home": // the logo: back to the start screen from anywhere (quiz answers are kept, like "לדף הראשי")
       if (st.share || location.hash) { st.share = null; history.replaceState(null, "", location.pathname + location.search); }
       st.tab = "pick"; st.screen = "intro"; st.step = 0; render(true); break;
-    case "tab": if (st.share || onNews() || (location.hash === "#games" && v !== "games")) { st.share = null; history.replaceState(null, "", location.pathname + location.search); } st.tab = v; render(true); break;
+    case "tab": if (st.share || onNews() || (location.hash === "#games" && v !== "games")) { st.share = null; history.replaceState(null, "", location.pathname + location.search); }
+      // A tab button opens that tab's main page: games back to the hub, the recommendation tab (when already on it) back to the start.
+      if (v === "games") st.gamesHome = true;
+      if (v === "pick" && st.tab === "pick" && !onNews()) st.screen = "intro";
+      st.tab = v; render(true); break;
     case "start": st.mode = MODES.some(m => m[0] === v) ? v : "normal"; QS = modeSteps(AVAIL, st.mode); st.ans = blankAns(); st.touched = {}; st.screen = "q"; st.step = 0; render(true); break;
     case "surprise": st.tab = "pick"; rank(true); st.screen = "result"; render(true); break;
     case "back": if (st.step === 0) st.screen = "intro"; else st.step--; render(true); break;
@@ -677,12 +681,13 @@ function showMine() {
 }
 /* "משחקים" tab: views/games.js loads only here. */
 function showGames(nav) {
-  const root = $("#games");
+  const root = $("#games"), home = !!st.gamesHome;
+  st.gamesHome = false;
   import("./views/games.js")
     .then(m => { if (root.isConnected) m.mountGames(root, { S, storage: store, actorNames: actorIndex().map(a => a.n), today: () => israelToday(), fetch: (u, o) => fetch(u, o),
       openSeries: id => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) openDlg(k); },
       openActor: n => { actorIndex(); const k = ACTMAP.get(n); if (k !== undefined) dlgGo({ t: "a", v: k }); },
-      toast: showToast, copy: copyText, nav: !!nav }); })
+      toast: showToast, copy: copyText, nav: !!nav, home }); })
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>המשחקים לא נטענו</p><button class="btn primary" data-a="tab" data-v="games">לנסות שוב</button></div>`; });
 }
 const hasSession = () => { try { return !!store && Object.keys(store).some(k => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } };
