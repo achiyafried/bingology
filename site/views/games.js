@@ -60,14 +60,16 @@ export function sugHTML(list) {
 /* hub and summary */
 /** The hub: date and streak, then the summary once every available game is done, then one card per available game. */
 export function hubHTML(day, states, streak, opts = {}) {
-  const head = `<div class="g-head"><h2 data-focus tabindex="-1">${opts.practice ? "תרגול" : "המשחקים של היום"}</h2><span class="g-date">${dm(day.date)}${!opts.practice && streak > 0 ? ` · רצף ${streak} 🔥` : ""}</span></div>`
-    + (opts.practice ? `<p class="note g-pnote">המשחקים של אתמול. התוצאות לא נספרות ברצף.</p>` : "");
+  const head = `<div class="g-head"><h2 data-focus tabindex="-1">${opts.guest ? "משחק של חבר" : opts.practice ? "תרגול" : "המשחקים של היום"}</h2><span class="g-date">${dm(day.date)}${!opts.practice && streak > 0 ? ` · רצף ${streak} 🔥` : ""}</span></div>`
+    + (opts.guest ? `<div class="g-guest"><p class="note">סיבוב נקי על אותו טלפון. התוצאות לא נשמרות ולא נוגעות ברצף שלך.</p><button type="button" class="linkbtn" data-gguestend>סיום וחזרה לתוצאות שלי</button></div>`
+      : opts.practice ? `<p class="note g-pnote">המשחקים של אתמול. התוצאות לא נספרות ברצף.</p>` : "");
   const cards = available(day).map(g => {
     const raw = states[g.id], s = valid(g.id, raw) ? raw : null;
     const st = !s ? "לשחק" : !s.done ? "בתהליך" : `סיים · <bdi>${esc(labelOf(g.id, day, states))}</bdi>`;
     return `<button type="button" class="g-card${s && s.done ? " done" : s ? " on" : ""}" data-g="${g.id}"><span class="g-ic" aria-hidden="true">${g.icon}</span><span class="g-nm">${g.name}</span><span class="g-st">${st}</span></button>`;
   }).join("");
-  return `${head}${allDone(day, states) ? summaryHTML(day, states, streak, opts) : ""}<div class="g-cards">${cards}</div>`;
+  const friend = opts.canGuest ? `<div class="g-friend"><button type="button" class="btn ghost" data-gguest>👥 תנו לחבר לשחק</button><small>סיבוב נקי, בלי לגעת בתוצאות שלך</small></div>` : "";
+  return `${head}${allDone(day, states) ? summaryHTML(day, states, streak, opts) : ""}<div class="g-cards">${cards}</div>${friend}`;
 }
 
 export function summaryHTML(day, states, streak, opts = {}) {
@@ -245,7 +247,7 @@ function actorSug(q) {
 }
 
 function streakNow() {
-  if (ses.practice) return 0;
+  if (ses.practice || ses.guest) return 0;
   return allDone(ses.day, ses.states) ? markComplete(storage(), ses.day.date) : streakOf(storage(), ses.today);
 }
 
@@ -258,11 +260,12 @@ function paint(top) {
   else if (ses.status === "missing") h = `<div class="empty"><h2 data-focus tabindex="-1">המשחקים של היום עוד בדרך</h2>${ses.practice ? `<p>בינתיים אפשר לשחק במשחקים של אתמול. התוצאות לא נספרות ברצף.</p><button type="button" class="btn primary" data-gpractice>תרגול</button>` : ""}</div>`;
   else if (ses.screen === "hub") {
     if (C.today() !== ses.today) { load(); return; } // midnight passed: today's file
-    h = hubHTML(ses.day, ses.states, streakNow(), { practice: ses.practice });
+    const canGuest = !ses.practice && !ses.guest && Object.keys(ses.states).length > 0;
+    h = hubHTML(ses.day, ses.states, streakNow(), { practice: ses.practice, guest: ses.guest, canGuest });
   } else if (ses.screen === "rbonus") h = bonusHTML();
   else {
     const id = ses.screen, g = GAMES.find(x => x.id === id), p = ses.day.games[id];
-    const x = { ...ses.ui, nameOf, hasSeries, hasActor, bonusOffer: id === "riddle" && !ses.practice };
+    const x = { ...ses.ui, nameOf, hasSeries, hasActor, bonusOffer: id === "riddle" && !ses.practice && !ses.guest };
     h = `<div class="g-top"><button type="button" class="linkbtn" data-ghub>חזרה למשחקים</button></div>
     <h2 class="g-title" data-focus tabindex="-1"><span aria-hidden="true">${g.icon}</span> ${g.name}</h2>${howHTML(id, p)}
     <div class="g-body g-${id}">${SCREEN[id](p, stateOf(id, p, ses.states), x)}</div>`;
@@ -298,9 +301,17 @@ function move(m) {
   const id = ses.screen, p = ses.day.games[id], s0 = stateOf(id, p, ses.states), s1 = LOGIC[id].play(s0, p, m);
   if (s1 === s0) return null;
   ses.states = { ...ses.states, [id]: s1 };
+  if (ses.guest) return s1; // a friend's round lives in memory only
   if (ses.practice) savePractice(storage(), ses.day.date, ses.states); else saveDay(storage(), ses.day.date, ses.states);
   if (!ses.practice && allDone(ses.day, ses.states)) markComplete(storage(), ses.day.date);
   return s1;
+}
+
+/** Back to my own saved results for today. */
+function endGuest() {
+  if (!ses.guest) return;
+  ses.guest = false;
+  ses.states = loadDay(storage(), ses.day.date);
 }
 
 function focusInput() { const q = R.querySelector("#gq"); if (q) q.focus(); }
@@ -329,6 +340,8 @@ function onClick(e) {
   const d = t.dataset, ui = ses.ui;
   if (d.g) { ses.screen = d.g; ses.ui = {}; paint(true); }
   else if ("ghub" in d) { ses.screen = "hub"; ses.bonus = null; ses.ui = {}; paint(true); }
+  else if ("gguest" in d) { ses.guest = true; ses.states = {}; ses.screen = "hub"; ses.ui = {}; paint(true); }
+  else if ("gguestend" in d) { endGuest(); paint(true); }
   else if ("gretry" in d) load();
   else if ("gpractice" in d) startPractice();
   else if ("gshare" in d) share();
@@ -467,6 +480,8 @@ export function mountGames(root, ctx) {
     t.remove();
   }, true);
   if (!ses || ses.today !== ctx.today()) { load(); return; }
+  // The tab button itself (ctx.home): back to the hub, out of any open game or friend's round.
+  if (ctx.home && ses.status === "ok") { endGuest(); ses.screen = "hub"; ses.bonus = null; ses.ui = {}; }
   // app.js re-renders the whole page on many actions: only a real navigation (ctx.nav) jumps to the top.
   paint(!!ctx.nav && ses.status !== "loading");
   const q = !ctx.nav && typed && R.querySelector("#gq");
