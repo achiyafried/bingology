@@ -801,8 +801,13 @@ async function boot() {
     render(false);
     loadNews();
     // Signed in: after the first paint, add the account's seen marks (memory only, so "איפוס הנצפו" stays a local reset).
-    // Then the account's "not for me" rows (memory only too).
-    if (hasSession()) setTimeout(() => acct(async m => (await m.syncSeen(S, st.seen)) + (await m.syncNope(S, st.nope))).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
+    // Then the account's "not for me" rows.
+    // syncNope also drops local marks whose row moved off 'nope' (account wins); those are saved, so they are not uploaded again.
+    if (hasSession()) setTimeout(() => acct(async m => {
+      const a = await m.syncSeen(S, st.seen), b = await m.syncNope(S, st.nope);
+      if (b) saveNope(store, st.nope, S);
+      return a + b;
+    }).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
   } catch (e) {
     $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;
   }

@@ -1,6 +1,7 @@
 // Signed-in additions to the series card (my status, my rating, what the circle did), and the
 // write-through for the site's "seen" marks. Loaded by app.js with import() only when a session exists.
 import { esc } from "../lib/esc.js";
+import { staleNope } from "../lib/nope.js";
 
 export const STATUSES = [["want", "רוצה"], ["watching", "רואה"], ["seen", "ראיתי"], ["dropped", "נטשתי"]];
 const DONE = new Set(["seen", "dropped"]);
@@ -81,11 +82,16 @@ export async function writeSeen(s, on) {
   cache.delete(s.tmdbId);
 }
 
-/** Adds the indexes of series marked "not for me" (status 'nope' on the account) to `nope`. Returns how many were added. */
+/**
+ * Brings `nope` in line with the account: adds series whose row is 'nope', and drops local marks whose row
+ * now has another status (the account wins; a mark with no row stays, for migrateNope). Returns how many changed.
+ */
 export async function syncNope(S, nope) {
   const m = await mine();
   if (!m) return 0;
-  let n = 0;
+  const drop = staleNope(S, nope, m);
+  for (const i of drop) nope.delete(i);
+  let n = drop.length;
   S.forEach((s, i) => { const e = m.get(s.tmdbId); if (e && e.status === "nope" && !nope.has(i)) { nope.add(i); n++; } });
   return n;
 }
@@ -113,7 +119,11 @@ async function nopeWrite(s, on, prevStatus) {
   const act = nopeAction(e, on, prevStatus);
   if (!act) return { row: e, prev };
   const { store } = await loadMods();
-  if (act === "delete") { await store.removeEntry(s.tmdbId); return { row: null, prev }; }
+  if (act === "delete") {
+    // Only a nope row is deleted, on the server too: a row changed meanwhile elsewhere is kept and returned.
+    if (!(await store.removeEntry(s.tmdbId, { onlyStatus: "nope" }))) return { row: (await store.myEntries()).get(s.tmdbId) || null, prev };
+    return { row: null, prev };
+  }
   return { row: await store.saveEntry(s.tmdbId, { status: act, title: s.n, poster: s.poster ?? null }), prev };
 }
 
@@ -191,7 +201,8 @@ async function onNopeClick(root, ctx, paint, st) {
     if (!on) st.nopeFrom = null;
     paint(st);
     focus();
-    if (ctx.onNope) ctx.onNope(on);
+    // The local mark follows the row as written, not the intent: a refused or changed row clears it.
+    if (ctx.onNope) ctx.onNope(!!st.entry && st.entry.status === "nope");
   } catch (e) {
     st.entry = prev;
     paint(st);

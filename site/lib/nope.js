@@ -17,6 +17,18 @@ export function loadNope(storage, S) {
   return new Set();
 }
 
+/**
+ * Local marks (indexes into S) the account overrides: a row exists for the series with a status other than 'nope'.
+ * The account wins, so these marks are dropped. No row (not migrated yet) or a nope row keeps the mark.
+ */
+export function staleNope(S, nope, entries) {
+  if (!entries) return [];
+  return [...nope].filter(i => { const e = S[i] && entries.get(S[i].tmdbId); return !!e && e.status !== "nope"; });
+}
+
+/** Whether a write moved my row off 'nope' (to another status, or deleted it): the local mark should go too. */
+export const nopeCleared = (prev, row) => !!prev && prev.status === "nope" && (!row || row.status !== "nope");
+
 /** Save marks as TMDB ids, keeping ids of series that are not in today's data. */
 export function saveNope(storage, nope, S) {
   try {

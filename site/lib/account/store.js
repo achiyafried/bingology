@@ -63,17 +63,31 @@ export async function myEntries() {
   return mineFor === user.id ? new Map(mine) : loadMine();
 }
 
-/** Deletes my row for a series ("not seen after all"); a queued write for it is dropped first. */
-export async function removeEntry(tmdbId) {
+/**
+ * Deletes my row for a series ("not seen after all"); a queued write for it is dropped first.
+ * opts.onlyStatus: delete only a row with that status (e.g. "nope" for an undo), on the server too, so a row
+ * changed meanwhile here or on another device is never lost. Resolves true when the row was deleted (or was not there).
+ */
+export async function removeEntry(tmdbId, opts = {}) {
+  const only = opts.onlyStatus || null;
   const user = await currentUser();
   if (!user) throw new Error("not signed in");
+  const prev = mine.get(tmdbId);
+  if (only && prev && prev.status !== only) return false; // includes a queued write that changed it here
   const st = ls();
   if (st) dequeue(st, tmdbId);
-  const prev = mine.get(tmdbId);
   mine.delete(tmdbId);
   const c = await getClient();
-  const { error } = await c.from("entries").delete().eq("user_id", user.id).eq("tmdb_id", tmdbId);
+  let q = c.from("entries").delete().eq("user_id", user.id).eq("tmdb_id", tmdbId);
+  if (only) q = q.eq("status", only).select("tmdb_id");
+  const { data, error } = await q;
   if (error) { if (prev) mine.set(tmdbId, prev); throw error; }
+  if (only && prev && Array.isArray(data) && !data.length) {
+    // Nothing deleted: the server row moved off `only` on another device (or is gone). Reload the map to match.
+    try { await loadMine(); } catch { /* the next load fixes it */ }
+    return !mine.has(tmdbId);
+  }
+  return true;
 }
 
 /** Optimistic: local map updates at once; the write goes to the server, or the queue on failure. */
