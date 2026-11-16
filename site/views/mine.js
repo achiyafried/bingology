@@ -5,7 +5,8 @@ import { esc, safeImg } from "../lib/esc.js";
 import { nextEpisode, progress } from "../lib/progress.js";
 import { pickPartner, jointPick } from "../lib/jointpick.js";
 import { searchSeries } from "../lib/search.js";
-import { readiness, forYou, unrated } from "../lib/foryou.js";
+import { readiness, memoForYou, unrated } from "../lib/foryou.js";
+import { staleNope, nopeCleared } from "../lib/nope.js";
 
 export const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
 export const BAD_INVITE = "הקישור לא תקין או שפג תוקפו";
@@ -114,6 +115,9 @@ function unratedHTML(S, entries) {
   if (!ix.length) return `<p class="fine">סמנו סדרות שראיתם בלשונית "הרשימה"</p>`;
   return `<div class="fy">${ix.map(i => `<div class="fyi"><button class="tile" data-a="detail" data-i="${i}">${tileImg(S[i])}<span class="cap"><bdi>${esc(S[i].n)}</bdi></span></button></div>`).join("")}</div>`;
 }
+
+// One-slot cache: a paint with the same rows (id, status, rating) and hidden marks reuses the last result.
+const forYou = memoForYou();
 
 /** state: {entries, S, localSeenSet: Set<index>}. Sits under the quick add and above the stats. */
 export function forYouHTML(state) {
@@ -373,6 +377,13 @@ function paint() {
   placeTop();
 }
 
+/** The account wins: local "לא בשבילי" marks whose row now says something else (changed here or on another device) are dropped. */
+function dropStaleNope(entries) {
+  const S = CTX.S || [], nope = CTX.nope ? CTX.nope() : null;
+  if (!nope || !CTX.onNope) return;
+  for (const i of staleNope(S, nope, entries)) CTX.onNope(S[i].tmdbId, false);
+}
+
 /** Indexes to keep out of "בשבילך": local "כבר ראיתי" marks, plus local "לא בשבילי" marks not yet in the account. */
 function localHidden() {
   const seen = CTX.seenSet ? CTX.seenSet() : null, nope = CTX.nope ? CTX.nope() : null;
@@ -439,6 +450,7 @@ async function load() {
     if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); await store.migrateNope(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
     const entries = await store.loadMine();
     if (my !== seq) return;
+    dropStaleNope(entries);
     // created stays true until the name is saved, so a remount keeps showing the name step.
     const keep = same ? { q: V.q, naming: V.naming, prompt: V.prompt, seenSort: V.seenSort, confirm: V.confirm, notice: V.notice, joinOpen: V.joinOpen,
       circle: V.circle, cs: V.cs, feed: V.feed, titles: V.titles, pick: V.pick, skipLocal: V.skipLocal, nopeOpen: V.nopeOpen } : {};
@@ -579,6 +591,7 @@ async function save(id, patch) {
     const row = await store.saveEntry(id, { ...meta(id, prev), ...patch });
     V.entries.set(id, row);
     if (CTX.onSeen) CTX.onSeen(id, row.status === "seen" || row.status === "dropped");
+    if (nopeCleared(prev, row) && CTX.onNope) CTX.onNope(id, false); // e.g. quick add on a "not for me" series
   }
   catch (e) { if (prev) V.entries.set(id, prev); else V.entries.delete(id); if (CTX.toast) CTX.toast("השינוי לא נשמר"); }
   paint();
@@ -624,8 +637,9 @@ async function onClick(ev) {
         // "החזרה להמלצות" here always deletes the row: the status before the mark is not known in this tab.
         if ((V.entries.get(id) || {}).status !== "nope") break;
         const { store } = await loadMods();
-        await store.removeEntry(id);
-        V.entries.delete(id);
+        // Deletes only a nope row: a row changed meanwhile (e.g. on another device) is left alone.
+        if (await store.removeEntry(id, { onlyStatus: "nope" })) V.entries.delete(id);
+        else { const e = (await store.myEntries()).get(id); if (e) V.entries.set(id, e); else V.entries.delete(id); }
         if (CTX.onNope) CTX.onNope(id, false);
         paint();
         break;

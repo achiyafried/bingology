@@ -437,6 +437,26 @@ test("for you, ready: heading, up to 8 items with want / not-for-me and the reas
   assert.ok(h.indexOf("בשבילך") < h.indexOf('class="stats"'), "above the stats");
 });
 
+test("for you is cached per rows + hidden marks: repaints give the same HTML, and a change still shows at once", () => {
+  const rows = [fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 0), "seen", 7)];
+  const a = fySection(fy(rows)), b = fySection(fy(rows.map(r => ({ ...r, updated_at: "2027-01-01T00:00:00Z" }))));
+  assert.equal(a, b, "same key: identical output");
+  const first = /data-a="fy-want" data-id="(\d+)"/.exec(a)[1];
+  const hidden = new Set([FS.findIndex(s => s.tmdbId === +first)]);
+  assert.doesNotMatch(fySection(fy(rows, { localSeenSet: hidden })), new RegExp(`data-id="${first}"`), "hidden mark changes the key");
+  assert.doesNotMatch(fySection(fy([...rows, fyRow(+first, "want")])), new RegExp(`data-id="${first}"`), "new row changes the key");
+  assert.equal(fySection(fy(rows)), a, "back to the first key");
+});
+
+test("mine.js: a status change off 'nope' and a load both clear stale local 'not for me' marks", () => {
+  // save() and load() need the DOM and the account modules; the logic is in nope.js (staleNope, nopeCleared), tested there.
+  const src = readFileSync("site/views/mine.js", "utf8");
+  const save = /async function save\(id, patch\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.match(save, /if \(nopeCleared\(prev, row\) && CTX\.onNope\) CTX\.onNope\(id, false\)/);
+  assert.match(src, /const entries = await store\.loadMine\(\);\n\s*if \(my !== seq\) return;\n\s*dropStaleNope\(entries\);/);
+  assert.match(src, /for \(const i of staleNope\(S, nope, entries\)\) CTX\.onNope\(S\[i\]\.tmdbId, false\)/);
+});
+
 test("for you never offers a series with a row (seen included), or one marked seen on this device", () => {
   const rows = [fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 0), "seen", 7), fyRow(tid(0, 1), "want"), fyRow(tid(0, 2), "seen", null)];
   const local = new Set([FS.findIndex(s => s.tmdbId === tid(0, 3))]);
@@ -500,6 +520,6 @@ test("mine.js wires the for-you and not-for-me actions", () => {
   const src = readFileSync("site/views/mine.js", "utf8");
   assert.match(src, /case "fy-want":/);
   assert.match(src, /case "fy-nope":[\s\S]*?status: "nope"[\s\S]*?CTX\.onNope\(id, true\)/);
-  assert.match(src, /case "nope-undo":[\s\S]*?store\.removeEntry\(id\)[\s\S]*?V\.entries\.delete\(id\)[\s\S]*?CTX\.onNope\(id, false\)/);
+  assert.match(src, /case "nope-undo":[\s\S]*?store\.removeEntry\(id, \{ onlyStatus: "nope" \}\)[\s\S]*?V\.entries\.delete\(id\)[\s\S]*?CTX\.onNope\(id, false\)/);
   assert.match(readFileSync("site/app.js", "utf8"), /seenSet: \(\) => st\.seen/);
 });

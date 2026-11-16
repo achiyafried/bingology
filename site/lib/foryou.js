@@ -50,6 +50,22 @@ export function forYou(S, entries, localSeen, opts = {}) {
   return r.length || k >= wide ? r : pass(S, entries, localSeen, sig, wide, n);
 }
 
+/** What forYou's result depends on, besides S: each row's id, status and rating, and the hidden indexes. */
+export function forYouKey(entries, localSeen) {
+  const rows = [...entries].map(([id, r]) => `${id}:${r.status}:${r.rating ?? ""}`).sort();
+  return rows.join(",") + "|" + [...localSeen].sort((a, b) => a - b).join(",");
+}
+
+/** forYou (or fn) with a one-slot cache: recomputed only when S (by identity) or forYouKey changes. */
+export function memoForYou(fn = forYou) {
+  let lastS = null, lastKey = null, last = null;
+  return (S, entries, localSeen, opts) => {
+    const key = forYouKey(entries, localSeen) + (opts ? "|" + JSON.stringify(opts) : "");
+    if (S !== lastS || key !== lastKey) { last = fn(S, entries, localSeen, opts); lastS = S; lastKey = key; }
+    return last;
+  };
+}
+
 export function unrated(S, entries, max = 4) {
   const idx = new Map(S.map((s, i) => [s.tmdbId, i]));
   return [...entries].filter(([id, r]) => r.status === "seen" && r.rating == null && idx.has(id))

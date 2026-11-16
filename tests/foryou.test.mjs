@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readiness, forYou, unrated } from "../site/lib/foryou.js";
+import { readiness, forYou, unrated, forYouKey, memoForYou } from "../site/lib/foryou.js";
 
 const mk = (id, o = {}) => ({ tmdbId: id, n: "S" + id, creators: [], g: ["a"], mo: [], h: 2, lang: "en", providers: [], y: 2010, imdb: 8, bs: null, ...o });
 const row = (status, rating = null, updated_at = "2026-01-01T00:00:00Z") => ({ status, rating, updated_at });
@@ -71,4 +71,27 @@ test("unrated lists seen rows without a rating, newest first", () => {
   const en = E({ 1: row("seen", null, "2026-01-01"), 2: row("seen", null, "2026-03-01"), 3: row("seen", 7), 4: row("want", null, "2026-05-01"), 999: row("seen", null, "2026-06-01") });
   assert.deepEqual(unrated(S, en), [1, 0]);
   assert.deepEqual(unrated(S, en, 1), [1]);
+});
+
+test("forYouKey: same for the same rows in any order, changes with status, rating or hidden marks", () => {
+  const a = forYouKey(E({ 1: row("seen", 9), 2: row("want") }), new Set([3]));
+  assert.equal(a, forYouKey(E({ 2: row("want", null, "2027-01-01"), 1: row("seen", 9) }), new Set([3])), "updated_at does not matter");
+  assert.notEqual(a, forYouKey(E({ 1: row("seen", 8), 2: row("want") }), new Set([3])));
+  assert.notEqual(a, forYouKey(E({ 1: row("seen", 9), 2: row("nope") }), new Set([3])));
+  assert.notEqual(a, forYouKey(E({ 1: row("seen", 9), 2: row("want") }), new Set([3, 4])));
+  assert.notEqual(a, forYouKey(E({ 1: row("seen", 9) }), new Set([3])));
+});
+
+test("memoForYou: recomputes only when S or the key changes, and returns forYou's result", () => {
+  let calls = 0;
+  const f = memoForYou((...a) => { calls++; return forYou(...a); });
+  const S = [mk(1, { g: ["x"] }), mk(2, { g: ["x"] }), mk(3, { g: ["y"] }), mk(4), mk(5)];
+  const ents = () => E({ 1: row("seen", 9), 4: row("seen", 8), 5: row("seen", 8) });
+  assert.deepEqual(f(S, ents(), none), forYou(S, ents(), none));
+  f(S, ents(), new Set());
+  assert.equal(calls, 1, "identical key: cached");
+  f(S, ents(), new Set([1]));
+  assert.equal(calls, 2, "hidden changed");
+  f([...S], ents(), new Set([1]));
+  assert.equal(calls, 3, "new S");
 });

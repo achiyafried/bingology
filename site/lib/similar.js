@@ -1,5 +1,10 @@
 /* Series similarity: shared crew, genres, moods, length, language, platforms, era. */
-export const crew = s => s.creators.map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean);
+const crewOf = new WeakMap(); // series object -> its crew names (series objects are not changed after load)
+export const crew = s => {
+  let c = crewOf.get(s);
+  if (!c) { c = s.creators.map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean); crewOf.set(s, c); }
+  return c;
+};
 
 export function similarity(s, o) {
   const g = o.g.filter(x => s.g.includes(x)), m = o.mo.filter(x => s.mo.includes(x));
