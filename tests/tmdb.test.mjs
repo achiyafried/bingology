@@ -167,3 +167,29 @@ test("transformTv collects flatrate provider names for IL, US and UK (GB)", () =
     IL: { flatrate: [{ provider_name: "Apple TV+" }] }, GB: { flatrate: [{ provider_name: "Sky Go" }] } } } };
   assert.deepEqual(transformTv(tv, { map }).live.streams, { IL: ["Apple TV+"], US: [], UK: ["Sky Go"] });
 });
+
+import { trailerOf } from "../scripts/lib/tmdb.mjs";
+const vid = (key, type, official, published_at, site = "YouTube") => ({ key, type, official, published_at, site });
+
+test("trailerOf picks official trailer, then trailer, then teaser, newest first", () => {
+  const off = vid("officialOld", "Trailer", true, "2010-01-01T00:00:00Z");
+  const unoff = vid("unofficNew1", "Trailer", false, "2020-01-01T00:00:00Z");
+  const unoffOld = vid("unofficOld1", "Trailer", false, "2012-01-01T00:00:00Z");
+  const teaser = vid("teaserNew11", "Teaser", true, "2024-01-01T00:00:00Z");
+  const clip = vid("clipNewest1", "Clip", true, "2025-01-01T00:00:00Z");
+  assert.equal(trailerOf({ videos: { results: [clip, teaser, unoff, off] } }), "officialOld");
+  assert.equal(trailerOf({ videos: { results: [clip, teaser, unoffOld, unoff] } }), "unofficNew1");
+  assert.equal(trailerOf({ videos: { results: [clip, teaser] } }), "teaserNew11");
+  assert.equal(trailerOf({ videos: { results: [clip] } }), null);
+});
+
+test("trailerOf ignores non-YouTube and malformed keys", () => {
+  assert.equal(trailerOf({ videos: { results: [vid("12345678901", "Trailer", true, "2020", "Vimeo")] } }), null);
+  assert.equal(trailerOf({ videos: { results: [vid("bad key", "Trailer", true, "2020")] } }), null);
+  assert.equal(trailerOf({}), null);
+});
+
+test("transformTv carries the trailer key", () => {
+  const { live } = transformTv({ ...bb, videos: { results: [vid("dQw4w9WgXcQ", "Trailer", true, "2020")] } }, { map, he: bb });
+  assert.equal(live.trailer, "dQw4w9WgXcQ");
+});

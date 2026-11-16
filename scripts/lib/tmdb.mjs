@@ -53,6 +53,19 @@ function seasonEpsOf(tv) {
   return eps.length ? eps : null;
 }
 
+const YT_KEY = /^[A-Za-z0-9_-]{11}$/;
+const TRAILER_RANK = [v => v.type === "Trailer" && v.official, v => v.type === "Trailer", v => v.type === "Teaser"];
+
+/** One YouTube key from the appended videos: official trailer, then trailer, then teaser; newest in each group. */
+export function trailerOf(tv) {
+  const vids = (tv.videos?.results ?? []).filter(v => v.site === "YouTube" && YT_KEY.test(v.key ?? ""));
+  for (const ok of TRAILER_RANK) {
+    const hit = vids.filter(ok).sort((a, b) => String(b.published_at ?? "").localeCompare(String(a.published_at ?? "")))[0];
+    if (hit) return hit.key;
+  }
+  return null;
+}
+
 /** TMDB /tv/{id} (en-US, with credits/providers/external_ids appended) + the he-IL response → live fields. */
 export function transformTv(tv, { map, he } = {}) {
   const warnings = [];
@@ -78,6 +91,7 @@ export function transformTv(tv, { map, he } = {}) {
     runtimeLast: tv.last_episode_to_air?.runtime || null,
     status: statusOf(tv),
     lang: tv.original_language || null,
+    trailer: trailerOf(tv),
     poster: tv.poster_path ? `${IMG}w342${tv.poster_path}` : null,
     creators: (tv.created_by ?? []).map(c => c.name),
     cast,

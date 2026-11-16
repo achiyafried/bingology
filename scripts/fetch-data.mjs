@@ -11,7 +11,7 @@ import { writeNews } from "./lib/news.mjs";
 import { discoverParams, rankPool, poolEntry, poolSizeFor, TIERS } from "./lib/discover.mjs";
 
 const CONCURRENCY = 8;
-const APPEND = "aggregate_credits,watch/providers,external_ids,content_ratings";
+const APPEND = "aggregate_credits,watch/providers,external_ids,content_ratings,videos";
 const readJson = p => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 
 const MAX_DISCOVER_PAGES = 80;
@@ -27,7 +27,7 @@ async function fetchLive(id, fetchImpl, map, warnings, old, ctx) {
   const fresh = !!old?.imdbAt && Date.parse(ctx.now) - Date.parse(old.imdbAt) < IMDB_MAX_AGE_MS;
   const useOmdb = !fresh && ctx.budget > 0 && (ctx.budget--, true);
   // English for consistent names; a light Hebrew request only for the Hebrew description.
-  const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: APPEND }, fetchImpl);
+  const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: APPEND, include_video_language: "en,null" }, fetchImpl);
   const he = await tmdbGet(`/tv/${id}`, { language: "he-IL" }, fetchImpl).catch(() => null);
   const { live, warnings: w } = transformTv(tv, { map, he });
   w.forEach(x => warnings.add(x));
