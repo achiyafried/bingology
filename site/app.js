@@ -272,6 +272,8 @@ function praiseHTML(s) {
 }
 
 /* helpers */
+/** Removes inline trailer players under root (stops the sound): one video at a time. */
+function stopInline(root) { root.querySelectorAll(".tvid").forEach(n => { if (!n.closest("#vdlg")) n.remove(); }); }
 function trailerHTML(s, i) {
   const btn = trailBtnHTML(s, i);
   if (btn) return btn; // a real trailer plays in place; otherwise the YouTube search link below
@@ -617,17 +619,17 @@ document.addEventListener("click", e => {
     case "copylink": copyText(el.dataset.u).then(ok => showToast(ok ? "הקישור הועתק. הדביקו אותו בדפדפן או באפליקציית יוטיוב." : "אי אפשר להעתיק מהמסך הזה. סמנו את הכתובת והעתיקו אותה ידנית.", el.dataset.u)); break;
     case "actall": st.actMulti = !st.actMulti; st.actLimit = 60; render(false); break;
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
-    case "dclose": $("#dlg").close(); break;
-    case "trail": { const row = el.closest(".trail"); if (row && S[i]) { row.innerHTML = playerHTML(S[i].tr, S[i].n); row.classList.add("on"); } break; }
-    case "play": { const d = $("#vdlg"); if (!S[i] || !S[i].tr) break; d.innerHTML = `<button class="vx" data-a="vclose" aria-label="סגירת הטריילר">✕</button>${playerHTML(S[i].tr, S[i].n)}`; if (!d.open) d.showModal(); break; }
+    case "dclose": stopInline($("#dlg")); $("#dlg").close(); break;
+    case "trail": { const row = el.closest(".trail"); if (row && S[i]) { row.innerHTML = playerHTML(S[i].tr, S[i].n); row.classList.add("on"); const f = row.querySelector("iframe"); if (f) f.focus(); } break; }
+    case "play": { const d = $("#vdlg"); if (!S[i] || !S[i].tr) break; stopInline(document); d.innerHTML = `<button class="vx" data-a="vclose" aria-label="סגירת הטריילר">✕</button>${playerHTML(S[i].tr, S[i].n)}`; if (!d.open) d.showModal(); break; }
     case "vclose": $("#vdlg").close(); break;
     case "retry": boot(); break;
     case "sortpick": st.ans.sort = v; rank(false); st.ranked = orderResults(st.ranked, S, v); st.screen = "result"; render(true); break;
     case "restart": resetQuiz(st, blankAns()); render(true); break;
   }
 });
-$("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
-$("#dlg").addEventListener("close", () => { st.dlgStack = []; st.dlgCur = null; });
+$("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) { stopInline(e.currentTarget); e.currentTarget.close(); } });
+$("#dlg").addEventListener("close", e => { st.dlgStack = []; st.dlgCur = null; stopInline(e.currentTarget); }); // a closed dialog keeps its iframe alive
 $("#vdlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $("#vdlg").addEventListener("close", e => { e.currentTarget.innerHTML = ""; }); // removing the iframe stops the sound
 document.addEventListener("input", e => { if (e.target && e.target.id === "serq") { st.serQuery = e.target.value; $("#serRes").innerHTML = serResHTML(); } });

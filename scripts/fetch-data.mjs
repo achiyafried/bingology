@@ -27,7 +27,7 @@ async function fetchLive(id, fetchImpl, map, warnings, old, ctx) {
   const fresh = !!old?.imdbAt && Date.parse(ctx.now) - Date.parse(old.imdbAt) < IMDB_MAX_AGE_MS;
   const useOmdb = !fresh && ctx.budget > 0 && (ctx.budget--, true);
   // English for consistent names; a light Hebrew request only for the Hebrew description.
-  const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: APPEND, include_video_language: "en,null" }, fetchImpl);
+  const tv = await tmdbGet(`/tv/${id}`, { language: "en-US", append_to_response: APPEND, include_video_language: "en,he,null" }, fetchImpl);
   const he = await tmdbGet(`/tv/${id}`, { language: "he-IL" }, fetchImpl).catch(() => null);
   const { live, warnings: w } = transformTv(tv, { map, he });
   w.forEach(x => warnings.add(x));

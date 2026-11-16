@@ -1,5 +1,5 @@
 const FALLBACK_FIELDS = ["year", "seasons", "episodes", "lang"];
-const SCALAR_FIELDS = ["status", "poster", "overviewHe", "overviewEn", "tmdbVote", "tmdbVotes", "minAge", "seasonEps", "trailer"];
+const SCALAR_FIELDS = ["status", "poster", "overviewHe", "overviewEn", "tmdbVote", "tmdbVotes", "minAge", "seasonEps"];
 // People lists: an empty list from TMDB usually means missing data, so keep looking.
 const PEOPLE_FIELDS = ["creators", "cast"];
 
@@ -30,6 +30,8 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   // Live-only: a night without a fetch has no news to report, so these never fall back to prev.
   s.next = live ? live.next ?? null : null;
   s.streams = live ? live.streams ?? null : null;
+  // Trailer: a fetched night with no video means it was taken down (the site falls back to a search link).
+  s.trailer = live ? live.trailer ?? null : prev?.trailer ?? null;
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
   return s;
