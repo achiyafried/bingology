@@ -193,6 +193,8 @@ dialog .nm { color: var(--ticket-accent); }
 .ticket .btn { padding: 11px 14px; font-size: 16px; }
 .ticket .linkbtn { color: var(--ticket-muted); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row2.r3 { display: flex; flex-wrap: wrap; }
+.row2.r3 .btn { flex: 1 1 auto; padding-inline: 10px; }
 .chosen { background: rgba(30, 142, 90, .14); color: #14673F; border-radius: 12px; padding: 10px 12px; font-weight: 700; text-align: center; }
 .alts h3 { font-size: 20px; margin: 26px 0 12px; }
 .alts .grid { grid-template-columns: repeat(3, 1fr); }
@@ -222,6 +224,7 @@ dialog .nm { color: var(--ticket-accent); }
 .trail .linkbtn { color: var(--ticket-muted); font-size: 15px; }
 .toast { position: fixed; inset-inline: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 2147483000; background: var(--ink); color: var(--bg); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); font-size: 15px; }
 .toast p { margin: 0 0 8px; }
+.toast .linkbtn { color: inherit; font-size: 15px; padding: 2px; }
 .toast input { width: 100%; font: inherit; font-size: 13px; direction: ltr; padding: 8px 10px; border-radius: 8px; border: 0; background: rgba(128, 128, 160, .3); color: inherit; }
 .trail a { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--ticket-accent); text-decoration: none; border: 2px solid rgba(59, 47, 208, .28); border-radius: 999px; padding: 8px 16px; }
 .trail a:hover { background: rgba(59, 47, 208, .08); }
@@ -350,6 +353,17 @@ img.poster { object-fit: cover; }
 .mine .bar { display: block; height: 6px; background: var(--surface2); border-radius: 99px; margin-top: 6px; overflow: hidden; }
 .mine .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
 .mine .plus { border: 2px solid var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }
+/* "בשבילך": a horizontal row of .sim-style tiles; the two buttons stack under each poster so they stay tappable at 375px. */
+.mine .foryou .fine { color: var(--muted); font-size: 14px; margin: 0 4px 10px; }
+.mine .fy { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 2px 2px 8px; margin: 0 -2px; }
+.mine .fyi { flex: 0 0 clamp(132px, 38vw, 160px); display: flex; flex-direction: column; scroll-snap-align: start; }
+.mine .fyi .tile { width: 100%; color: inherit; }
+.mine .fyi .noimg { display: block; width: 100%; aspect-ratio: 240 / 216; border-radius: 12px; background: var(--surface2); }
+.mine .fyi .cap { color: var(--ink); font-size: 14px; overflow-wrap: anywhere; }
+.mine .fyb { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 8px; }
+.mine .fyb .plus { width: 100%; min-height: 36px; color: inherit; }
+.mine .fyb .plus[data-a="fy-want"] { border-color: var(--accent); }
+.mine .nope-sh { justify-content: flex-start; }
 .mine .score { font-family: "Secular One", "Assistant", sans-serif; font-size: 26px; min-width: 34px; text-align: center; flex: none; }
 .mine .score.none { color: var(--muted); }
 .mine .bscore { background: var(--surface2); border-radius: 999px; padding: 2px 10px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }

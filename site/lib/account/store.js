@@ -1,7 +1,7 @@
 import { getClient } from "./client.js";
 import { currentUser } from "./auth.js";
 import { enqueue, dequeue, pending, flush } from "./queue.js";
-import { seenToEntries, MIGRATED_KEY } from "../migrate.js";
+import { seenToEntries, nopeToEntries, MIGRATED_KEY } from "../migrate.js";
 
 const COLS = "tmdb_id,status,season,episode,rating,note,finished_on,title,poster,updated_at";
 const SLUG_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
@@ -63,17 +63,31 @@ export async function myEntries() {
   return mineFor === user.id ? new Map(mine) : loadMine();
 }
 
-/** Deletes my row for a series ("not seen after all"); a queued write for it is dropped first. */
-export async function removeEntry(tmdbId) {
+/**
+ * Deletes my row for a series ("not seen after all"); a queued write for it is dropped first.
+ * opts.onlyStatus: delete only a row with that status (e.g. "nope" for an undo), on the server too, so a row
+ * changed meanwhile here or on another device is never lost. Resolves true when the row was deleted (or was not there).
+ */
+export async function removeEntry(tmdbId, opts = {}) {
+  const only = opts.onlyStatus || null;
   const user = await currentUser();
   if (!user) throw new Error("not signed in");
+  const prev = mine.get(tmdbId);
+  if (only && prev && prev.status !== only) return false; // includes a queued write that changed it here
   const st = ls();
   if (st) dequeue(st, tmdbId);
-  const prev = mine.get(tmdbId);
   mine.delete(tmdbId);
   const c = await getClient();
-  const { error } = await c.from("entries").delete().eq("user_id", user.id).eq("tmdb_id", tmdbId);
+  let q = c.from("entries").delete().eq("user_id", user.id).eq("tmdb_id", tmdbId);
+  if (only) q = q.eq("status", only).select("tmdb_id");
+  const { data, error } = await q;
   if (error) { if (prev) mine.set(tmdbId, prev); throw error; }
+  if (only && prev && Array.isArray(data) && !data.length) {
+    // Nothing deleted: the server row moved off `only` on another device (or is gone). Reload the map to match.
+    try { await loadMine(); } catch { /* the next load fixes it */ }
+    return !mine.has(tmdbId);
+  }
+  return true;
 }
 
 /** Optimistic: local map updates at once; the write goes to the server, or the queue on failure. */
@@ -108,6 +122,24 @@ export async function migrateLocal(storage, S) {
     if (error) throw error;
   }
   try { storage.setItem(MIGRATED_KEY, user.id); } catch { /* ignore */ }
+  return rows.length;
+}
+
+/**
+ * On every sign-in (no flag): uploads local "not for me" marks as status 'nope' rows,
+ * only for series with no row on the account yet. Returns how many were uploaded.
+ */
+export async function migrateNope(storage, S) {
+  const user = await currentUser();
+  if (!user) return 0;
+  const existing = new Set((await myEntries()).keys());
+  const rows = nopeToEntries(storage, S, existing).map(r => ({ ...r, user_id: user.id }));
+  if (!rows.length) return 0;
+  const c = await getClient();
+  // ignoreDuplicates: a row written meanwhile on another device wins over the local mark.
+  const { error } = await c.from("entries").upsert(rows, { onConflict: "user_id,tmdb_id", ignoreDuplicates: true });
+  if (error) throw error;
+  for (const r of rows) if (!mine.has(r.tmdb_id)) mine.set(r.tmdb_id, { ...r, updated_at: new Date().toISOString() });
   return rows.length;
 }
 

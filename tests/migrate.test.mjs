@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { seenToEntries, MIGRATED_KEY } from "../site/lib/migrate.js";
+import { seenToEntries, nopeToEntries, MIGRATED_KEY } from "../site/lib/migrate.js";
 
 const S = [
   { tmdbId: 1396, n: "Breaking Bad", poster: "/bb.jpg" },
@@ -31,6 +31,14 @@ test("ids already in the account are skipped", () => {
 test("ids missing from today's data are skipped", () => {
   const st = store({ "tvpick:v2": JSON.stringify({ seen: [1396, 999] }) });
   assert.deepEqual(seenToEntries(st, S, new Set()).map(r => r.tmdb_id), [1396]);
+});
+
+test("nopeToEntries skips existing ids and returns nope rows", () => {
+  const st = store({ "bingology:nope": JSON.stringify({ nope: [1396, 1438, 999] }) });
+  assert.deepEqual(nopeToEntries(st, S, new Set([1396])), [
+    { tmdb_id: 1438, status: "nope", title: "The Wire", poster: "/wire.jpg" },
+  ]);
+  assert.deepEqual(nopeToEntries(store({}), S, new Set()), []);
 });
 
 test("throwing storage gives []", () => {

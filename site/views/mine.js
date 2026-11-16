@@ -5,6 +5,8 @@ import { esc, safeImg } from "../lib/esc.js";
 import { nextEpisode, progress } from "../lib/progress.js";
 import { pickPartner, jointPick } from "../lib/jointpick.js";
 import { searchSeries } from "../lib/search.js";
+import { readiness, memoForYou, unrated } from "../lib/foryou.js";
+import { staleNope, nopeCleared } from "../lib/nope.js";
 
 export const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
 export const BAD_INVITE = "הקישור לא תקין או שפג תוקפו";
@@ -12,7 +14,7 @@ const PACE = 2;
 const FEED_N = 20;
 const QUICK_N = 8;
 const QUICK = [["seen", "ראיתי"], ["want", "רוצה"], ["watching", "רואה עכשיו"]];
-const BUSY = new Set(["seen", "watching", "dropped"]);
+const BUSY = new Set(["seen", "watching", "dropped", "nope"]);
 
 /* ───────── pure rendering ───────── */
 
@@ -86,8 +88,58 @@ function listsHTML(rows, S, st, ro) {
   const sec = (h, list, fn, extra = "") => list.length ? `<div class="sh"><h3>${h}</h3>${extra}</div><div class="card">${list.map(row(fn)).join("")}</div>` : "";
   const sortBtn = ro || seen.length < 2 ? "" : `<button class="linkbtn" data-a="seensort">${st.seenSort === "date" ? "לפי תאריך ▾" : "לפי ציון ▾"}</button>`;
   const body = sec("רואה עכשיו", watching, watchingRow) + sec("רוצה לראות", want, wantRow) + sec("ראיתי", seen, seenRow, sortBtn);
+  // "לא בשבילי" is private: never in the read-only share view, never in the stats.
+  const nope = ro ? "" : nopeHTML(pick("nope").map(e => { const i = idx.get(e.tmdb_id); return [e, i === undefined ? null : S[i], i]; }), st);
   return `<div class="stats">${stats.map(([t, n]) => `<div class="stat"><strong>${n}</strong><span>${t}</span></div>`).join("")}</div>`
-    + (body || `<div class="empty"><p>${ro ? "עוד אין כאן סדרות." : "עוד אין כאן סדרות. סמנו \"כבר ראיתי\" ברשימה, או פתחו סדרה והוסיפו אותה."}</p></div>`);
+    + (body || `<div class="empty"><p>${ro ? "עוד אין כאן סדרות." : "עוד אין כאן סדרות. סמנו \"כבר ראיתי\" ברשימה, או פתחו סדרה והוסיפו אותה."}</p></div>`)
+    + nope;
+}
+
+/** The folded "לא בשבילי (N)" list at the end of the lists; open, each row can go back to the recommendations. */
+function nopeHTML(list, st) {
+  if (!list.length) return "";
+  const open = !!st.nopeOpen;
+  const rows = open ? `<div class="card" id="mine-nope">${list.map(([e, s, i]) =>
+    `<div class="it">${head(e, s, i, "", false)}<button class="plus" data-a="nope-undo" data-id="${e.tmdb_id}">החזרה להמלצות</button></div>`).join("")}</div>` : "";
+  return `<div class="sh nope-sh"><button class="linkbtn" data-a="nope-open" aria-expanded="${open}"${open ? ' aria-controls="mine-nope"' : ""}>לא בשבילי (${list.length})</button></div>${rows}`;
+}
+
+/* ── "בשבילך": recommendations from my ratings ── */
+
+const tileImg = s => { const src = safeImg(s.poster); return src ? `<img src="${src}" alt="" loading="lazy">` : `<span class="noimg" aria-hidden="true"></span>`; };
+const because = names => "כי אהבתם את " + names.map(n => `<bdi>${esc(n)}</bdi>`).join(" ואת ");
+
+/** Up to 4 seen-but-unrated posters (they open the card, where the rating buttons are), or the pointer to "הרשימה". */
+function unratedHTML(S, entries) {
+  const ix = unrated(S, entries, 4);
+  if (!ix.length) return `<p class="fine">סמנו סדרות שראיתם בלשונית "הרשימה"</p>`;
+  return `<div class="fy">${ix.map(i => `<div class="fyi"><button class="tile" data-a="detail" data-i="${i}">${tileImg(S[i])}<span class="cap"><bdi>${esc(S[i].n)}</bdi></span></button></div>`).join("")}</div>`;
+}
+
+// One-slot cache: a paint with the same rows (id, status, rating) and hidden marks reuses the last result.
+const forYou = memoForYou();
+
+/** state: {entries, S, localSeenSet: Set<index>}. Sits under the quick add and above the stats. */
+export function forYouHTML(state) {
+  const S = state.S || [];
+  if (!S.length) return "";
+  const entries = new Map(rowsOf(state.entries).map(e => [e.tmdb_id, e]));
+  const r = readiness(entries);
+  let body;
+  if (!r.ready) {
+    const line = r.need === 1 ? "דרגו עוד סדרה אחת שראיתם ונתחיל להמליץ" : `דרגו עוד ${r.need} סדרות שראיתם ונתחיל להמליץ`;
+    body = `<p class="fine">${line}</p>${unratedHTML(S, entries)}`;
+  } else {
+    const recs = forYou(S, entries, state.localSeenSet || new Set());
+    body = !recs.length ? `<p class="fine">עברתם על כל מה שמצאנו. דרגו עוד סדרות שראיתם ונמצא עוד</p>${unratedHTML(S, entries)}`
+      : `<div class="fy">${recs.map(({ i, because: names }) => {
+        const s = S[i];
+        const why = names.length ? `<span class="why2">${because(names)}</span>` : "";
+        return `<div class="fyi"><button class="tile" data-a="detail" data-i="${i}">${tileImg(s)}<span class="cap"><bdi>${esc(s.n)}</bdi></span>${why}</button>`
+          + `<div class="fyb" role="group" aria-label="${esc(s.n)}"><button class="plus" data-a="fy-want" data-id="${s.tmdbId}">+ רוצה</button><button class="plus" data-a="fy-nope" data-id="${s.tmdbId}">לא בשבילי</button></div></div>`;
+      }).join("")}</div>`;
+  }
+  return `<section class="foryou" aria-labelledby="mine-fy"><div class="sh"><h3 id="mine-fy">בשבילך</h3></div>${body}</section>`;
 }
 
 /* ── quick add: search a series and mark it without leaving the tab ── */
@@ -275,6 +327,7 @@ export function mineHTML(state) {
     ${st.confirm ? confirmHTML(st.confirm) : st.notice ? noticeHTML(st.notice) : ""}
     ${share}
     ${quickHTML(st)}
+    ${forYouHTML(st)}
     ${listsHTML(rowsOf(st.entries), st.S, st, false)}
     ${circleHTML(st)}
     <div class="foot"><button class="linkbtn" data-a="signout">יציאה מהחשבון</button></div>
@@ -315,13 +368,26 @@ function paint() {
   if (!ROOT || !ROOT.isConnected) return;
   const qf = !needFocus && quickFocus();
   ROOT.innerHTML = CTX.share ? (V.sharedErr ? unavailableHTML() : V.shared === undefined ? mineHTML({ loading: true }) : sharedHTML(V.shared, CTX.S))
-    : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0, joinWait: !V.user && !!pendingJoin(), now: Date.now() });
+    : mineHTML({ ...V, S: CTX.S, pace: CTX.pace || PACE, localSeen: CTX.localSeen ? CTX.localSeen() : 0, localSeenSet: localHidden(), joinWait: !V.user && !!pendingJoin(), now: Date.now() });
   // First content paint after a mount: move focus to the tab's heading (the loading box has none).
   const h = needFocus && ROOT.querySelector("[data-focus]");
   if (h) { needFocus = false; h.focus({ preventScroll: true }); }
   const back = qf && ROOT.querySelector(qf.sel);
   if (back) { back.focus({ preventScroll: true }); if (qf.start != null) back.setSelectionRange(qf.start, qf.end); }
   placeTop();
+}
+
+/** The account wins: local "לא בשבילי" marks whose row now says something else (changed here or on another device) are dropped. */
+function dropStaleNope(entries) {
+  const S = CTX.S || [], nope = CTX.nope ? CTX.nope() : null;
+  if (!nope || !CTX.onNope) return;
+  for (const i of staleNope(S, nope, entries)) CTX.onNope(S[i].tmdbId, false);
+}
+
+/** Indexes to keep out of "בשבילך": local "כבר ראיתי" marks, plus local "לא בשבילי" marks not yet in the account. */
+function localHidden() {
+  const seen = CTX.seenSet ? CTX.seenSet() : null, nope = CTX.nope ? CTX.nope() : null;
+  return new Set([...(seen || []), ...(nope || [])]);
 }
 
 /* ── quick add: the field repaints only its results, so typing keeps focus and caret ── */
@@ -381,12 +447,13 @@ async function load() {
     const same = V.user && V.user.id === user.id;
     const fallback = user.name || (user.email || "").split("@")[0];
     const { profile, created } = await auth.ensureProfile(fallback);
-    if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
+    if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); await store.migrateNope(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
     const entries = await store.loadMine();
     if (my !== seq) return;
+    dropStaleNope(entries);
     // created stays true until the name is saved, so a remount keeps showing the name step.
     const keep = same ? { q: V.q, naming: V.naming, prompt: V.prompt, seenSort: V.seenSort, confirm: V.confirm, notice: V.notice, joinOpen: V.joinOpen,
-      circle: V.circle, cs: V.cs, feed: V.feed, titles: V.titles, pick: V.pick, skipLocal: V.skipLocal } : {};
+      circle: V.circle, cs: V.cs, feed: V.feed, titles: V.titles, pick: V.pick, skipLocal: V.skipLocal, nopeOpen: V.nopeOpen } : {};
     V = { ...keep, user, profile, entries, created: created || (V.created && same) };
   } catch (e) {
     if (my !== seq) return;
@@ -524,6 +591,7 @@ async function save(id, patch) {
     const row = await store.saveEntry(id, { ...meta(id, prev), ...patch });
     V.entries.set(id, row);
     if (CTX.onSeen) CTX.onSeen(id, row.status === "seen" || row.status === "dropped");
+    if (nopeCleared(prev, row) && CTX.onNope) CTX.onNope(id, false); // e.g. quick add on a "not for me" series
   }
   catch (e) { if (prev) V.entries.set(id, prev); else V.entries.delete(id); if (CTX.toast) CTX.toast("השינוי לא נשמר"); }
   paint();
@@ -554,6 +622,26 @@ async function onClick(ev) {
         const e = V.entries.get(id);
         if (!seriesOf(id) || (e && e.status === v)) break;
         await save(id, { status: v });
+        break;
+      }
+      case "fy-want": if (!V.entries.has(id) && seriesOf(id)) await save(id, { status: "want" }); break;
+      case "fy-nope": {
+        // Offered only for a series with no row (a "בשבילך" candidate), so no rating or note is overwritten.
+        if (V.entries.has(id) || !seriesOf(id)) break;
+        await save(id, { status: "nope" });
+        if ((V.entries.get(id) || {}).status === "nope" && CTX.onNope) CTX.onNope(id, true);
+        break;
+      }
+      case "nope-open": V.nopeOpen = !V.nopeOpen; paint(); { const b = ROOT.querySelector('[data-a="nope-open"]'); if (b) b.focus({ preventScroll: true }); } break;
+      case "nope-undo": {
+        // "החזרה להמלצות" here always deletes the row: the status before the mark is not known in this tab.
+        if ((V.entries.get(id) || {}).status !== "nope") break;
+        const { store } = await loadMods();
+        // Deletes only a nope row: a row changed meanwhile (e.g. on another device) is left alone.
+        if (await store.removeEntry(id, { onlyStatus: "nope" })) V.entries.delete(id);
+        else { const e = (await store.myEntries()).get(id); if (e) V.entries.set(id, e); else V.entries.delete(id); }
+        if (CTX.onNope) CTX.onNope(id, false);
+        paint();
         break;
       }
       case "seensort": V.seenSort = V.seenSort === "date" ? "rating" : "date"; paint(); break;
@@ -675,7 +763,8 @@ if (typeof window !== "undefined") {
 
 /**
  * ctx: {S, storage, pace, share (slug|null), join (invite code from #join=|null), localSeen() -> number,
- *   toast(msg, url?), copy(text) -> Promise<bool>, onSeen(tmdbId, seenOrDropped)}
+ *   toast(msg, url?), copy(text) -> Promise<bool>, onSeen(tmdbId, seenOrDropped),
+ *   seenSet() -> Set<index> (local "כבר ראיתי"), nope() -> Set<index> (local "לא בשבילי"), onNope(tmdbId, on) (local marks only)}
  * Paints cached state at once (app.js re-renders the whole page often), then refreshes.
  */
 export async function mountMine(root, ctx) {

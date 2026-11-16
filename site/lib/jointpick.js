@@ -1,4 +1,4 @@
-const BUSY = new Set(["seen", "watching", "dropped"]);
+const BUSY = new Set(["seen", "watching", "dropped", "nope"]);
 
 /** The other circle member sharing the most `want` ids with me (ties: first in map order); null if alone. */
 export function pickPartner(me, lists) {
@@ -26,7 +26,7 @@ function best(S, scores, ok) {
 }
 
 /**
- * Shared: both `members` want it. Fallback: nobody in the whole circle has seen/watching/dropped it.
+ * Shared: both `members` want it. Fallback: nobody in the whole circle has seen/watching/dropped/nope it.
  * Skipped ids are never returned. Returns null when nothing is left.
  */
 export function jointPick(S, scores, lists, members, skipped) {

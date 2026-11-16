@@ -1,6 +1,7 @@
 // Signed-in additions to the series card (my status, my rating, what the circle did), and the
 // write-through for the site's "seen" marks. Loaded by app.js with import() only when a session exists.
 import { esc } from "../lib/esc.js";
+import { staleNope } from "../lib/nope.js";
 
 export const STATUSES = [["want", "רוצה"], ["watching", "רואה"], ["seen", "ראיתי"], ["dropped", "נטשתי"]];
 const DONE = new Set(["seen", "dropped"]);
@@ -33,7 +34,10 @@ export function cardHTML(state) {
     : "";
   const fr = (st.friends || []).map(chip).filter(Boolean);
   const friends = fr.length ? `<div class="lbl">במעגל</div><div class="friends">${fr.join("")}</div>` : "";
-  return `<div class="lbl" id="acct-sl">מה אני עם הסדרה</div><div class="status" role="group" aria-labelledby="acct-sl">${status}</div>${rate}${friends}`;
+  // "Not for me" (private 'nope'): offered only with no row or a want row; on a nope row it undoes.
+  const nope = !cur || cur === "want" || cur === "nope"
+    ? `<div class="acct-nope"><button class="linkbtn" data-a="cnope">${cur === "nope" ? "החזרה להמלצות" : "לא בשבילי"}</button></div>` : "";
+  return `<div class="lbl" id="acct-sl">מה אני עם הסדרה</div><div class="status" role="group" aria-labelledby="acct-sl">${status}</div>${rate}${nope}${friends}`;
 }
 
 /* ───────── account (browser only) ───────── */
@@ -78,7 +82,64 @@ export async function writeSeen(s, on) {
   cache.delete(s.tmdbId);
 }
 
-/** ctx: {s (series), seen (local mark), toast(msg), onSeen(on)} — renders into root (a fresh element on every dialog paint). */
+/**
+ * Brings `nope` in line with the account: adds series whose row is 'nope', and drops local marks whose row
+ * now has another status (the account wins; a mark with no row stays, for migrateNope). Returns how many changed.
+ */
+export async function syncNope(S, nope) {
+  const m = await mine();
+  if (!m) return 0;
+  const drop = staleNope(S, nope, m);
+  for (const i of drop) nope.delete(i);
+  let n = drop.length;
+  S.forEach((s, i) => { const e = m.get(s.tmdbId); if (e && e.status === "nope" && !nope.has(i)) { nope.add(i); n++; } });
+  return n;
+}
+
+/**
+ * What a "not for me" toggle does to my current row `e` (null when none): "nope" | "want" | "delete" | null (nothing).
+ * On: only with no row or a want row. Off: only when the row is still 'nope' — back to want if it was want, else deleted.
+ */
+export function nopeAction(e, on, prevStatus) {
+  const status = e ? e.status : null;
+  if (on) return !status || status === "want" ? "nope" : null;
+  if (status !== "nope") return null;
+  return prevStatus === "want" ? "want" : "delete";
+}
+
+/** Whether a "not for me" mark was refused: my row (after writeNope) is one that already says what I think (watching, seen, dropped). */
+export const nopeRefused = row => !!row && row.status !== "want" && row.status !== "nope";
+
+/** The write behind writeNope, without dropping the card cache. Returns {row: my row afterwards (null when none), prev: my status before}. */
+async function nopeWrite(s, on, prevStatus) {
+  const m = await mine();
+  if (!m) return { row: null, prev: null };
+  const e = m.get(s.tmdbId) || null;
+  const prev = e ? e.status : null;
+  const act = nopeAction(e, on, prevStatus);
+  if (!act) return { row: e, prev };
+  const { store } = await loadMods();
+  if (act === "delete") {
+    // Only a nope row is deleted, on the server too: a row changed meanwhile elsewhere is kept and returned.
+    if (!(await store.removeEntry(s.tmdbId, { onlyStatus: "nope" }))) return { row: (await store.myEntries()).get(s.tmdbId) || null, prev };
+    return { row: null, prev };
+  }
+  return { row: await store.saveEntry(s.tmdbId, { status: act, title: s.n, poster: s.poster ?? null }), prev };
+}
+
+/**
+ * "Not for me", when signed in. On: status 'nope', only when there is no row or the row is 'want'.
+ * Off: only when the row is still 'nope' — back to 'want' when prevStatus is 'want', otherwise deleted. Never touches other rows.
+ * Resolves to {row, prev}: my row afterwards (null when none) and my status before the write (null when no row),
+ * so a caller can undo a mark with writeNope(s, false, prev).
+ */
+export async function writeNope(s, on, prevStatus = null) {
+  const res = await nopeWrite(s, on, prevStatus);
+  cache.delete(s.tmdbId);
+  return res;
+}
+
+/** ctx: {s (series), seen (local mark), toast(msg), onSeen(on), onNope(on)} — renders into root (a fresh element on every dialog paint). */
 export async function mountCard(root, ctx) {
   const id = ctx.s.tmdbId;
   const paint = st => { if (root.isConnected) root.innerHTML = cardHTML(st); };
@@ -101,7 +162,9 @@ async function onClick(ev, root, ctx, paint) {
   if (!el || !root.contains(el)) return;
   const a = el.dataset.a, v = el.dataset.v, s = ctx.s, id = s.tmdbId;
   const st = cache.get(id);
-  if (!st || (a !== "cst" && a !== "crate")) return;
+  if (!st) return;
+  if (a === "cnope") return onNopeClick(root, ctx, paint, st);
+  if (a !== "cst" && a !== "crate") return;
   const prev = st.entry;
   let patch;
   if (a === "cst") { if (prev && prev.status === v) return; patch = { status: v }; }
@@ -114,6 +177,32 @@ async function onClick(ev, root, ctx, paint) {
     const row = await store.saveEntry(id, { title: s.n, poster: s.poster ?? null, ...patch });
     st.entry = row;
     if (ctx.onSeen) ctx.onSeen(DONE.has(row.status));
+    if (prev && prev.status === "nope" && ctx.onNope) ctx.onNope(false);
+  } catch (e) {
+    st.entry = prev;
+    paint(st);
+    if (ctx.toast) ctx.toast("השינוי לא נשמר");
+  }
+}
+
+/** "לא בשבילי" / "החזרה להמלצות". Undo restores 'want' when this card marked a want row; otherwise deletes. */
+async function onNopeClick(root, ctx, paint, st) {
+  const s = ctx.s, prev = st.entry;
+  const on = !(prev && prev.status === "nope");
+  if (on && prev && prev.status !== "want") return;
+  const back = on ? null : st.nopeFrom || null;
+  if (on) st.nopeFrom = prev ? prev.status : null;
+  st.entry = on ? { ...prev, status: "nope" } : back === "want" ? { ...prev, status: "want" } : null;
+  const focus = () => { const f = root.querySelector('[data-a="cnope"]'); if (f) f.focus(); };
+  paint(st);
+  focus();
+  try {
+    st.entry = (await nopeWrite(s, on, back)).row;
+    if (!on) st.nopeFrom = null;
+    paint(st);
+    focus();
+    // The local mark follows the row as written, not the intent: a refused or changed row clears it.
+    if (ctx.onNope) ctx.onNope(!!st.entry && st.entry.status === "nope");
   } catch (e) {
     st.entry = prev;
     paint(st);
