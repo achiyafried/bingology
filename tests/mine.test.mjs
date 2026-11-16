@@ -375,3 +375,18 @@ test("series card: 'not for me' link only with no row or a want row; nope reads 
   const st = [...h.matchAll(/data-a="cst" data-v="(\w+)" aria-pressed="(\w+)"/g)].map(m => m[1] + ":" + m[2]);
   assert.deepEqual(st, ["want:false", "watching:false", "seen:false", "dropped:false"]);
 });
+
+import { nopeAction } from "../site/views/card.js";
+
+test("nopeAction: off only touches a row that is still nope; never overwrites or recreates", () => {
+  for (const status of ["seen", "watching", "dropped", "want"]) {
+    for (const prev of ["want", null, "seen"]) assert.equal(nopeAction({ status, rating: 9, note: "x" }, false, prev), null, `${status}/${prev}`);
+  }
+  assert.equal(nopeAction(null, false, "want"), null, "a missing row is not recreated");
+  assert.equal(nopeAction(null, false, null), null);
+  assert.equal(nopeAction({ status: "nope" }, false, "want"), "want");
+  assert.equal(nopeAction({ status: "nope" }, false, null), "delete");
+  assert.equal(nopeAction(null, true), "nope");
+  assert.equal(nopeAction({ status: "want" }, true), "nope");
+  for (const status of ["seen", "watching", "dropped", "nope"]) assert.equal(nopeAction({ status }, true), null, status);
+});

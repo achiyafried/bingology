@@ -90,24 +90,32 @@ export async function syncNope(S, nope) {
   return n;
 }
 
-/** The write behind writeNope, without dropping the card cache. Returns my row afterwards (null when deleted). */
+/**
+ * What a "not for me" toggle does to my current row `e` (null when none): "nope" | "want" | "delete" | null (nothing).
+ * On: only with no row or a want row. Off: only when the row is still 'nope' — back to want if it was want, else deleted.
+ */
+export function nopeAction(e, on, prevStatus) {
+  const status = e ? e.status : null;
+  if (on) return !status || status === "want" ? "nope" : null;
+  if (status !== "nope") return null;
+  return prevStatus === "want" ? "want" : "delete";
+}
+
+/** The write behind writeNope, without dropping the card cache. Returns my row afterwards (null when there is none). */
 async function nopeWrite(s, on, prevStatus) {
   const m = await mine();
   if (!m) return null;
+  const e = m.get(s.tmdbId) || null;
+  const act = nopeAction(e, on, prevStatus);
+  if (!act) return e;
   const { store } = await loadMods();
-  const e = m.get(s.tmdbId);
-  if (on) {
-    if (e && e.status !== "want") return e;
-    return store.saveEntry(s.tmdbId, { status: "nope", title: s.n, poster: s.poster ?? null });
-  }
-  if (prevStatus === "want") return store.saveEntry(s.tmdbId, { status: "want", title: s.n, poster: s.poster ?? null });
-  if (e && e.status === "nope") await store.removeEntry(s.tmdbId);
-  return e && e.status !== "nope" ? e : null;
+  if (act === "delete") { await store.removeEntry(s.tmdbId); return null; }
+  return store.saveEntry(s.tmdbId, { status: act, title: s.n, poster: s.poster ?? null });
 }
 
 /**
  * "Not for me", when signed in. On: status 'nope', only when there is no row or the row is 'want'.
- * Off: back to 'want' when prevStatus is 'want'; otherwise the row is deleted (only if it is 'nope').
+ * Off: only when the row is still 'nope' — back to 'want' when prevStatus is 'want', otherwise deleted. Never touches other rows.
  */
 export async function writeNope(s, on, prevStatus = null) {
   const row = await nopeWrite(s, on, prevStatus);
