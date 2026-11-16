@@ -132,3 +132,33 @@ test("fromData falls back to the English overview, flagged for LTR display", () 
   assert.equal(en.l, "A show."); assert.equal(en.lEn, true);
   assert.equal(he.l, "שלי"); assert.equal(he.lEn, false);
 });
+
+test("quiz result: a \"not for me\" button beside \"already seen\", with an undo toast", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const t = /function ticketHTML\(r\) \{[\s\S]*?\n\}\n/.exec(src);
+  assert.ok(t, "found ticketHTML");
+  assert.match(t[0], /data-a="markseen" data-i="\$\{r\.i\}">כבר ראיתי<\/button><button class="btn ghost" data-a="nopepick" data-i="\$\{r\.i\}">לא בשבילי<\/button>/);
+  assert.match(src, /case "nopepick":[^\n]*setNope\(i, true, true\)[^\n]*showToast\("הוסר מההמלצות", null, /);
+  assert.match(src, /function showToast\(msg, url, undo\)/);
+  assert.match(src, /<button class="linkbtn" data-a="undo">ביטול<\/button>/);
+});
+
+test("rank() and \"if you liked\" skip \"not for me\" series", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const r = /function rank\(surprise\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.match(r, /if \(st\.seen\.has\(i\) \|\| st\.nope\.has\(i\) \|\| !pool\.has\(i\)\) return;/);
+  assert.match(src, /const similar = \(i, n\) => neighbours\(S, i, n \|\| 4, j => st\.nope\.has\(j\), GENRES\)/);
+});
+
+test("series card: signed-out \"not for me\" toggle; signed in goes through card.js onNope", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const d = /function seriesDlgHTML\(i\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.match(d, /hasSession\(\) \? "" : `<button class="btn primary" data-a="dseen">[^`]*\$\{dnopeBtn\(i\)\}`/, "signed out only, beside the seen toggle");
+  assert.match(src, /const dnopeBtn = i => `<button class="linkbtn" data-a="dnope">\$\{st\.nope\.has\(i\) \? "החזרה להמלצות" : "לא בשבילי"\}<\/button>`/);
+  assert.match(src, /case "dnope":/);
+  assert.match(src, /onNope: on => \{ setNope\(v\.v, on\)/);
+  assert.match(src, /st\.nope = loadNope\(store, S\)/);
+  assert.match(src, /m\.syncNope\(S, st\.nope\)/);
+  assert.match(src, /nope: \(\) => st\.nope/);
+  assert.match(src, /onNope: \(id, on\) =>/);
+});

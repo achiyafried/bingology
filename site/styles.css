@@ -193,6 +193,8 @@ dialog .nm { color: var(--ticket-accent); }
 .ticket .btn { padding: 11px 14px; font-size: 16px; }
 .ticket .linkbtn { color: var(--ticket-muted); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row2.r3 { display: flex; flex-wrap: wrap; }
+.row2.r3 .btn { flex: 1 1 auto; padding-inline: 10px; }
 .chosen { background: rgba(30, 142, 90, .14); color: #14673F; border-radius: 12px; padding: 10px 12px; font-weight: 700; text-align: center; }
 .alts h3 { font-size: 20px; margin: 26px 0 12px; }
 .alts .grid { grid-template-columns: repeat(3, 1fr); }
@@ -222,6 +224,7 @@ dialog .nm { color: var(--ticket-accent); }
 .trail .linkbtn { color: var(--ticket-muted); font-size: 15px; }
 .toast { position: fixed; inset-inline: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 2147483000; background: var(--ink); color: var(--bg); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); font-size: 15px; }
 .toast p { margin: 0 0 8px; }
+.toast .linkbtn { color: inherit; font-size: 15px; padding: 2px; }
 .toast input { width: 100%; font: inherit; font-size: 13px; direction: ltr; padding: 8px 10px; border-radius: 8px; border: 0; background: rgba(128, 128, 160, .3); color: inherit; }
 .trail a { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--ticket-accent); text-decoration: none; border: 2px solid rgba(59, 47, 208, .28); border-radius: 999px; padding: 8px 16px; }
 .trail a:hover { background: rgba(59, 47, 208, .08); }

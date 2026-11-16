@@ -2,6 +2,7 @@ import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS
 import { neighbours } from "./lib/similar.js";
 import { fromData, providerNames } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
+import { loadNope, saveNope } from "./lib/nope.js";
 import { esc, safeImg } from "./lib/esc.js";
 import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
 import { searchSeries } from "./lib/search.js";
@@ -109,7 +110,7 @@ const BS_NAME = { imdb: "IMDb", tmdb: "TMDB", rt: "רוטן טומייטו", nyt
 const STATUS = { airing: ["עדיין משודרת", "st-air"], ended: ["הסתיימה", "st-end"], canceled: ["בוטלה", "st-cxl"] };
 
 /* state */
-const st = { tab: "pick", screen: "intro", mode: "normal", step: 0, ans: blankAns(), seen: new Set(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
+const st = { tab: "pick", screen: "intro", mode: "normal", step: 0, ans: blankAns(), seen: new Set(), nope: new Set(), nopePrev: new Map(), ranked: [], idx: 0, chosen: false, surprise: false, seed: 1, hideSeen: false, dlgId: null, listSrc: "all", listPlat: null, actQuery: "", actMulti: false, actLimit: 60, dlgStack: [], dlgCur: null };
 function blankAns() { return { src: null, platforms: [], genres: [], eras: [], mood: null, weight: null, company: null, quality: null, len: null, seasons: null, lang: null, avoid: [], status: null, fame: null, mature: null, sort: null }; }
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -236,7 +237,7 @@ function rank(surprise) {
   const out = [];
   const pool = new Set(poolIds(a.src, a.platforms));
   S.forEach((s, i) => {
-    if (st.seen.has(i) || !pool.has(i)) return;
+    if (st.seen.has(i) || st.nope.has(i) || !pool.has(i)) return;
     if (surprise || !answered) { out.push({ i, sc: rnd(), pct: null, why: [{ ok: true, t: "נבחרה באקראי מתוך הרשימה" }] }); return; }
     const { norm, pct, items } = scoreSeries(s, a);
     const hits = items.filter(x => x.ok).sort((x, y) => y.w - x.w).slice(0, 5);
@@ -248,7 +249,7 @@ function rank(surprise) {
 }
 
 
-const similar = (i, n) => neighbours(S, i, n || 4, () => false, GENRES); // skip: st.nope arrives later
+const similar = (i, n) => neighbours(S, i, n || 4, j => st.nope.has(j), GENRES);
 function moreHTML(i) {
   const s = S[i];
   const rows = [];
@@ -347,7 +348,7 @@ function ticketHTML(r) {
     ? `<div class="stub"><div class="acts"><div class="chosen">נבחרה לערב הזה. צפייה נעימה!</div><button class="btn ghost" data-a="unchoose">בעצם, הראו עוד אחת</button></div></div>`
     : `<div class="stub"><div class="match">${r.pct === null ? `<strong aria-hidden="true">🎲</strong><span>הפתעה</span>` : `<strong>${r.pct}%</strong><span>התאמה</span>`}</div>
        <div class="acts"><button class="btn primary choose" data-a="choose"><span class="c-main">יאללה מתחילים</span><small class="c-sub">לתוכנית הצפייה ←</small></button>
-       <div class="row2"><button class="btn ghost" data-a="another">הציגו אחרת</button><button class="btn ghost" data-a="markseen" data-i="${r.i}">כבר ראיתי</button></div></div></div>`;
+       <div class="row2 r3"><button class="btn ghost" data-a="another">הציגו אחרת</button><button class="btn ghost" data-a="markseen" data-i="${r.i}">כבר ראיתי</button><button class="btn ghost" data-a="nopepick" data-i="${r.i}">לא בשבילי</button></div></div></div>`;
   return `<article class="ticket" aria-live="polite">
     <div class="t-top">${poster(r.i, "t-poster")}<div><h2 class="t-title"><bdi>${esc(s.n)}</bdi></h2>${metaHTML(s)}${tagsHTML(s)}</div></div>
     ${ratesHTML(s)}
@@ -521,8 +522,10 @@ function seriesDlgHTML(i) {
   ${praiseHTML(s)}
   ${trailerHTML(s)}
   ${hasSession() ? `<div id="acct"></div>` : ""}
-  <div class="d-acts">${hasSession() ? "" : `<button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>`}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
+  <div class="d-acts">${hasSession() ? "" : `<button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${dnopeBtn(i)}`}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
 }
+/** Signed-out "not for me" toggle on the series card (signed in, card.js shows its own). */
+const dnopeBtn = i => `<button class="linkbtn" data-a="dnope">${st.nope.has(i) ? "החזרה להמלצות" : "לא בשבילי"}</button>`;
 function actorLinksHTML(n) {
   const e = encodeURIComponent, he = /[\u0590-\u05FF]/.test(n);
   const link = (u, t) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${t}<span class="sr"> (נפתח בלשונית חדשה)</span></a>`;
@@ -542,8 +545,9 @@ function paintDlg(keep) {
   if (!d.open) d.showModal();
   const s = v.t === "s" && S[v.v], box = $("#acct");
   // views/card.js could not load at all: the local seen toggle instead.
-  if (s && box) acct(m => m.mountCard(box, { s, seen: st.seen.has(v.v), toast: showToast, onSeen: on => { setSeen(v.v, on); render(false); } }))
-    .then(() => { if (box.isConnected && !box.innerHTML) box.outerHTML = `<div class="d-acts"><button class="btn primary" data-a="dseen">${st.seen.has(v.v) ? "עוד לא ראיתי" : "סימון כנצפתה"}</button></div>`; });
+  if (s && box) acct(m => m.mountCard(box, { s, seen: st.seen.has(v.v), toast: showToast, onSeen: on => { setSeen(v.v, on); render(false); },
+    onNope: on => { setNope(v.v, on); render(false); } }))
+    .then(() => { if (box.isConnected && !box.innerHTML) box.outerHTML = `<div class="d-acts"><button class="btn primary" data-a="dseen">${st.seen.has(v.v) ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${dnopeBtn(v.v)}</div>`; });
 }
 function dlgGo(view) {
   const d = $("#dlg");
@@ -589,12 +593,14 @@ document.addEventListener("click", e => {
     case "backrec": st.chosen = false; st.screen = "result"; render(true); break;
     case "unchoose": st.chosen = false; st.idx++; render(true); break;
     case "markseen": setSeen(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
+    case "nopepick": { const at = st.ranked.findIndex(r => r.i === i), item = st.ranked[at]; setNope(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); showToast("הוסר מההמלצות", null, () => { setNope(i, false, true); if (item && st.screen === "result" && !st.ranked.some(r => r.i === i)) { st.ranked.splice(Math.min(at, st.ranked.length), 0, item); st.idx = Math.min(at, st.idx); st.chosen = false; } render(true); }); break; }
     case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;
     case "resetseen": st.seen.clear(); if (hasSession()) showToast("הסימונים בחשבון לא נמחקו. הסדרות שסימנתם יחזרו בכניסה הבאה."); else save(); rank(false); render(true); break;
     case "lsrc": st.listSrc = v; render(false); break;
     case "hideseen": st.hideSeen = !st.hideSeen; render(false); break;
     case "detail": openDlg(i); break;
     case "dseen": { const k = st.dlgId; setSeen(k, !st.seen.has(k), true); paintDlg(true); render(false); break; }
+    case "dnope": { const k = st.dlgId; setNope(k, !st.nope.has(k), true); paintDlg(true); render(false); break; }
     case "dback": dlgBack(); break;
     case "actor": dlgGo({ t: "a", v: +el.dataset.k }); break;
     case "actpick": { const a = actorIndex()[+el.dataset.k], un = a.ids.filter(x => !st.seen.has(x)); if (un.length) dlgGo({ t: "s", v: un[Math.floor(Math.random() * un.length)] }); break; }
@@ -624,13 +630,14 @@ function copyText(txt) {
   return Promise.resolve(legacyCopy(txt));
 }
 let toastTimer = null;
-function showToast(msg, url) {
+function showToast(msg, url, undo) {
   const old = document.getElementById("toast"); if (old) old.remove();
   const d = $("#dlg"), host = d && d.open ? d : document.body, el = document.createElement("div");
   el.id = "toast"; el.className = "toast"; el.setAttribute("role", "status");
-  el.innerHTML = `<p></p>${url ? '<input readonly aria-label="כתובת הקישור">' : ""}`;
+  el.innerHTML = `<p></p>${url ? '<input readonly aria-label="כתובת הקישור">' : ""}${undo ? '<button class="linkbtn" data-a="undo">ביטול</button>' : ""}`;
   el.querySelector("p").textContent = msg;
   if (url) { const inp = el.querySelector("input"); inp.value = url; inp.addEventListener("focus", () => inp.select()); }
+  if (undo) el.querySelector('[data-a="undo"]').addEventListener("click", () => { el.remove(); clearTimeout(toastTimer); undo(); }, { once: true });
   host.appendChild(el);
   clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 12000);
 }
@@ -666,7 +673,9 @@ function showMine() {
   st.join = null; // handed over once; mine.js keeps it until the join is done
   import("./views/mine.js")
     .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, join, localSeen: () => st.seen.size, toast: showToast, copy: copyText,
-      onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); } }))
+      onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); },
+      // mine.js writes the account itself; here only the local marks.
+      nope: () => st.nope, onNope: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setNope(k, on); } }))
     .catch(() => { if (root.isConnected) root.innerHTML = `<div class="empty"><p>${ACCOUNT_DOWN}</p><button class="btn primary" data-a="tab" data-v="mine">נסו שוב</button></div>`; });
 }
 /* "משחקים" tab: views/games.js loads only here. */
@@ -704,6 +713,21 @@ function setSeen(i, on, write) {
   if (on) st.seen.add(i); else st.seen.delete(i);
   save();
   if (write && hasSession()) acct(m => m.writeSeen(S[i], on));
+}
+/** "Not for me", the twin of setSeen: local mark always; when signed in and `write`, the account too.
+ * Undo restores the account status from before the mark (st.nopePrev; null = no row, so undo deletes).
+ * Account writes for one series run in order, so a quick undo never races the mark. */
+const nopeQ = new Map();
+function setNope(i, on, write) {
+  if (on) st.nope.add(i); else st.nope.delete(i);
+  saveNope(store, st.nope, S);
+  if (!write || !hasSession()) return;
+  let prev = null;
+  if (on) st.nopePrev.set(i, null);
+  else { prev = st.nopePrev.has(i) ? st.nopePrev.get(i) : null; st.nopePrev.delete(i); }
+  const q = (nopeQ.get(i) || Promise.resolve()).then(() => acct(m => m.writeNope(S[i], on, prev)));
+  nopeQ.set(i, q);
+  q.then(() => { if (nopeQ.get(i) === q) nopeQ.delete(i); });
 }
 /* "מה חדש": st.news = visible news.json items (newest first), null when missing/corrupt, undefined while loading.
    Strip and page treat null/undefined as [] — "עונות בדרך" comes from data.json and shows regardless. */
@@ -755,12 +779,14 @@ async function boot() {
     AVAIL = quizSteps(ALL_QS, S); QS = modeSteps(AVAIL, st.mode);
     st.updatedAt = json.updatedAt;
     st.seen = loadSeen(store, S);
+    st.nope = loadNope(store, S);
     ACT = null; PHOTO.clear();
     route();
     render(false);
     loadNews();
     // Signed in: after the first paint, add the account's seen marks (memory only, so "איפוס הנצפו" stays a local reset).
-    if (hasSession()) setTimeout(() => acct(m => m.syncSeen(S, st.seen)).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
+    // Then the account's "not for me" rows (memory only too).
+    if (hasSession()) setTimeout(() => acct(async m => (await m.syncSeen(S, st.seen)) + (await m.syncNope(S, st.nope))).then(n => { if (n && st.tab !== "mine") render(false); }), 0);
   } catch (e) {
     $("#app").innerHTML = `<div class="empty loading"><h2>לא הצלחנו לטעון את הסדרות</h2><p>בדקו את החיבור ונסו שוב.</p><button class="btn primary" data-a="retry">נסו שוב</button></div>`;
   }
