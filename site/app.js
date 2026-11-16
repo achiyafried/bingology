@@ -1,4 +1,5 @@
 import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries, popularity } from "./lib/score.js";
+import { neighbours } from "./lib/similar.js";
 import { fromData, providerNames } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
 import { esc, safeImg } from "./lib/esc.js";
@@ -247,18 +248,7 @@ function rank(surprise) {
 }
 
 
-const crew = i => S[i].creators.map(x => x.replace(/\s*\(.*\)/, "").replace(/^בהפקת /, "").trim()).filter(Boolean);
-function similar(i, n) {
-  const s = S[i], mine = crew(i);
-  return S.map((o, j) => {
-    if (j === i) return null;
-    const g = o.g.filter(x => s.g.includes(x)), m = o.mo.filter(x => s.mo.includes(x));
-    const shared = crew(j).filter(x => mine.includes(x));
-    const sc = (shared.length ? 4 : 0) + 2 * g.length + 1.2 * m.length + (o.h === s.h ? 1 : Math.abs(o.h - s.h) === 1 ? 0.3 : -0.5) + (o.lang === s.lang ? 0.3 : 0) + (o.providers.some(p => s.providers.includes(p)) ? 0.2 : 0) + (Math.abs(o.y - s.y) <= 5 ? 0.3 : 0) + o.imdb / 20;
-    const why = shared.length ? `מאותם יוצרים (${shared[0]})` : g.length ? "גם " + g.slice(0, 2).map(x => GENRES[x]).join(" ו") + (m.length ? ", באותו מצב רוח" : "") : "באותו מצב רוח";
-    return { j, sc, why };
-  }).filter(Boolean).sort((a, b) => b.sc - a.sc).slice(0, n || 4);
-}
+const similar = (i, n) => neighbours(S, i, n || 4, () => false, GENRES); // skip: st.nope arrives later
 function moreHTML(i) {
   const s = S[i];
   const rows = [];
