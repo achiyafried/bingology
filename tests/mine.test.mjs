@@ -390,3 +390,23 @@ test("nopeAction: off only touches a row that is still nope; never overwrites or
   assert.equal(nopeAction({ status: "want" }, true), "nope");
   for (const status of ["seen", "watching", "dropped", "nope"]) assert.equal(nopeAction({ status }, true), null, status);
 });
+
+import { nopeRefused } from "../site/views/card.js";
+import { readFileSync } from "node:fs";
+
+test("nopeRefused: a mark is refused only when my row is watching, seen or dropped", () => {
+  assert.equal(nopeRefused(null), false, "no row (signed out or nothing there)");
+  assert.equal(nopeRefused({ status: "nope" }), false);
+  assert.equal(nopeRefused({ status: "want" }), false);
+  for (const status of ["watching", "seen", "dropped"]) assert.equal(nopeRefused({ status, rating: 9 }), true, status);
+});
+
+test("writeNope resolves to {row, prev}: the row after the write and my status before it", () => {
+  const src = readFileSync("site/views/card.js", "utf8");
+  const fn = /async function nopeWrite\(s, on, prevStatus\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.match(fn, /const prev = e \? e\.status : null;/);
+  assert.match(fn, /return \{ row: e, prev \};/, "nothing to do: the row as it is");
+  assert.match(fn, /return \{ row: null, prev \};/, "deleted");
+  assert.match(fn, /return \{ row: await store\.saveEntry\(/);
+  assert.match(src, /st\.entry = \(await nopeWrite\(s, on, back\)\)\.row;/, "the card keeps using the row");
+});

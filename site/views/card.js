@@ -101,26 +101,32 @@ export function nopeAction(e, on, prevStatus) {
   return prevStatus === "want" ? "want" : "delete";
 }
 
-/** The write behind writeNope, without dropping the card cache. Returns my row afterwards (null when there is none). */
+/** Whether a "not for me" mark was refused: my row (after writeNope) is one that already says what I think (watching, seen, dropped). */
+export const nopeRefused = row => !!row && row.status !== "want" && row.status !== "nope";
+
+/** The write behind writeNope, without dropping the card cache. Returns {row: my row afterwards (null when none), prev: my status before}. */
 async function nopeWrite(s, on, prevStatus) {
   const m = await mine();
-  if (!m) return null;
+  if (!m) return { row: null, prev: null };
   const e = m.get(s.tmdbId) || null;
+  const prev = e ? e.status : null;
   const act = nopeAction(e, on, prevStatus);
-  if (!act) return e;
+  if (!act) return { row: e, prev };
   const { store } = await loadMods();
-  if (act === "delete") { await store.removeEntry(s.tmdbId); return null; }
-  return store.saveEntry(s.tmdbId, { status: act, title: s.n, poster: s.poster ?? null });
+  if (act === "delete") { await store.removeEntry(s.tmdbId); return { row: null, prev }; }
+  return { row: await store.saveEntry(s.tmdbId, { status: act, title: s.n, poster: s.poster ?? null }), prev };
 }
 
 /**
  * "Not for me", when signed in. On: status 'nope', only when there is no row or the row is 'want'.
  * Off: only when the row is still 'nope' — back to 'want' when prevStatus is 'want', otherwise deleted. Never touches other rows.
+ * Resolves to {row, prev}: my row afterwards (null when none) and my status before the write (null when no row),
+ * so a caller can undo a mark with writeNope(s, false, prev).
  */
 export async function writeNope(s, on, prevStatus = null) {
-  const row = await nopeWrite(s, on, prevStatus);
+  const res = await nopeWrite(s, on, prevStatus);
   cache.delete(s.tmdbId);
-  return row;
+  return res;
 }
 
 /** ctx: {s (series), seen (local mark), toast(msg), onSeen(on), onNope(on)} — renders into root (a fresh element on every dialog paint). */
@@ -181,7 +187,7 @@ async function onNopeClick(root, ctx, paint, st) {
   paint(st);
   focus();
   try {
-    st.entry = await nopeWrite(s, on, back);
+    st.entry = (await nopeWrite(s, on, back)).row;
     if (!on) st.nopeFrom = null;
     paint(st);
     focus();

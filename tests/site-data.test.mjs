@@ -138,7 +138,13 @@ test("quiz result: a \"not for me\" button beside \"already seen\", with an undo
   const t = /function ticketHTML\(r\) \{[\s\S]*?\n\}\n/.exec(src);
   assert.ok(t, "found ticketHTML");
   assert.match(t[0], /data-a="markseen" data-i="\$\{r\.i\}">כבר ראיתי<\/button><button class="btn ghost" data-a="nopepick" data-i="\$\{r\.i\}">לא בשבילי<\/button>/);
-  assert.match(src, /case "nopepick":[^\n]*setNope\(i, true, true\)[^\n]*showToast\("הוסר מההמלצות", null, /);
+  const pick = /case "nopepick": \{[\s\S]*?break;\n    \}/.exec(src)[0];
+  assert.match(pick, /setNope\(i, true, true, back\)[\s\S]*showToast\("הוסר מההמלצות", null, \(\) => \{ setNope\(i, false, true\); back\(true\); \}\)/);
+  const fn = /function setNope\(i, on, write, back\) \{[\s\S]*?\n\}\n/.exec(src)[0];
+  assert.match(fn, /st\.nopePrev\.set\(i, res\.prev\)/, "undo gets the status from before the mark");
+  assert.match(fn, /writeNope\(S\[i\], false, prev\)/);
+  assert.match(fn, /m\.nopeRefused\(res\.row\)[\s\S]*st\.nope\.delete\(i\); saveNope\(store, st\.nope, S\)[\s\S]*back\(false\)[\s\S]*showToast\(NOPE_REFUSED\)/, "a refused mark is taken back");
+  assert.match(src, /const NOPE_REFUSED = "הסדרה כבר ברשימות שלך, אפשר לשנות אותה בכרטיס הסדרה";/);
   assert.match(src, /function showToast\(msg, url, undo\)/);
   assert.match(src, /<button class="linkbtn" data-a="undo">ביטול<\/button>/);
 });

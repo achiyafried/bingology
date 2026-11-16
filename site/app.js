@@ -593,7 +593,14 @@ document.addEventListener("click", e => {
     case "backrec": st.chosen = false; st.screen = "result"; render(true); break;
     case "unchoose": st.chosen = false; st.idx++; render(true); break;
     case "markseen": setSeen(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); break;
-    case "nopepick": { const at = st.ranked.findIndex(r => r.i === i), item = st.ranked[at]; setNope(i, true, true); st.ranked = st.ranked.filter(r => r.i !== i); render(true); showToast("הוסר מההמלצות", null, () => { setNope(i, false, true); if (item && st.screen === "result" && !st.ranked.some(r => r.i === i)) { st.ranked.splice(Math.min(at, st.ranked.length), 0, item); st.idx = Math.min(at, st.idx); st.chosen = false; } render(true); }); break; }
+    case "nopepick": {
+      // back: put the series back where it was in the results (undo, or the account refused the mark).
+      const at = st.ranked.findIndex(r => r.i === i), item = st.ranked[at];
+      const back = top => { if (item && st.screen === "result" && !st.ranked.some(r => r.i === i)) { st.ranked.splice(Math.min(at, st.ranked.length), 0, item); st.idx = Math.min(at, st.idx); st.chosen = false; } render(top); };
+      setNope(i, true, true, back); st.ranked = st.ranked.filter(r => r.i !== i); render(true);
+      showToast("הוסר מההמלצות", null, () => { setNope(i, false, true); back(true); });
+      break;
+    }
     case "edit": st.tab = "pick"; st.screen = "q"; st.step = 0; render(true); break;
     case "resetseen": st.seen.clear(); if (hasSession()) showToast("הסימונים בחשבון לא נמחקו. הסדרות שסימנתם יחזרו בכניסה הבאה."); else save(); rank(false); render(true); break;
     case "lsrc": st.listSrc = v; render(false); break;
@@ -715,17 +722,26 @@ function setSeen(i, on, write) {
   if (write && hasSession()) acct(m => m.writeSeen(S[i], on));
 }
 /** "Not for me", the twin of setSeen: local mark always; when signed in and `write`, the account too.
- * Undo restores the account status from before the mark (st.nopePrev; null = no row, so undo deletes).
- * Account writes for one series run in order, so a quick undo never races the mark. */
+ * Undo restores the account status from before the mark (st.nopePrev, from writeNope's `prev`; null = no row, so undo deletes).
+ * A mark the account refuses (the series is already watching / seen / dropped there) is taken back locally,
+ * `back(top)` puts it back on screen, and a toast says why.
+ * Account writes for one series run in order, so a quick undo never races the mark (and reads the prev it stored). */
 const nopeQ = new Map();
-function setNope(i, on, write) {
+const NOPE_REFUSED = "הסדרה כבר ברשימות שלך, אפשר לשנות אותה בכרטיס הסדרה";
+function setNope(i, on, write, back) {
   if (on) st.nope.add(i); else st.nope.delete(i);
   saveNope(store, st.nope, S);
   if (!write || !hasSession()) return;
-  let prev = null;
-  if (on) st.nopePrev.set(i, null);
-  else { prev = st.nopePrev.has(i) ? st.nopePrev.get(i) : null; st.nopePrev.delete(i); }
-  const q = (nopeQ.get(i) || Promise.resolve()).then(() => acct(m => m.writeNope(S[i], on, prev)));
+  const step = async m => {
+    if (!on) { const prev = st.nopePrev.get(i) ?? null; st.nopePrev.delete(i); await m.writeNope(S[i], false, prev); return; }
+    const res = await m.writeNope(S[i], true);
+    if (!m.nopeRefused(res.row)) { st.nopePrev.set(i, res.prev); return; }
+    if (!st.nope.has(i)) return; // already undone
+    st.nope.delete(i); saveNope(store, st.nope, S);
+    if (back) back(false); else render(false);
+    showToast(NOPE_REFUSED);
+  };
+  const q = (nopeQ.get(i) || Promise.resolve()).then(() => acct(step));
   nopeQ.set(i, q);
   q.then(() => { if (nopeQ.get(i) === q) nopeQ.delete(i); });
 }
