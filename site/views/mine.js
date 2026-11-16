@@ -12,7 +12,7 @@ const PACE = 2;
 const FEED_N = 20;
 const QUICK_N = 8;
 const QUICK = [["seen", "ראיתי"], ["want", "רוצה"], ["watching", "רואה עכשיו"]];
-const BUSY = new Set(["seen", "watching", "dropped"]);
+const BUSY = new Set(["seen", "watching", "dropped", "nope"]);
 
 /* ───────── pure rendering ───────── */
 
@@ -381,7 +381,7 @@ async function load() {
     const same = V.user && V.user.id === user.id;
     const fallback = user.name || (user.email || "").split("@")[0];
     const { profile, created } = await auth.ensureProfile(fallback);
-    if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
+    if (CTX.storage) { try { await store.migrateLocal(CTX.storage, CTX.S); await store.migrateNope(CTX.storage, CTX.S); } catch (e) { /* retried on the next load */ } }
     const entries = await store.loadMine();
     if (my !== seq) return;
     // created stays true until the name is saved, so a remount keeps showing the name step.

@@ -61,3 +61,8 @@ test("pickPartner tie goes to first in map order", () => {
   const lists = L({ me: [[1, "want"]], x: [[1, "want"]], y: [[1, "want"]] });
   assert.equal(pickPartner("me", lists), "x");
 });
+
+test("fallback: a series someone in the circle marked nope is never picked", () => {
+  const lists = L({ a: [], b: [[136315, "nope"]], c: [[95396, "nope"]] });
+  assert.deepEqual(jointPick(S, scores, lists, ["a", "b"], new Set()), { tmdbId: 1, mode: "fallback" });
+});

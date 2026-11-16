@@ -214,6 +214,36 @@ describe("personal area RLS", { skip: !enabled && "SUPABASE_TEST_URL not set" },
     assert.equal((await rpc(null, "shared_profile", { slug: null })).json, null);
   });
 
+  test("entries: status nope is accepted; no event is written for it; moving nope→want writes 'wanted'", async () => {
+    const ev = async (id) => (await rest(B.token, "GET", `events?user_id=eq.${A.id}&tmdb_id=eq.${id}&select=kind`)).json;
+    const r = await rest(A.token, "POST", "entries", { user_id: A.id, tmdb_id: 7100, status: "nope", title: "Nah", poster: null });
+    assert.equal(r.status, 201, JSON.stringify(r.json));
+    assert.deepEqual(await ev(7100), [], "no event for a nope insert");
+    await rest(A.token, "PATCH", `entries?user_id=eq.${A.id}&tmdb_id=eq.7100`, { rating: 3 });
+    assert.deepEqual(await ev(7100), [], "no rated event while nope");
+    const want = await rest(A.token, "PATCH", `entries?user_id=eq.${A.id}&tmdb_id=eq.7100`, { status: "want", rating: null });
+    assert.equal(want.status, 200, JSON.stringify(want.json));
+    assert.deepEqual((await ev(7100)).map((e) => e.kind), ["wanted"]);
+    const back = await rest(A.token, "PATCH", `entries?user_id=eq.${A.id}&tmdb_id=eq.7100`, { status: "nope" });
+    assert.equal(back.status, 200, JSON.stringify(back.json));
+    assert.deepEqual((await ev(7100)).map((e) => e.kind), ["wanted"], "want→nope writes nothing");
+    await rest(A.token, "DELETE", `entries?user_id=eq.${A.id}&tmdb_id=eq.7100`);
+  });
+
+  test("shared_profile: nope rows are not returned", async () => {
+    const r = await rest(A.token, "POST", "entries", { user_id: A.id, tmdb_id: 7101, status: "nope", title: "Nah", poster: null });
+    assert.equal(r.status, 201, JSON.stringify(r.json));
+    const slug = randomBytes(9).toString("base64url");
+    await rest(A.token, "PATCH", `profiles?id=eq.${A.id}`, { share_slug: slug });
+    const shared = await rpc(null, "shared_profile", { slug });
+    assert.equal(shared.status, 200, JSON.stringify(shared.json));
+    const ids = shared.json.entries.map((e) => e.tmdb_id);
+    assert.ok(ids.includes(SHOW), "other rows still shared");
+    assert.ok(!ids.includes(7101), "nope row is private");
+    await rest(A.token, "PATCH", `profiles?id=eq.${A.id}`, { share_slug: null });
+    await rest(A.token, "DELETE", `entries?user_id=eq.${A.id}&tmdb_id=eq.7101`);
+  });
+
   test("leave_circle: a leaver's pick votes disappear for the old circle", async () => {
     assert.equal((await rest(A.token, "GET", `pick_votes?user_id=eq.${B.id}&select=vote`)).json.length, 1);
     assert.equal((await rpc(B.token, "leave_circle")).status, 204);

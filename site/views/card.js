@@ -33,7 +33,10 @@ export function cardHTML(state) {
     : "";
   const fr = (st.friends || []).map(chip).filter(Boolean);
   const friends = fr.length ? `<div class="lbl">במעגל</div><div class="friends">${fr.join("")}</div>` : "";
-  return `<div class="lbl" id="acct-sl">מה אני עם הסדרה</div><div class="status" role="group" aria-labelledby="acct-sl">${status}</div>${rate}${friends}`;
+  // "Not for me" (private 'nope'): offered only with no row or a want row; on a nope row it undoes.
+  const nope = !cur || cur === "want" || cur === "nope"
+    ? `<div class="acct-nope"><button class="linkbtn" data-a="cnope">${cur === "nope" ? "החזרה להמלצות" : "לא בשבילי"}</button></div>` : "";
+  return `<div class="lbl" id="acct-sl">מה אני עם הסדרה</div><div class="status" role="group" aria-labelledby="acct-sl">${status}</div>${rate}${nope}${friends}`;
 }
 
 /* ───────── account (browser only) ───────── */
@@ -78,7 +81,41 @@ export async function writeSeen(s, on) {
   cache.delete(s.tmdbId);
 }
 
-/** ctx: {s (series), seen (local mark), toast(msg), onSeen(on)} — renders into root (a fresh element on every dialog paint). */
+/** Adds the indexes of series marked "not for me" (status 'nope' on the account) to `nope`. Returns how many were added. */
+export async function syncNope(S, nope) {
+  const m = await mine();
+  if (!m) return 0;
+  let n = 0;
+  S.forEach((s, i) => { const e = m.get(s.tmdbId); if (e && e.status === "nope" && !nope.has(i)) { nope.add(i); n++; } });
+  return n;
+}
+
+/** The write behind writeNope, without dropping the card cache. Returns my row afterwards (null when deleted). */
+async function nopeWrite(s, on, prevStatus) {
+  const m = await mine();
+  if (!m) return null;
+  const { store } = await loadMods();
+  const e = m.get(s.tmdbId);
+  if (on) {
+    if (e && e.status !== "want") return e;
+    return store.saveEntry(s.tmdbId, { status: "nope", title: s.n, poster: s.poster ?? null });
+  }
+  if (prevStatus === "want") return store.saveEntry(s.tmdbId, { status: "want", title: s.n, poster: s.poster ?? null });
+  if (e && e.status === "nope") await store.removeEntry(s.tmdbId);
+  return e && e.status !== "nope" ? e : null;
+}
+
+/**
+ * "Not for me", when signed in. On: status 'nope', only when there is no row or the row is 'want'.
+ * Off: back to 'want' when prevStatus is 'want'; otherwise the row is deleted (only if it is 'nope').
+ */
+export async function writeNope(s, on, prevStatus = null) {
+  const row = await nopeWrite(s, on, prevStatus);
+  cache.delete(s.tmdbId);
+  return row;
+}
+
+/** ctx: {s (series), seen (local mark), toast(msg), onSeen(on), onNope(on)} — renders into root (a fresh element on every dialog paint). */
 export async function mountCard(root, ctx) {
   const id = ctx.s.tmdbId;
   const paint = st => { if (root.isConnected) root.innerHTML = cardHTML(st); };
@@ -101,7 +138,9 @@ async function onClick(ev, root, ctx, paint) {
   if (!el || !root.contains(el)) return;
   const a = el.dataset.a, v = el.dataset.v, s = ctx.s, id = s.tmdbId;
   const st = cache.get(id);
-  if (!st || (a !== "cst" && a !== "crate")) return;
+  if (!st) return;
+  if (a === "cnope") return onNopeClick(root, ctx, paint, st);
+  if (a !== "cst" && a !== "crate") return;
   const prev = st.entry;
   let patch;
   if (a === "cst") { if (prev && prev.status === v) return; patch = { status: v }; }
@@ -114,6 +153,31 @@ async function onClick(ev, root, ctx, paint) {
     const row = await store.saveEntry(id, { title: s.n, poster: s.poster ?? null, ...patch });
     st.entry = row;
     if (ctx.onSeen) ctx.onSeen(DONE.has(row.status));
+    if (prev && prev.status === "nope" && ctx.onNope) ctx.onNope(false);
+  } catch (e) {
+    st.entry = prev;
+    paint(st);
+    if (ctx.toast) ctx.toast("השינוי לא נשמר");
+  }
+}
+
+/** "לא בשבילי" / "החזרה להמלצות". Undo restores 'want' when this card marked a want row; otherwise deletes. */
+async function onNopeClick(root, ctx, paint, st) {
+  const s = ctx.s, prev = st.entry;
+  const on = !(prev && prev.status === "nope");
+  if (on && prev && prev.status !== "want") return;
+  const back = on ? null : st.nopeFrom || null;
+  if (on) st.nopeFrom = prev ? prev.status : null;
+  st.entry = on ? { ...prev, status: "nope" } : back === "want" ? { ...prev, status: "want" } : null;
+  const focus = () => { const f = root.querySelector('[data-a="cnope"]'); if (f) f.focus(); };
+  paint(st);
+  focus();
+  try {
+    st.entry = await nopeWrite(s, on, back);
+    if (!on) st.nopeFrom = null;
+    paint(st);
+    focus();
+    if (ctx.onNope) ctx.onNope(on);
   } catch (e) {
     st.entry = prev;
     paint(st);

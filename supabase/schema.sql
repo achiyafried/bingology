@@ -27,7 +27,7 @@ create index if not exists profiles_circle_id on public.profiles (circle_id);
 create table if not exists public.entries (
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
   tmdb_id     int  not null,
-  status      text not null check (status in ('want', 'watching', 'seen', 'dropped')),
+  status      text not null check (status in ('want', 'watching', 'seen', 'dropped', 'nope')),
   season      int,
   episode     int,
   rating      int  check (rating between 1 and 10),
@@ -65,6 +65,10 @@ alter table public.profiles drop constraint if exists profiles_name_len;
 alter table public.profiles add constraint profiles_name_len check (char_length(name) between 1 and 40);
 alter table public.entries drop constraint if exists entries_title_len;
 alter table public.entries add constraint entries_title_len check (char_length(title) <= 200);
+-- 'nope' ("not for me") is private: no event, not in shared_profile. Replaces the inline status check.
+alter table public.entries drop constraint if exists entries_status_check;
+alter table public.entries add constraint entries_status_check
+  check (status in ('want', 'watching', 'seen', 'dropped', 'nope'));
 alter table public.entries drop constraint if exists entries_poster_url;
 alter table public.entries add constraint entries_poster_url
   check (poster is null or poster ~ '^https://image\.tmdb\.org/t/p/[a-z0-9]+/[A-Za-z0-9_.-]+$');
@@ -108,6 +112,7 @@ create or replace trigger set_finished_on
 
 -- entries_to_events: the only writer of events. Status change and rating change create events;
 -- episode/season/note/title changes do not. Nothing is written while the user has no circle.
+-- 'nope' rows write nothing (private).
 -- An INSERT as 'seen' with no finished_on means "watched, date unknown" (e.g. device migration): no event.
 create or replace function public.entries_to_events() returns trigger
 language plpgsql security definer set search_path = '' as $$
@@ -116,6 +121,9 @@ declare
 begin
   select circle_id into c from public.profiles where id = new.user_id;
   if c is null then
+    return null;
+  end if;
+  if new.status = 'nope' then  -- private: no status event and no rating event
     return null;
   end if;
   if (tg_op = 'INSERT' and not (new.status = 'seen' and new.finished_on is null))
@@ -229,7 +237,7 @@ language sql stable security definer set search_path = '' as $$
              'rating', e.rating, 'note', e.note, 'finished_on', e.finished_on,
              'title', e.title, 'poster', e.poster, 'updated_at', e.updated_at)
            order by e.updated_at desc)
-    from public.entries e where e.user_id = p.id), '[]'::jsonb))
+    from public.entries e where e.user_id = p.id and e.status <> 'nope'), '[]'::jsonb))
   from public.profiles p
   where slug is not null and p.share_slug = slug
 $$;

@@ -363,3 +363,15 @@ test("profile card: invite button with a circle, without one and while loading; 
   assert.doesNotMatch(mineHTML({ user: null, entries: new Map(), S: S8 }), /invite-quick/);
   assert.doesNotMatch(sharedHTML({ name: "דנה", entries: [] }, S), /invite-quick/);
 });
+
+/* ───────── for-you: "not for me" on the card ───────── */
+
+test("series card: 'not for me' link only with no row or a want row; nope reads 'back to recommendations'", () => {
+  const link = /<button class="linkbtn" data-a="cnope">([^<]*)<\/button>/;
+  for (const entry of [null, { status: "want" }]) assert.equal(cardHTML({ entry, friends: [] }).match(link)?.[1], "לא בשבילי", JSON.stringify(entry));
+  for (const status of ["seen", "watching", "dropped"]) assert.doesNotMatch(cardHTML({ entry: { status }, friends: [] }), /data-a="cnope"/, status);
+  const h = cardHTML({ entry: { status: "nope" }, friends: [] });
+  assert.equal(h.match(link)?.[1], "החזרה להמלצות");
+  const st = [...h.matchAll(/data-a="cst" data-v="(\w+)" aria-pressed="(\w+)"/g)].map(m => m[1] + ":" + m[2]);
+  assert.deepEqual(st, ["want:false", "watching:false", "seen:false", "dropped:false"]);
+});
