@@ -8,7 +8,7 @@ const S = [
   { id: 1, tmdbId: 1438, n: "The Wire", poster: P("wire"), se: [13, 12, 12, 13, 10], e: 60, bs: 97, y: 2002 },
   { id: 2, tmdbId: 1396, n: "Breaking Bad", poster: P("bb"), se: [7, 13, 13, 13, 16], e: 62, bs: 95, y: 2008 },
   { id: 3, tmdbId: 4607, n: "Lost", poster: P("lost"), se: [25, 24, 23, 14, 17, 18], e: 121, bs: 70, y: 2004 },
-];
+].map(s => ({ creators: [], g: ["drama"], mo: [], h: 2, lang: "en", providers: [], imdb: 8, ...s })); // the fields "בשבילך" reads, as fromData gives them
 const user = { id: "u1", email: "a@example.com", name: "אחיה" };
 const profile = { id: "u1", name: "אחיה", circle_id: null, share_slug: null };
 const signedIn = (rows, extra = {}) => mineHTML({ user, profile, entries: new Map(rows.map(r => [r.tmdb_id, r])), S, ...extra });
@@ -149,7 +149,7 @@ test("date sort: newest finished first, unknown dates last", () => {
     { tmdb_id: 1438, status: "seen", rating: 10, finished_on: null, title: "The Wire", poster: null, updated_at: "2026-11-11T10:00:00Z" },
     { tmdb_id: 1396, status: "seen", rating: 9, finished_on: "2019-03-02", title: "Breaking Bad", poster: null },
     { tmdb_id: 4607, status: "seen", rating: 5, finished_on: "2023-01-01", title: "Lost", poster: null },
-  ], { seenSort: "date" });
+  ], { seenSort: "date" }).split('class="stats"')[1]; // the lists only, not the "בשבילך" reasons above them
   const order = ["Lost", "Breaking Bad", "The Wire"].map(t => h.indexOf(t));
   assert.ok(order[0] > -1 && order[0] < order[1] && order[1] < order[2], JSON.stringify(order));
 });
@@ -409,4 +409,97 @@ test("writeNope resolves to {row, prev}: the row after the write and my status b
   assert.match(fn, /return \{ row: null, prev \};/, "deleted");
   assert.match(fn, /return \{ row: await store\.saveEntry\(/);
   assert.match(src, /st\.entry = \(await nopeWrite\(s, on, back\)\)\.row;/, "the card keeps using the row");
+});
+
+/* ── "בשבילך" and "לא בשבילי" ── */
+import { fromData } from "../site/lib/data.js";
+// data-small.json has 3 series; five copies of each give forYou enough candidates.
+const BASE = fromData(JSON.parse(readFileSync("tests/fixtures/data-small.json", "utf8")));
+const FS = BASE.flatMap((s, k) => Array.from({ length: 5 }, (_, c) => ({ ...s, tmdbId: s.tmdbId * 10 + c, n: `${s.n} ${c}`, poster: P(`p${k}${c}`) })));
+const fyRow = (tmdb_id, status, rating = null, updated_at = "2026-01-01T00:00:00Z") => ({ tmdb_id, status, rating, updated_at });
+const fy = (rows, extra = {}) => mineHTML({ user, profile, entries: new Map(rows.map(r => [r.tmdb_id, r])), S: FS, ...extra });
+const fySection = h => (h.match(/<section class="foryou"[\s\S]*?<\/section>/) || [""])[0];
+const tid = (k, c) => BASE[k].tmdbId * 10 + c;
+
+test("for you, ready: heading, up to 8 items with want / not-for-me and the reason", () => {
+  const h = fy([fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 0), "seen", 7)]);
+  const sec = fySection(h);
+  assert.match(sec, /<h3[^>]*>בשבילך<\/h3>/);
+  const items = sec.match(/class="fyi"/g) || [];
+  assert.ok(items.length >= 1 && items.length <= 8, `items: ${items.length}`);
+  assert.equal((sec.match(/data-a="fy-want"/g) || []).length, items.length);
+  assert.equal((sec.match(/data-a="fy-nope"/g) || []).length, items.length);
+  assert.equal((sec.match(/כי אהבתם את <bdi>/g) || []).length, items.length);
+  assert.match(sec, /כי אהבתם את <bdi>Breaking Bad 0<\/bdi>/);
+  assert.match(sec, />\+ רוצה</);
+  assert.match(sec, />לא בשבילי</);
+  assert.match(sec, /data-a="detail" data-i="\d+"/);
+  assert.ok(h.indexOf("בשבילך") < h.indexOf('class="stats"'), "above the stats");
+});
+
+test("for you never offers a series with a row (seen included), or one marked seen on this device", () => {
+  const rows = [fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 0), "seen", 7), fyRow(tid(0, 1), "want"), fyRow(tid(0, 2), "seen", null)];
+  const local = new Set([FS.findIndex(s => s.tmdbId === tid(0, 3))]);
+  const sec = fySection(fy(rows, { localSeenSet: local }));
+  for (const x of [tid(0, 0), tid(0, 1), tid(0, 2), tid(0, 3)]) assert.doesNotMatch(sec, new RegExp(`data-id="${x}"`));
+  assert.match(sec, new RegExp(`data-a="fy-nope" data-id="${tid(0, 4)}"`));
+});
+
+test("for you, two ratings: 'one more' line and unrated posters that open the card", () => {
+  const rows = [fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 1), "seen", null)];
+  const sec = fySection(fy(rows));
+  assert.match(sec, /דרגו עוד סדרה אחת שראיתם ונתחיל להמליץ/);
+  const k = FS.findIndex(s => s.tmdbId === tid(2, 1));
+  assert.match(sec, new RegExp(`data-a="detail" data-i="${k}"`));
+  assert.doesNotMatch(sec, /fy-want|fy-nope/);
+  assert.doesNotMatch(sec, /בלשונית "הרשימה"/);
+});
+
+test("for you, nothing rated: 'N more' and a pointer to the list tab when there is nothing to rate", () => {
+  const sec = fySection(fy([]));
+  assert.match(sec, /דרגו עוד 3 סדרות שראיתם ונתחיל להמליץ/);
+  assert.match(sec, /סמנו סדרות שראיתם בלשונית "הרשימה"/);
+});
+
+test("for you, ready but nothing left: the 'went through everything' line", () => {
+  const rows = FS.map((s, k) => fyRow(s.tmdbId, k < 3 ? "seen" : "want", k === 0 ? 9 : k < 3 ? 6 : null));
+  const sec = fySection(fy(rows));
+  assert.match(sec, /עברתם על כל מה שמצאנו\. דרגו עוד סדרות שראיתם ונמצא עוד/);
+  assert.doesNotMatch(sec, /fy-want/);
+});
+
+test("a nope row stays out of the lists and the stats, and sits in the folded 'not for me' list", () => {
+  const rows = [fyRow(1396, "nope"), fyRow(1438, "want")];
+  const closed = signedIn(rows);
+  assert.match(closed, /data-a="nope-open"[^>]*>לא בשבילי \(1\)</);
+  assert.doesNotMatch(closed, /nope-undo/);
+  assert.match(closed, /<strong>1<\/strong><span>רוצה לראות/);
+  assert.match(closed, /<strong>0<\/strong><span>ראיתי/);
+  const open = signedIn(rows, { nopeOpen: true });
+  assert.match(open, /data-a="nope-open" aria-expanded="true"/);
+  assert.match(open, /data-a="nope-undo" data-id="1396"[^>]*>החזרה להמלצות</);
+  const want = open.match(/<h3>רוצה לראות<\/h3>[\s\S]*?<\/div><\/div>/)[0];
+  assert.doesNotMatch(want, /Breaking Bad/);
+  assert.doesNotMatch(open, /<h3>ראיתי<\/h3>/);
+});
+
+test("only nope rows: the empty lists line, and the fold still shows", () => {
+  const h = signedIn([fyRow(1396, "nope")]);
+  assert.match(h, /עוד אין כאן סדרות/);
+  assert.match(h, /לא בשבילי \(1\)/);
+});
+
+test("shared view never shows nope rows", () => {
+  const h = sharedHTML({ name: "אחיה", entries: [fyRow(1396, "nope"), fyRow(1438, "seen", 9)] }, S);
+  assert.doesNotMatch(h, /Breaking Bad/);
+  assert.doesNotMatch(h, /לא בשבילי|nope/);
+  assert.match(h, /The Wire/);
+});
+
+test("mine.js wires the for-you and not-for-me actions", () => {
+  const src = readFileSync("site/views/mine.js", "utf8");
+  assert.match(src, /case "fy-want":/);
+  assert.match(src, /case "fy-nope":[\s\S]*?status: "nope"[\s\S]*?CTX\.onNope\(id, true\)/);
+  assert.match(src, /case "nope-undo":[\s\S]*?store\.removeEntry\(id\)[\s\S]*?V\.entries\.delete\(id\)[\s\S]*?CTX\.onNope\(id, false\)/);
+  assert.match(readFileSync("site/app.js", "utf8"), /seenSet: \(\) => st\.seen/);
 });

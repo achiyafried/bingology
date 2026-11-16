@@ -353,6 +353,17 @@ img.poster { object-fit: cover; }
 .mine .bar { display: block; height: 6px; background: var(--surface2); border-radius: 99px; margin-top: 6px; overflow: hidden; }
 .mine .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
 .mine .plus { border: 2px solid var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }
+/* "בשבילך": a horizontal row of .sim-style tiles; the two buttons stack under each poster so they stay tappable at 375px. */
+.mine .foryou .fine { color: var(--muted); font-size: 14px; margin: 0 4px 10px; }
+.mine .fy { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 2px 2px 8px; margin: 0 -2px; }
+.mine .fyi { flex: 0 0 clamp(132px, 38vw, 160px); display: flex; flex-direction: column; scroll-snap-align: start; }
+.mine .fyi .tile { width: 100%; color: inherit; }
+.mine .fyi .noimg { display: block; width: 100%; aspect-ratio: 240 / 216; border-radius: 12px; background: var(--surface2); }
+.mine .fyi .cap { color: var(--ink); font-size: 14px; overflow-wrap: anywhere; }
+.mine .fyb { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 8px; }
+.mine .fyb .plus { width: 100%; min-height: 36px; color: inherit; }
+.mine .fyb .plus[data-a="fy-want"] { border-color: var(--accent); }
+.mine .nope-sh { justify-content: flex-start; }
 .mine .score { font-family: "Secular One", "Assistant", sans-serif; font-size: 26px; min-width: 34px; text-align: center; flex: none; }
 .mine .score.none { color: var(--muted); }
 .mine .bscore { background: var(--surface2); border-radius: 999px; padding: 2px 10px; font-weight: 700; font-size: 14px; flex: none; white-space: nowrap; }

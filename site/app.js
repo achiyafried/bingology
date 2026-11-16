@@ -679,7 +679,7 @@ function showMine() {
   const root = $("#mine"), join = st.join;
   st.join = null; // handed over once; mine.js keeps it until the join is done
   import("./views/mine.js")
-    .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, join, localSeen: () => st.seen.size, toast: showToast, copy: copyText,
+    .then(m => m.mountMine(root, { S, storage: store, pace: st.pace || 2, share: st.share, join, localSeen: () => st.seen.size, seenSet: () => st.seen, toast: showToast, copy: copyText,
       onSeen: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setSeen(k, on); },
       // mine.js writes the account itself; here only the local marks.
       nope: () => st.nope, onNope: (id, on) => { const k = S.findIndex(x => x.tmdbId === id); if (k >= 0) setNope(k, on); } }))
