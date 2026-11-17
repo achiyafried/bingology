@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
+import { videoVerdicts } from "./lib/youtube.mjs";
 import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData, finishText } from "./lib/merge.mjs";
@@ -31,10 +32,30 @@ async function fetchLive(id, fetchImpl, map, warnings, old, ctx) {
   const he = await tmdbGet(`/tv/${id}`, { language: "he-IL" }, fetchImpl).catch(() => null);
   const { live, warnings: w } = transformTv(tv, { map, he });
   w.forEach(x => warnings.add(x));
+  ctx.cands?.set(id, live.trailers ?? []);
   if (fresh) return { tv, live, imdb: old.imdb ?? null, imdbAt: old.imdbAt };
   const r = useOmdb ? await omdbRating(live.imdbId, fetchImpl) : undefined;
   if (r === undefined) return { tv, live, imdb: null, imdbAt: old?.imdbAt ?? null }; // keep the old score, retry later
   return { tv, live, imdb: r, imdbAt: ctx.now };
+}
+
+/**
+ * Swaps each fetched series' trailer for its first candidate that plays, embedded, in Israel (none → null).
+ * Best effort: without an answer from YouTube, TMDB's first pick stays.
+ */
+async function pickTrailers(series, cands, { key, fetchImpl, warnings }) {
+  let verdicts;
+  try { verdicts = await videoVerdicts([...cands.values()].flat(), { key, region: "IL", fetchImpl }); }
+  catch (err) { warnings.add(`YouTube check failed, keeping TMDB's first trailer: ${err.message}`); return; }
+  let swapped = 0, dropped = 0;
+  for (const s of series) {
+    const list = cands.get(s.tmdbId);
+    if (!list?.length) continue;
+    const pick = list.find(k => verdicts.get(k)) ?? null;
+    if (pick !== list[0]) pick ? swapped++ : dropped++;
+    s.trailer = pick;
+  }
+  if (swapped || dropped) warnings.add(`trailers: ${swapped} swapped for one that plays in Israel, ${dropped} with none that does`);
 }
 
 /** Candidate ids for the wide pool, best first. Throws if discovery itself fails. */
@@ -53,8 +74,8 @@ async function discoverPool(curatedIds, size, fetchImpl) {
   return ranked;
 }
 
-export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity, blurbs = readJson("./pool-blurbs.json") }) {
-  const ctx = { now, budget: omdbBudget };
+export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity, blurbs = readJson("./pool-blurbs.json"), youtubeKey = null }) {
+  const ctx = { now, budget: omdbBudget, cands: new Map() };
   const list = only ? series.slice(0, only) : series;
   const prevById = new Map((prev?.series ?? []).map(s => [s.tmdbId, s]));
   const warnings = new Set();
@@ -117,6 +138,7 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
   }
 
   const data = { updatedAt: now, series: curated.concat(poolSeries).map(s => finishText(s, blurbs)) };
+  if (youtubeKey && !offline && ctx.cands.size) await pickTrailers(data.series, ctx.cands, { key: youtubeKey, fetchImpl, warnings });
   const abort = !offline && (unreachable || shouldAbort(failed.length, list.length)) || errors.length > 0;
   return { data, failed, warnings: [...warnings], errors, abort, unreachable };
 }
@@ -137,7 +159,7 @@ async function main() {
   const prev = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : null;
 
   const now = new Date().toISOString(); // one stamp: news diffs rows whose fetchedAt === this exact value
-  const r = await run({ series, prev, now, only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET });
+  const r = await run({ series, prev, now, only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET, youtubeKey: process.env.YOUTUBE_KEY || null });
   r.warnings.forEach(w => console.warn("warn:", w));
   r.errors.forEach(e => console.error("invalid:", e));
   console.log(`${r.data.series.length} series, ${r.failed.length} failed${r.unreachable ? ", TMDB unreachable" : ""}`);
