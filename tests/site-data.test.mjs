@@ -96,7 +96,7 @@ test("seen step: names under the posters, and one floating button that skips or 
   assert.equal((step.match(/data-a="next"/g) || []).length, 1, "a single skip/continue button");
   const grid = step.indexOf('<div class="grid">'), cta = step.indexOf('<div class="sticky-cta">');
   assert.ok(grid > 0 && cta > grid, "the button sits after the grid, in the floating bar");
-  assert.match(step, /דילוג, הראו לי את ההמלצה/, "says skip while nothing is marked");
+  assert.match(step, /לדלג ולעבור ישר להמלצה/, "says skip while nothing is marked");
   const css = readFileSync("site/styles.css", "utf8");
   assert.match(css, /\.sticky-cta \{[^}]*position: sticky;[^}]*bottom: 0/, "the bar floats at the bottom");
 });
