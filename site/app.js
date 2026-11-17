@@ -15,6 +15,7 @@ const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms, modeSteps } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
+import { pickMarquee } from "./lib/marquee.js";
 import { trailBtnHTML, tilePlayHTML, playerHTML, searchLinkHTML, unavailableHTML, ytErrorCode, YT_ORIGINS } from "./lib/trailer.js";
 
 let S = [];
@@ -318,9 +319,8 @@ function header() {
 }
 
 function introHTML() {
-  const fan = [[59, -2, "-9deg"], [4, -1, "-4deg"], [40, 0, "0deg"], [2, 1, "4deg"], [34, 2, "9deg"]];
   return `<section class="hero">
-    <div class="fan" aria-hidden="true">${fan.map(f => `<div class="fcard" style="--k:${f[1]};--r:${f[2]}">${poster(f[0], "")}</div>`).join("")}</div>
+    ${marqueeHTML()}
     <h1 data-focus tabindex="-1">לא מצליחים להחליט?</h1>
     <p>כמה שאלות סגורות והבחירה האולטימטיבית שלכם מתוך ${S.length} סדרות מובילות. כמה זמן יש לכם?</p>
     <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "quick" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
@@ -328,6 +328,14 @@ function introHTML() {
     ${gamesCardHTML()}
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
+}
+/** The moving poster strip: one pick per page load; the set is drawn twice so the loop has no seam. */
+let MARQ = null;
+function marqueeHTML() {
+  if (!MARQ) MARQ = pickMarquee(S, 16);
+  if (!MARQ.length) return "";
+  const tile = (i, copy) => `<button class="mq" data-a="detail" data-i="${i}"${copy ? ' tabindex="-1" aria-hidden="true"' : ` aria-label="${esc(S[i].n)}"`}><img src="${safeImg(S[i].poster)}" alt="" decoding="async"></button>`; // not lazy: the strip moves them into view
+  return `<div class="marq" role="region" aria-label="סדרות מומלצות"><div class="marq-track">${MARQ.map(i => tile(i, false)).join("")}${MARQ.map(i => tile(i, true)).join("")}</div></div>`;
 }
 /** Home card: today's games (Israel date, recomputed on every render), progress and streak. */
 function gamesCardHTML() {

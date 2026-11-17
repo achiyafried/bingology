@@ -116,9 +116,6 @@ dialog .nm { color: var(--ticket-accent); }
 
 /* intro */
 .hero { text-align: center; padding-top: 6px; }
-.fan { --w: min(116px, 26vw); position: relative; height: calc(var(--w) * 0.9 + 28px); margin: 6px auto 26px; }
-.fan .fcard { position: absolute; top: 12px; left: 50%; width: var(--w); transform: translateX(calc(-50% + var(--k) * var(--w) * 0.62)) rotate(var(--r)); }
-.fan .fcard .poster { border: 3px solid var(--ticket); box-shadow: var(--shadow); }
 .hero h1 { font-size: clamp(40px, 11vw, 56px); margin-bottom: 12px; }
 .hero p { color: var(--muted); max-width: 34ch; margin: 0 auto 26px; }
 .hero .stack { display: flex; flex-direction: column; gap: 10px; align-items: center; }
@@ -216,6 +213,15 @@ dialog .nm { color: var(--ticket-accent); }
 .t-poster.ph { width: 150px; font-size: 17px; }
 .tile.seen .ph { opacity: .3; filter: grayscale(.9); }
 .poster { display: block; width: 100%; height: auto; aspect-ratio: 240 / 216; border-radius: 12px; }
+/* Home: a slow, endless strip of whole posters. The track holds the set twice; moving it by half loops seamlessly. */
+.marq { overflow: hidden; margin: 6px -16px 24px; padding: 10px 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marq-track { display: flex; gap: 12px; width: max-content; animation: marq 70s linear infinite; }
+.marq:hover .marq-track, .marq:focus-within .marq-track, .marq:active .marq-track { animation-play-state: paused; }
+@keyframes marq { to { transform: translateX(calc(50% + 6px)); } }
+.mq { flex: none; width: clamp(92px, 24vw, 128px); padding: 0; border: 0; background: none; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: transform .2s; }
+.mq img { display: block; width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.mq:hover, .mq:focus-visible { transform: translateY(-4px); }
+@media (prefers-reduced-motion: reduce) { .marq { overflow-x: auto; } .marq-track { animation: none; } }
 .t-poster.poster { width: 150px; }
 .tile.seen .poster { opacity: .3; filter: grayscale(.9); }
 .tile .cap { display: block; font-size: 13px; font-weight: 600; padding-top: 5px; color: var(--muted); }
