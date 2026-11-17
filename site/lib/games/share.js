@@ -10,3 +10,12 @@ export function shareText({ date, streak, results }) {
   const line = GAMES.filter(g => byId.has(g.id)).map(g => `${g.icon} ${byId.get(g.id)}`).join("  ");
   return [head, line, URL].filter(Boolean).join("\n");
 }
+
+/** What a friend fills in to send a riddle (no contact details here: they know who to send it to). */
+export const RIDDLE_TEMPLATE = [
+  "חידה ל-Bingology 🧩",
+  "החידה:",
+  "התשובה (שם הסדרה בעברית):",
+  "הסבר (לא חובה):",
+  "השם שיופיע ליד החידה (לא חובה):",
+].join("\n");

@@ -143,3 +143,12 @@ test("a riddle whose series left the site is still assigned", () => {
   const { assigned } = assignRiddles({ riddles: [{ ...R(1), tmdbId: 99 }], dir, today: TODAY, log: silent() });
   assert.equal(assigned[TODAY], "99:אבג");
 });
+
+test("credit: optional, short text, carried into the day's puzzle", () => {
+  assert.equal(toPuzzle({ clue: "c", answer: "אב", tmdbId: 1, credit: "דני" }).credit, "דני");
+  assert.equal("credit" in toPuzzle({ clue: "c", answer: "אב", tmdbId: 1 }), false);
+  assert.deepEqual(validateRiddles([{ clue: "c", answer: "אב", tmdbId: 1, credit: "דני" }]), []);
+  assert.equal(validateRiddles([{ clue: "c", answer: "אב", tmdbId: 1, credit: "" }]).length, 1);
+  assert.equal(validateRiddles([{ clue: "c", answer: "אב", tmdbId: 1, credit: "x".repeat(31) }]).length, 1);
+  assert.equal(validateRiddles([{ clue: "c", answer: "אב", tmdbId: 1, credit: 5 }]).length, 1);
+});

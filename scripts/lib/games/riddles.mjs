@@ -14,6 +14,7 @@ export const riddleKey = r => `${r.tmdbId}:${r.answer}`;
 export function toPuzzle(r) {
   const p = { clue: r.clue, answer: r.answer, words: r.answer.split(" ").map(w => letters(w).length), tmdbId: r.tmdbId };
   if (r.explain) p.explain = r.explain;
+  if (r.credit) p.credit = r.credit; // the friend who sent it ("חידה של …")
   return p;
 }
 
@@ -27,6 +28,7 @@ function rowErrors(r, i) {
   if (typeof r.answer !== "string" || !ANSWER_RE.test(r.answer)) errs.push(`row ${i}: answer must be Hebrew letters with single spaces between words`);
   if (!Number.isInteger(r.tmdbId) || r.tmdbId <= 0) errs.push(`row ${i}: tmdbId must be a TMDB series number`);
   if (r.explain !== undefined && typeof r.explain !== "string") errs.push(`row ${i}: explain must be text`);
+  if (r.credit !== undefined && (typeof r.credit !== "string" || !r.credit.trim() || r.credit.length > 30)) errs.push(`row ${i}: credit must be a name of up to 30 characters`);
   if (r.date !== undefined && (typeof r.date !== "string" || !validDate(r.date))) errs.push(`row ${i}: date must be YYYY-MM-DD`);
   return errs;
 }

@@ -5,7 +5,7 @@ import { searchSeries } from "../lib/search.js";
 import { hebKey, latKey, keyMatch } from "../lib/phonetic.js";
 import { GAMES, loadGamesDay, addDays } from "../lib/games/day.js";
 import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as streakOf, prune, saveTotal } from "../lib/games/store.js";
-import { shareText } from "../lib/games/share.js";
+import { shareText, RIDDLE_TEMPLATE } from "../lib/games/share.js";
 import * as guess from "../lib/games/guess.js";
 import * as odd from "../lib/games/odd.js";
 import * as groups from "../lib/games/groups.js";
@@ -69,7 +69,8 @@ export function hubHTML(day, states, streak, opts = {}) {
     return `<button type="button" class="g-card${s && s.done ? " done" : s ? " on" : ""}" data-g="${g.id}"><span class="g-ic" aria-hidden="true">${g.icon}</span><span class="g-nm">${g.name}</span><span class="g-st">${st}</span></button>`;
   }).join("");
   const friend = opts.canGuest ? `<div class="g-friend"><button type="button" class="btn ghost" data-gguest>👥 תנו לחבר לשחק</button><small>סיבוב נקי, בלי לגעת בתוצאות שלך</small></div>` : "";
-  return `${head}${allDone(day, states) ? summaryHTML(day, states, streak, opts) : ""}<div class="g-cards">${cards}</div>${friend}`;
+  const send = opts.guest || opts.practice ? "" : `<div class="g-send"><button type="button" class="linkbtn" data-gsendriddle>🧩 יש לכם חידה? שלחו לנו</button></div>`;
+  return `${head}${allDone(day, states) ? summaryHTML(day, states, streak, opts) : ""}<div class="g-cards">${cards}</div>${friend}${send}`;
 }
 
 export function summaryHTML(day, states, streak, opts = {}) {
@@ -170,7 +171,7 @@ export function blurHTML(p, s, x = {}) {
 
 /** The riddle: the clue, one box per letter grouped by word, and a hidden input that brings up the keyboard. */
 export function riddleHTML(p, s, x = {}) {
-  const clue = `<p class="g-clue">${esc(p.clue)}</p>`;
+  const clue = `<p class="g-clue">${esc(p.clue)}</p>${p.credit ? `<p class="g-credit">חידה של <bdi>${esc(p.credit)}</bdi></p>` : ""}`;
   if (!s.done) return `${clue}<div class="g-rplay">${riddlePlayHTML(p, s, x)}</div>
   <input id="gr" class="g-hidden" type="text" value="${SENTINEL}" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="rtl" lang="he" aria-label="הקלדת אותיות">`;
   const r = riddle.result(s, p), explain = p.explain ? `<p class="g-explain">${esc(p.explain)}</p>` : "";
@@ -334,6 +335,15 @@ async function share() {
   C.toast("אי אפשר להעתיק מהמסך הזה. סמנו את התוצאות והעתיקו אותן ידנית.");
 }
 
+/** The riddle template, to fill in and send to whoever runs the site (share sheet, else the clipboard). */
+async function sendRiddle() {
+  if (navigator.share) {
+    try { await navigator.share({ text: RIDDLE_TEMPLATE }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  C.toast(await C.copy(RIDDLE_TEMPLATE) ? "הטמפלט הועתק. מלאו אותו ושלחו לנו בוואטסאפ או במייל." : "אי אפשר להעתיק מהמסך הזה. נסו מהטלפון.");
+}
+
 function onClick(e) {
   const t = e.target.closest && e.target.closest("button");
   if (!t || !R.contains(t) || t.disabled) return;
@@ -342,6 +352,7 @@ function onClick(e) {
   else if ("ghub" in d) { ses.screen = "hub"; ses.bonus = null; ses.ui = {}; paint(true); }
   else if ("gguest" in d) { ses.guest = true; ses.states = {}; ses.screen = "hub"; ses.ui = {}; paint(true); }
   else if ("gguestend" in d) { endGuest(); paint(true); }
+  else if ("gsendriddle" in d) sendRiddle();
   else if ("gretry" in d) load();
   else if ("gpractice" in d) startPractice();
   else if ("gshare" in d) share();
