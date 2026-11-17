@@ -67,3 +67,10 @@ test("prefs: only allowed values, else the fallback", () => {
   assert.equal(loadPref(broken, "k", ["a"], "a"), "a");
   assert.doesNotThrow(() => savePref(broken, "k", "a"));
 });
+
+test("groups in release order: one heading per phase even when release dates interleave phases", () => {
+  const ff = it("movie:10", 10, "2025-07-23", "x", 6), eyes = it("tv:11:s1", 0, "2025-08-01", "x", 5), thb = it("movie:12", 9, "2025-04-30", "x", 5);
+  const g = groups([ff, eyes, thb], "release");
+  assert.deepEqual(g.map(x => x.title), ["שלב 5", "שלב 6"]);
+  assert.deepEqual(g[0].items.map(x => x.id), ["movie:12", "tv:11:s1"], "by date inside the phase");
+});

@@ -17,10 +17,12 @@ export function ordered(items, order) {
   return [...items].sort(by);
 }
 
-/** Headings: in story order, runs of the same era; in release order, phases. Items come in that order. */
+/** Headings: in story order, runs of the same era; in release order, one per phase (phases in order, items by date). */
 export function groups(items, order) {
   const out = [];
-  for (const x of ordered(items, order)) {
+  const list = ordered(items, order);
+  if (order === "release") list.sort((a, b) => a.phase - b.phase); // stable: dates stay in order inside a phase
+  for (const x of list) {
     const title = order === "release" ? `שלב ${x.phase}` : x.era;
     const last = out[out.length - 1];
     if (last && last.title === title) last.items.push(x); else out.push({ title, items: [x] });
