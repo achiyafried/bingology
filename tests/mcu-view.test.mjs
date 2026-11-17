@@ -65,8 +65,11 @@ test("cardHTML: note only when present, trailer button only with a trailer, else
   assert.match(b, /dir="ltr" lang="en">EN</, "English overview shown left-to-right");
 });
 
-test("Bingology's home links to the MCU zone", () => {
-  assert.match(readFileSync("site/app.js", "utf8"), /href="mcu\.html"/);
+test("Bingology's main menu has a Marvel tab, and the home card is gone", () => {
+  const src = readFileSync("site/app.js", "utf8");
+  const header = /function header\(\) \{[\s\S]*?\n\}/.exec(src)[0];
+  assert.match(header, /<a class="tab mcu" href="mcu\.html">/);
+  assert.doesNotMatch(src, /class="gcard mcu"/);
 });
 
 import { cardSeenHTML } from "../site/mcu/view.js";
