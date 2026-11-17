@@ -8958,5 +8958,35 @@
       "cast": [],
       "providers": []
     }
+  },
+  {
+    "tmdbId": 549,
+    "name": "Law & Order",
+    "lists": [
+      "mine"
+    ],
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "moods": [
+      "tense",
+      "think"
+    ],
+    "weight": 2,
+    "solo": false,
+    "blurb": "בלשי משטרת ניו יורק חוקרים פשע, והתובעים מביאים אותו לבית המשפט. הקלאסיקה שהתחילה את הז׳אנר.",
+    "rt": null,
+    "fallback": {
+      "year": 1990,
+      "seasons": 26,
+      "episodes": 552,
+      "runtime": 42,
+      "imdb": null,
+      "lang": "en",
+      "creators": [],
+      "cast": [],
+      "providers": []
+    }
   }
 ]
