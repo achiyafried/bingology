@@ -340,10 +340,10 @@ function qHTML() {
   const head = `<div class="qhead"><button class="linkbtn" data-a="back">${step === 0 ? "לדף הראשי" : "חזרה"}</button>${bulbs(step)}<span class="count">${step < QS.length ? `${step + 1} מתוך ${QS.length}` : step === QS.length ? "כמעט שם" : "אחרון"}</span></div>`;
   if (step === QS.length) {
     // A long grid: one floating button skips or continues, so it never scrolls out of reach.
-    const ids = poolIds(st.ans.src, st.ans.platforms), marked = ids.filter(i => st.seen.has(i)).length;
+    const ids = poolIds(st.ans.src, st.ans.platforms);
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
     <div class="grid">${ids.map(i => tile(i, "toggle", true)).join("")}</div>
-    <div class="sticky-cta"><button class="btn primary block" data-a="next">${marked ? `הראו לי את ההמלצה (סימנתם ${marked})` : "לדלג ולעבור ישר להמלצה"}</button></div></div>`;
+    <div class="sticky-cta"><button class="btn primary block" data-a="next">לדלג ולעבור ישר להמלצה</button></div></div>`;
   }
   if (step === QS.length + 1) {
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">שנייה לפני התוצאות</h2><p class="sub">לפי מה לסדר את ההמלצות?</p>
