@@ -39,11 +39,17 @@ site/                  ← האתר, מתפרסם ב-GitHub Pages
 1. נרשמים ב-[omdbapi.com/apikey.aspx](https://www.omdbapi.com/apikey.aspx) — המסלול החינמי (1,000 בקשות ביום) מספיק.
 2. מאשרים את המייל ומעתיקים את המפתח.
 
-### 3. GitHub
+### 3. מפתח YouTube (בדיקת טריילרים)
+1. ב-[Google Cloud Console](https://console.cloud.google.com/): **APIs & Services → Library → YouTube Data API v3 → Enable**.
+2. [Credentials](https://console.cloud.google.com/apis/credentials) → **Create credentials → API key**. מגבילים אותו ל-YouTube Data API v3.
+3. כל לילה העדכון בודק את הטריילרים המועמדים של כל סדרה ובוחר את הראשון שאפשר לצפות בו בישראל (כ-110 יחידות מתוך 10,000 החינמיות ביום). בלי המפתח העדכון עובד, רק בלי הבדיקה. מקומית: `sh scripts/set-youtube-key.sh`.
+
+### 4. GitHub
 1. יוצרים מאגר ציבורי בשם `bingology` ומעלים אליו את הקוד.
-2. **Settings → Secrets and variables → Actions → New repository secret** — מוסיפים שניים:
+2. **Settings → Secrets and variables → Actions → New repository secret** — מוסיפים את הסודות:
    - `TMDB_TOKEN` — ה-Read Access Token מ-TMDB
    - `OMDB_KEY` — המפתח מ-OMDb
+   - `YOUTUBE_KEY` — המפתח מ-Google Cloud (לא חובה)
 3. **Settings → Pages → Source:** בוחרים **GitHub Actions**.
 4. **Actions → Update data → Run workflow** — הרצה ראשונה ידנית. הרצה ידנית תמיד מפרסמת את האתר, גם אם הנתונים לא השתנו.
 
