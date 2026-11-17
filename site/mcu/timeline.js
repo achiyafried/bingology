@@ -9,20 +9,18 @@ export function visible(items, today) {
   return { released, upcoming };
 }
 
-/** "story": the hand-written order; "release": by date, ties in story order. */
+/** "story": the hand-written order; "release": by phase, then date (phases overlap in time), ties in story order. */
 export function ordered(items, order) {
   const by = order === "release"
-    ? (a, b) => String(a.date).localeCompare(String(b.date)) || a.story_i - b.story_i
+    ? (a, b) => a.phase - b.phase || String(a.date).localeCompare(String(b.date)) || a.story_i - b.story_i
     : (a, b) => a.story_i - b.story_i;
   return [...items].sort(by);
 }
 
-/** Headings: in story order, runs of the same era; in release order, one per phase (phases in order, items by date). */
+/** Headings: in story order, runs of the same era; in release order, phases. Items come in that order. */
 export function groups(items, order) {
   const out = [];
-  const list = ordered(items, order);
-  if (order === "release") list.sort((a, b) => a.phase - b.phase); // stable: dates stay in order inside a phase
-  for (const x of list) {
+  for (const x of ordered(items, order)) {
     const title = order === "release" ? `שלב ${x.phase}` : x.era;
     const last = out[out.length - 1];
     if (last && last.title === title) last.items.push(x); else out.push({ title, items: [x] });

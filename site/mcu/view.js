@@ -90,3 +90,12 @@ export function cardHTML(x, seen) {
   <div class="m-cacts">${cardSeenHTML(x, on)}<button class="m-pill" data-a="close">סגירה</button></div>
 </div>`;
 }
+
+/** A selector for the control a click came from, to give it focus back after a repaint (null when there is none). */
+export function focusSelector({ a, id, v } = {}) {
+  const safe = t => typeof t === "string" && /^[\w:.-]+$/.test(t);
+  if (!safe(a)) return null;
+  if (id !== undefined) return safe(id) ? `[data-a="${a}"][data-id="${id}"]` : null;
+  if (v !== undefined) return safe(v) ? `[data-a="${a}"][data-v="${v}"]` : null;
+  return null;
+}

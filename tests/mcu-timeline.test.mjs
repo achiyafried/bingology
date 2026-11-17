@@ -74,3 +74,9 @@ test("groups in release order: one heading per phase even when release dates int
   assert.deepEqual(g.map(x => x.title), ["שלב 5", "שלב 6"]);
   assert.deepEqual(g[0].items.map(x => x.id), ["movie:12", "tv:11:s1"], "by date inside the phase");
 });
+
+test("release order is phase then date everywhere: next up and the grid match the list", () => {
+  const ff = it("movie:10", 10, "2025-07-23", "x", 6), eyes = it("tv:11:s1", 0, "2025-08-01", "x", 5);
+  assert.deepEqual(ordered([ff, eyes], "release").map(x => x.id), ["tv:11:s1", "movie:10"]);
+  assert.equal(nextUp([ff, eyes], new Set(), "release").id, "tv:11:s1");
+});

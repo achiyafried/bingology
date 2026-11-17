@@ -74,3 +74,15 @@ test("cardSeenHTML: the card's seen button alone, so marking doesn't repaint (an
   assert.match(cardSeenHTML({ id: "movie:1" }, false), /class="m-pill primary" data-a="seen" data-id="movie:1" aria-pressed="false">סימון כנצפה</);
   assert.match(cardSeenHTML({ id: "movie:1" }, true), /class="m-pill" data-a="seen" data-id="movie:1" aria-pressed="true">עוד לא ראיתי</);
 });
+
+import { focusSelector } from "../site/mcu/view.js";
+test("focusSelector finds the same control after a repaint", () => {
+  assert.equal(focusSelector({ a: "seen", id: "movie:1" }), '[data-a="seen"][data-id="movie:1"]');
+  assert.equal(focusSelector({ a: "theme", v: "hud" }), '[data-a="theme"][data-v="hud"]');
+  assert.equal(focusSelector({ a: "seen", id: 'x"]' }), null, "odd ids are not put in a selector");
+  assert.equal(focusSelector({}), null);
+});
+
+test("the MCU page handles the copy-link button from the trailer search row", () => {
+  assert.match(readFileSync("site/mcu/app.js", "utf8"), /a === "copylink"/);
+});

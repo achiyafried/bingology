@@ -1,7 +1,7 @@
 // The MCU page: loads mcu-data.json, keeps the viewer's choices and seen marks, paints the timeline.
 import { visible, ordered, groups, nextUp, progress } from "./timeline.js";
 import { loadSeen, saveSeen, loadPref, savePref } from "./seen.js";
-import { headerHTML, nextHTML, listHTML, gridHTML, upcomingHTML, cardHTML, cardSeenHTML } from "./view.js";
+import { headerHTML, nextHTML, listHTML, gridHTML, upcomingHTML, cardHTML, cardSeenHTML, focusSelector } from "./view.js";
 import { playerHTML, unavailableHTML, ytErrorCode, YT_ORIGINS } from "../lib/trailer.js";
 
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -37,10 +37,10 @@ function paintCard() {
   dlg.innerHTML = cardHTML(x, st.seen);
 }
 
-function toggleSeen(id) {
+function toggleSeen(id, el) {
   if (st.seen.has(id)) st.seen.delete(id); else st.seen.add(id);
   if (!saveSeen(store, st.seen)) st.stored = false;
-  render();
+  renderKeepFocus(el);
   const btn = dlg.open && dlg.querySelector(".m-cacts [data-a=seen]");
   if (btn && st.cardId === id) btn.outerHTML = cardSeenHTML({ id }, st.seen.has(id));
 }
@@ -64,14 +64,30 @@ window.addEventListener("message", e => {
   row.outerHTML = unavailableHTML({ n: x.name });
 });
 
+/** Repaints the page and gives focus back to the control that was used (it is a new element after the repaint). */
+function renderKeepFocus(el) {
+  const inPage = root.contains(el), sel = inPage && focusSelector(el.dataset);
+  render();
+  const again = sel && root.querySelector(sel);
+  if (again) again.focus();
+}
+
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
+}
+
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, id = el.dataset.id;
+  if (a === "copylink") {
+    copy(el.dataset.u).then(ok => { el.textContent = ok ? "הקישור הועתק" : "לא הצלחנו להעתיק"; });
+    return;
+  }
   if (a === "theme" || a === "order" || a === "view") {
     st[a] = v; savePref(store, KEY[a], v);
     if (a === "theme") applyTheme();
-    render();
-  } else if (a === "seen") toggleSeen(id);
+    renderKeepFocus(el);
+  } else if (a === "seen") toggleSeen(id, el);
   else if (a === "open") { st.cardId = id; paintCard(); if (!dlg.open) dlg.showModal(); }
   else if (a === "close") closeCard();
   else if (a === "trail") {
