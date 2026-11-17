@@ -28,6 +28,25 @@ export function validateMcu(list) {
   return errs;
 }
 
+/** Problems in mcu-characters.json, one per problem naming the row; [] when it is good. mcuIds: the ids in mcu.json. */
+export function validateCharacters(list, mcuIds) {
+  if (!Array.isArray(list)) return ["mcu-characters.json must be an array"];
+  const errs = [], ids = new Set();
+  list.forEach((c, i) => {
+    const e = m => errs.push(`row ${i}: ${m}`);
+    if (!c || typeof c !== "object") return e("not an object");
+    if (typeof c.id !== "string" || !/^[a-z0-9-]+$/.test(c.id)) e("id must be lowercase letters, digits and -");
+    else if (ids.has(c.id)) e(`duplicate id ${c.id}`);
+    ids.add(c.id);
+    if (!text(c.he)) e("he (Hebrew name) is missing");
+    if (!text(c.en)) e("en (English name) is missing");
+    if (!Array.isArray(c.people) || !c.people.length || !c.people.every(n => Number.isInteger(n) && n > 0)) e("people must be TMDB person ids");
+    try { if (!text(c.match)) throw 0; new RegExp(c.match, "i"); } catch { e("match must be a valid pattern"); }
+    if (!mcuIds.has(c.poster)) e(`poster ${JSON.stringify(c.poster)} is not an item in mcu.json`);
+  });
+  return errs;
+}
+
 const IMG = "https://image.tmdb.org/t/p/w342";
 const US_DISNEY = ["Disney Plus", "Hulu"];
 

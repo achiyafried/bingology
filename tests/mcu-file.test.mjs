@@ -31,3 +31,32 @@ test("the real mcu.json is valid and has at least 50 items", () => {
   assert.deepEqual(validateMcu(list), []);
   assert.ok(list.length >= 50, `items: ${list.length}`);
 });
+
+import { validateCharacters } from "../scripts/lib/mcu.mjs";
+const ch = (id, o = {}) => ({ id, he: "ת'ור", en: "Thor", people: [74568], match: "Thor", poster: "movie:10195", ...o });
+const IDS = new Set(["movie:10195", "movie:1726"]);
+
+test("validateCharacters accepts good rows", () => {
+  assert.deepEqual(validateCharacters([ch("thor"), ch("iron-man", { poster: "movie:1726", people: [3223, 1], match: "Stark|Iron Man" })], IDS), []);
+});
+
+test("validateCharacters: one error per problem, naming the row", () => {
+  const errs = validateCharacters([
+    ch("thor"), ch("thor"),                 // duplicate
+    ch("Thor!"),                            // bad id
+    ch("a", { people: [] }),                // no people
+    ch("b", { people: ["74568"] }),         // not integers
+    ch("c", { match: "(" }),                // bad regex
+    ch("d", { poster: "movie:999" }),       // poster not in mcu.json
+    ch("e", { he: "" }),                    // no Hebrew name
+  ], IDS);
+  for (const [i, re] of [[1, /duplicate/], [2, /id must/], [3, /people/], [4, /people/], [5, /match/], [6, /poster/], [7, /he/]])
+    assert.ok(errs.some(e => e.startsWith(`row ${i}:`) && re.test(e)), `row ${i} ${re}: ${errs.join(" | ")}`);
+});
+
+test("the real mcu-characters.json is valid and has at least 30 characters", () => {
+  const list = JSON.parse(readFileSync("mcu-characters.json", "utf8"));
+  const ids = new Set(JSON.parse(readFileSync("mcu.json", "utf8")).map(r => r.id));
+  assert.deepEqual(validateCharacters(list, ids), []);
+  assert.ok(list.length >= 30, `characters: ${list.length}`);
+});
