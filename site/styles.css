@@ -474,6 +474,9 @@ img.poster { object-fit: cover; }
 .gcard .gc-t { flex: 1; min-width: 0; }
 .gcard b { display: block; font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 20px; line-height: 1.2; }
 .gcard small { display: block; color: var(--muted); font-size: 14px; font-weight: 600; }
+.gcard.mcu { margin-top: 12px; text-decoration: none; background: #0b0f2a; color: #f5c542; border-color: #7b5cff; box-shadow: 0 0 18px rgba(123, 92, 255, .35); }
+.gcard.mcu small { color: #b9b4e6; }
+.gcard.mcu .gc-go { color: #f5c542; }
 .gcard .gc-go { font-size: 26px; color: var(--accent); font-weight: 700; }
 .gcard + .strip { margin-top: 14px; }
 .games .g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 6px 0 14px; }

@@ -10,6 +10,7 @@
     "keys": "sh scripts/set-keys.sh",
     "extract": "node scripts/extract-legacy.mjs",
     "match": "node scripts/match-ids.mjs",
-    "fetch": "node scripts/fetch-data.mjs"
+    "fetch": "node scripts/fetch-data.mjs",
+    "fetch:mcu": "node scripts/fetch-mcu.mjs"
   }
 }

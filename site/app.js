@@ -326,6 +326,7 @@ function introHTML() {
     <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "quick" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
     <div class="stack"><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
     ${gamesCardHTML()}
+    <a class="gcard mcu" href="mcu.html"><span class="gc-ic" aria-hidden="true">🌌</span><span class="gc-t"><b>היקום של מארוול</b><small>ציר הזמן של כל הסרטים והסדרות</small></span><span class="gc-go" aria-hidden="true">‹</span></a>
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
 }
