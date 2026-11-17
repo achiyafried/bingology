@@ -37,3 +37,14 @@ test("RIDDLE_TEMPLATE: the fields to fill, and no contact details", () => {
   assert.match(RIDDLE_TEMPLATE, /^חידה ל-Bingology/);
   assert.doesNotMatch(RIDDLE_TEMPLATE, /@|\d{3}-?\d{7}/);
 });
+
+import { riddleMailto, RIDDLE_EMAIL } from "../site/lib/games/share.js";
+test("riddleMailto: to the site's riddles mailbox, with a subject and the fields to fill", () => {
+  assert.equal(RIDDLE_EMAIL, "bingeislife@gmail.com");
+  const u = riddleMailto();
+  assert.match(u, /^mailto:bingeislife@gmail\.com\?subject=/);
+  const q = new URLSearchParams(u.split("?")[1]);
+  assert.equal(q.get("subject"), "חידה ל-Bingology");
+  assert.match(q.get("body"), /^החידה:\n\nהתשובה \(שם הסדרה בעברית\):/);
+  assert.doesNotMatch(u, /\+/, "spaces are %20, not + (mail apps show + literally)");
+});

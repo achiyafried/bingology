@@ -5,7 +5,7 @@ import { searchSeries } from "../lib/search.js";
 import { hebKey, latKey, keyMatch } from "../lib/phonetic.js";
 import { GAMES, loadGamesDay, addDays } from "../lib/games/day.js";
 import { loadDay, saveDay, loadPractice, savePractice, markComplete, streak as streakOf, prune, saveTotal } from "../lib/games/store.js";
-import { shareText, RIDDLE_TEMPLATE } from "../lib/games/share.js";
+import { shareText, RIDDLE_TEMPLATE, riddleMailto } from "../lib/games/share.js";
 import * as guess from "../lib/games/guess.js";
 import * as odd from "../lib/games/odd.js";
 import * as groups from "../lib/games/groups.js";
@@ -69,7 +69,7 @@ export function hubHTML(day, states, streak, opts = {}) {
     return `<button type="button" class="g-card${s && s.done ? " done" : s ? " on" : ""}" data-g="${g.id}"><span class="g-ic" aria-hidden="true">${g.icon}</span><span class="g-nm">${g.name}</span><span class="g-st">${st}</span></button>`;
   }).join("");
   const friend = opts.canGuest ? `<div class="g-friend"><button type="button" class="btn ghost" data-gguest>👥 תנו לחבר לשחק</button><small>סיבוב נקי, בלי לגעת בתוצאות שלך</small></div>` : "";
-  const send = opts.guest || opts.practice ? "" : `<div class="g-send"><button type="button" class="linkbtn" data-gsendriddle>🧩 יש לכם חידה? שלחו לנו</button></div>`;
+  const send = opts.guest || opts.practice ? "" : `<div class="g-send"><a class="linkbtn" href="${esc(riddleMailto())}">🧩 יש לכם חידה? שלחו לנו במייל</a><button type="button" class="linkbtn" data-gsendriddle>או שתפו בוואטסאפ</button></div>`;
   return `${head}${allDone(day, states) ? summaryHTML(day, states, streak, opts) : ""}<div class="g-cards">${cards}</div>${friend}${send}`;
 }
 
