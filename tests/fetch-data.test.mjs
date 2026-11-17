@@ -17,6 +17,14 @@ function fakeFetch({ tv = {}, imdb = "9.5", discover = null, yt = null } = {}) {
   const calls = [];
   const f = async url => {
     url = String(url); calls.push(url);
+    if (url.includes("googleapis.com/youtube/v3/search")) {
+      f.searches = (f.searches || 0) + 1;
+      if (yt?.search === "err") return new Response("{}", { status: 403 });
+      const q = new URL(url).searchParams.get("q");
+      const items = Object.entries(yt?.search ?? {}).filter(([name]) => q.startsWith(name)).flatMap(([, list]) => list)
+        .map(([id, title]) => ({ id: { videoId: id }, snippet: { title } }));
+      return new Response(JSON.stringify({ items }));
+    }
     if (url.includes("googleapis.com/youtube")) {
       if (yt === "err") return new Response("{}", { status: 403 });
       const asked = new URL(url).searchParams.get("id").split(",");
@@ -175,6 +183,14 @@ test("pool series under 7.5 on IMDb are left out; unknown IMDb is kept", async (
   const f = async url => {
     url = String(url);
     if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(201), d(202), d(203)] }));
+    if (url.includes("googleapis.com/youtube/v3/search")) {
+      f.searches = (f.searches || 0) + 1;
+      if (yt?.search === "err") return new Response("{}", { status: 403 });
+      const q = new URL(url).searchParams.get("q");
+      const items = Object.entries(yt?.search ?? {}).filter(([name]) => q.startsWith(name)).flatMap(([, list]) => list)
+        .map(([id, title]) => ({ id: { videoId: id }, snippet: { title } }));
+      return new Response(JSON.stringify({ items }));
+    }
     if (url.includes("googleapis.com/youtube")) {
       if (yt === "err") return new Response("{}", { status: 403 });
       const asked = new URL(url).searchParams.get("id").split(",");
@@ -195,6 +211,14 @@ test("the pool is topped up from extra candidates when some are filtered out", a
   const f = async url => {
     url = String(url);
     if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(301, 9.0), d(302, 8.9), d(303, 8.8)] }));
+    if (url.includes("googleapis.com/youtube/v3/search")) {
+      f.searches = (f.searches || 0) + 1;
+      if (yt?.search === "err") return new Response("{}", { status: 403 });
+      const q = new URL(url).searchParams.get("q");
+      const items = Object.entries(yt?.search ?? {}).filter(([name]) => q.startsWith(name)).flatMap(([, list]) => list)
+        .map(([id, title]) => ({ id: { videoId: id }, snippet: { title } }));
+      return new Response(JSON.stringify({ items }));
+    }
     if (url.includes("googleapis.com/youtube")) {
       if (yt === "err") return new Response("{}", { status: 403 });
       const asked = new URL(url).searchParams.get("id").split(",");
@@ -287,7 +311,7 @@ test("trailers: every candidate blocked → no trailer (the site shows the searc
   assert.equal(r.data.series[0].trailer, null);
 });
 
-test("trailers: YouTube failing or no key keeps TMDB's first pick, never aborts", async () => {
+test("trailers: YouTube failing (no previous pick) or no key keeps TMDB's first pick, never aborts", async () => {
   const bad = await run({ series: [entry(1, "A")], prev: null, fetchImpl: fakeFetch({ tv: { 1: withVids }, yt: "err" }), now: NOW, youtubeKey: "K" });
   assert.equal(bad.abort, false);
   assert.equal(bad.data.series[0].trailer, "blockedFirs");
@@ -296,4 +320,60 @@ test("trailers: YouTube failing or no key keeps TMDB's first pick, never aborts"
   const none = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW });
   assert.equal(none.data.series[0].trailer, "blockedFirs");
   assert.ok(!f.calls.some(u => u.includes("googleapis")), "no YouTube calls without a key");
+});
+
+const noVids = { videos: { results: [] } };
+const searchHit = { A: [["notTrailer1", "A - behind the scenes"], ["searchHit01", "A Official Trailer"]] };
+
+test("search: a fetched series without a TMDB trailer gets one from YouTube search, and the result is cached", async () => {
+  const f = fakeFetch({ tv: { 1: noVids }, yt: { search: searchHit } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K", searchBudget: 5 });
+  assert.equal(r.data.series[0].trailer, "searchHit01");
+  assert.deepEqual(r.data.series[0].ytSearch, { key: "searchHit01", at: NOW });
+  assert.equal(f.searches, 1);
+  // Next night: the cached pick is reused (checked again, not searched again).
+  const f2 = fakeFetch({ tv: { 1: noVids }, yt: { search: searchHit } });
+  const r2 = await run({ series: [entry(1, "A")], prev: r.data, fetchImpl: f2, now: "2026-11-11T03:00:00Z", youtubeKey: "K", searchBudget: 5 });
+  assert.equal(r2.data.series[0].trailer, "searchHit01");
+  assert.equal(f2.searches, undefined);
+});
+
+test("search: nothing matching → no trailer, and no new search for 30 days", async () => {
+  const f = fakeFetch({ tv: { 1: noVids }, yt: { search: { A: [["notTrailer1", "A - behind the scenes"]] } } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K", searchBudget: 5 });
+  assert.equal(r.data.series[0].trailer, null);
+  assert.deepEqual(r.data.series[0].ytSearch, { key: null, at: NOW });
+  const soon = fakeFetch({ tv: { 1: noVids }, yt: { search: searchHit } });
+  await run({ series: [entry(1, "A")], prev: r.data, fetchImpl: soon, now: "2026-11-20T03:00:00Z", youtubeKey: "K", searchBudget: 5 });
+  assert.equal(soon.searches, undefined);
+  const later = fakeFetch({ tv: { 1: noVids }, yt: { search: searchHit } });
+  const r3 = await run({ series: [entry(1, "A")], prev: r.data, fetchImpl: later, now: "2026-12-15T03:00:00Z", youtubeKey: "K", searchBudget: 5 });
+  assert.equal(later.searches, 1);
+  assert.equal(r3.data.series[0].trailer, "searchHit01");
+});
+
+test("search: a TMDB trailer that plays in Israel means no search; the nightly budget caps searches", async () => {
+  const f = fakeFetch({ tv: { 1: withVids, 2: noVids, 3: noVids }, yt: { search: { A: searchHit.A, B: [["searchHit02", "B trailer"]], C: [["searchHit03", "C trailer"]] } } });
+  const r = await run({ series: [entry(1, "A"), entry(2, "B"), entry(3, "C")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K", searchBudget: 1 });
+  assert.equal(f.searches, 1);
+  assert.equal(r.data.series[0].trailer, "blockedFirs");
+  assert.equal(r.data.series[1].trailer, "searchHit02");
+  assert.equal(r.data.series[2].trailer, null);
+  assert.equal(r.data.series[2].ytSearch, null, "not searched yet: tomorrow's turn");
+});
+
+test("search failing (quota) stops searching for the night without failing the run", async () => {
+  const f = fakeFetch({ tv: { 1: noVids, 2: noVids }, yt: { search: "err" } });
+  const r = await run({ series: [entry(1, "A"), entry(2, "B")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K", searchBudget: 5 });
+  assert.equal(r.abort, false);
+  assert.equal(f.searches, 1);
+  assert.ok(r.warnings.some(w => /YouTube search stopped/.test(w)));
+  assert.equal(r.data.series[0].ytSearch, null);
+});
+
+test("YouTube check failing keeps last night's (checked) trailer rather than TMDB's unchecked first pick", async () => {
+  const prevData = { series: [{ ...entry(1, "A"), trailer: "okSecond000", ytSearch: null, fetchedAt: "2026-11-09T03:00:00Z" }] };
+  delete prevData.series[0].fallback;
+  const r = await run({ series: [entry(1, "A")], prev: prevData, fetchImpl: fakeFetch({ tv: { 1: withVids }, yt: "err" }), now: NOW, youtubeKey: "K" });
+  assert.equal(r.data.series[0].trailer, "okSecond000");
 });
