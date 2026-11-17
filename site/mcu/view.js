@@ -31,16 +31,20 @@ const seenBtn = (x, seen, big) => {
 };
 const pill = (a, [v, label, extra], cur) => `<button class="m-pill" data-a="${a}" data-v="${v}" aria-pressed="${cur === v}">${extra ? `<span aria-hidden="true">${label}</span> ${extra}` : label}</button>`;
 
-export function headerHTML({ theme, order, view, done, total }) {
+/** The two tabs of the zone. */
+export const tabsHTML = tab => `<nav class="m-tabs" aria-label="אזור">${[["timeline", "ציר הזמן"], ["chars", "דמויות"]].map(([t, label]) => `<a href="#${t}"${tab === t ? ' aria-current="page"' : ""}>${label}</a>`).join("")}</nav>`;
+
+export function headerHTML({ theme, order, view, done, total, tab = "timeline" }) {
   const pct = total ? Math.round((done / total) * 100) : 0;
   return `<header class="m-top">
   <a class="m-back" href="./">→ Bingology</a>
   <div class="m-themes" role="group" aria-label="סגנון">${THEMES.map(([v, em, name]) => pill("theme", [v, em, name], theme)).join("")}</div>
   <h1 class="m-title">ציר הזמן של <span>MCU</span></h1>
+  ${tabsHTML(tab)}
   <div class="m-prog"><div class="m-bar" style="--p:${pct}%" aria-hidden="true"><i></i></div><span>ראית ${done} מתוך ${total}</span></div>
   <div class="m-switch">
     <div role="group" aria-label="סדר">${ORDERS.map(o => pill("order", o, order)).join("")}</div>
-    <div role="group" aria-label="תצוגה">${VIEWS.map(o => pill("view", o, view)).join("")}</div>
+    ${tab === "timeline" ? `<div role="group" aria-label="תצוגה">${VIEWS.map(o => pill("view", o, view)).join("")}</div>` : ""}
   </div>
 </header>`;
 }
@@ -53,8 +57,8 @@ export function nextHTML(x) {
   <div class="m-nacts">${seenBtn(x, new Set(), true)}<button class="m-pill" data-a="open" data-id="${esc(x.id)}">פרטים</button></div></div></div></section>`;
 }
 
-const row = (x, seen) => `<li class="m-item${seen.has(x.id) ? " seen" : ""}" data-phase="${Number(x.phase)}">
-  <button class="m-open" data-a="open" data-id="${esc(x.id)}">${poster(x, "m-post")}<span class="m-txt"><b><bdi>${esc(title(x))}</bdi>${esc(seasonOf(x))}</b>${sub(x) ? `<small><bdi>${esc(sub(x))}</bdi></small>` : ""}<span class="m-story">${esc(x.story)}</span><span class="m-len">${esc(lengthText(x))}</span></span></button>
+const row = (x, seen, extra = "") => `<li class="m-item${seen.has(x.id) ? " seen" : ""}" data-phase="${Number(x.phase)}">
+  <button class="m-open" data-a="open" data-id="${esc(x.id)}">${poster(x, "m-post")}<span class="m-txt"><b><bdi>${esc(title(x))}</bdi>${esc(seasonOf(x))}</b>${sub(x) ? `<small><bdi>${esc(sub(x))}</bdi></small>` : ""}${extra}<span class="m-story">${esc(x.story)}</span><span class="m-len">${esc(lengthText(x))}</span></span></button>
   ${seenBtn(x, seen)}</li>`;
 
 export function listHTML(groups, seen) {
@@ -98,4 +102,26 @@ export function focusSelector({ a, id, v } = {}) {
   if (id !== undefined) return safe(id) ? `[data-a="${a}"][data-id="${id}"]` : null;
   if (v !== undefined) return safe(v) ? `[data-a="${a}"][data-v="${v}"]` : null;
   return null;
+}
+
+const charPoster = (c, cls) => { const src = safeImg(c.poster); return src ? `<img class="${cls}" src="${src}" alt="" loading="lazy">` : `<span class="${cls} m-noimg" aria-hidden="true"></span>`; };
+const titles = n => (n === 1 ? "1 כותר" : `${n} כותרים`);
+
+/** The characters grid: rows from charRows(). */
+export function charsGridHTML(rows) {
+  return `<div class="m-cgrid">${rows.map(({ c, total, done }) => `<a class="ctile${done === total ? " done" : ""}" href="#char/${esc(c.id)}">${charPoster(c, "m-gpost")}<span class="m-check" aria-hidden="true">${CHECK}</span><span class="m-gcap"><bdi class="m-che">${esc(c.he)}</bdi><bdi class="m-cen">${esc(c.en)}</bdi><b>${titles(total)}${done ? ` · ראית ${done}` : ""}</b></span></a>`).join("")}</div>`;
+}
+
+/** One character's path: who plays them, progress, what's next, and every title in order. */
+export function charPathHTML(c, path, seen) {
+  const done = path.filter(p => seen.has(p.item.id)).length;
+  const next = path.find(p => !seen.has(p.item.id));
+  const pct = path.length ? Math.round((done / path.length) * 100) : 0;
+  return `<section class="m-char">
+  <a class="m-back" href="#chars">→ כל הדמויות</a>
+  <div class="m-chead">${charPoster(c, "m-cpost")}<div><h2>${esc(c.he)}</h2><p class="m-sub"><bdi>${esc(c.en)}</bdi></p><p class="m-meta">מגולם בידי <bdi>${esc(c.actor)}</bdi></p>
+  <div class="m-prog"><div class="m-bar" style="--p:${pct}%" aria-hidden="true"><i></i></div><span>ראית ${done} מתוך ${path.length}</span></div></div></div>
+  ${next ? nextHTML(next.item) : `<section class="m-next done"><h2>ראית את כל ההופעות של ${esc(c.he)} 🎉</h2></section>`}
+  <ol class="m-path">${path.map(p => row(p.item, seen, `<span class="m-as">בתור <bdi>${esc(p.as)}</bdi>${p.cameo ? " · הופעה קצרה" : ""}</span>`)).join("")}</ol>
+</section>`;
 }

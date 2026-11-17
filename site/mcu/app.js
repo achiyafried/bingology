@@ -1,7 +1,8 @@
 // The MCU page: loads mcu-data.json, keeps the viewer's choices and seen marks, paints the timeline.
 import { visible, ordered, groups, nextUp, progress } from "./timeline.js";
 import { loadSeen, saveSeen, loadPref, savePref } from "./seen.js";
-import { headerHTML, nextHTML, listHTML, gridHTML, upcomingHTML, cardHTML, cardSeenHTML, focusSelector } from "./view.js";
+import { headerHTML, nextHTML, listHTML, gridHTML, upcomingHTML, cardHTML, cardSeenHTML, focusSelector, charsGridHTML, charPathHTML } from "./view.js";
+import { route, charPath, charRows } from "./characters.js";
 import { playerHTML, unavailableHTML, ytErrorCode, YT_ORIGINS } from "../lib/trailer.js";
 
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -10,7 +11,7 @@ const KEY = { theme: "bingology:mcu-theme", order: "bingology:mcu-order", view: 
 const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date());
 const { ids, ok } = loadSeen(store);
 const st = {
-  items: [], cardId: null, seen: ids, stored: ok,
+  items: [], chars: [], cardId: null, seen: ids, stored: ok,
   theme: loadPref(store, KEY.theme, THEMES, "cosmic"),
   order: loadPref(store, KEY.order, ORDERS, "story"),
   view: loadPref(store, KEY.view, VIEWS, "list"),
@@ -24,13 +25,19 @@ function applyTheme() { document.documentElement.className = `theme-${st.theme}`
 function render() {
   const { released, upcoming } = visible(st.items, today());
   const { done, total } = progress(released, st.seen);
-  const body = st.view === "grid" ? gridHTML(ordered(released, st.order), st.seen) : listHTML(groups(released, st.order), st.seen);
-  root.innerHTML = headerHTML({ theme: st.theme, order: st.order, view: st.view, done, total })
+  const { tab, char } = route(location.hash, st.chars);
+  let body;
+  if (tab === "chars") body = char ? charPathHTML(char, charPath(released, char, st.order), st.seen) : charsGridHTML(charRows(st.chars, released, st.seen));
+  else body = nextHTML(nextUp(released, st.seen, st.order))
+    + (st.view === "grid" ? gridHTML(ordered(released, st.order), st.seen) : listHTML(groups(released, st.order), st.seen))
+    + upcomingHTML(upcoming);
+  root.innerHTML = headerHTML({ theme: st.theme, order: st.order, view: st.view, done, total, tab })
     + (st.stored ? "" : `<p class="m-warn" role="status">הסימונים לא יישמרו בדפדפן הזה (גלישה בסתר או אחסון חסום).</p>`)
-    + nextHTML(nextUp(released, st.seen, st.order))
-    + body + upcomingHTML(upcoming)
+    + body
     + `<footer class="m-foot">This product uses the TMDB API but is not endorsed or certified by TMDB. Marvel ו-MCU הם סימנים של Marvel ו-Disney. האתר אינו קשור אליהן.</footer>`;
 }
+
+window.addEventListener("hashchange", () => { if (dlg.open) closeCard(); render(); window.scrollTo(0, 0); });
 
 function paintCard() {
   const x = byId(st.cardId); if (!x) return;
@@ -105,7 +112,9 @@ async function boot() {
   try {
     const r = await fetch("mcu-data.json", { cache: "no-cache" });
     if (!r.ok) throw new Error(r.status);
-    st.items = (await r.json()).items || [];
+    const data = await r.json();
+    st.items = data.items || [];
+    st.chars = data.characters || [];
     render();
   } catch {
     root.innerHTML = `<p class="m-warn">לא הצלחנו לטעון את ציר הזמן. נסו לרענן בעוד רגע.</p>`;
