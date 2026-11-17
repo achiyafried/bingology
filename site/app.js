@@ -314,7 +314,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brandrow"><button class="brand" data-a="home" aria-label="Bingology, לעמוד הבית">${LOGO}</button><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה<span class="tn"> (${S.length})</span></button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">קאסט</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-label="חיפוש" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span><span class="tl"> חיפוש</span></button><button class="tab" role="tab" data-a="tab" data-v="games" aria-selected="${!onNews() && st.tab === "games"}">משחקים</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button></div></header>`;
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה<span class="tn"> (${S.length})</span></button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">קאסט</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-label="חיפוש" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span><span class="tl"> חיפוש</span></button><button class="tab" role="tab" data-a="tab" data-v="games" aria-selected="${!onNews() && st.tab === "games"}">משחקים</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button><a class="tab mcu" href="mcu.html"><span aria-hidden="true">🌌</span><span class="tl"> מארוול</span><span class="sr">היקום של מארוול</span></a></div></header>`;
 }
 
 function introHTML() {
@@ -326,7 +326,6 @@ function introHTML() {
     <div class="modes">${MODES.map(([m, em, name, sub]) => `<button class="mode${m === "quick" ? " main" : ""}" data-a="start" data-v="${m}"><span class="em" aria-hidden="true">${em}</span><b>${name}</b><span class="cnt">${modeSteps(AVAIL, m).length} שאלות</span><small>${sub}</small></button>`).join("")}</div>
     <div class="stack"><button class="linkbtn" data-a="surprise">או פשוט תפתיעו אותי</button></div>
     ${gamesCardHTML()}
-    <a class="gcard mcu" href="mcu.html"><span class="gc-ic" aria-hidden="true">🌌</span><span class="gc-t"><b>היקום של מארוול</b><small>ציר הזמן של כל הסרטים והסדרות</small></span><span class="gc-go" aria-hidden="true">‹</span></a>
     ${stripHTML(stripItems(st.news || [], S, today()), S, today())}
   </section>`;
 }

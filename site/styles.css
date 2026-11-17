@@ -89,6 +89,7 @@ button.brand { background: none; border: 0; padding: 0; font: inherit; cursor: p
 .tab { flex: 1 1 auto; white-space: nowrap; text-align: center; border: 0; background: transparent; padding: 8px 6px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--muted); }
 .tab .tn { font-weight: 400; opacity: .75; }
 .tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.tab.mcu { text-decoration: none; background: #0b0f2a; color: #f5c542; box-shadow: 0 0 10px rgba(123, 92, 255, .55); }
 
 .av { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(150deg, hsl(var(--h) 50% 38%), hsl(calc(var(--h) + 50) 55% 20%)); color: #fff; font-family: "Secular One", "Assistant", sans-serif; font-size: 17px; direction: ltr; }
 .av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -474,9 +475,7 @@ img.poster { object-fit: cover; }
 .gcard .gc-t { flex: 1; min-width: 0; }
 .gcard b { display: block; font-family: "Secular One", "Assistant", sans-serif; font-weight: 400; font-size: 20px; line-height: 1.2; }
 .gcard small { display: block; color: var(--muted); font-size: 14px; font-weight: 600; }
-.gcard.mcu { margin-top: 12px; text-decoration: none; background: #0b0f2a; color: #f5c542; border-color: #7b5cff; box-shadow: 0 0 18px rgba(123, 92, 255, .35); }
-.gcard.mcu small { color: #b9b4e6; }
-.gcard.mcu .gc-go { color: #f5c542; }
+
 .gcard .gc-go { font-size: 26px; color: var(--accent); font-weight: 700; }
 .gcard + .strip { margin-top: 14px; }
 .games .g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 6px 0 14px; }
