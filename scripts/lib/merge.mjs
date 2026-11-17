@@ -32,6 +32,7 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   s.streams = live ? live.streams ?? null : null;
   // Trailer: a fetched night with no video means it was taken down (the site falls back to a search link).
   s.trailer = live ? live.trailer ?? null : prev?.trailer ?? null;
+  s.ytSearch = prev?.ytSearch ?? null; // last YouTube search for a trailer ({key, at}); the nightly pick updates it
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
   return s;

@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmdbGet, omdbRating, pool } from "./lib/api.mjs";
-import { videoVerdicts } from "./lib/youtube.mjs";
+import { videoVerdicts, searchTrailers } from "./lib/youtube.mjs";
 import { loadEnv } from "./lib/env.mjs";
 import { transformTv } from "./lib/tmdb.mjs";
 import { mergeEntry, validateData, shouldAbort, sameData, finishText } from "./lib/merge.mjs";
@@ -39,23 +39,48 @@ async function fetchLive(id, fetchImpl, map, warnings, old, ctx) {
   return { tv, live, imdb: r, imdbAt: ctx.now };
 }
 
+const SEARCH_BUDGET = 40; // YouTube searches per night: 100 units each, of a 10,000/day quota shared with manual runs
+const SEARCH_RETRY_MS = 30 * 24 * 3600 * 1000; // a search that found nothing is retried after a month
+
+/** Search again? Never searched, a found trailer that no longer plays, or nothing found a month ago. */
+const searchDue = (c, ok, now) => !c || (c.key ? !ok(c.key) : Date.parse(now) - Date.parse(c.at) >= SEARCH_RETRY_MS);
+
 /**
- * Swaps each fetched series' trailer for its first candidate that plays, embedded, in Israel (none → null).
- * Best effort: without an answer from YouTube, TMDB's first pick stays.
+ * For each series fetched tonight: the first TMDB candidate that plays, embedded, in Israel; else last time's
+ * search pick if it still plays; else (budget allowing) a YouTube search. None → null (the site shows a search link).
+ * Without an answer from YouTube, last night's checked trailer stays (or TMDB's first pick for a new series).
  */
-async function pickTrailers(series, cands, { key, fetchImpl, warnings }) {
+async function pickTrailers(series, cands, prevById, { key, fetchImpl, warnings, now, searchBudget }) {
+  const fetched = series.filter(s => cands.has(s.tmdbId));
+  const cached = s => prevById.get(s.tmdbId)?.ytSearch ?? null;
+  for (const s of fetched) s.ytSearch = cached(s);
   let verdicts;
-  try { verdicts = await videoVerdicts([...cands.values()].flat(), { key, region: "IL", fetchImpl }); }
-  catch (err) { warnings.add(`YouTube check failed, keeping TMDB's first trailer: ${err.message}`); return; }
-  let swapped = 0, dropped = 0;
-  for (const s of series) {
-    const list = cands.get(s.tmdbId);
-    if (!list?.length) continue;
-    const pick = list.find(k => verdicts.get(k)) ?? null;
-    if (pick !== list[0]) pick ? swapped++ : dropped++;
+  try { verdicts = await videoVerdicts(fetched.flatMap(s => [...cands.get(s.tmdbId), cached(s)?.key].filter(Boolean)), { key, region: "IL", fetchImpl }); }
+  catch (err) {
+    warnings.add(`YouTube check failed, keeping last night's trailers: ${err.message}`);
+    for (const s of fetched) { const p = prevById.get(s.tmdbId)?.trailer; if (p) s.trailer = p; }
+    return;
+  }
+  const ok = k => verdicts.get(k) === true;
+  let swapped = 0, missing = 0, searched = 0, found = 0, budget = searchBudget, searching = true;
+  for (const s of fetched) {
+    const list = cands.get(s.tmdbId), c = s.ytSearch;
+    let pick = list.find(ok) ?? (c?.key && ok(c.key) ? c.key : null);
+    if (!pick && searching && budget > 0 && searchDue(c, ok, now)) {
+      budget--; searched++;
+      try {
+        const hits = await searchTrailers({ name: s.name, year: s.year }, { key, region: "IL", fetchImpl });
+        const hv = hits.length ? await videoVerdicts(hits, { key, region: "IL", fetchImpl }) : new Map();
+        pick = hits.find(k => hv.get(k)) ?? null;
+        s.ytSearch = { key: pick, at: now };
+        if (pick) found++;
+      } catch (err) { searching = false; warnings.add(`YouTube search stopped for tonight: ${err.message}`); }
+    }
+    if (list.length && pick !== list[0]) swapped++;
+    if (!pick) missing++;
     s.trailer = pick;
   }
-  if (swapped || dropped) warnings.add(`trailers: ${swapped} swapped for one that plays in Israel, ${dropped} with none that does`);
+  warnings.add(`trailers: ${swapped} not TMDB's first pick, ${searched} searched (${found} found), ${missing} without one`);
 }
 
 /** Candidate ids for the wide pool, best first. Throws if discovery itself fails. */
@@ -74,7 +99,7 @@ async function discoverPool(curatedIds, size, fetchImpl) {
   return ranked;
 }
 
-export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity, blurbs = readJson("./pool-blurbs.json"), youtubeKey = null }) {
+export async function run({ series, prev, fetchImpl = fetch, now, only, offline = false, map = readJson("./providers.json"), poolSize = 0, keepPool = false, omdbBudget = Infinity, blurbs = readJson("./pool-blurbs.json"), youtubeKey = null, searchBudget = 0 }) {
   const ctx = { now, budget: omdbBudget, cands: new Map() };
   const list = only ? series.slice(0, only) : series;
   const prevById = new Map((prev?.series ?? []).map(s => [s.tmdbId, s]));
@@ -138,7 +163,7 @@ export async function run({ series, prev, fetchImpl = fetch, now, only, offline 
   }
 
   const data = { updatedAt: now, series: curated.concat(poolSeries).map(s => finishText(s, blurbs)) };
-  if (youtubeKey && !offline && ctx.cands.size) await pickTrailers(data.series, ctx.cands, { key: youtubeKey, fetchImpl, warnings });
+  if (youtubeKey && !offline && ctx.cands.size) await pickTrailers(data.series, ctx.cands, prevById, { key: youtubeKey, fetchImpl, warnings, now, searchBudget });
   const abort = !offline && (unreachable || shouldAbort(failed.length, list.length)) || errors.length > 0;
   return { data, failed, warnings: [...warnings], errors, abort, unreachable };
 }
@@ -159,7 +184,7 @@ async function main() {
   const prev = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : null;
 
   const now = new Date().toISOString(); // one stamp: news diffs rows whose fetchedAt === this exact value
-  const r = await run({ series, prev, now, only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET, youtubeKey: process.env.YOUTUBE_KEY || null });
+  const r = await run({ series, prev, now, only, offline, poolSize: poolSizeFor(series.length), keepPool, omdbBudget: OMDB_BUDGET, youtubeKey: process.env.YOUTUBE_KEY || null, searchBudget: only ? 0 : SEARCH_BUDGET });
   r.warnings.forEach(w => console.warn("warn:", w));
   r.errors.forEach(e => console.error("invalid:", e));
   console.log(`${r.data.series.length} series, ${r.failed.length} failed${r.unreachable ? ", TMDB unreachable" : ""}`);
