@@ -30,3 +30,10 @@ test("the riddle prints last, with its brain icon", () => {
   const out = shareText({ date: "2026-11-13", streak: 0, results: [{ id: "riddle", label: "✓" }, { id: "guess", label: "2/6" }] });
   assert.equal(out.split("\n")[1], "🎬 2/6  🧠 ✓");
 });
+
+import { RIDDLE_TEMPLATE } from "../site/lib/games/share.js";
+test("RIDDLE_TEMPLATE: the fields to fill, and no contact details", () => {
+  for (const f of ["החידה:", "התשובה (שם הסדרה בעברית):", "הסבר (לא חובה):", "השם שיופיע ליד החידה (לא חובה):"]) assert.ok(RIDDLE_TEMPLATE.includes(f), f);
+  assert.match(RIDDLE_TEMPLATE, /^חידה ל-Bingology/);
+  assert.doesNotMatch(RIDDLE_TEMPLATE, /@|\d{3}-?\d{7}/);
+});

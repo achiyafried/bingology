@@ -183,3 +183,18 @@ test("howHTML riddle: the answer is the Hebrew name, a translation or a translit
   assert.match(h, /תרגום \(שובר שורות\)/);
   assert.match(h, /השם הלועזי באותיות עבריות \(סיינפלד\)/);
 });
+
+test("riddleHTML credits the friend who sent the riddle, before and after solving", () => {
+  const p = { clue: "רמז", answer: "אב", words: [2], tmdbId: 1, credit: "דני <b>" };
+  const open = { letters: ["", ""], hints: 0, tries: 0, done: false, gaveUp: false };
+  const done = { letters: ["א", "ב"], hints: 0, tries: 0, done: true, gaveUp: false };
+  for (const s of [open, done]) assert.match(riddleHTML(p, s), /<p class="g-credit">חידה של <bdi>דני &lt;b&gt;<\/bdi><\/p>/);
+  assert.doesNotMatch(riddleHTML({ ...p, credit: undefined }, open), /g-credit/);
+});
+
+test("hubHTML: a 'send us a riddle' link on today's games only", () => {
+  const day = { date: "2026-11-17", games: {} };
+  assert.match(hubHTML(day, {}, 0), /data-gsendriddle/);
+  assert.doesNotMatch(hubHTML(day, {}, 0, { guest: true }), /data-gsendriddle/);
+  assert.doesNotMatch(hubHTML(day, {}, 0, { practice: true }), /data-gsendriddle/);
+});
