@@ -193,3 +193,24 @@ test("transformTv carries the trailer key", () => {
   const { live } = transformTv({ ...bb, videos: { results: [vid("dQw4w9WgXcQ", "Trailer", true, "2020")] } }, { map, he: bb });
   assert.equal(live.trailer, "dQw4w9WgXcQ");
 });
+
+import { trailerCandidates } from "../scripts/lib/tmdb.mjs";
+test("trailerCandidates lists playable-looking keys in pick order, unique, at most 6", () => {
+  const vids = [
+    vid("teaser00001", "Teaser", true, "2024"), vid("trailer0001", "Trailer", false, "2021"),
+    vid("official001", "Trailer", true, "2019"), vid("official002", "Trailer", true, "2022"),
+    vid("official002", "Trailer", true, "2022"), vid("clip0000001", "Clip", true, "2025"),
+    ...Array.from({ length: 6 }, (_, k) => vid(`teaser1000${k}`, "Teaser", false, "2010")),
+  ];
+  const c = trailerCandidates({ videos: { results: vids } });
+  assert.deepEqual(c.slice(0, 4), ["official002", "official001", "trailer0001", "teaser00001"]);
+  assert.equal(c.length, 6);
+  assert.equal(new Set(c).size, 6);
+  assert.deepEqual(trailerCandidates({}), []);
+});
+
+test("transformTv carries the candidates", () => {
+  const { live } = transformTv({ ...bb, videos: { results: [vid("aaaaaaaaaaa", "Trailer", true, "2020"), vid("bbbbbbbbbbb", "Teaser", true, "2020")] } }, { map, he: bb });
+  assert.deepEqual(live.trailers, ["aaaaaaaaaaa", "bbbbbbbbbbb"]);
+  assert.equal(live.trailer, "aaaaaaaaaaa");
+});

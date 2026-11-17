@@ -15,6 +15,7 @@ jobs:
     env:
       TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
       OMDB_KEY: ${{ secrets.OMDB_KEY }}
+      YOUTUBE_KEY: ${{ secrets.YOUTUBE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

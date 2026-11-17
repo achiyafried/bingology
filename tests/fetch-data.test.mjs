@@ -13,10 +13,15 @@ const entry = (id, name) => ({ tmdbId: id, name, lists: ["mine"], genres: ["dram
   rt: null, fallback: { year: 2000, seasons: 2, episodes: 20, runtime: 45, imdb: 8.1, lang: "en" } });
 
 /** Fake network: `tv` maps id → fixture object | HTTP status number | "net" (network error). */
-function fakeFetch({ tv = {}, imdb = "9.5", discover = null } = {}) {
+function fakeFetch({ tv = {}, imdb = "9.5", discover = null, yt = null } = {}) {
   const calls = [];
   const f = async url => {
     url = String(url); calls.push(url);
+    if (url.includes("googleapis.com/youtube")) {
+      if (yt === "err") return new Response("{}", { status: 403 });
+      const asked = new URL(url).searchParams.get("id").split(",");
+      return new Response(JSON.stringify({ items: asked.filter(id => !(yt?.blocked ?? []).includes(id)).map(id => ({ id, status: { embeddable: true, privacyStatus: "public" }, contentDetails: {} })) }));
+    }
     if (url.includes("omdbapi.com")) return new Response(JSON.stringify({ Response: "True", imdbRating: imdb }));
     if (url.includes("/discover/tv")) {
       if (discover === "net") throw new TypeError("fetch failed");
@@ -170,6 +175,11 @@ test("pool series under 7.5 on IMDb are left out; unknown IMDb is kept", async (
   const f = async url => {
     url = String(url);
     if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(201), d(202), d(203)] }));
+    if (url.includes("googleapis.com/youtube")) {
+      if (yt === "err") return new Response("{}", { status: 403 });
+      const asked = new URL(url).searchParams.get("id").split(",");
+      return new Response(JSON.stringify({ items: asked.filter(id => !(yt?.blocked ?? []).includes(id)).map(id => ({ id, status: { embeddable: true, privacyStatus: "public" }, contentDetails: {} })) }));
+    }
     if (url.includes("omdbapi.com")) {
       const id = new URL(url).searchParams.get("i");
       return new Response(JSON.stringify(id === "tt201" ? { imdbRating: "7.2" } : id === "tt202" ? { imdbRating: "8.4" } : { imdbRating: "N/A" }));
@@ -185,6 +195,11 @@ test("the pool is topped up from extra candidates when some are filtered out", a
   const f = async url => {
     url = String(url);
     if (url.includes("/discover/tv")) return new Response(JSON.stringify({ page: 1, total_pages: 1, results: [d(301, 9.0), d(302, 8.9), d(303, 8.8)] }));
+    if (url.includes("googleapis.com/youtube")) {
+      if (yt === "err") return new Response("{}", { status: 403 });
+      const asked = new URL(url).searchParams.get("id").split(",");
+      return new Response(JSON.stringify({ items: asked.filter(id => !(yt?.blocked ?? []).includes(id)).map(id => ({ id, status: { embeddable: true, privacyStatus: "public" }, contentDetails: {} })) }));
+    }
     if (url.includes("omdbapi.com")) return new Response(JSON.stringify({ imdbRating: new URL(url).searchParams.get("i") === "tt301" ? "6.0" : "8.0" }));
     const id = Number(/\/tv\/(\d+)/.exec(url)[1]);
     return new Response(JSON.stringify({ ...bb, id, external_ids: { imdb_id: "tt" + id }, episode_run_time: [40] }));
@@ -252,4 +267,33 @@ test("news wiring: rows stamped by run() are diffed by writeNews only with the s
   assert.equal(same.length, 1);
   assert.equal(JSON.parse(same[0]).items[0].kind, "ended");
   assert.equal(go("2026-11-11T03:00:05Z").length, 0); // a second timestamp silently drops every row
+});
+
+const withVids = { videos: { results: [
+  { key: "blockedFirs", site: "YouTube", type: "Trailer", official: true, published_at: "2022" },
+  { key: "okSecond000", site: "YouTube", type: "Trailer", official: true, published_at: "2020" },
+] } };
+
+test("trailers: the first candidate YouTube says plays in Israel wins", async () => {
+  const f = fakeFetch({ tv: { 1: withVids }, yt: { blocked: ["blockedFirs"] } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K" });
+  assert.equal(r.data.series[0].trailer, "okSecond000");
+  assert.equal(r.data.series[0].trailers, undefined, "candidates are not published");
+});
+
+test("trailers: every candidate blocked → no trailer (the site shows the search link)", async () => {
+  const f = fakeFetch({ tv: { 1: withVids }, yt: { blocked: ["blockedFirs", "okSecond000"] } });
+  const r = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW, youtubeKey: "K" });
+  assert.equal(r.data.series[0].trailer, null);
+});
+
+test("trailers: YouTube failing or no key keeps TMDB's first pick, never aborts", async () => {
+  const bad = await run({ series: [entry(1, "A")], prev: null, fetchImpl: fakeFetch({ tv: { 1: withVids }, yt: "err" }), now: NOW, youtubeKey: "K" });
+  assert.equal(bad.abort, false);
+  assert.equal(bad.data.series[0].trailer, "blockedFirs");
+  assert.ok(bad.warnings.some(w => /YouTube/.test(w)), "warns");
+  const f = fakeFetch({ tv: { 1: withVids } });
+  const none = await run({ series: [entry(1, "A")], prev: null, fetchImpl: f, now: NOW });
+  assert.equal(none.data.series[0].trailer, "blockedFirs");
+  assert.ok(!f.calls.some(u => u.includes("googleapis")), "no YouTube calls without a key");
 });

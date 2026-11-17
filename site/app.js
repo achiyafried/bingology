@@ -15,7 +15,7 @@ const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms, modeSteps } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
-import { trailBtnHTML, tilePlayHTML, playerHTML } from "./lib/trailer.js";
+import { trailBtnHTML, tilePlayHTML, playerHTML, searchLinkHTML, unavailableHTML, ytErrorCode, YT_ORIGINS } from "./lib/trailer.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -275,12 +275,26 @@ function praiseHTML(s) {
 /** Removes inline trailer players under root (stops the sound): one video at a time. */
 function stopInline(root) { root.querySelectorAll(".tvid").forEach(n => { if (!n.closest("#vdlg")) n.remove(); }); }
 function trailerHTML(s, i) {
-  const btn = trailBtnHTML(s, i);
-  if (btn) return btn; // a real trailer plays in place; otherwise the YouTube search link below
-  const q = (/[\u0590-\u05FF]/.test(s.n) ? s.n + " טריילר רשמי" : s.n + " TV series official trailer");
-  const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
-  return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
+  return trailBtnHTML(s, i) || searchLinkHTML(s); // a real trailer plays in place; otherwise the YouTube search link
 }
+const player = i => playerHTML(S[i].tr, S[i].n, i, location.origin);
+/** Asks a freshly inserted player to report errors (the IFrame API's handshake), so a blocked video can fall back. */
+function watchPlayer(root) {
+  const f = root && root.querySelector(".tvid iframe"); if (!f) return;
+  f.addEventListener("load", () => {
+    const w = f.contentWindow; if (!w) return;
+    const send = m => w.postMessage(JSON.stringify({ ...m, id: 1, channel: "widget" }), YT_ORIGINS[0]);
+    send({ event: "listening" });
+    send({ event: "command", func: "addEventListener", args: ["onError"] });
+  });
+}
+window.addEventListener("message", e => {
+  if (!YT_ORIGINS.includes(e.origin) || ytErrorCode(e.data) === null) return;
+  const f = [...document.querySelectorAll(".tvid iframe")].find(x => x.contentWindow === e.source); if (!f) return;
+  const box = f.closest(".tvid"), s = S[+box.dataset.i]; if (!s) return;
+  const row = box.parentElement.classList.contains("trail") ? box.parentElement : box; // in place: replace the whole row
+  row.outerHTML = unavailableHTML(s);
+});
 function metaHTML(s) {
   return `<div class="meta">${s.y ? `<span>${s.y}</span>` : ""}<span>${s.s === 1 ? "עונה אחת" : s.s + " עונות"}</span><span>${s.e} פרקים</span><span>כ-${s.m} דק׳ לפרק</span>${STATUS[s.status] ? `<span class="stat ${STATUS[s.status][1]}">${STATUS[s.status][0]}</span>` : ""}</div>`;
 }
@@ -620,8 +634,8 @@ document.addEventListener("click", e => {
     case "actall": st.actMulti = !st.actMulti; st.actLimit = 60; render(false); break;
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
     case "dclose": stopInline($("#dlg")); $("#dlg").close(); break;
-    case "trail": { const row = el.closest(".trail"); if (row && S[i]) { row.innerHTML = playerHTML(S[i].tr, S[i].n); row.classList.add("on"); const f = row.querySelector("iframe"); if (f) f.focus(); } break; }
-    case "play": { const d = $("#vdlg"); if (!S[i] || !S[i].tr) break; stopInline(document); d.innerHTML = `<button class="vx" data-a="vclose" aria-label="סגירת הטריילר">✕</button>${playerHTML(S[i].tr, S[i].n)}`; if (!d.open) d.showModal(); break; }
+    case "trail": { const row = el.closest(".trail"); if (row && S[i]) { row.innerHTML = player(i); row.classList.add("on"); watchPlayer(row); const f = row.querySelector("iframe"); if (f) f.focus(); } break; }
+    case "play": { const d = $("#vdlg"); if (!S[i] || !S[i].tr) break; stopInline(document); d.innerHTML = `<button class="vx" data-a="vclose" aria-label="סגירת הטריילר">✕</button>${player(i)}`; watchPlayer(d); if (!d.open) d.showModal(); break; }
     case "vclose": $("#vdlg").close(); break;
     case "retry": boot(); break;
     case "sortpick": st.ans.sort = v; rank(false); st.ranked = orderResults(st.ranked, S, v); st.screen = "result"; render(true); break;
