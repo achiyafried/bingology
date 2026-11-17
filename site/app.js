@@ -343,7 +343,7 @@ function qHTML() {
     const ids = poolIds(st.ans.src, st.ans.platforms), marked = ids.filter(i => st.seen.has(i)).length;
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">מה כבר ראיתם?</h2><p class="sub">סמנו סדרות שכבר ראיתם כדי שלא נמליץ עליהן. אפשר לדלג.</p>
     <div class="grid">${ids.map(i => tile(i, "toggle", true)).join("")}</div>
-    <div class="sticky-cta"><button class="btn primary block" data-a="next">${marked ? `הראו לי את ההמלצה (סימנתם ${marked})` : "דילוג, הראו לי את ההמלצה"}</button></div></div>`;
+    <div class="sticky-cta"><button class="btn primary block" data-a="next">${marked ? `הראו לי את ההמלצה (סימנתם ${marked})` : "לדלג ולעבור ישר להמלצה"}</button></div></div>`;
   }
   if (step === QS.length + 1) {
     return head + `<div class="qbody"><h2 data-focus tabindex="-1">שנייה לפני התוצאות</h2><p class="sub">לפי מה לסדר את ההמלצות?</p>
