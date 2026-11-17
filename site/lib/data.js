@@ -27,6 +27,7 @@ export function fromData(json) {
     providersGuess: x.providersGuess ?? [],
     po: x.providersOther ?? [],
     poster: x.poster ?? null,
+    tr: x.trailer ?? null,
     cast: x.cast ?? [],
     creators: x.creators ?? [],
     status: x.status ?? null,

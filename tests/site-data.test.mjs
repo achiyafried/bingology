@@ -168,3 +168,9 @@ test("series card: signed-out \"not for me\" toggle; signed in goes through card
   assert.match(src, /nope: \(\) => st\.nope/);
   assert.match(src, /onNope: \(id, on\) =>/);
 });
+
+test("fromData exposes the trailer key as tr", () => {
+  const [a, b] = fromData({ series: [{ name: "A", lists: [], genres: [], trailer: "abcdefghijk" }, { name: "B", lists: [], genres: [] }] });
+  assert.equal(a.tr, "abcdefghijk");
+  assert.equal(b.tr, null);
+});

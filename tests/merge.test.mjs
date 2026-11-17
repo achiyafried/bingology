@@ -194,3 +194,11 @@ test("overviewEn follows the live data, else a real previous fetch", () => {
   assert.equal(mergeEntry(entry, { ...live, overviewEn: "Live." }, 9.5, null, NOW).overviewEn, "Live.");
   assert.equal(mergeEntry(entry, null, null, { ...prev, overviewEn: "Prev." }, NOW).overviewEn, "Prev.");
 });
+
+test("mergeEntry: a failed fetch keeps last night's trailer, a fetched night without one clears it", () => {
+  const p = { ...prev, trailer: "abcdefghijk" };
+  assert.equal(mergeEntry(entry, null, null, p, NOW).trailer, "abcdefghijk");
+  assert.equal(mergeEntry(entry, { ...live, trailer: null }, null, p, NOW).trailer, null);
+  assert.equal(mergeEntry(entry, { ...live, trailer: "newnewnew11" }, null, p, NOW).trailer, "newnewnew11");
+  assert.equal(mergeEntry(entry, null, null, null, NOW).trailer, null);
+});

@@ -6,6 +6,7 @@ import { nextEpisode, progress } from "../lib/progress.js";
 import { pickPartner, jointPick } from "../lib/jointpick.js";
 import { searchSeries } from "../lib/search.js";
 import { readiness, memoForYou, unrated } from "../lib/foryou.js";
+import { tilePlayHTML } from "../lib/trailer.js";
 import { staleNope, nopeCleared } from "../lib/nope.js";
 
 export const ACCOUNT_DOWN = "לא הצלחנו להתחבר לחשבון. נסו שוב בעוד רגע";
@@ -135,7 +136,7 @@ export function forYouHTML(state) {
       : `<div class="fy">${recs.map(({ i, because: names }) => {
         const s = S[i];
         const why = names.length ? `<span class="why2">${because(names)}</span>` : "";
-        return `<div class="fyi"><button class="tile" data-a="detail" data-i="${i}">${tileImg(s)}<span class="cap"><bdi>${esc(s.n)}</bdi></span>${why}</button>`
+        return `<div class="fyi"><button class="tile" data-a="detail" data-i="${i}">${tileImg(s)}<span class="cap"><bdi>${esc(s.n)}</bdi></span>${why}</button>${tilePlayHTML(s, i)}`
           + `<div class="fyb" role="group" aria-label="${esc(s.n)}"><button class="plus" data-a="fy-want" data-id="${s.tmdbId}">+ רוצה</button><button class="plus" data-a="fy-nope" data-id="${s.tmdbId}">לא בשבילי</button></div></div>`;
       }).join("")}</div>`;
   }

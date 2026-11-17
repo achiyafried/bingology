@@ -523,3 +523,17 @@ test("mine.js wires the for-you and not-for-me actions", () => {
   assert.match(src, /case "nope-undo":[\s\S]*?store\.removeEntry\(id, \{ onlyStatus: "nope" \}\)[\s\S]*?V\.entries\.delete\(id\)[\s\S]*?CTX\.onNope\(id, false\)/);
   assert.match(readFileSync("site/app.js", "utf8"), /seenSet: \(\) => st\.seen/);
 });
+
+test("for you: a trailer ▶ beside tiles that have a trailer, none otherwise", () => {
+  const rows = [fyRow(tid(0, 0), "seen", 9), fyRow(tid(1, 0), "seen", 6), fyRow(tid(2, 0), "seen", 7)];
+  const none = fySection(fy(rows));
+  assert.doesNotMatch(none, /class="tplay"/);
+  const saved = FS.map(s => s.tr);
+  FS.forEach(s => { s.tr = "dQw4w9WgXcQ"; });
+  try {
+    const sec = fySection(mineHTML({ user, profile, entries: new Map(rows.map(r => [r.tmdb_id, r])), S: FS.map(s => ({ ...s })) }));
+    const items = (sec.match(/class="fyi"/g) || []).length;
+    assert.equal((sec.match(/class="tplay" data-a="play" data-i="\d+"/g) || []).length, items);
+    assert.doesNotMatch(sec, /<button class="tile"[^>]*>(?:(?!<\/button>)[\s\S])*class="tplay"/, "not nested in the tile button");
+  } finally { FS.forEach((s, k) => { s.tr = saved[k]; }); }
+});

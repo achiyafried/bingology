@@ -15,6 +15,7 @@ const REPO = "achiyafried/bingology";
 import { quizSteps, resetQuiz, orderResults, emptyPlatforms, quizPlatforms, modeSteps } from "./lib/quiz.js";
 import { bingeScores } from "./lib/binge.js";
 import { bingePlan } from "./lib/plan.js";
+import { trailBtnHTML, tilePlayHTML, playerHTML } from "./lib/trailer.js";
 
 let S = [];
 const poolIds = (src, plats) => poolIn(S, src, plats);
@@ -271,7 +272,11 @@ function praiseHTML(s) {
 }
 
 /* helpers */
-function trailerHTML(s) {
+/** Removes inline trailer players under root (stops the sound): one video at a time. */
+function stopInline(root) { root.querySelectorAll(".tvid").forEach(n => { if (!n.closest("#vdlg")) n.remove(); }); }
+function trailerHTML(s, i) {
+  const btn = trailBtnHTML(s, i);
+  if (btn) return btn; // a real trailer plays in place; otherwise the YouTube search link below
   const q = (/[\u0590-\u05FF]/.test(s.n) ? s.n + " טריילר רשמי" : s.n + " TV series official trailer");
   const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
   return `<div class="trail"><a href="${url}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>צפייה בטריילר<span class="sr"> (נפתח בלשונית חדשה ביוטיוב)</span></a><button class="linkbtn" data-a="copylink" data-u="${url}">העתקת קישור</button></div>`;
@@ -355,7 +360,7 @@ function ticketHTML(r) {
     <p class="avail">${platLine(s)}</p>
     <p class="t-line"${s.lEn ? ' dir="ltr" lang="en"' : ""}>${esc(s.l)}</p>
     ${praiseHTML(s)}
-    ${trailerHTML(s)}
+    ${trailerHTML(s, r.i)}
     <ul class="why">${r.why.map(w => `<li class="${w.ok ? "" : "miss"}">${w.ok ? CHECK : CROSS}<span>${w.t}</span></li>`).join("")}</ul>
     <div class="perf"><i></i></div>${stub}</article>`;
 }
@@ -381,7 +386,7 @@ function planHTML() {
     <p class="avail">${platLine(s)}</p>
     ${ratesHTML(s)}
     <ul class="why">${r.why.filter(w => w.ok).map(w => `<li>${CHECK}<span>${w.t}</span></li>`).join("")}</ul>
-    ${trailerHTML(s)}
+    ${trailerHTML(s, r.i)}
     <p class="note p-fine">סך השעות מקורב: לפי אורך פרק ממוצע, ופרקי סיום לפעמים ארוכים יותר.</p>
   </article>
   <div class="foot"><button class="btn ghost" data-a="backrec">חזרה להמלצות</button><button class="btn primary" data-a="restart">התחלה מחדש</button></div>`;
@@ -402,7 +407,7 @@ function resultHTML() {
   const r = st.ranked[st.idx];
   const alts = st.ranked.slice(st.idx + 1, st.idx + 4);
   return `<h1 class="rtitle" data-focus tabindex="-1">${st.surprise ? "ההפתעה של הערב" : "הבחירה האולטימטיבית שלכם"}</h1>` + (!st.surprise && SORT_NOTE[st.ans.sort] ? `<p class="sortnote">${SORT_NOTE[st.ans.sort]}</p>` : "") + ticketHTML(r) + moreHTML(r.i) +
-    (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${esc(S[x.i].n)}">${poster(x.i, "")}<span class="cap"><bdi>${esc(S[x.i].n)}</bdi></span></button>`).join("")}</div></section>` : "") +
+    (alts.length && !st.chosen ? `<section class="alts"><h3>הכי קרובות אחריה</h3><div class="grid">${alts.map((x, k) => `<div class="tw"><button class="tile" data-a="alt" data-k="${st.idx + 1 + k}" aria-label="${esc(S[x.i].n)}">${poster(x.i, "")}<span class="cap"><bdi>${esc(S[x.i].n)}</bdi></span></button>${tilePlayHTML(S[x.i], x.i)}</div>`).join("")}</div></section>` : "") +
     `<div class="foot"><button class="linkbtn" data-a="edit">שינוי התשובות</button><button class="linkbtn" data-a="surprise">תפתיעו אותי</button><button class="linkbtn" data-a="restart">התחלה מחדש</button></div><p class="note" style="text-align:center">הציונים מקורבים ועשויים להשתנות.</p>`;
 }
 
@@ -520,7 +525,7 @@ function seriesDlgHTML(i) {
   <p class="avail">${platLine(s)}</p>
   <p class="d-line"${s.lEn ? ' dir="ltr" lang="en"' : ""}>${esc(s.l)}</p>
   ${praiseHTML(s)}
-  ${trailerHTML(s)}
+  ${trailerHTML(s, i)}
   ${hasSession() ? `<div id="acct"></div>` : ""}
   <div class="d-acts">${hasSession() ? "" : `<button class="btn primary" data-a="dseen">${seen ? "עוד לא ראיתי" : "סימון כנצפתה"}</button>${dnopeBtn(i)}`}${st.dlgStack.length ? `<button class="btn ghost" data-a="dback">חזרה</button>` : ""}<button class="btn ghost" data-a="dclose">סגירה</button></div>${moreHTML(i)}`;
 }
@@ -614,14 +619,19 @@ document.addEventListener("click", e => {
     case "copylink": copyText(el.dataset.u).then(ok => showToast(ok ? "הקישור הועתק. הדביקו אותו בדפדפן או באפליקציית יוטיוב." : "אי אפשר להעתיק מהמסך הזה. סמנו את הכתובת והעתיקו אותה ידנית.", el.dataset.u)); break;
     case "actall": st.actMulti = !st.actMulti; st.actLimit = 60; render(false); break;
     case "actmore": st.actLimit += 60; $("#actList").innerHTML = actListHTML(); break;
-    case "dclose": $("#dlg").close(); break;
+    case "dclose": stopInline($("#dlg")); $("#dlg").close(); break;
+    case "trail": { const row = el.closest(".trail"); if (row && S[i]) { row.innerHTML = playerHTML(S[i].tr, S[i].n); row.classList.add("on"); const f = row.querySelector("iframe"); if (f) f.focus(); } break; }
+    case "play": { const d = $("#vdlg"); if (!S[i] || !S[i].tr) break; stopInline(document); d.innerHTML = `<button class="vx" data-a="vclose" aria-label="סגירת הטריילר">✕</button>${playerHTML(S[i].tr, S[i].n)}`; if (!d.open) d.showModal(); break; }
+    case "vclose": $("#vdlg").close(); break;
     case "retry": boot(); break;
     case "sortpick": st.ans.sort = v; rank(false); st.ranked = orderResults(st.ranked, S, v); st.screen = "result"; render(true); break;
     case "restart": resetQuiz(st, blankAns()); render(true); break;
   }
 });
-$("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
-$("#dlg").addEventListener("close", () => { st.dlgStack = []; st.dlgCur = null; });
+$("#dlg").addEventListener("click", e => { if (e.target === e.currentTarget) { stopInline(e.currentTarget); e.currentTarget.close(); } });
+$("#dlg").addEventListener("close", e => { st.dlgStack = []; st.dlgCur = null; stopInline(e.currentTarget); }); // a closed dialog keeps its iframe alive
+$("#vdlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+$("#vdlg").addEventListener("close", e => { e.currentTarget.innerHTML = ""; }); // removing the iframe stops the sound
 document.addEventListener("input", e => { if (e.target && e.target.id === "serq") { st.serQuery = e.target.value; $("#serRes").innerHTML = serResHTML(); } });
 document.addEventListener("input", e => { if (e.target && e.target.id === "actq") { st.actQuery = e.target.value; st.actLimit = 60; $("#actList").innerHTML = actListHTML(); } });
 

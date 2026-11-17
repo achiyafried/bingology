@@ -228,6 +228,18 @@ dialog .nm { color: var(--ticket-accent); }
 .toast input { width: 100%; font: inherit; font-size: 13px; direction: ltr; padding: 8px 10px; border-radius: 8px; border: 0; background: rgba(128, 128, 160, .3); color: inherit; }
 .trail a { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--ticket-accent); text-decoration: none; border: 2px solid rgba(59, 47, 208, .28); border-radius: 999px; padding: 8px 16px; }
 .trail a:hover { background: rgba(59, 47, 208, .08); }
+.trail .tbtn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 700; font-size: 16px; color: var(--ticket-accent); background: none; border: 2px solid rgba(59, 47, 208, .28); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.trail .tbtn:hover { background: rgba(59, 47, 208, .08); }
+.trail.on { display: block; }
+.tvid { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
+.tvid iframe { display: block; width: 100%; height: 100%; border: 0; }
+.tw, .mine .fyi { position: relative; }
+.tw > .tile { width: 100%; }
+.tplay { position: absolute; top: 6px; inset-inline-end: 6px; width: 36px; height: 36px; border-radius: 50%; border: 0; display: flex; align-items: center; justify-content: center; background: rgba(10, 8, 30, .62); color: #fff; cursor: pointer; padding: 0; }
+.tplay:hover, .tplay:focus-visible { background: rgba(10, 8, 30, .85); }
+#vdlg { border: 0; padding: 40px 8px 8px; border-radius: 18px; width: calc(100% - 24px); max-width: 720px; background: #0b0a14; box-shadow: var(--shadow); }
+#vdlg::backdrop { background: rgba(10, 8, 30, .78); }
+#vdlg .vx { position: absolute; top: 4px; inset-inline-end: 6px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: none; color: #fff; font-size: 20px; cursor: pointer; }
 .more { background: var(--surface); border-radius: 18px; padding: 18px; margin-top: 18px; }
 .more h3 { font-size: 20px; margin: 0 0 10px; }
 .more .sec { margin-bottom: 20px; }

@@ -30,6 +30,8 @@ export function mergeEntry(entry, live, imdb, prev, now) {
   // Live-only: a night without a fetch has no news to report, so these never fall back to prev.
   s.next = live ? live.next ?? null : null;
   s.streams = live ? live.streams ?? null : null;
+  // Trailer: a fetched night with no video means it was taken down (the site falls back to a search link).
+  s.trailer = live ? live.trailer ?? null : prev?.trailer ?? null;
   s.imdb = pick(imdb, prev?.imdb, fallback.imdb);
   s.fetchedAt = live ? now : prev?.fetchedAt ?? null;
   return s;
