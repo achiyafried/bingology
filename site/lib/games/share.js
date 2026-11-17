@@ -19,3 +19,10 @@ export const RIDDLE_TEMPLATE = [
   "הסבר (לא חובה):",
   "השם שיופיע ליד החידה (לא חובה):",
 ].join("\n");
+
+/** Where riddles from friends go: a mailbox just for the site (it is public on the page). */
+export const RIDDLE_EMAIL = "bingeislife@gmail.com";
+
+/** A mailto link with the subject and the template filled in. */
+export const riddleMailto = (to = RIDDLE_EMAIL) =>
+  `mailto:${to}?subject=${encodeURIComponent("חידה ל-Bingology")}&body=${encodeURIComponent(RIDDLE_TEMPLATE.split("\n").slice(1).join("\n\n") + "\n")}`;

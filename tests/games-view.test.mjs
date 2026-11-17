@@ -195,6 +195,7 @@ test("riddleHTML credits the friend who sent the riddle, before and after solvin
 test("hubHTML: a 'send us a riddle' link on today's games only", () => {
   const day = { date: "2026-11-17", games: {} };
   assert.match(hubHTML(day, {}, 0), /data-gsendriddle/);
+  assert.match(hubHTML(day, {}, 0), /<a class="linkbtn" href="mailto:bingeislife@gmail\.com\?subject=/);
   assert.doesNotMatch(hubHTML(day, {}, 0, { guest: true }), /data-gsendriddle/);
   assert.doesNotMatch(hubHTML(day, {}, 0, { practice: true }), /data-gsendriddle/);
 });
