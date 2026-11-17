@@ -64,8 +64,9 @@ const heText = (he, en) => { const t = he?.trim(); return t && t !== en ? t : nu
 const vote = x => (x.vote_count > 0 ? Math.round(x.vote_average * 10) / 10 : null);
 
 /** /movie/{id} (en-US, with watch/providers and videos) + its he-IL response → the item's live fields and trailer candidates. */
-export function movieLive(m, he, map) {
+export function movieLive(m, he, map, keep = new Set()) {
   return {
+    cast: castOf(m.credits, keep),
     name: m.title, nameHe: heText(he?.title, m.title), date: m.release_date || null,
     runtime: m.runtime || null, episodes: null, poster: m.poster_path ? IMG + m.poster_path : null,
     overview: he?.overview?.trim() || null, overviewEn: m.overview?.trim() || null, vote: vote(m),
@@ -75,10 +76,11 @@ export function movieLive(m, he, map) {
 }
 
 /** /tv/{id} (en-US, with watch/providers and videos) + he-IL + /tv/{id}/season/{n} (with videos) → live fields; the season's trailers come first. */
-export function seasonLive(tv, he, s, map) {
+export function seasonLive(tv, he, s, map, credits = null, keep = new Set()) {
   const eps = s.episodes ?? [];
   const mins = eps.reduce((a, e) => a + (e.runtime || 0), 0);
   return {
+    cast: castOf(credits, keep),
     name: tv.name, nameHe: heText(he?.name, tv.name), date: s.air_date || null,
     runtime: mins || null, episodes: eps.length || null,
     poster: s.poster_path ? IMG + s.poster_path : tv.poster_path ? IMG + tv.poster_path : null,
@@ -86,4 +88,35 @@ export function seasonLive(tv, he, s, map) {
     ...providersOf(tv["watch/providers"], map),
     cands: [...new Set([...trailerCandidates(s), ...trailerCandidates(tv)])],
   };
+}
+
+/** Cast pairs for the people we follow: movie credits ({character}) or season aggregate_credits ({roles: [{character}]}). */
+export function castOf(credits, keep) {
+  return (credits?.cast ?? []).filter(c => keep.has(c.id)).map(c => ({
+    person: c.id, name: c.name,
+    character: c.roles ? c.roles.map(r => r.character).filter(Boolean).join(" / ") : c.character ?? "",
+  }));
+}
+
+/**
+ * Each character's appearances, in story order: a cast pair whose person is one of theirs AND whose character name
+ * matches. "(uncredited)" marks a cameo. Characters with none are left out (warning). Most appearances first.
+ */
+export function appearances(chars, items, warnings) {
+  const byId = new Map(items.map(x => [x.id, x]));
+  const story = [...items].sort((a, b) => a.story_i - b.story_i);
+  const out = [];
+  for (const c of chars) {
+    const re = new RegExp(c.match, "i"), people = new Set(c.people), apps = [];
+    let actor = null;
+    for (const x of story) {
+      const hit = (x.cast ?? []).find(p => people.has(p.person) && re.test(p.character ?? ""));
+      if (!hit) continue;
+      apps.push({ id: x.id, as: hit.character.replace(/\s*\(uncredited\)/gi, "").trim(), cameo: /uncredited/i.test(hit.character) });
+      actor = hit.name;
+    }
+    if (!apps.length) { warnings.push(`character ${c.id}: no appearances`); continue; }
+    out.push({ id: c.id, he: c.he, en: c.en, poster: byId.get(c.poster)?.poster ?? null, actor, apps });
+  }
+  return out.sort((a, b) => b.apps.length - a.apps.length || a.he.localeCompare(b.he, "he"));
 }

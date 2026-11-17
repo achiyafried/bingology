@@ -27,6 +27,7 @@ function fake({ fail = new Set(), blocked = [] } = {}) {
     const he = u.searchParams.get("language") === "he-IL";
     let m;
     if ((m = /\/movie\/(\d+)$/.exec(u.pathname))) { if (fail.has(+m[1])) return new Response("{}", { status: 500 }); return new Response(JSON.stringify(he ? movieHe : movie)); }
+    if (/\/aggregate_credits$/.test(u.pathname)) return new Response(JSON.stringify({ cast: [] }));
     if ((m = /\/tv\/(\d+)\/season\/(\d+)$/.exec(u.pathname))) return new Response(JSON.stringify(season(+m[2])));
     if ((m = /\/tv\/(\d+)$/.exec(u.pathname))) { if (fail.has(+m[1])) return new Response("{}", { status: 500 }); return new Response(JSON.stringify(he ? showHe : show)); }
     return new Response("{}", { status: 404 });
@@ -101,4 +102,62 @@ test("invalid rows are skipped with a warning, never abort", async () => {
   assert.deepEqual(r.data.items.map(x => x.id), ["movie:1771", "tv:84958:s2"]);
   assert.equal(r.data.items[1].story_i, 2, "story_i is the row's place in mcu.json");
   assert.ok(r.warnings.some(w => /row 1/.test(w)));
+});
+
+import { castOf, appearances } from "../scripts/lib/mcu.mjs";
+
+test("castOf: movie credits and season aggregate roles, only the people we follow", () => {
+  const keep = new Set([1, 2]);
+  assert.deepEqual(castOf({ cast: [{ id: 1, name: "A", character: "Steve Rogers / Captain America" }, { id: 9, name: "Z", character: "x" }] }, keep),
+    [{ person: 1, name: "A", character: "Steve Rogers / Captain America" }]);
+  assert.deepEqual(castOf({ cast: [{ id: 2, name: "B", roles: [{ character: "Bruce Banner" }, { character: "Smart Hulk" }] }] }, keep),
+    [{ person: 2, name: "B", character: "Bruce Banner / Smart Hulk" }]);
+  assert.deepEqual(castOf(null, keep), []);
+});
+
+test("appearances: actor AND character must match; two actors, one character; cameo; none → left out", () => {
+  const items = [
+    { id: "movie:1", story_i: 0, poster: "P1", cast: [{ person: 16828, name: "Chris Evans", character: "Steve Rogers / Captain America" }, { person: 819, name: "Edward Norton", character: "Bruce Banner" }] },
+    { id: "movie:2", story_i: 1, poster: "P2", cast: [{ person: 16828, name: "Chris Evans", character: "Johnny Storm / Human Torch" }, { person: 103, name: "Mark Ruffalo", character: "Bruce Banner (uncredited)" }] },
+  ];
+  const chars = [
+    { id: "captain-america", he: "קפטן אמריקה", en: "Captain America", people: [16828], match: "Steve Rogers|Captain America", poster: "movie:1" },
+    { id: "hulk", he: "האלק", en: "Hulk", people: [819, 103], match: "Banner|Hulk", poster: "movie:2" },
+    { id: "nobody", he: "אף אחד", en: "Nobody", people: [5], match: "x", poster: "movie:1" },
+  ];
+  const warnings = [];
+  const out = appearances(chars, items, warnings);
+  assert.deepEqual(out.map(c => c.id), ["hulk", "captain-america"], "most appearances first");
+  const hulk = out[0];
+  assert.deepEqual(hulk.apps, [{ id: "movie:1", as: "Bruce Banner", cameo: false }, { id: "movie:2", as: "Bruce Banner", cameo: true }]);
+  assert.equal(hulk.actor, "Mark Ruffalo", "the latest actor");
+  assert.equal(hulk.poster, "P2");
+  assert.deepEqual(out[1].apps.map(a => a.id), ["movie:1"], "Johnny Storm is not Captain America");
+  assert.ok(warnings.some(w => /nobody/.test(w)));
+});
+
+test("run: characters come out of the fetch; season cast from aggregate_credits", async () => {
+  const f = fake();
+  const g = async url => {
+    const u = new URL(url);
+    if (/\/aggregate_credits$/.test(u.pathname)) return new Response(JSON.stringify({ cast: [{ id: 91606, name: "Tom Hiddleston", roles: [{ character: "Loki" }] }] }));
+    if (/\/movie\/1771$/.test(u.pathname) && u.searchParams.get("language") === "en-US") return new Response(JSON.stringify({ ...movie, credits: { cast: [{ id: 16828, name: "Chris Evans", character: "Steve Rogers / Captain America" }] } }));
+    return f(url);
+  };
+  const characters = [
+    { id: "captain-america", he: "קפטן אמריקה", en: "Captain America", people: [16828], match: "Steve Rogers", poster: "movie:1771" },
+    { id: "loki", he: "לוקי", en: "Loki", people: [91606], match: "Loki", poster: "tv:84958:s1" },
+  ];
+  const { data } = await run({ items: [M, S(1)], prev: null, fetchImpl: g, now: NOW, map, characters });
+  assert.deepEqual(data.characters.map(c => [c.id, c.apps.length, c.actor]), [["loki", 1, "Tom Hiddleston"], ["captain-america", 1, "Chris Evans"]], "ties in Hebrew order");
+  assert.equal(data.characters.find(c => c.id === "loki").poster, "https://image.tmdb.org/t/p/w342/loki-s1.jpg");
+  assert.deepEqual(data.items[0].cast, [{ person: 16828, name: "Chris Evans", character: "Steve Rogers / Captain America" }]);
+});
+
+test("run: a failed item keeps yesterday's cast", async () => {
+  const characters = [{ id: "captain-america", he: "ק", en: "C", people: [16828], match: "Steve", poster: "movie:1771" }];
+  const prev = { items: [{ ...M, story_i: 0, name: "Cap", fetchedAt: "2026-11-16T03:00:00Z", cast: [{ person: 16828, name: "Chris Evans", character: "Steve Rogers" }] }] };
+  const items = [M, ...[1, 2, 3, 4, 5].map(n => ({ ...M, id: `movie:${n}`, tmdb: n }))];
+  const r = await run({ items, prev, fetchImpl: fake({ fail: new Set([1771]) }), now: NOW, map, characters });
+  assert.deepEqual(r.data.characters.find(c => c.id === "captain-america").apps.map(a => a.id), ["movie:1771"]);
 });
