@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmdbGet, pool } from "./lib/api.mjs";
 import { loadEnv } from "./lib/env.mjs";
-import { validateMcu, movieLive, seasonLive, appearances } from "./lib/mcu.mjs";
+import { validateMcu, validateCharacters, movieLive, seasonLive, appearances } from "./lib/mcu.mjs";
 import { videoVerdicts } from "./lib/youtube.mjs";
 
 const CONCURRENCY = 4;
@@ -21,7 +21,7 @@ async function fetchLive(row, fetchImpl, map, keep) {
   const tv = await tmdbGet(`/tv/${row.tmdb}`, { language: "en-US", ...EXTRA }, fetchImpl);
   const he = await tmdbGet(`/tv/${row.tmdb}`, { language: "he-IL" }, fetchImpl).catch(() => null);
   const s = await tmdbGet(`/tv/${row.tmdb}/season/${row.season}`, { language: "en-US", append_to_response: "videos", include_video_language: "en,he,null" }, fetchImpl);
-  const credits = await tmdbGet(`/tv/${row.tmdb}/season/${row.season}/aggregate_credits`, { language: "en-US" }, fetchImpl);
+  const credits = await tmdbGet(`/tv/${row.tmdb}/season/${row.season}/aggregate_credits`, { language: "en-US" }, fetchImpl).catch(() => null);
   return seasonLive(tv, he, s, map, credits, keep);
 }
 
@@ -32,6 +32,11 @@ export async function run({ items, prev, fetchImpl = fetch, now, youtubeKey = nu
   errs.forEach(e => warnings.push(`mcu.json ${e}`));
   const rows = items.map((r, i) => ({ r, i })).filter(({ i }) => !bad.has(i));
   const prevById = new Map((prev?.items ?? []).map(x => [x.id, x]));
+  // Bad character rows are skipped (a broken pattern must not stop the run).
+  const charErrs = validateCharacters(characters, new Set(items.map(r => r?.id)));
+  const badChar = new Set(charErrs.map(e => Number(/^row (\d+):/.exec(e)?.[1])).filter(Number.isInteger));
+  charErrs.forEach(e => warnings.push(`mcu-characters.json ${e}`));
+  characters = characters.filter((_, i) => !badChar.has(i));
   const keep = new Set(characters.flatMap(c => c.people));
 
   let failed = 0;
@@ -52,7 +57,8 @@ export async function run({ items, prev, fetchImpl = fetch, now, youtubeKey = nu
   for (const { r, i, live } of got) {
     if (live) {
       const { cands, ...fields } = live;
-      out.push({ ...r, story_i: i, ...fields, trailer: (ok ? cands.find(ok) : cands[0]) ?? null, fetchedAt: now });
+      const cast = fields.cast ?? prevById.get(r.id)?.cast ?? [];
+      out.push({ ...r, story_i: i, ...fields, cast, trailer: (ok ? cands.find(ok) : cands[0]) ?? null, fetchedAt: now });
     } else {
       const old = prevById.get(r.id);
       if (old) out.push({ ...old, ...r, story_i: i }); // yesterday's details, today's place on the timeline

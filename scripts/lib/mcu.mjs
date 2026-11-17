@@ -80,7 +80,7 @@ export function seasonLive(tv, he, s, map, credits = null, keep = new Set()) {
   const eps = s.episodes ?? [];
   const mins = eps.reduce((a, e) => a + (e.runtime || 0), 0);
   return {
-    cast: castOf(credits, keep),
+    cast: credits ? castOf(credits, keep) : null, // null: credits didn't load tonight, keep yesterday's
     name: tv.name, nameHe: heText(he?.name, tv.name), date: s.air_date || null,
     runtime: mins || null, episodes: eps.length || null,
     poster: s.poster_path ? IMG + s.poster_path : tv.poster_path ? IMG + tv.poster_path : null,

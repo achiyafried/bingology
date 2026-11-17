@@ -161,3 +161,21 @@ test("run: a failed item keeps yesterday's cast", async () => {
   const r = await run({ items, prev, fetchImpl: fake({ fail: new Set([1771]) }), now: NOW, map, characters });
   assert.deepEqual(r.data.characters.find(c => c.id === "captain-america").apps.map(a => a.id), ["movie:1771"]);
 });
+
+test("only the season credits failing: the item is fine and keeps yesterday's cast", async () => {
+  const f = fake();
+  const g = async url => (/\/aggregate_credits$/.test(new URL(url).pathname) ? new Response("{}", { status: 500 }) : f(url));
+  const characters = [{ id: "loki", he: "לוקי", en: "Loki", people: [91606], match: "Loki", poster: "tv:84958:s1" }];
+  const prev = { items: [{ ...S(1), story_i: 0, fetchedAt: "2026-11-16T03:00:00Z", cast: [{ person: 91606, name: "Tom Hiddleston", character: "Loki" }] }] };
+  const r = await run({ items: [S(1)], prev, fetchImpl: g, now: NOW, map, characters });
+  assert.equal(r.failed, 0);
+  assert.equal(r.data.items[0].fetchedAt, NOW);
+  assert.deepEqual(r.data.items[0].cast, prev.items[0].cast);
+  assert.equal(r.data.characters[0].apps.length, 1);
+});
+
+test("a bad character row is skipped with a warning, never crashes the run", async () => {
+  const characters = [{ id: "bad", he: "x", en: "x", people: [1], match: "(", poster: "movie:1771" }, { id: "cap", he: "ק", en: "C", people: [16828], match: "Steve", poster: "movie:1771" }];
+  const r = await run({ items: [M], prev: null, fetchImpl: fake(), now: NOW, map, characters });
+  assert.ok(r.warnings.some(w => /mcu-characters\.json row 0/.test(w)));
+});
