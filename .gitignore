@@ -5,3 +5,5 @@ node_modules/
 add-result.json
 msg.txt
 _site/
+video/out/
+video/node_modules/
