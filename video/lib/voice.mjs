@@ -1,7 +1,7 @@
-// Narration with macOS's built-in Hebrew voice. No network, no keys; on other systems synth() just reports false.
+// Narration with macOS's built-in English voice. No network, no keys; on other systems synth() just reports false.
 import { execFile } from "node:child_process";
 
-export const VOICE = "Carmit";
+export const VOICE = "Samantha";
 const RATE = "175"; // words per minute; a touch slower than the default so it's easy to follow
 
 export function sayArgs(text, out) {

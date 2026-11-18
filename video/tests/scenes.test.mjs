@@ -35,8 +35,8 @@ test("every scene has spoken narration", () => {
   for (const s of SCENES) assert.ok(typeof s.say === "string" && s.say.length > 10, s.id);
 });
 test("the Marvel narration dedicates the zone to Amalia", () => {
-  assert.match(SCENES.find(s => s.id === "marvel").say, /מוקדש לעמליה/);
+  assert.match(SCENES.find(s => s.id === "marvel").say, /dedicated to Amalia/);
 });
-test("narration uses the Hebrew geresh (׳), never an ASCII apostrophe — Carmit stalls on \"'\"", () => {
-  for (const s of SCENES) assert.ok(!s.say.includes("'"), s.id);
+test("narration is in English (the captions stay Hebrew)", () => {
+  for (const s of SCENES) assert.ok(!/[\u0590-\u05FF]/.test(s.say), s.id);
 });
