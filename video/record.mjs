@@ -2,7 +2,7 @@
 import { readFile, rm, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { missingInstall, INSTALL_HINT } from "./lib/preflight.mjs";
 
 const problem = missingInstall();
@@ -21,9 +21,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SITE = join(HERE, "..", "site");
 const OUT = join(HERE, "out");
 const RAW = join(OUT, "raw");
-const MP4 = join(OUT, "bingology-tour.mp4");
+// MUSIC=video/music.light.mp3 NAME=light npm run video → another take, saved as bingology-tour-light.mp4
+const MP4 = join(OUT, `bingology-tour${process.env.NAME ? "-" + process.env.NAME : ""}.mp4`);
 const VOICE_DIR = join(OUT, "voice");
-const MUSIC = join(HERE, "music.mp3"); // optional background track; not committed (see README)
+const MUSIC = process.env.MUSIC ? resolve(process.env.INIT_CWD || process.cwd(), process.env.MUSIC) : join(HERE, "music.mp3"); // optional background track; not committed (see README)
 const FINALE = 11; // seconds of the track's own ending that close the video, so its last hit lands on the end card
 
 

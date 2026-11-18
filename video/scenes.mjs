@@ -24,13 +24,13 @@ export const SCENES = [
   {
     id: "home", goto: "", dwell: 4,
     caption: "לא יודעים מה לראות הערב? Bingology בוחרת בשבילכם",
-    say: "Can't decide what to watch tonight? Binjology picks for you.",
+    say: "Can't decide what to watch tonight? Binjology picks for you!",
     async run(page) { await page.locator(".marq img").first().waitFor({ timeout: 8000 }); },
   },
   {
     id: "quiz", dwell: 4,
     caption: "עונים על כמה שאלות קצרות…",
-    say: "Answer a few quick questions, and get your ultimate pick, with a binge score.",
+    say: "Answer a few quick questions, and get your ultimate pick, with a binge score!",
     async run(page, { tap, caption }) {
       await tap(page, '[data-a="start"][data-v="quick"]');
       for (let i = 0; i < 12; i++) {
@@ -50,7 +50,7 @@ export const SCENES = [
   {
     id: "card", dwell: 3,
     caption: "כל סדרה: עונות, ציונים, איפה צופים וטריילר",
-    say: "Every show has its own card: seasons, ratings, where to watch, and a trailer.",
+    say: "Every show has its own card: seasons, ratings, where to watch, and a trailer!",
     async run(page, { tap }) {
       await tap(page, '[data-a="detail"]');
       await page.locator("#dlg[open]").waitFor({ timeout: 5000 });
@@ -66,7 +66,7 @@ export const SCENES = [
   {
     id: "list", dwell: 3,
     caption: "כל הסדרות במקום אחד — ומסננים לפי שירות הצפייה שלכם",
-    say: "All the shows in one place, filtered by the streaming services you have.",
+    say: "All the shows in one place, filtered by the streaming services you have!",
     async run(page, { tap }) {
       await tap(page, '[data-a="tab"][data-v="list"]');
       await pause(page, 1000);
@@ -78,7 +78,7 @@ export const SCENES = [
   {
     id: "search", dwell: 3,
     caption: "מחפשים בעברית או באנגלית",
-    say: "Search for a show in Hebrew or in English.",
+    say: "Search for a show in Hebrew or in English!",
     async run(page, { tap, data }) {
       await tap(page, '[data-a="tab"][data-v="search"]');
       await page.locator("#serq").pressSequentially(searchTerm(data), { delay: 120, timeout: 5000 });
@@ -87,7 +87,7 @@ export const SCENES = [
   {
     id: "actors", dwell: 4,
     caption: "…או לפי השחקנים שאתם אוהבים",
-    say: "Or find shows by the actors you love.",
+    say: "Or find shows by the actors you love!",
     async run(page, { tap }) {
       await tap(page, '[data-a="tab"][data-v="actors"]');
       await pause(page, 800);
@@ -101,7 +101,7 @@ export const SCENES = [
   {
     id: "games", dwell: 5,
     caption: "משחקים יומיים לחובבי סדרות 🧩",
-    say: "And every day, there are new games for TV lovers.",
+    say: "And every day, there are new games for TV lovers!",
     async run(page, { tap }) {
       await tap(page, '[data-a="tab"][data-v="games"]');
       await page.waitForFunction(() => document.querySelector("#games")?.children.length > 0, null, { timeout: 6000 });
@@ -110,7 +110,7 @@ export const SCENES = [
   {
     id: "marvel", goto: "mcu.html", dwell: 6, accent: true,
     caption: "🌌 היקום של מארוול — מוקדש לעמליה ❤️",
-    say: "There's also the Marvel universe, with a timeline of every movie and series. This section is dedicated to Amalia.",
+    say: "There's also the Marvel universe, with a timeline of every movie and series. And this section is dedicated to Amalia!",
     async run(page) {
       await page.locator(".m-warn").waitFor({ state: "detached", timeout: 8000 });
       await pause(page, 1200);
@@ -121,7 +121,7 @@ export const SCENES = [
   {
     id: "mine", goto: "", dwell: 5,
     caption: "נכנסים עם Google — ושומרים רשימות, התקדמות ומשתפים חברים",
-    say: "And in your personal tab, sign in with Google to save lists, track your progress, and share with friends.",
+    say: "And in your personal tab, sign in with Google to save lists, track your progress, and share with friends!",
     async run(page, { tap }) {
       await tap(page, '[data-a="tab"][data-v="mine"]');
       await page.locator('[data-a="signin-google"]').waitFor({ timeout: 8000 });
@@ -132,7 +132,7 @@ export const SCENES = [
 /** The closing card. Played after SCENES; it holds long enough for the music's last hit to land on it. */
 export const OUTRO = {
   id: "outro", dwell: 7, caption: "",
-  say: "Binjology. Your next binge starts here.",
+  say: "Binjology. Your next binge starts here!",
   card: { title: "Bingology", tagline: "הבינג׳ הבא שלכם מתחיל כאן", url: "achiyafried.github.io/bingology" },
   async run(page) {
     const { endCard } = await import("./lib/overlay.mjs");

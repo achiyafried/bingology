@@ -11,7 +11,12 @@ test("narration uses the English voice Samantha", () => {
   const a = sayArgs("Hello", "/tmp/x.aiff");
   assert.deepEqual(a.slice(0, 2), ["-v", "Samantha"]);
   assert.ok(a.includes("-o") && a[a.indexOf("-o") + 1] === "/tmp/x.aiff");
-  assert.equal(a.at(-1), "Hello");
+  assert.ok(a.at(-1).endsWith("Hello"));
+});
+test("the narrator sounds joyful: higher pitch, livelier intonation, quicker pace", () => {
+  const a = sayArgs("Hello", "/tmp/x.aiff");
+  assert.match(a.at(-1), /^\[\[pbas \+\d+\]\]\[\[pmod \+\d+\]\]Hello$/);
+  assert.ok(+a[a.indexOf("-r") + 1] >= 195);
 });
 test("synth writes a playable clip", { skip: process.platform !== "darwin" && "macOS only" }, async () => {
   const out = join(mkdtempSync(join(tmpdir(), "tour-voice-")), "a.aiff");

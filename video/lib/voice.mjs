@@ -2,10 +2,12 @@
 import { execFile } from "node:child_process";
 
 export const VOICE = "Samantha";
-const RATE = "175"; // words per minute; a touch slower than the default so it's easy to follow
+const RATE = "200"; // words per minute: upbeat, still easy to follow
+// say's embedded commands: a higher base pitch and a wider pitch swing make Samantha sound cheerful instead of flat
+const JOY = "[[pbas +10]][[pmod +70]]";
 
 export function sayArgs(text, out) {
-  return ["-v", VOICE, "-r", RATE, "-o", out, text];
+  return ["-v", VOICE, "-r", RATE, "-o", out, JOY + text];
 }
 
 /** Speaks `text` into an AIFF file. True on success, false (never throws) if `say` or the voice is missing. */
