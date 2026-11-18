@@ -19,7 +19,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import ffmpegPath from "ffmpeg-static";
-import { toMp4, durationOf } from "../lib/convert.mjs";
+import { toMp4, durationOf, audibleEnd } from "../lib/convert.mjs";
 
 test("a 2-second clip converts to mp4 and reports about 2 seconds", async () => {
   const dir = mkdtempSync(join(tmpdir(), "tour-conv-"));
@@ -75,4 +75,40 @@ test("a real mix with music and narration produces one audio track as long as th
   await toMp4(v, out, [{ file: voice, at: 1 }], { file: m, duration: 4 });
   const secs = await durationOf(out);
   assert.ok(Math.abs(secs - 4) < 0.3, `got ${secs}`);
+});
+
+test("with a finale, the music crossfades into the track's real ending so it lands on the video's last second", () => {
+  const a = ffmpegArgs("in.webm", "out.mp4", [{ file: "a.aiff", at: 0.4 }], { file: "m.mp3", duration: 76, finale: { end: 106.2, length: 11 } });
+  const fc = a[a.indexOf("-filter_complex") + 1];
+  assert.match(fc, /\[2:a\]asplit=2\[ma\]\[mb\]/);
+  assert.match(fc, /\[ma\]atrim=0:66\.5,/);          // 76 - 11 + 1.5s crossfade
+  assert.match(fc, /\[mb\]atrim=95\.2:106\.2,/);     // the track's last 11 audible seconds
+  assert.match(fc, /acrossfade=d=1\.5/);
+  assert.doesNotMatch(fc, /afade=t=out:st=/);        // the track ends itself; no artificial fade-out
+});
+test("a finale longer than the video falls back to the plain fade-out", () => {
+  const a = ffmpegArgs("in.webm", "out.mp4", [], { file: "m.mp3", duration: 8, finale: { end: 106.2, length: 11 } });
+  const fc = a[a.indexOf("-filter_complex") + 1];
+  assert.doesNotMatch(fc, /acrossfade/);
+  assert.match(fc, /afade=t=out:st=5\.5/);
+});
+test("audibleEnd finds where a track's sound actually stops", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "tour-end-"));
+  const f = join(dir, "t.wav");
+  // 2s of tone, then 2s of silence
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "sine=f=440:d=2", "-af", "apad=pad_dur=2", f]);
+  const end = await audibleEnd(f);
+  assert.ok(Math.abs(end - 2) < 0.3, `got ${end}`);
+});
+
+test("the music keeps playing after the last narration line, to the end of the video", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "tour-tail-"));
+  const v = join(dir, "v.webm"), voice = join(dir, "voice.wav"), m = join(dir, "m.wav"), out = join(dir, "o.mp4"), aud = join(dir, "o.m4a");
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "testsrc=duration=6:size=64x64:rate=10", "-c:v", "libvpx", v]);
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "sine=f=440:d=1", voice]); // voice ends at 2s
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "sine=f=220:d=20", m]);
+  await toMp4(v, out, [{ file: voice, at: 1 }], { file: m, duration: 6 });
+  execFileSync(ffmpegPath, ["-v", "quiet", "-y", "-i", out, "-vn", "-c:a", "copy", aud]);
+  const secs = await durationOf(aud);
+  assert.ok(secs > 5.5, `audio stops at ${secs}s`);
 });

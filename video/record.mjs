@@ -9,12 +9,13 @@ const problem = missingInstall();
 if (problem) { console.error(problem); process.exit(1); }
 const { chromium } = await import("playwright");
 const { startServer } = await import("./lib/server.mjs");
-const { toMp4, durationOf } = await import("./lib/convert.mjs");
+const { toMp4, durationOf, audibleEnd } = await import("./lib/convert.mjs");
 const { contextOptions } = await import("./lib/device.mjs");
 const { overlayInitScript, caption, tap } = await import("./lib/overlay.mjs");
 const { playScene, holdMs, NARRATION_LEAD } = await import("./lib/runner.mjs");
 const { synth, VOICE } = await import("./lib/voice.mjs");
-const { SCENES } = await import("./scenes.mjs");
+const { SCENES, OUTRO } = await import("./scenes.mjs");
+const TOUR = [...SCENES, OUTRO];
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SITE = join(HERE, "..", "site");
@@ -23,6 +24,7 @@ const RAW = join(OUT, "raw");
 const MP4 = join(OUT, "bingology-tour.mp4");
 const VOICE_DIR = join(OUT, "voice");
 const MUSIC = join(HERE, "music.mp3"); // optional background track; not committed (see README)
+const FINALE = 11; // seconds of the track's own ending that close the video, so its last hit lands on the end card
 
 
 async function main() {
@@ -36,7 +38,7 @@ async function main() {
   await rm(VOICE_DIR, { recursive: true, force: true });
   await mkdir(VOICE_DIR, { recursive: true });
   const voice = {};
-  for (const scene of SCENES) {
+  for (const scene of TOUR) {
     const file = join(VOICE_DIR, `${scene.id}.aiff`);
     if (scene.say && await synth(scene.say, file)) voice[scene.id] = { file, secs: (await durationOf(file)) || 0 };
   }
@@ -58,7 +60,7 @@ async function main() {
     };
     const ctx = { url: server.url, tap: loudTap, caption, data };
 
-    for (const scene of SCENES) {
+    for (const scene of TOUR) {
       const t0 = Date.now();
       current = scene.id;
       const v = voice[scene.id];
@@ -76,7 +78,9 @@ async function main() {
     const video = page.video();
     await context.close(); // finishes writing the WebM
     const raw = await video.path();
-    const music = existsSync(MUSIC) ? { file: MUSIC, duration: (await durationOf(raw)) || 0 } : null;
+    const music = existsSync(MUSIC)
+      ? { file: MUSIC, duration: (await durationOf(raw)) || 0, finale: { end: await audibleEnd(MUSIC), length: FINALE } }
+      : null;
     if (!music) console.log("(אין video/music.mp3, אז הסרטון ייצא בלי מוזיקת רקע)");
     await toMp4(raw, MP4, clips, music?.duration ? music : null);
     await rm(RAW, { recursive: true, force: true });

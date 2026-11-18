@@ -128,3 +128,14 @@ export const SCENES = [
     },
   },
 ];
+
+/** The closing card. Played after SCENES; it holds long enough for the music's last hit to land on it. */
+export const OUTRO = {
+  id: "outro", dwell: 7, caption: "",
+  say: "Bingology. Your next binge starts here.",
+  card: { title: "Bingology", tagline: "הבינג׳ הבא שלכם מתחיל כאן", url: "achiyafried.github.io/bingology" },
+  async run(page) {
+    const { endCard } = await import("./lib/overlay.mjs");
+    await endCard(page, OUTRO.card);
+  },
+};

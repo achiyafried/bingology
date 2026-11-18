@@ -17,7 +17,27 @@ export function overlayInitScript() {
       .tour-tap { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%;
         background: rgba(255, 255, 255, .55); border: 2px solid rgba(255, 255, 255, .9);
         animation: tour-tap .5s ease-out forwards; }
-      @keyframes tour-tap { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }\`;
+      @keyframes tour-tap { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
+      #tour-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 14px; direction: rtl; text-align: center; color: #fff; overflow: hidden;
+        background: radial-gradient(120% 80% at 50% 40%, #4b3be0 0%, #1d1650 55%, #07051a 100%);
+        animation: tour-end-in .6s ease-out both; }
+      #tour-end::before { content: ""; position: absolute; inset: -50%; pointer-events: none;
+        background: conic-gradient(from 0deg, transparent 0 80%, rgba(255, 204, 77, .18) 88%, transparent 96%);
+        animation: tour-spin 6s linear infinite; }
+      #tour-end .logo { width: 108px; height: 108px; display: grid; place-items: center; border-radius: 28px;
+        background: rgba(255, 255, 255, .1); box-shadow: 0 0 40px rgba(255, 204, 77, .55);
+        animation: tour-pop .9s cubic-bezier(.2, 1.6, .4, 1) .15s both; }
+      #tour-end .logo svg { width: 76px; height: 76px; }
+      #tour-end .title { font: 400 54px/1 "Secular One", Assistant, sans-serif; letter-spacing: .5px;
+        text-shadow: 0 0 24px rgba(255, 204, 77, .65); animation: tour-rise .7s ease-out .45s both; }
+      #tour-end .tagline { font: 700 22px/1.3 Assistant, sans-serif; animation: tour-rise .7s ease-out .75s both; }
+      #tour-end .url { margin-top: 18px; padding: 8px 16px; border-radius: 999px; border: 1.5px solid #ffcc4d; color: #ffcc4d;
+        font: 600 16px/1 Assistant, sans-serif; direction: ltr; animation: tour-rise .7s ease-out 1.05s both; }
+      @keyframes tour-end-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes tour-pop { from { transform: scale(.3); opacity: 0; filter: blur(8px); } to { transform: none; opacity: 1; filter: none; } }
+      @keyframes tour-rise { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+      @keyframes tour-spin { to { transform: rotate(360deg); } }\`;
     // The site's cards are modal dialogs, which live in the browser's top layer above any z-index.
     // So the overlay is a popover (also top layer), shown again whenever a dialog opens to stay above it.
     function raise(root) {
@@ -49,6 +69,20 @@ export function overlayInitScript() {
         el.hidden = false;
         requestAnimationFrame(() => el.classList.add("on"));
       },
+      endCard({ title, tagline, url }) {
+        const root = ensure();
+        this.caption("");
+        const card = document.createElement("div");
+        card.id = "tour-end";
+        const logo = document.querySelector(".brand svg"); // the site's own logo, if this page has it
+        card.innerHTML = (logo ? '<div class="logo">' + logo.outerHTML + "</div>" : "") +
+          '<div class="title"></div><div class="tagline"></div><div class="url"></div>';
+        card.querySelector(".title").textContent = title;
+        card.querySelector(".tagline").textContent = tagline;
+        card.querySelector(".url").textContent = url;
+        root.appendChild(card);
+        raise(root);
+      },
       tap(x, y) {
         const dot = document.createElement("div");
         dot.className = "tour-tap";
@@ -65,6 +99,12 @@ export function overlayInitScript() {
 export async function caption(page, text, { accent = false } = {}) {
   await page.waitForFunction(() => window.__tour && document.body);
   await page.evaluate(([t, a]) => window.__tour.caption(t, a), [text, accent]);
+}
+
+/** Covers the screen with the closing card (title, tagline, address) and hides the caption. */
+export async function endCard(page, card) {
+  await page.waitForFunction(() => window.__tour && document.body);
+  await page.evaluate(c => window.__tour.endCard(c), card);
 }
 
 /** Waits for a visible element, shows a tap on it, then clicks. Returns false (never throws) if it never shows up. */

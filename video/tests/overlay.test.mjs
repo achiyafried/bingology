@@ -1,7 +1,7 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { overlayInitScript, caption, tap } from "../lib/overlay.mjs";
+import { overlayInitScript, caption, tap, endCard } from "../lib/overlay.mjs";
 
 let browser, page;
 before(async () => {
@@ -61,4 +61,17 @@ test("the caption stays on top of a modal dialog opened after it", async () => {
   const hidden = await page.screenshot({ clip, animations: "disabled" });
   await page.evaluate(() => document.querySelector("dialog").close());
   assert.notDeepEqual(shown, hidden);
+});
+
+test("the end card covers the screen with the title, tagline and address, and hides the caption", async () => {
+  await caption(page, "משהו");
+  await endCard(page, { title: "Bingology", tagline: "הבינג׳ הבא שלכם מתחיל כאן", url: "example.github.io/x" });
+  const card = page.locator("#tour-end");
+  await card.waitFor({ state: "visible", timeout: 2000 });
+  assert.match(await card.innerText(), /Bingology/);
+  assert.match(await card.innerText(), /הבינג׳ הבא שלכם מתחיל כאן/);
+  assert.match(await card.innerText(), /example\.github\.io\/x/);
+  const box = await card.boundingBox(), vp = page.viewportSize();
+  assert.ok(box.width >= vp.width - 1 && box.height >= vp.height - 1, "full screen");
+  await page.locator("#tour-caption").waitFor({ state: "hidden", timeout: 2000 });
 });

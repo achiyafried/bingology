@@ -40,3 +40,14 @@ test("the Marvel narration dedicates the zone to Amalia", () => {
 test("narration is in English (the captions stay Hebrew)", () => {
   for (const s of SCENES) assert.ok(!/[\u0590-\u05FF]/.test(s.say), s.id);
 });
+
+import { OUTRO } from "../scenes.mjs";
+test("the outro closes with an English line and an end card for the site", () => {
+  assert.equal(OUTRO.id, "outro");
+  assert.ok(OUTRO.say.length > 10 && !/[֐-׿]/.test(OUTRO.say));
+  assert.match(OUTRO.say, /Bingology/);
+  assert.equal(OUTRO.card.title, "Bingology");
+  assert.equal(OUTRO.card.url, "achiyafried.github.io/bingology");
+  assert.ok(OUTRO.dwell >= 6, "holds long enough for the music's last hit");
+  assert.equal(typeof OUTRO.run, "function");
+});
