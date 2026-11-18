@@ -127,6 +127,19 @@ npm run fetch -- --only 3        # בדיקת עשן, לא כותב כלום
 npm run fetch                    # עדכון מלא של site/data.json
 ```
 
+### סרטון הדרכה
+
+סיור קצר באתר בגודל מסך טלפון, עם כתוביות בעברית. הסרטון מוקלט אוטומטית מהאתר המקומי (`site/`), אז אחרי שינוי באתר פשוט מפיקים אותו מחדש.
+
+```bash
+npm --prefix video install   # פעם אחת: Playwright, דפדפן להקלטה ו-ffmpeg (רק בתוך video/)
+npm run video                # מפיק את video/out/bingology-tour.mp4
+```
+
+הסצנות, הכתוביות, טקסט הקריינות (`say`) וזמני ההמתנה נמצאים ב-`video/scenes.mjs`. הכתוביות בעברית והקריינות באנגלית, בקול המובנה של macOS ("Samantha"), אז הקריינות נוצרת רק על Mac; במחשב אחר הסרטון ייצא בלי קול. אם מחזירים קריינות בעברית (הקול "Carmit"), כותבים בטקסט גרש עברי (׳) ולא `'`, כי על `'` כרמית נתקעת.
+
+**מוזיקת רקע:** אם קיים הקובץ `video/music.mp3`, הוא מתנגן מתחת לסרטון. המוזיקה נכנסת בהדרגה ויורדת כשהקריין מדבר. בסוף היא עוברת לסיום האמיתי של הטרק (11 השניות האחרונות שלו, `FINALE` ב-`video/record.mjs`), כך שהמכה האחרונה נוחתת על כרטיס הסיום (`OUTRO` ב-`video/scenes.mjs`). הקובץ לא נשמר ב-git, כי הרישיון של Pixabay לא מתיר להפיץ את הטרק עצמו. הטרק הנוכחי: [Epic Action Cinematic Trailer – Version 2 (Epic Emotional)](https://pixabay.com/music/build-up-scenes-epic-action-cinematic-trailer-version-2-epic-emotional-627561/) של BombinSound. מורידים אותו ושומרים בשם `video/music.mp3`. את עוצמת המוזיקה מכוונים ב-`MUSIC_VOLUME` ב-`video/lib/convert.mjs`. הבדיקות של הסרטון רצות בנפרד (`npm --prefix video test`) ולא נכללות ב-`npm test`.
+
 אם מופיעה אזהרה `unknown IL provider "…"` — מוסיפים את השם לקטגוריה המתאימה ב-`scripts/providers.json`.
 
 ## קרדיטים

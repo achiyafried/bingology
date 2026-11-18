@@ -11,6 +11,7 @@
     "extract": "node scripts/extract-legacy.mjs",
     "match": "node scripts/match-ids.mjs",
     "fetch": "node scripts/fetch-data.mjs",
-    "fetch:mcu": "node scripts/fetch-mcu.mjs"
+    "fetch:mcu": "node scripts/fetch-mcu.mjs",
+    "video": "npm --prefix video run record"
   }
 }
