@@ -127,6 +127,17 @@ npm run fetch -- --only 3        # בדיקת עשן, לא כותב כלום
 npm run fetch                    # עדכון מלא של site/data.json
 ```
 
+### סרטון הדרכה
+
+סיור קצר באתר בגודל מסך טלפון, עם כתוביות בעברית. הסרטון מוקלט אוטומטית מהאתר המקומי (`site/`), אז אחרי שינוי באתר פשוט מפיקים אותו מחדש.
+
+```bash
+npm --prefix video install   # פעם אחת: Playwright, דפדפן להקלטה ו-ffmpeg (רק בתוך video/)
+npm run video                # מפיק את video/out/bingology-tour.mp4
+```
+
+הסצנות, הכתוביות וזמני ההמתנה נמצאים ב-`video/scenes.mjs`. הבדיקות של הסרטון רצות בנפרד (`npm --prefix video test`) ולא נכללות ב-`npm test`.
+
 אם מופיעה אזהרה `unknown IL provider "…"` — מוסיפים את השם לקטגוריה המתאימה ב-`scripts/providers.json`.
 
 ## קרדיטים
