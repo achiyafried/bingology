@@ -11,3 +11,13 @@ export async function playScene(page, scene, ctx) {
   await ctx.caption(page, scene.caption, { accent: !!scene.accent });
   await scene.run(page, ctx);
 }
+
+/** Seconds into a scene before its narration starts (lets the caption land first). */
+export const NARRATION_LEAD = 0.4;
+const BREATH = 0.6;
+
+/** How long a scene still holds after its actions: its dwell, or until its narration ends plus a breath. */
+export function holdMs({ elapsedMs, dwell, narration }) {
+  const untilVoiceEnds = narration ? Math.round((NARRATION_LEAD + narration + BREATH) * 1000) - elapsedMs : 0;
+  return Math.max(dwell * 1000, untilVoiceEnds);
+}

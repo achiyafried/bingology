@@ -29,3 +29,19 @@ test("a 2-second clip converts to mp4 and reports about 2 seconds", async () => 
   const secs = await durationOf(mp4);
   assert.ok(Math.abs(secs - 2) < 0.3, `got ${secs}`);
 });
+
+test("narration clips are delayed to their scene and mixed without lowering the volume", () => {
+  const a = ffmpegArgs("in.webm", "out.mp4", [{ file: "a.aiff", at: 0.3 }, { file: "b.aiff", at: 12.25 }]);
+  const pair = (k, v) => a.some((x, i) => x === k && a[i + 1] === v);
+  assert.ok(pair("-i", "a.aiff") && pair("-i", "b.aiff"));
+  const fc = a[a.indexOf("-filter_complex") + 1];
+  assert.match(fc, /\[1:a\]adelay=300\|300/);
+  assert.match(fc, /\[2:a\]adelay=12250\|12250/);
+  assert.match(fc, /amix=inputs=2:normalize=0/);
+  assert.ok(pair("-c:a", "aac"));
+  assert.ok(!a.includes("-an"));
+  assert.equal(a.at(-1), "out.mp4");
+});
+test("without clips the mp4 stays silent", () => {
+  assert.ok(ffmpegArgs("in.webm", "out.mp4", []).includes("-an"));
+});

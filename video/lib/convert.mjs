@@ -5,8 +5,16 @@ import ffmpegPath from "ffmpeg-static";
 
 export const NO_FFMPEG = "ffmpeg לא נמצא — הריצו npm --prefix video install";
 
-export function ffmpegArgs(input, output) {
-  return ["-y", "-i", input, "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", output];
+const VIDEO = ["-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart"];
+
+/** `clips`: narration files, each placed `at` seconds into the video. None → a silent MP4. */
+export function ffmpegArgs(input, output, clips = []) {
+  if (!clips.length) return ["-y", "-i", input, "-an", ...VIDEO, output];
+  const delays = clips.map((c, i) => { const ms = Math.round(c.at * 1000); return `[${i + 1}:a]adelay=${ms}|${ms}[a${i}]`; });
+  const mix = clips.map((_, i) => `[a${i}]`).join("") + `amix=inputs=${clips.length}:normalize=0[aout]`;
+  return ["-y", "-i", input, ...clips.flatMap(c => ["-i", c.file]),
+    "-filter_complex", [...delays, mix].join(";"), "-map", "0:v", "-map", "[aout]",
+    ...VIDEO, "-c:a", "aac", "-b:a", "128k", output];
 }
 
 /** Runs ffmpeg; resolves { code, stderr }. Only a missing binary rejects. */
@@ -15,8 +23,8 @@ const run = args => new Promise((ok, fail) => {
   execFile(ffmpegPath, args, { maxBuffer: 1 << 26 }, (err, _out, stderr) => ok({ code: err ? err.code : 0, stderr }));
 });
 
-export async function toMp4(input, output) {
-  const r = await run(ffmpegArgs(input, output));
+export async function toMp4(input, output, clips = []) {
+  const r = await run(ffmpegArgs(input, output, clips));
   if (r.code !== 0) throw new Error("ההמרה ל-MP4 נכשלה:\n" + r.stderr.split("\n").slice(-5).join("\n"));
 }
 

@@ -12,7 +12,8 @@ const { startServer } = await import("./lib/server.mjs");
 const { toMp4, durationOf } = await import("./lib/convert.mjs");
 const { contextOptions } = await import("./lib/device.mjs");
 const { overlayInitScript, caption, tap } = await import("./lib/overlay.mjs");
-const { playScene } = await import("./lib/runner.mjs");
+const { playScene, holdMs, NARRATION_LEAD } = await import("./lib/runner.mjs");
+const { synth, VOICE } = await import("./lib/voice.mjs");
 const { SCENES } = await import("./scenes.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -20,6 +21,7 @@ const SITE = join(HERE, "..", "site");
 const OUT = join(HERE, "out");
 const RAW = join(OUT, "raw");
 const MP4 = join(OUT, "bingology-tour.mp4");
+const VOICE_DIR = join(OUT, "voice");
 
 
 async function main() {
@@ -28,12 +30,25 @@ async function main() {
   const data = JSON.parse(await readFile(join(SITE, "data.json"), "utf8"));
   await rm(RAW, { recursive: true, force: true });
   await mkdir(RAW, { recursive: true });
+
+  // Narration first, so each scene knows how long its voice runs and can wait for it.
+  await rm(VOICE_DIR, { recursive: true, force: true });
+  await mkdir(VOICE_DIR, { recursive: true });
+  const voice = {};
+  for (const scene of SCENES) {
+    const file = join(VOICE_DIR, `${scene.id}.aiff`);
+    if (scene.say && await synth(scene.say, file)) voice[scene.id] = { file, secs: (await durationOf(file)) || 0 };
+  }
+  if (!Object.keys(voice).length) console.warn(`⚠ אין קריינות: הקול ${VOICE} (macOS) לא זמין. הסרטון ייצא בלי קול.`);
+  const clips = [];
+
   const server = await startServer(SITE);
   const browser = await chromium.launch();
   try {
     const context = await browser.newContext(contextOptions(RAW));
     await context.addInitScript(overlayInitScript());
     const page = await context.newPage();
+    const videoStart = Date.now(); // the recording starts with the page
     let current = "";
     const loudTap = async (p, sel, o = {}) => {
       const ok = await tap(p, sel, o);
@@ -45,20 +60,23 @@ async function main() {
     for (const scene of SCENES) {
       const t0 = Date.now();
       current = scene.id;
+      const v = voice[scene.id];
+      if (v) clips.push({ file: v.file, at: (t0 - videoStart) / 1000 + NARRATION_LEAD });
       try {
         await playScene(page, scene, ctx);
       } catch (e) {
         console.warn(`⚠ ${scene.id}: ${String(e?.message ?? e).split("\n")[0]}`);
         await caption(page, scene.caption, { accent: !!scene.accent }).catch(() => {});
       }
-      await page.waitForTimeout(scene.dwell * 1000);
+      await page.waitForTimeout(holdMs({ elapsedMs: Date.now() - t0, dwell: scene.dwell, narration: v?.secs || 0 }));
       console.log(`✓ ${scene.id} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
     }
 
     const video = page.video();
     await context.close(); // finishes writing the WebM
-    await toMp4(await video.path(), MP4);
+    await toMp4(await video.path(), MP4, clips);
     await rm(RAW, { recursive: true, force: true });
+    await rm(VOICE_DIR, { recursive: true, force: true });
     const secs = await durationOf(MP4);
     console.log(`\nהסרטון מוכן: ${MP4}${secs ? ` (${secs.toFixed(1)} שניות)` : ""}`);
   } finally {
