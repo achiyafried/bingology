@@ -22,6 +22,7 @@ const OUT = join(HERE, "out");
 const RAW = join(OUT, "raw");
 const MP4 = join(OUT, "bingology-tour.mp4");
 const VOICE_DIR = join(OUT, "voice");
+const MUSIC = join(HERE, "music.mp3"); // optional background track; not committed (see README)
 
 
 async function main() {
@@ -74,7 +75,10 @@ async function main() {
 
     const video = page.video();
     await context.close(); // finishes writing the WebM
-    await toMp4(await video.path(), MP4, clips);
+    const raw = await video.path();
+    const music = existsSync(MUSIC) ? { file: MUSIC, duration: (await durationOf(raw)) || 0 } : null;
+    if (!music) console.log("(אין video/music.mp3, אז הסרטון ייצא בלי מוזיקת רקע)");
+    await toMp4(raw, MP4, clips, music?.duration ? music : null);
     await rm(RAW, { recursive: true, force: true });
     await rm(VOICE_DIR, { recursive: true, force: true });
     const secs = await durationOf(MP4);
