@@ -22,6 +22,6 @@ export async function toMp4(input, output) {
 
 /** Length in seconds, read from ffmpeg's own report on the file. */
 export async function durationOf(file) {
-  const m = /Duration: (\d+):(\d+):([\d.]+)/.exec(await run(["-i", file])).stderr;
+  const m = /Duration: (\d+):(\d+):([\d.]+)/.exec((await run(["-i", file])).stderr);
   return m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : null;
 }
