@@ -53,9 +53,9 @@ export const SCENES = [
       await page.locator("#dlg[open]").waitFor({ timeout: 5000 });
       await pause(page, 1500);
       await glide(page, 500, "#dlg");
-      if (await tap(page, '#dlg [data-a="play"]', { timeout: 3000 })) {
+      if (await tap(page, '#dlg [data-a="play"]', { timeout: 3000, optional: true })) {
         await pause(page, 4000);
-        await tap(page, '[data-a="vclose"]', { timeout: 3000 });
+        await tap(page, '[data-a="vclose"]', { timeout: 3000, optional: true });
       }
       await tap(page, '#dlg [data-a="dclose"]', { timeout: 3000 });
     },
@@ -76,7 +76,7 @@ export const SCENES = [
     caption: "מחפשים בעברית או באנגלית",
     async run(page, { tap, data }) {
       await tap(page, '[data-a="tab"][data-v="search"]');
-      await page.locator("#serq").pressSequentially(searchTerm(data), { delay: 120 });
+      await page.locator("#serq").pressSequentially(searchTerm(data), { delay: 120, timeout: 5000 });
     },
   },
   {
@@ -85,7 +85,11 @@ export const SCENES = [
     async run(page, { tap }) {
       await tap(page, '[data-a="tab"][data-v="actors"]');
       await pause(page, 800);
-      await tap(page, '[data-a="actpick"]');
+      await tap(page, '[data-a="actor"]');
+      await page.locator("#dlg[open]").waitFor({ timeout: 5000 });
+      await pause(page, 1500);
+      await glide(page, 400, "#dlg");
+      await tap(page, '#dlg [data-a="dclose"]', { timeout: 3000 });
     },
   },
   {

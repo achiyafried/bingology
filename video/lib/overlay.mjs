@@ -5,7 +5,8 @@
 export function overlayInitScript() {
   return `(() => {
     const CSS = \`
-      #tour-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 2147483647; }
+      #tour-overlay { position: fixed; inset: 0; width: auto; height: auto; margin: 0; padding: 0; border: 0;
+        background: transparent; overflow: visible; pointer-events: none; z-index: 2147483647; }
       #tour-caption { position: absolute; left: 14px; right: 14px; bottom: 34px; padding: 14px 18px; border-radius: 16px;
         background: rgba(12, 12, 20, .82); color: #fff; font: 600 20px/1.35 Assistant, "Secular One", sans-serif;
         text-align: center; direction: rtl; box-shadow: 0 6px 24px rgba(0,0,0,.35);
@@ -17,6 +18,12 @@ export function overlayInitScript() {
         background: rgba(255, 255, 255, .55); border: 2px solid rgba(255, 255, 255, .9);
         animation: tour-tap .5s ease-out forwards; }
       @keyframes tour-tap { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }\`;
+    // The site's cards are modal dialogs, which live in the browser's top layer above any z-index.
+    // So the overlay is a popover (also top layer), shown again whenever a dialog opens to stay above it.
+    function raise(root) {
+      if (root.matches(":popover-open")) root.hidePopover();
+      root.showPopover();
+    }
     function ensure() {
       let root = document.getElementById("tour-overlay");
       if (root) return root;
@@ -25,8 +32,12 @@ export function overlayInitScript() {
       document.head.appendChild(style);
       root = document.createElement("div");
       root.id = "tour-overlay";
+      root.setAttribute("popover", "manual");
       root.innerHTML = '<div id="tour-caption" data-accent="false" hidden></div>';
       document.body.appendChild(root);
+      raise(root);
+      new MutationObserver(ms => { if (ms.some(m => m.target.localName === "dialog" && m.target.open)) raise(root); })
+        .observe(document.body, { subtree: true, attributes: true, attributeFilter: ["open"] });
       return root;
     }
     window.__tour = {
