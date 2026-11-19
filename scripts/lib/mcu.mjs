@@ -1,5 +1,6 @@
 // The MCU timeline: mcu.json (hand-written, story order) → site/mcu-data.json (nightly, with TMDB details).
-import { mapProviders, trailerCandidates } from "./tmdb.mjs";
+import { trailerCandidates } from "./tmdb.mjs";
+import { providersOf } from "./providers.mjs";
 
 const KINDS = new Set(["movie", "season"]);
 const text = v => typeof v === "string" && v.trim() !== "";
@@ -48,18 +49,6 @@ export function validateCharacters(list, mcuIds) {
 }
 
 const IMG = "https://image.tmdb.org/t/p/w342";
-const US_DISNEY = ["Disney Plus", "Hulu"];
-
-/** IL providers in providers.json order ("other" last), plus Disney+ guessed from the US listing (TMDB has no IL Disney+ data). */
-function providersOf(wp, map) {
-  const il = mapProviders(wp?.results?.IL?.flatrate ?? [], map).cats;
-  const us = (wp?.results?.US?.flatrate ?? []).map(p => p.provider_name);
-  const guess = map.disney && !il.includes("disney") && us.some(n => US_DISNEY.includes(n)) ? ["disney"] : [];
-  const all = new Set([...il, ...guess]);
-  const providers = Object.keys(map).filter(k => all.has(k)).concat(all.has("other") ? ["other"] : []);
-  return { providers, providersGuess: guess };
-}
-
 const heText = (he, en) => { const t = he?.trim(); return t && t !== en ? t : null; };
 const vote = x => (x.vote_count > 0 ? Math.round(x.vote_average * 10) / 10 : null);
 
