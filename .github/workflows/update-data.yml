@@ -30,6 +30,10 @@ jobs:
       - name: Fetch MCU timeline
         continue-on-error: true
         run: node scripts/fetch-mcu.mjs
+      # The kids section: best effort, never stops the series update.
+      - name: Fetch kids section
+        continue-on-error: true
+        run: node scripts/fetch-kids.mjs
       - name: Make daily games
         continue-on-error: true
         run: node scripts/make-games.mjs
@@ -40,6 +44,7 @@ jobs:
           files="site/data.json"
           if [ -f site/news.json ]; then files="$files site/news.json"; fi
           if [ -f site/mcu-data.json ]; then files="$files site/mcu-data.json"; fi
+          if [ -f site/kids-data.json ]; then files="$files site/kids-data.json"; fi
           # site/games is missing if make-games failed before creating it.
           if [ -d site/games ]; then files="$files site/games"; fi
           if [ -n "$(git status --porcelain $files)" ]; then
