@@ -1,4 +1,5 @@
 import { ERAS, ERA_KEYS, GENRES, MOODS, WEIGHT_WHY, LNAME, bL, bS, LEN_IDX, SEAS_IDX, LEN_TXT, SEAS_TXT, poolIds as poolIn, scoreSeries, popularity } from "./lib/score.js";
+import { tabsHTML } from "./lib/tabs.js";
 import { neighbours } from "./lib/similar.js";
 import { fromData, providerNames } from "./lib/data.js";
 import { loadSeen, saveSeen } from "./lib/seen.js";
@@ -315,7 +316,7 @@ function tile(i, mode, cap) {
 /* screens */
 function header() {
   return `<header class="top"><div class="brandrow"><button class="brand" data-a="home" aria-label="Bingology, לעמוד הבית">${LOGO}</button><div class="hacts">${inviteBtn()}${bellNow()}</div></div>
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-a="tab" data-v="pick" aria-selected="${!onNews() && st.tab === "pick"}">המלצה</button><button class="tab" role="tab" data-a="tab" data-v="list" aria-selected="${!onNews() && st.tab === "list"}">הרשימה<span class="tn"> (${S.length})</span></button><button class="tab" role="tab" data-a="tab" data-v="actors" aria-selected="${!onNews() && st.tab === "actors"}">קאסט</button><button class="tab" role="tab" data-a="tab" data-v="search" aria-label="חיפוש" aria-selected="${!onNews() && st.tab === "search"}"><span aria-hidden="true">🔍</span><span class="tl"> חיפוש</span></button><button class="tab" role="tab" data-a="tab" data-v="games" aria-selected="${!onNews() && st.tab === "games"}">משחקים</button><button class="tab" role="tab" data-a="tab" data-v="mine" aria-selected="${!onNews() && st.tab === "mine"}">שלי</button><a class="tab mcu" href="mcu.html"><span aria-hidden="true">🌌</span><span class="tl"> מארוול</span><span class="sr">היקום של מארוול</span></a><a class="tab kids" href="kids.html"><span aria-hidden="true">🧸</span><span class="tl"> ילדים</span><span class="sr">סקשן הילדים</span></a></div></header>`;
+  ${tabsHTML(onNews() ? null : st.tab)}</header>`;
 }
 
 function introHTML() {
