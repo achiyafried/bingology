@@ -1,8 +1,8 @@
 // The kids catalog: age groups, streaming services, order. Pure, shared by the page and the tests.
 export const GROUPS = [
-  { id: "small", label: "קטנטנים 2–5", icon: "🐣" },
-  { id: "mid", label: "ילדים 6–9", icon: "🚀" },
-  { id: "big", label: "גדולים 10–13", icon: "⚡" },
+  { id: "small", name: "קטנטנים", range: "2–5", label: "קטנטנים 2–5", icon: "🐣" },
+  { id: "mid", name: "ילדים", range: "6–9", label: "ילדים 6–9", icon: "🚀" },
+  { id: "big", name: "גדולים", range: "10–13", label: "גדולים 10–13", icon: "⚡" },
 ];
 export const LABEL = { netflix: "Netflix", hbo: "HBO Max", apple: "Apple TV+", prime: "Prime Video", disney: "Disney+", yes: "yes", hot: "HOT", partner: "פרטנר", cellcom: "סלקום", kan: "כאן", other: "אחר" };
 const ORDER = ["netflix", "disney", "hbo", "apple", "prime", "yes", "hot", "partner", "cellcom", "kan"];

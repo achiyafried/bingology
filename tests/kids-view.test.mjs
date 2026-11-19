@@ -15,6 +15,7 @@ test("headerHTML: back link, title, pressed age, game button", () => {
   assert.match(h, /data-a="age" data-v="small" aria-pressed="false"/);
   assert.match(h, /data-a="game"/);
   assert.match(h, /משחק היום/);
+  assert.match(h, /<bdi dir="ltr">10–13<\/bdi>/, "the range reads left to right inside RTL");
 });
 
 test("servicesHTML: 'all' pressed when nothing is selected; empty when no services", () => {
@@ -38,7 +39,7 @@ test("cardHTML: details, guessed Disney, no-service text, escaping", () => {
   const h = cardHTML(x(1, { providers: ["netflix", "disney"], providersGuess: ["disney"] }));
   assert.match(h, /סדרה 1/);
   assert.match(h, /Show 1/);
-  assert.match(h, /ילדים 6–9/);
+  assert.match(h, /ילדים <bdi dir="ltr">6–9<\/bdi>/);
   assert.match(h, /2 עונות · 2020/);
   assert.match(h, /Netflix, Disney\+ \(כנראה\)/);
   assert.match(h, /data-a="close"/);

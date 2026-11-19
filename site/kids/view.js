@@ -14,7 +14,7 @@ function posterHTML(x, cls = "k-poster", style = "") {
 
 export function headerHTML(age) {
   const groups = GROUPS.map(g =>
-    `<button class="k-age" data-age="${g.id}" data-a="age" data-v="${g.id}" ${pressed(g.id === age)}><span aria-hidden="true">${g.icon}</span> ${g.label}</button>`).join("");
+    `<button class="k-age" data-age="${g.id}" data-a="age" data-v="${g.id}" ${pressed(g.id === age)}><span aria-hidden="true">${g.icon}</span> ${g.name}<small><bdi dir="ltr">${g.range}</bdi></small></button>`).join("");
   return `<header class="k-head"><a class="k-back" href="./">← חזרה ל-Bingology</a><h1>🧸 ילדים</h1></header>
 <nav class="k-ages" aria-label="קבוצת גיל">${groups}</nav>
 <button class="k-gamebtn" data-a="game"><span aria-hidden="true">🎲</span> משחק היום</button>`;
@@ -44,7 +44,7 @@ export function cardHTML(x) {
 <button class="k-close" data-a="close" aria-label="סגירה">✕</button>
 ${posterHTML(x, "k-cposter")}
 <h2>${esc(title(x))}</h2>${en}
-<p class="k-chip">${group ? `${group.icon} ${group.label}` : ""}</p>
+<p class="k-chip">${group ? `${group.icon} ${group.name} <bdi dir="ltr">${group.range}</bdi>` : ""}</p>
 ${facts ? `<p class="k-facts">${esc(facts)}</p>` : ""}
 <p class="k-over">${esc(x.overview ?? x.overviewEn ?? "")}</p>
 <p class="k-where">${whereText}</p>
