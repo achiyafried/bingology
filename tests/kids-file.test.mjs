@@ -58,3 +58,17 @@ test("overCap", () => {
   assert.equal(overCap({ age: "big", minAge: null }), false);
   assert.equal(overCap({ age: "big", minAge: 14 }), true);
 });
+
+import { readFileSync } from "node:fs";
+
+test("the real kids.json is valid with at least 20 series per group", () => {
+  const list = JSON.parse(readFileSync("kids.json", "utf8"));
+  assert.deepEqual(validateKids(list), []);
+  for (const age of AGES) assert.ok(list.filter(r => r.age === age).length >= 20, `${age}: ${list.filter(r => r.age === age).length}`);
+});
+
+test("site/kids-data.json has no series above its cap and at least 15 per group with a poster", () => {
+  const { items } = JSON.parse(readFileSync("site/kids-data.json", "utf8"));
+  assert.deepEqual(items.filter(overCap).map(x => x.tmdb), []);
+  for (const age of AGES) assert.ok(items.filter(x => x.age === age && x.poster).length >= 15, age);
+});
