@@ -109,7 +109,7 @@ export const SCENES = [
   },
   {
     id: "marvel", goto: "mcu.html", dwell: 6, accent: true,
-    caption: "🌌 היקום של מארוול — במיוחד בשביל עמליה ❤️",
+    caption: "🌌 היקום של מארוול — באהבה לעמליה ❤️",
     say: "There's also the Marvel universe, with a timeline of every movie and series. And this one is made with love for Amalia!",
     async run(page) {
       await page.locator(".m-warn").waitFor({ state: "detached", timeout: 8000 });

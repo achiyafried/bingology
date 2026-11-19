@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SCENES, searchTerm } from "../scenes.mjs";
 
-const MARVEL = "🌌 היקום של מארוול — במיוחד בשביל עמליה ❤️";
+const MARVEL = "🌌 היקום של מארוול — באהבה לעמליה ❤️";
 const KIDS = "🧸 סקשן הילדים — במיוחד בשביל לגוני 💛";
 
 test("scenes run in the agreed order", () => {
