@@ -7,7 +7,8 @@ export const TABS = [
   { id: "search", name: "חיפוש", icon: '<path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/>' },
   { id: "games", name: "משחקים", icon: '<path d="M12 5h3.5a5 5 0 0 1 0 10h-5.5l-4.015 4.227a2.3 2.3 0 0 1 -3.923 -2.035l1.634 -8.173a5 5 0 0 1 4.904 -4.019h3.4z"/><path d="M14 15l4.07 4.284a2.3 2.3 0 0 0 3.925 -2.023l-1.6 -8.232"/><path d="M8 9v2"/><path d="M7 10h2"/><path d="M14 10h2"/>' },
   { id: "mine", name: "שלי", icon: '<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>' },
-  { id: "mcu", name: "מארוול", href: "mcu.html", icon: '<path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805"/><path d="M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/>' },
+  // Captain America's shield, in its own colors (not an outline icon).
+  { id: "mcu", name: "מארוול", href: "mcu.html", svg: '<svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#e62429"/><circle cx="12" cy="12" r="8" fill="#fff"/><circle cx="12" cy="12" r="5.3" fill="#1a6fd6"/><path d="M12 8.2l1.1 2.6 2.8.2-2.2 1.8.8 2.8-2.5-1.6-2.5 1.6.8-2.8-2.2-1.8 2.8-.2z" fill="#fff"/></svg>' },
   { id: "kids", name: "ילדים", href: "kids.html", icon: '<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 10l.01 0"/><path d="M15 10l.01 0"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/><path d="M12 3a2 2 0 0 0 0 4"/>' },
 ];
 
@@ -17,7 +18,7 @@ const svg = d => `<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="curren
 export function tabsHTML(current) {
   return `<div class="tabs" role="tablist">${TABS.map(t => {
     const label = `aria-label="${t.name}" data-tip="${t.name}"`;
-    if (t.href) return `<a class="tab ${t.id}" href="${t.href}" ${label}>${svg(t.icon)}</a>`;
+    if (t.href) return `<a class="tab ${t.id}" href="${t.href}" ${label}>${t.svg ?? svg(t.icon)}</a>`;
     const on = t.id === current;
     return `<button class="tab" role="tab" data-a="tab" data-v="${t.id}" aria-selected="${on}" ${label}>${svg(t.icon)}${on ? `<span class="tl">${t.name}</span>` : ""}</button>`;
   }).join("")}</div>`;
