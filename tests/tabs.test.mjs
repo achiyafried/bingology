@@ -33,3 +33,10 @@ test("Marvel and kids are links with their own colors", () => {
   assert.match(h, /<a class="tab mcu" href="mcu\.html"/);
   assert.match(h, /<a class="tab kids" href="kids\.html"/);
 });
+
+test("the Marvel tab shows Captain America's shield in its colors", () => {
+  const h = tabsHTML("pick");
+  const mcu = /<a class="tab mcu"[\s\S]*?<\/a>/.exec(h)[0];
+  for (const c of ["#e62429", "#fff", "#1a6fd6"]) assert.match(mcu, new RegExp(`fill="${c}"`));
+  assert.doesNotMatch(mcu, /stroke="currentColor"/, "colored shield, not an outline icon");
+});

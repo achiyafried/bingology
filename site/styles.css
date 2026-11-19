@@ -93,7 +93,7 @@ button.brand { background: none; border: 0; padding: 0; font: inherit; cursor: p
 .tab[data-tip]::after { content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); padding: 3px 8px; border-radius: 6px; background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 20; }
 .tab:not([aria-selected="true"]):hover::after, .tab:not([aria-selected="true"]):focus-visible::after { opacity: 1; }
 @media (hover: none) { .tab[data-tip]::after { display: none; } }
-.tab.mcu { background: #0b0f2a; color: #f5c542; box-shadow: 0 0 10px rgba(123, 92, 255, .55); }
+.tab.mcu { background: #1a3a8f; color: #fff; }
 .tab.kids { background: #ffd23f; color: #3a2a00; }
 
 .av { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(150deg, hsl(var(--h) 50% 38%), hsl(calc(var(--h) + 50) 55% 20%)); color: #fff; font-family: "Secular One", "Assistant", sans-serif; font-size: 17px; direction: ltr; }
