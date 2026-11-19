@@ -28,7 +28,8 @@ export async function run({ rows, prev, fetchImpl = fetch, now, map }) {
     try { return { r, live: await fetchLive(r, fetchImpl, map) }; }
     catch (err) { failed++; warnings.push(`${r.tmdb}: ${err.message}`); return { r, live: null }; }
   });
-  const abort = good.length > 0 && failed / good.length > MAX_FAILED;
+  // No valid rows at all would publish an empty page: keep yesterday's file instead.
+  const abort = good.length === 0 || failed / good.length > MAX_FAILED;
 
   const items = [];
   for (const { r, live } of got) {

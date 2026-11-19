@@ -16,11 +16,14 @@ export function loadAge(storage) {
 }
 export const saveAge = (storage, age) => write(storage, AGE_KEY, age);
 
-/** The saved game of `age` on `date`, or null when missing, broken, or for another puzzle. */
-export function loadGame(storage, date, age, answer) {
+const sameSet = (a, b) => Array.isArray(a) && a.length === b.length && b.every(x => a.includes(x));
+
+/** The saved game of `age` on `date`, or null when missing, broken, or for another puzzle (answer or choices differ). */
+export function loadGame(storage, date, age, puzzle) {
   const day = read(storage, GAME(date));
   const g = day && typeof day === "object" ? day[age] : null;
-  return g && g.answer === answer && Array.isArray(g.misses) && typeof g.done === "boolean" ? g : null;
+  return g && g.answer === puzzle.answer && sameSet(g.choices, puzzle.choices)
+    && Array.isArray(g.misses) && typeof g.done === "boolean" ? g : null;
 }
 
 export function saveGame(storage, date, age, state) {

@@ -13,7 +13,7 @@ const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: n
 function setupGame() {
   const date = israelToday();
   st.puzzle = puzzleFor(st.items, date, st.age);
-  st.game = st.puzzle ? { ...initGame(st.puzzle), ...(loadGame(store, date, st.age, st.puzzle.answer) ?? {}) } : null;
+  st.game = st.puzzle ? { ...initGame(st.puzzle), ...(loadGame(store, date, st.age, st.puzzle) ?? {}), choices: st.puzzle.choices } : null;
 }
 
 function render() {

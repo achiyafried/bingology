@@ -91,16 +91,24 @@ test("loadAge falls back to mid", () => {
 
 test("saved games round-trip per group and are ignored when the puzzle changed", () => {
   const st = mem();
-  const g = { answer: 5, misses: [2], done: false };
+  const g = { answer: 5, choices: [5, 2, 3, 4], misses: [2], done: false };
+  const P5 = { answer: 5, choices: [5, 2, 3, 4] };
   saveGame(st, "2026-11-19", "mid", g);
   saveGame(st, "2026-11-19", "big", { answer: 7, misses: [], done: true });
-  assert.deepEqual(loadGame(st, "2026-11-19", "mid", 5), g);
-  assert.equal(loadGame(st, "2026-11-19", "mid", 6), null);
-  assert.equal(loadGame(st, "2026-11-19", "small", 5), null);
-  assert.equal(loadGame(st, "2026-11-18", "mid", 5), null);
+  assert.deepEqual(loadGame(st, "2026-11-19", "mid", P5), g);
+  assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 6, choices: [6, 2, 3, 4] }), null);
+  assert.equal(loadGame(st, "2026-11-19", "small", P5), null);
+  assert.equal(loadGame(st, "2026-11-18", "mid", P5), null);
   st.setItem("bingology:kids-game:2026-11-20", "{bad");
-  assert.equal(loadGame(st, "2026-11-20", "mid", 5), null);
-  assert.equal(loadGame(broken, "2026-11-19", "mid", 5), null);
-  assert.equal(loadGame(null, "2026-11-19", "mid", 5), null);
+  assert.equal(loadGame(st, "2026-11-20", "mid", P5), null);
+  assert.equal(loadGame(broken, "2026-11-19", "mid", P5), null);
+  assert.equal(loadGame(null, "2026-11-19", "mid", P5), null);
   saveGame(null, "2026-11-19", "mid", g);
+});
+
+test("a saved game with other choices than today's puzzle is ignored", () => {
+  const st = mem();
+  saveGame(st, "2026-11-19", "mid", { answer: 5, choices: [5, 1, 2, 3], misses: [1], done: false, won: false });
+  assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [5, 1, 2, 4] }), null);
+  assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [3, 2, 1, 5] }).misses[0], 1);
 });

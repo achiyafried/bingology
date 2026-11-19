@@ -76,3 +76,8 @@ test("bad rows are skipped with a warning", async () => {
   assert.deepEqual(r.data.items.map(x => x.tmdb), [7]);
   assert.ok(f.calls.every(p => !p.includes("/x")));
 });
+
+test("a kids.json with no valid rows aborts instead of emptying the page", async () => {
+  assert.equal((await run({ rows: [{ tmdb: "x", age: "mid" }], prev: null, fetchImpl: fake(), now: NOW, map })).abort, true);
+  assert.equal((await run({ rows: { not: "an array" }, prev: null, fetchImpl: fake(), now: NOW, map })).abort, true);
+});
