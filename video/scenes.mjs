@@ -110,7 +110,7 @@ export const SCENES = [
   {
     id: "marvel", goto: "mcu.html", dwell: 6, accent: true,
     caption: "🌌 היקום של מארוול — במיוחד בשביל עמליה ❤️",
-    say: "There's also the Marvel universe, with a timeline of every movie and series. And this one is made especially for Amalia!",
+    say: "There's also the Marvel universe, with a timeline of every movie and series. And this one is made with love for Amalia!",
     async run(page) {
       await page.locator(".m-warn").waitFor({ state: "detached", timeout: 8000 });
       await pause(page, 1200);
@@ -121,7 +121,7 @@ export const SCENES = [
   {
     id: "kids", goto: "kids.html", dwell: 5, accent: true,
     caption: "🧸 סקשן הילדים — במיוחד בשביל לגוני 💛",
-    say: "And for the little ones, a kids corner, with shows for every age and a daily guessing game. Made especially for Lagooni!",
+    say: "And for the little ones, a kids corner, with shows for every age and a daily guessing game. Made especially for Go-ni!",
     async run(page, { tap }) {
       await page.locator('[data-a="card"]').first().waitFor({ timeout: 8000 });
       await pause(page, 1000);

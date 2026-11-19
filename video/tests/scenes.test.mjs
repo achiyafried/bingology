@@ -14,12 +14,12 @@ test("every scene has a caption and a run function", () => {
     assert.equal(typeof s.run, "function", s.id);
   }
 });
-test("the kids scene is especially for Laguni, highlighted, on the kids page", () => {
+test("the kids scene is especially for Goni, highlighted, on the kids page", () => {
   const k = SCENES.find(s => s.id === "kids");
   assert.equal(k.caption, KIDS);
   assert.equal(k.accent, true);
   assert.equal(k.goto, "kids.html");
-  assert.match(k.say, /especially for Lagooni/);
+  assert.match(k.say, /Made especially for Go-ni!/);
 });
 test("the Marvel scene is especially for Amalia, highlighted", () => {
   const m = SCENES.find(s => s.id === "marvel");
@@ -42,8 +42,8 @@ test("search term prefers a well-known show and falls back to the first one", ()
 test("every scene has spoken narration", () => {
   for (const s of SCENES) assert.ok(typeof s.say === "string" && s.say.length > 10, s.id);
 });
-test("the Marvel narration says it is especially for Amalia", () => {
-  assert.match(SCENES.find(s => s.id === "marvel").say, /especially for Amalia/);
+test("the Marvel narration says it is made with love for Amalia", () => {
+  assert.match(SCENES.find(s => s.id === "marvel").say, /made with love for Amalia!/);
 });
 test("narration is in English (the captions stay Hebrew)", () => {
   for (const s of SCENES) assert.ok(!/[\u0590-\u05FF]/.test(s.say), s.id);
