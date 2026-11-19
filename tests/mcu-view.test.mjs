@@ -65,10 +65,12 @@ test("cardHTML: note only when present, trailer button only with a trailer, else
   assert.match(b, /dir="ltr" lang="en">EN</, "English overview shown left-to-right");
 });
 
+import { tabsHTML } from "../site/lib/tabs.js";
 test("Bingology's main menu has a Marvel tab, and the home card is gone", () => {
   const src = readFileSync("site/app.js", "utf8");
   const header = /function header\(\) \{[\s\S]*?\n\}/.exec(src)[0];
-  assert.match(header, /<a class="tab mcu" href="mcu\.html">/);
+  assert.match(header, /tabsHTML\(/);
+  assert.match(tabsHTML("pick"), /<a class="tab mcu" href="mcu\.html"/);
   assert.doesNotMatch(src, /class="gcard mcu"/);
 });
 

@@ -86,11 +86,15 @@ button.brand { background: none; border: 0; padding: 0; font: inherit; cursor: p
 .wm .accs { stroke: var(--accent); }
 .tabs { display: flex; background: var(--surface); border-radius: 999px; padding: 4px; gap: 2px; }
 /* Widths follow the labels (spare room shared evenly) and labels never wrap, so long ones do not break onto two lines. */
-.tab { flex: 1 1 auto; white-space: nowrap; text-align: center; border: 0; background: transparent; padding: 8px 6px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--muted); }
-.tab .tn { font-weight: 400; opacity: .75; }
-.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
-.tab.mcu { text-decoration: none; background: #0b0f2a; color: #f5c542; box-shadow: 0 0 10px rgba(123, 92, 255, .55); }
-.tab.kids { text-decoration: none; background: #ffd23f; color: #3a2a00; }
+/* Icon tabs: the name shows as a tooltip on hover/focus, and next to the icon on the current tab. */
+.tab { position: relative; flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; border: 0; background: transparent; min-height: 40px; padding: 8px 6px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--muted); text-decoration: none; }
+.tab .ti { width: 22px; height: 22px; flex: none; }
+.tab[aria-selected="true"] { flex-grow: 2; background: var(--accent); color: var(--accent-ink); }
+.tab[data-tip]::after { content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); padding: 3px 8px; border-radius: 6px; background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 20; }
+.tab:not([aria-selected="true"]):hover::after, .tab:not([aria-selected="true"]):focus-visible::after { opacity: 1; }
+@media (hover: none) { .tab[data-tip]::after { display: none; } }
+.tab.mcu { background: #0b0f2a; color: #f5c542; box-shadow: 0 0 10px rgba(123, 92, 255, .55); }
+.tab.kids { background: #ffd23f; color: #3a2a00; }
 
 .av { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(150deg, hsl(var(--h) 50% 38%), hsl(calc(var(--h) + 50) 55% 20%)); color: #fff; font-family: "Secular One", "Assistant", sans-serif; font-size: 17px; direction: ltr; }
 .av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -445,8 +449,7 @@ img.poster { object-fit: cover; }
 .fr { font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: rgba(59, 47, 208, .12); color: var(--ticket-ink); }
 .fr.w { background: rgba(26, 22, 64, .06); color: var(--ticket-muted); font-weight: 600; }
 @media (max-width: 420px) {
-  .tab { padding-inline: 3px; line-height: 1.25; }
-  .tab .tl, .tab .tn { display: none; }
+  .tab { padding-inline: 3px; line-height: 1.25; font-size: 14px; }
 }
 
 /* "מה חדש": home strip and #news page */

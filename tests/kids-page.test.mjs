@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { stampJs, unstamped } from "../scripts/stamp.mjs";
 
 test("the main menu links to the kids page", () => {
-  assert.match(readFileSync("site/app.js", "utf8"), /<a class="tab kids" href="kids\.html">/);
+  assert.match(readFileSync("site/lib/tabs.js", "utf8"), /id: "kids", name: "ילדים", href: "kids\.html"/);
   assert.match(readFileSync("site/styles.css", "utf8"), /\.tab\.kids\s*\{/);
 });
 
