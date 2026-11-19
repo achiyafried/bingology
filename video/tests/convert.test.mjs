@@ -112,3 +112,15 @@ test("the music keeps playing after the last narration line, to the end of the v
   const secs = await durationOf(aud);
   assert.ok(secs > 5.5, `audio stops at ${secs}s`);
 });
+
+test("a track shorter than the video loops, so the music lasts to the end (finale included)", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "tour-loop-"));
+  const v = join(dir, "v.webm"), voice = join(dir, "voice.wav"), m = join(dir, "m.wav"), out = join(dir, "o.mp4"), aud = join(dir, "o.m4a");
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "testsrc=duration=12:size=64x64:rate=10", "-c:v", "libvpx", v]);
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "sine=f=440:d=1", voice]);
+  execFileSync(ffmpegPath, ["-v", "quiet", "-f", "lavfi", "-i", "sine=f=220:d=8", m]); // 8s track, 12s video
+  await toMp4(v, out, [{ file: voice, at: 1 }], { file: m, duration: 12, finale: { end: 8, length: 3 } });
+  execFileSync(ffmpegPath, ["-v", "quiet", "-y", "-i", out, "-vn", "-c:a", "copy", aud]);
+  const secs = await durationOf(aud);
+  assert.ok(secs > 11.5, `audio stops at ${secs}s`);
+});

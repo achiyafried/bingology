@@ -9,14 +9,19 @@ const VIDEO = ["-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt",
 
 const MUSIC_VOLUME = 0.35, FADE_IN = 1.5, FADE_OUT = 2.5, CROSSFADE = 1.5;
 const sec = n => +n.toFixed(2);
+const RATE = 48000; // the music is resampled to this before looping, so a loop length in samples is known
 
 /** The music bed: either the track's opening crossfaded into its real ending (`finale`), or its opening faded out. */
 function bedChain(input, d, finale) {
   const tail = `volume=${MUSIC_VOLUME}[bed]`;
   if (finale && finale.length + CROSSFADE < d) {
     const headLen = sec(d - finale.length + CROSSFADE), from = sec(finale.end - finale.length);
+    // A track too short for the video: the head loops the part before the ending, so the ending plays only once, at the close.
+    const head = headLen > from
+      ? `aresample=${RATE},atrim=0:${from},asetpts=N/SR/TB,aloop=loop=-1:size=${Math.round(from * RATE)},atrim=0:${headLen}`
+      : `atrim=0:${headLen}`;
     return [`[${input}:a]asplit=2[ma][mb]`,
-      `[ma]atrim=0:${headLen},asetpts=N/SR/TB,afade=t=in:d=${FADE_IN}[mhead]`,
+      `[ma]${head},asetpts=N/SR/TB,afade=t=in:d=${FADE_IN}[mhead]`,
       `[mb]atrim=${from}:${sec(finale.end)},asetpts=N/SR/TB[mend]`,
       `[mhead][mend]acrossfade=d=${CROSSFADE},${tail}`];
   }
@@ -42,7 +47,8 @@ export function ffmpegArgs(input, output, clips = [], music = null) {
       "[ducked][vmix]amix=inputs=2:normalize=0:duration=first[aout]");
     else graph.push("[bed]anull[aout]");
   } else graph[graph.length - 1] = graph.at(-1).replace("[voice]", "[aout]");
-  const inputs = [...clips.map(c => c.file), ...(music ? [music.file] : [])].flatMap(f => ["-i", f]);
+  // The music input loops forever (-stream_loop), so a track shorter than the video never runs out; the graph trims it.
+  const inputs = [...clips.flatMap(c => ["-i", c.file]), ...(music ? ["-stream_loop", "-1", "-i", music.file] : [])];
   return ["-y", "-i", input, ...inputs, "-filter_complex", graph.join(";"), "-map", "0:v", "-map", "[aout]",
     ...VIDEO, "-c:a", "aac", "-b:a", "160k", output];
 }

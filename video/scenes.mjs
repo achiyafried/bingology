@@ -109,13 +109,29 @@ export const SCENES = [
   },
   {
     id: "marvel", goto: "mcu.html", dwell: 6, accent: true,
-    caption: "🌌 היקום של מארוול — מוקדש לעמליה ❤️",
-    say: "There's also the Marvel universe, with a timeline of every movie and series. And this section is dedicated to Amalia!",
+    caption: "🌌 היקום של מארוול — במיוחד בשביל עמליה ❤️",
+    say: "There's also the Marvel universe, with a timeline of every movie and series. And this one is made especially for Amalia!",
     async run(page) {
       await page.locator(".m-warn").waitFor({ state: "detached", timeout: 8000 });
       await pause(page, 1200);
       await glide(page, 450);
       await glide(page, 450);
+    },
+  },
+  {
+    id: "kids", goto: "kids.html", dwell: 5, accent: true,
+    caption: "🧸 סקשן הילדים — במיוחד בשביל לגוני 💛",
+    say: "And for the little ones, a kids corner, with shows for every age and a daily guessing game. Made especially for Lagooni!",
+    async run(page, { tap }) {
+      await page.locator('[data-a="card"]').first().waitFor({ timeout: 8000 });
+      await pause(page, 1000);
+      await tap(page, '[data-a="age"][data-v="small"]');
+      await pause(page, 1200);
+      await glide(page, 350);
+      await tap(page, '[data-a="game"]');
+      await page.locator('[data-a="pick"]').first().waitFor({ timeout: 5000 });
+      await pause(page, 1800);
+      await tap(page, '[data-a="pick"]:not([disabled])');
     },
   },
   {
