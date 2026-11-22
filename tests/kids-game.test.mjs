@@ -112,3 +112,50 @@ test("a saved game with other choices than today's puzzle is ignored", () => {
   assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [5, 1, 2, 4] }), null);
   assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [3, 2, 1, 5] }).misses[0], 1);
 });
+
+import { loadLevel, bumpLevel, loadMute, saveMute, loadScene, saveScene, clearScene } from "../site/kids/store.js";
+
+const mem2 = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v), removeItem: k => m.delete(k) }; };
+const broken2 = { getItem() { throw new Error("no"); }, setItem() { throw new Error("no"); }, removeItem() { throw new Error("no"); } };
+
+test("loadLevel: junk, negative and throwing storage give 0; bumpLevel counts", () => {
+  const st = mem2();
+  st.setItem("bingology:kids-level:puzzle", JSON.stringify("x"));
+  assert.equal(loadLevel(st, "puzzle"), 0);
+  st.setItem("bingology:kids-level:puzzle", "-1");
+  assert.equal(loadLevel(st, "puzzle"), 0);
+  assert.equal(loadLevel(broken2, "puzzle"), 0);
+  const s2 = mem2();
+  bumpLevel(s2, "memory"); bumpLevel(s2, "memory");
+  assert.equal(loadLevel(s2, "memory"), 2);
+  assert.equal(loadLevel(s2, "puzzle"), 0);
+  bumpLevel(broken2, "puzzle");
+});
+
+test("mute round-trips and defaults to false", () => {
+  const st = mem2();
+  assert.equal(loadMute(st), false);
+  saveMute(st, true);
+  assert.equal(loadMute(st), true);
+  saveMute(st, false);
+  assert.equal(loadMute(st), false);
+  assert.equal(loadMute(broken2), false);
+  saveMute(broken2, true);
+});
+
+test("scene: keeps valid stickers, drops bad ones, survives bad storage", () => {
+  const st = mem2();
+  st.setItem("bingology:kids-scene:beach", JSON.stringify([
+    { tmdb: 5, x: 0.1, y: 0.9 }, { tmdb: 1, x: 2, y: 0.5 }, { tmdb: "a", x: 0.1, y: 0.1 }, null, { tmdb: 1.5, x: 0, y: 1 },
+  ]));
+  assert.deepEqual(loadScene(st, "beach"), [{ tmdb: 5, x: 0.1, y: 0.9 }]);
+  assert.deepEqual(loadScene(broken2, "beach"), []);
+  assert.deepEqual(loadScene(st, "park"), []);
+  saveScene(st, "park", [{ tmdb: 7, x: 0.5, y: 0.5 }]);
+  assert.deepEqual(loadScene(st, "park"), [{ tmdb: 7, x: 0.5, y: 0.5 }]);
+  clearScene(st, "park");
+  assert.deepEqual(loadScene(st, "park"), []);
+  st.setItem("bingology:kids-scene:park", "{bad");
+  assert.deepEqual(loadScene(st, "park"), []);
+  saveScene(broken2, "park", []); clearScene(broken2, "park");
+});
