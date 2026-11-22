@@ -70,3 +70,73 @@ export async function searchTrailers({ name, year }, { key, region = "IL", fetch
     .filter(i => /^[A-Za-z0-9_-]{11}$/.test(i.id ?? "") && matchesTrailer(i.title, name))
     .map(i => i.id);
 }
+
+const PLAYLIST_ITEMS = "https://www.googleapis.com/youtube/v3/playlistItems";
+const VIDEOS = "https://www.googleapis.com/youtube/v3/videos";
+
+/** A channel id ("UC…") → its uploads playlist id ("UU…"). */
+export const uploadsId = channel => "UU" + String(channel).slice(2);
+
+/** ISO 8601 duration ("PT7M3S") → seconds; anything unparsable → 0. */
+export function isoSeconds(iso) {
+  const m = /^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/.exec(String(iso ?? ""));
+  if (!m) return 0;
+  const [d, h, mi, s] = m.slice(1).map(Number);
+  return (d || 0) * 86400 + (h || 0) * 3600 + (mi || 0) * 60 + (s || 0);
+}
+
+/** One videos.list item → a clip we show a toddler: playable, 61 s – 12 min, not marked as not-for-kids. */
+export function clipOk(item, region = "IL") {
+  const sec = isoSeconds(item.contentDetails?.duration);
+  return playableIn(item, region) && sec >= 61 && sec <= 720 && item.status?.madeForKids !== false;
+}
+
+async function getJson(url, what, fetchImpl) {
+  const res = await fetchImpl(url);
+  if (!res.ok) throw new Error(`YouTube ${what} → HTTP ${res.status}`);
+  return res.json();
+}
+
+/** Clips of a series from official channels' uploads, channels in order, newest first, up to `max`. Throws on HTTP/network errors. */
+export async function seriesClips(yt, { key, fetchImpl = fetch, region = "IL", max = 12, pages = 4 }) {
+  const out = [], seen = new Set();
+  for (const { channel, match } of yt ?? []) {
+    const want = match ? ` ${norm(match)} ` : null;
+    let token;
+    for (let p = 0; p < pages && out.length < max; p++) {
+      const url = new URL(PLAYLIST_ITEMS);
+      url.searchParams.set("part", "snippet");
+      url.searchParams.set("maxResults", "50");
+      url.searchParams.set("playlistId", uploadsId(channel));
+      if (token) url.searchParams.set("pageToken", token);
+      url.searchParams.set("fields", "nextPageToken,items(snippet(title,resourceId/videoId))");
+      url.searchParams.set("key", cleanKey(key));
+      const page = await getJson(url, "playlistItems.list", fetchImpl);
+      const titles = new Map();
+      for (const i of page.items ?? []) {
+        const id = i.snippet?.resourceId?.videoId, title = i.snippet?.title ?? "";
+        if (!/^[A-Za-z0-9_-]{11}$/.test(id ?? "") || seen.has(id)) continue;
+        if (want && !` ${norm(title)} `.includes(want)) continue;
+        titles.set(id, title);
+      }
+      if (titles.size) {
+        const vurl = new URL(VIDEOS);
+        vurl.searchParams.set("part", "status,contentDetails");
+        vurl.searchParams.set("id", [...titles.keys()].join(","));
+        vurl.searchParams.set("fields", "items(id,status(embeddable,privacyStatus,uploadStatus,madeForKids),contentDetails(duration,regionRestriction,contentRating/ytRating))");
+        vurl.searchParams.set("key", cleanKey(key));
+        const byId = new Map(((await getJson(vurl, "videos.list", fetchImpl)).items ?? []).map(v => [v.id, v]));
+        for (const [id, title] of titles) {
+          const v = byId.get(id);
+          if (!v || !clipOk(v, region) || out.length >= max) continue;
+          seen.add(id);
+          out.push({ id, title, thumb: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`, sec: isoSeconds(v.contentDetails.duration) });
+        }
+      }
+      token = page.nextPageToken;
+      if (!token) break;
+    }
+    if (out.length >= max) break;
+  }
+  return out;
+}
