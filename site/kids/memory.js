@@ -3,7 +3,7 @@ import { esc, safeImg } from "../lib/esc.js";
 import { stickerStyle } from "./art.js";
 import { confettiHTML } from "./puzzle.js";
 
-const SIZE = 96;
+const sizeFor = n => (n > 6 ? 76 : 96);
 const STICKER = { x: 0.5, y: 0.5, r: 0.3 };
 
 export const pairsFor = level => (level < 3 ? 3 : 4);
@@ -41,6 +41,7 @@ export const settle = state => ({
 export const won = state => state.cards.length > 0 && state.cards.every(c => c.matched);
 
 export function memoryHTML(state, items) {
+  const SIZE = sizeFor(state.cards.length);
   const byId = new Map(items.map(i => [i.tmdb, i]));
   const cards = state.cards.map((c, i) => {
     if (!(c.open || c.matched)) {
@@ -49,10 +50,10 @@ export function memoryHTML(state, items) {
     const it = byId.get(c.tmdb) || {};
     const src = safeImg(it.backdrop);
     const style = `${src ? `background-image:url(${src});` : ""}${stickerStyle(it.sticker || STICKER, SIZE)}`;
-    return `<button class="k-mem-card k-mem-face${c.matched ? " k-mem-done" : ""}" data-a="mem-flip" data-v="${i}" aria-label="${esc(it.name || "קלף")}"><span class="k-mem-pic" style="${style}"></span></button>`;
+    return `<button class="k-mem-card k-mem-face${c.matched ? " k-mem-done" : ""}"${c.matched ? ' aria-disabled="true"' : ""} data-a="mem-flip" data-v="${i}" aria-label="${esc(it.name || "קלף")}"><span class="k-mem-pic" style="${style}"></span></button>`;
   }).join("");
   const end = won(state)
     ? `${confettiHTML()}<div class="k-pz-end"><button class="k-pz-btn" data-a="mem-again" aria-label="עוד פעם"><span aria-hidden="true">🔁</span></button><button class="k-pz-btn" data-a="home" aria-label="חזרה"><span aria-hidden="true">🏠</span></button></div>`
     : "";
-  return `<section class="k-mem"><div class="k-mem-grid">${cards}</div>${end}</section>`;
+  return `<section class="k-mem"><div class="k-mem-grid" style="--s:${SIZE}px;--c:${state.cards.length > 6 ? 4 : 3}">${cards}</div>${end}</section>`;
 }

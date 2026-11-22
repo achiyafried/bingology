@@ -79,8 +79,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .k-play * { animation: none !important; transition: none !important; } }
 
 /* memory */
-.k-mem-grid { display: grid; grid-template-columns: repeat(3, 96px); justify-content: center; gap: 14px; }
-.k-mem-card { width: 96px; height: 96px; padding: 0; border: 0; border-radius: 50%; background: var(--g); font-size: 40px; box-shadow: 0 5px 0 rgba(0, 0, 0, .18); }
+.k-mem-grid { display: grid; grid-template-columns: repeat(var(--c, 3), var(--s, 96px)); justify-content: center; gap: 10px; }
+.k-mem-card { width: var(--s, 96px); height: var(--s, 96px); padding: 0; border: 0; border-radius: 50%; background: var(--g); font-size: 40px; box-shadow: 0 5px 0 rgba(0, 0, 0, .18); }
 .k-mem-back { background: linear-gradient(135deg, #ff9f43, #ee5a6f); color: #fff; }
-.k-mem-pic { display: block; width: 96px; height: 96px; border-radius: 50%; background-repeat: no-repeat; background-color: var(--g-soft); }
-.k-mem-done { opacity: .75; }
+.k-mem-pic { display: block; width: 100%; height: 100%; border-radius: 50%; background-repeat: no-repeat; background-color: var(--g-soft); }
+.k-mem-done { box-shadow: 0 0 0 4px #2ecc71, 0 5px 0 rgba(0, 0, 0, .18); animation: k-pop .35s ease-out; }
+@keyframes k-pop { 50% { transform: scale(1.12); } }
