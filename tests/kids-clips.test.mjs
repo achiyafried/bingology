@@ -80,3 +80,18 @@ test("seriesClips throws on HTTP 403", async () => {
   const f = fake({ channels: { UCA: eps("A", 2) }, status: 403 });
   await assert.rejects(seriesClips([{ channel: "UCA" }], { key: "k", fetchImpl: f.fetchImpl }), /403/);
 });
+test("seriesClips drops #short/#Shorts titles but keeps the word short", async () => {
+  const f = fake({ channels: { UCA: [{ id: "AAAAAAAAAAA", title: "Peppa | Cookies #short" }, { id: "BBBBBBBBBBB", title: "Peppa | Cake #Shorts" },
+    { id: "CCCCCCCCCCC", title: "Peppa | Short story" }] }, videos: { AAAAAAAAAAA: vid("AAAAAAAAAAA", 90), BBBBBBBBBBB: vid("BBBBBBBBBBB", 90), CCCCCCCCCCC: vid("CCCCCCCCCCC", 90) } });
+  const r = await seriesClips([{ channel: "UCA" }], { key: "k", fetchImpl: f.fetchImpl });
+  assert.deepEqual(r.map(c => c.id), ["CCCCCCCCCCC"]);
+  assert.equal(f.calls.find(u => u.pathname.endsWith("/videos")).searchParams.get("id"), "CCCCCCCCCCC");
+});
+test("seriesClips passes each response's nextPageToken to the next playlistItems call", async () => {
+  const f = fake({ channels: { UCA: eps("A", 12) }, pageSize: 5 });
+  const r = await seriesClips([{ channel: "UCA" }], { key: "k", fetchImpl: f.fetchImpl });
+  assert.equal(r.length, 12);
+  const p = pl(f.calls);
+  assert.equal(p.length, 3);
+  assert.deepEqual(p.map(u => u.searchParams.get("pageToken")), [null, "5", "10"]);
+});

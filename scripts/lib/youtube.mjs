@@ -116,6 +116,7 @@ export async function seriesClips(yt, { key, fetchImpl = fetch, region = "IL", m
       for (const i of page.items ?? []) {
         const id = i.snippet?.resourceId?.videoId, title = i.snippet?.title ?? "";
         if (!/^[A-Za-z0-9_-]{11}$/.test(id ?? "") || seen.has(id)) continue;
+        if (/#shorts?\b/i.test(title)) continue;
         if (want && !` ${norm(title)} `.includes(want)) continue;
         titles.set(id, title);
       }
