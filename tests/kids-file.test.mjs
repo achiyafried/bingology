@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { validateKids, kidsLive, overCap, AGES, AGE_CAP } from "../scripts/lib/kids.mjs";
+import { validateKids, kidsLive, kidsArt, overCap, AGES, AGE_CAP } from "../scripts/lib/kids.mjs";
 
 test("validateKids accepts good rows", () => {
   assert.deepEqual(validateKids([{ tmdb: 1, age: "small" }, { tmdb: 2, age: "big", he: "שם" }]), []);
@@ -71,4 +71,47 @@ test("site/kids-data.json has no series above its cap and at least 15 per group 
   const { items } = JSON.parse(readFileSync("site/kids-data.json", "utf8"));
   assert.deepEqual(items.filter(overCap).map(x => x.tmdb), []);
   for (const age of AGES) assert.ok(items.filter(x => x.age === age && x.poster).length >= 15, age);
+});
+
+const UC = c => "UC" + c.repeat(22);
+
+test("validateKids accepts art and yt", () => {
+  assert.deepEqual(validateKids([{ tmdb: 1, age: "small", art: { img: "/a.jpg", x: .4, y: .5, r: .2 },
+    yt: [{ channel: UC("a") }, { channel: UC("b"), match: "Bluey" }] }]), []);
+});
+
+test("validateKids rejects bad art", () => {
+  for (const art of [{ x: 1.2 }, { img: "a.jpg" }, { img: "/a.gif" }, "x"]) {
+    const errs = validateKids([{ tmdb: 1, age: "small", art }]);
+    assert.ok(errs.some(e => e.startsWith("row 0:") && /art/.test(e)), JSON.stringify(art));
+  }
+});
+
+test("validateKids rejects bad yt", () => {
+  const bad = [[], [1, 2, 3, 4].map(n => ({ channel: UC(String(n)) })), [{ channel: UC("a") }, { channel: UC("a") }],
+    [{ channel: "UCshort" }], [{ channel: UC("a"), match: "" }], { channel: UC("a") }];
+  for (const yt of bad) {
+    const errs = validateKids([{ tmdb: 1, age: "small", yt }]);
+    assert.ok(errs.some(e => e.startsWith("row 0:") && /yt/.test(e)), JSON.stringify(yt));
+  }
+});
+
+test("kidsArt prefers the hand-picked image", () => {
+  const images = { backdrops: [{ file_path: "/n.jpg", iso_639_1: null }] };
+  assert.ok(kidsArt(images, { img: "/h.jpg" }).backdrop.endsWith("/w780/h.jpg"));
+});
+
+test("kidsArt picks the first textless backdrop", () => {
+  const images = { backdrops: [{ file_path: "/en.jpg", iso_639_1: "en" }, { file_path: "/n.jpg", iso_639_1: null }] };
+  assert.equal(kidsArt(images).backdrop, "https://image.tmdb.org/t/p/w780/n.jpg");
+});
+
+test("kidsArt with only texted backdrops or no images", () => {
+  assert.equal(kidsArt({ backdrops: [{ file_path: "/en.jpg", iso_639_1: "en" }] }).backdrop, null);
+  assert.equal(kidsArt(undefined).backdrop, null);
+});
+
+test("kidsArt sticker defaults", () => {
+  assert.deepEqual(kidsArt(undefined).sticker, { x: .5, y: .5, r: .3 });
+  assert.deepEqual(kidsArt(undefined, { y: .4 }).sticker, { x: .5, y: .4, r: .3 });
 });
