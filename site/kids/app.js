@@ -8,7 +8,7 @@ import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, STICKER } from "./scene.js";
 import { SCENES } from "./scenes.js";
-import { withClips, nextIndex, onPlayerMessage, clipsPickerHTML, clipScreenHTML } from "./clips.js";
+import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
 import { YT_ORIGINS } from "../lib/trailer.js";
 import { parseRoute, backHash, shellHTML, homeHTML } from "./play.js";
 import { headerHTML, servicesHTML, gridHTML, cardHTML, gameHTML } from "./view.js";
@@ -168,7 +168,7 @@ root.addEventListener("pointerdown", startDrag);
 function clipsView(route) {
   const item = route.arg ? withClips(st.items).find(i => String(i.tmdb) === route.arg) : null;
   if (!item) { st.clip = null; return clipsPickerHTML(st.items); }
-  if (!st.clip || st.clip.tmdb !== item.tmdb) st.clip = { tmdb: item.tmdb, i: 0, ended: false };
+  if (!st.clip || st.clip.tmdb !== item.tmdb) st.clip = { tmdb: item.tmdb, i: 0, ended: false, errs: 0 };
   return clipScreenHTML(item, st.clip, location.origin);
 }
 
@@ -184,9 +184,9 @@ function watchClip() {
   });
 }
 
-function playClip(i) {
+function playClip(i, keepErrs) {
   if (!st.clip) return;
-  st.clip = { ...st.clip, i, ended: false };
+  st.clip = { ...st.clip, i, ended: false, errs: keepErrs ? st.clip.errs : 0 };
   render();
   root.querySelector(".k-player")?.scrollIntoView?.({ block: "start", behavior: "smooth" });
 }
@@ -197,8 +197,13 @@ window.addEventListener("message", e => {
   const item = withClips(st.items).find(i => i.tmdb === st.clip.tmdb); if (!item) return;
   const cur = root.querySelector(".k-player iframe")?.contentWindow;
   const r = onPlayerMessage(e.data, e.origin, e.source, cur);
-  if (r === "ended") { st.clip = { ...st.clip, ended: true }; render(); }
-  else if (r === "error") playClip(nextIndex(item.clips, st.clip.i));
+  if (r === "ended") { st.clip = { ...st.clip, ended: true, errs: 0 }; render(); }
+  else if (r === "playing") st.clip.errs = 0;
+  else if (r === "error") {
+    const { state, play } = afterError(st.clip, item.clips.length);
+    st.clip = state;
+    if (play === null) render(); else playClip(play, true);
+  }
 });
 
 // Game views by route.game.

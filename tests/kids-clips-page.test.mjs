@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { ytState, withClips, nextIndex, onPlayerMessage, clipsPickerHTML, clipListHTML, playerBoxHTML, endedHTML } from "../site/kids/clips.js";
+import { ytState, withClips, nextIndex, onPlayerMessage, afterError, clipsPickerHTML, clipListHTML, playerBoxHTML, endedHTML } from "../site/kids/clips.js";
 
 const B = "https://image.tmdb.org/t/p/w780/abc.jpg";
 const clip = (id, o = {}) => ({ id, title: `T ${id}`, thumb: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`, sec: 120, ...o });
@@ -32,7 +32,9 @@ test("onPlayerMessage: ended / error, ignoring other sources and origins", () =>
   const end = '{"event":"onStateChange","info":0}';
   assert.equal(onPlayerMessage(end, o, w, w), "ended");
   assert.equal(onPlayerMessage('{"event":"onError","info":150}', o, w, w), "error");
-  assert.equal(onPlayerMessage('{"event":"onStateChange","info":1}', o, w, w), null);
+  assert.equal(onPlayerMessage('{"event":"onStateChange","info":1}', o, w, w), "playing");
+  assert.equal(onPlayerMessage('{"event":"onStateChange","info":3}', o, w, w), null);
+  assert.equal(onPlayerMessage('{"event":"infoDelivery","info":{"playerState":0}}', o, w, w), "ended");
   assert.equal(onPlayerMessage(end, o, {}, w), null);
   assert.equal(onPlayerMessage(end, o, null, null), null);
   assert.equal(onPlayerMessage(end, o, undefined, undefined), null);
@@ -71,4 +73,20 @@ test("endedHTML: thumb and two buttons, no iframe", () => {
   assert.match(h, /🔁/); assert.match(h, /⏭/);
   assert.match(h, /<img/);
   assert.doesNotMatch(h, /iframe/);
+});
+
+test("ytState reads infoDelivery playerState", () => {
+  assert.equal(ytState('{"event":"infoDelivery","info":{"playerState":0}}'), 0);
+  assert.equal(ytState({ event: "infoDelivery", info: { playerState: 1 } }), 1);
+  assert.equal(ytState({ event: "infoDelivery", info: { currentTime: 3 } }), null);
+  assert.equal(ytState({ event: "infoDelivery" }), null);
+});
+
+test("afterError advances, then stops on the end screen once all clips failed", () => {
+  let s = { tmdb: 1, i: 0, ended: false, errs: 0 };
+  let r = afterError(s, 3); assert.equal(r.play, 1); assert.equal(r.state.errs, 1);
+  r = afterError({ ...r.state, i: 1 }, 3); assert.equal(r.play, 2); assert.equal(r.state.errs, 2);
+  r = afterError({ ...r.state, i: 2 }, 3); assert.equal(r.play, null);
+  assert.equal(r.state.ended, true); assert.equal(r.state.errs, 0);
+  assert.equal(afterError({ i: 0 }, 1).play, null);
 });
