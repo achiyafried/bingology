@@ -49,7 +49,7 @@ test("homeHTML tiles", () => {
   assert.match(h2, /data-v="scene"/);
   assert.doesNotMatch(h2, /data-v="memory"/);
   assert.doesNotMatch(h2, /data-v="clips"/);
-  const h3 = homeHTML([s(1), s(2), s(3, { clips: [{ id: "a" }] })]);
+  const h3 = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]);
   assert.match(h3, /data-v="memory"/);
   assert.match(h3, /data-v="clips"/);
   assert.doesNotMatch(homeHTML([s(1), s(2), s(3, { clips: [] })]), /data-v="clips"/);
@@ -57,6 +57,6 @@ test("homeHTML tiles", () => {
 });
 
 test("every button has an aria-label", () => {
-  const all = homeHTML([s(1), s(2), s(3, { clips: [{ id: "a" }] })]) + shellHTML("", { muted: false });
+  const all = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]) + shellHTML("", { muted: false });
   for (const b of all.match(/<button[^>]*>/g)) assert.match(b, /aria-label="/);
 });

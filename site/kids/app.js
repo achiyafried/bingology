@@ -8,6 +8,8 @@ import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, STICKER } from "./scene.js";
 import { SCENES } from "./scenes.js";
+import { withClips, nextIndex, onPlayerMessage, clipsPickerHTML, clipScreenHTML } from "./clips.js";
+import { YT_ORIGINS } from "../lib/trailer.js";
 import { parseRoute, backHash, shellHTML, homeHTML } from "./play.js";
 import { headerHTML, servicesHTML, gridHTML, cardHTML, gameHTML } from "./view.js";
 import { israelToday } from "../lib/games/day.js";
@@ -15,7 +17,7 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, muted: loadMute(store) };
+const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, clip: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
@@ -163,14 +165,49 @@ function startDrag(e) {
 }
 root.addEventListener("pointerdown", startDrag);
 
-// Game views by route.game; Tasks 7-9 replace the stubs.
-const empty = () => `<section></section>`;
+function clipsView(route) {
+  const item = route.arg ? withClips(st.items).find(i => String(i.tmdb) === route.arg) : null;
+  if (!item) { st.clip = null; return clipsPickerHTML(st.items); }
+  if (!st.clip || st.clip.tmdb !== item.tmdb) st.clip = { tmdb: item.tmdb, i: 0, ended: false };
+  return clipScreenHTML(item, st.clip, location.origin);
+}
+
+// After a clip screen is painted: subscribe to the player's state and error events (as watchPlayer in site/app.js).
+function watchClip() {
+  const f = root.querySelector(".k-player iframe"); if (!f) return;
+  f.addEventListener("load", () => {
+    const w = f.contentWindow; if (!w) return;
+    const send = m => w.postMessage(JSON.stringify({ ...m, id: 1, channel: "widget" }), YT_ORIGINS[0]);
+    send({ event: "listening" });
+    send({ event: "command", func: "addEventListener", args: ["onStateChange"] });
+    send({ event: "command", func: "addEventListener", args: ["onError"] });
+  });
+}
+
+function playClip(i) {
+  if (!st.clip) return;
+  st.clip = { ...st.clip, i, ended: false };
+  render();
+  root.querySelector(".k-player")?.scrollIntoView?.({ block: "start", behavior: "smooth" });
+}
+
+// Registered once. A message counts only from the current player iframe; a removed iframe has no match.
+window.addEventListener("message", e => {
+  if (!st.clip) return;
+  const item = withClips(st.items).find(i => i.tmdb === st.clip.tmdb); if (!item) return;
+  const cur = root.querySelector(".k-player iframe")?.contentWindow;
+  const r = onPlayerMessage(e.data, e.origin, e.source, cur);
+  if (r === "ended") { st.clip = { ...st.clip, ended: true }; render(); }
+  else if (r === "error") playClip(nextIndex(item.clips, st.clip.i));
+});
+
+// Game views by route.game.
 const VIEWS = {
   home: () => homeHTML(st.items),
   puzzle: puzzleView,
   memory: memoryView,
   scene: sceneView,
-  clips: empty,
+  clips: clipsView,
 };
 
 function setupGame() {
@@ -185,10 +222,11 @@ function render() {
   const route = parseRoute(location.hash);
   if (route.game !== "memory") { st.mem = null; clearTimeout(memTimer); memTimer = 0; }
   if (route.game !== "scene") st.scn = null;
+  if (route.game !== "clips") st.clip = null;
   root.dataset.age = st.age;
   if (route.game) {
     if (st.age !== "small") { history.replaceState(null, "", location.pathname + location.search); }
-    else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); return; }
+    else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); if (route.game === "clips") watchClip(); return; }
   }
   const group = inGroup(st.items, st.age);
   const available = servicesIn(group);
@@ -220,6 +258,7 @@ root.addEventListener("click", e => {
   else if (a === "play") { location.hash = "play"; }
   else if (a === "go") { location.hash = `play/${v}`; }
   else if (a === "again") puzzleAgain();
+  else if (a === "clip") playClip(Number(v));
   else if (a === "clear" && st.scn) { st.scn.confirm = true; render(); }
   else if (a === "clear-no" && st.scn) { st.scn.confirm = false; render(); }
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }

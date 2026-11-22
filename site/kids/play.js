@@ -1,5 +1,6 @@
 // Toddler games shell: hash routes, the games home screen, and the frame (home + mute buttons, TMDB credit).
 import { withArt } from "./art.js";
+import { withClips } from "./clips.js";
 
 const GAMES = ["puzzle", "memory", "scene", "clips"];
 
@@ -31,6 +32,6 @@ export function homeHTML(items) {
   const tiles = [tile("puzzle", "פאזל", "🧩")];
   if (withArt(items).length >= 3) tiles.push(tile("memory", "זיכרון", "🃏"));
   tiles.push(tile("scene", "איפה?", "🔍"));
-  if (items.some(i => i.age === "small" && i.clips?.length)) tiles.push(tile("clips", "קליפים", "🎬"));
+  if (withClips(items).length) tiles.push(tile("clips", "קליפים", "🎬"));
   return `<div class="k-tiles">${tiles.join("")}</div>`;
 }
