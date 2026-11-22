@@ -46,7 +46,7 @@ function sliceStyle(src, state, p) {
 }
 
 const CONFETTI = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#c77dff"];
-function confettiHTML() {
+export function confettiHTML() {
   return `<div class="k-confetti" aria-hidden="true">${Array.from({ length: 24 }, (_, i) =>
     `<i style="left:${(i * 37) % 100}%;background:${CONFETTI[i % 5]};animation-delay:${(i % 6) * 0.15}s"></i>`).join("")}</div>`;
 }

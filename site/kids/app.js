@@ -5,6 +5,7 @@ import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bu
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js";
+import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { parseRoute, backHash, shellHTML, homeHTML } from "./play.js";
 import { headerHTML, servicesHTML, gridHTML, cardHTML, gameHTML } from "./view.js";
 import { israelToday } from "../lib/games/day.js";
@@ -12,7 +13,7 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, muted: loadMute(store) };
+const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
@@ -35,8 +36,28 @@ function puzzleAgain() {
   if (location.hash === h) render(); else location.hash = h;
 }
 
+function memoryView() {
+  const arts = withArt(st.items);
+  if (!st.mem) st.mem = deal(arts, pairsFor(loadLevel(store, "memory")));
+  return memoryHTML(st.mem, arts);
+}
+
+function memFlip(i) {
+  if (!st.mem) return;
+  const next = flip(st.mem, i);
+  if (next === st.mem) return;
+  const matched = next.cards.filter(c => c.matched).length > st.mem.cards.filter(c => c.matched).length;
+  st.mem = next;
+  if (matched) sound.pair();
+  const done = memWon(next);
+  if (done) bumpLevel(store, "memory");
+  else if (next.busy) memTimer = setTimeout(() => { memTimer = 0; if (st.mem) { st.mem = settle(st.mem); render(); } }, 1500);
+  render();
+  if (done) winTimer = setTimeout(() => sound.win(), 250);
+}
+
 // Drag a tray piece with a pointer: move it with transform, re-render only on drop.
-let drag = null, winTimer = 0;
+let drag = null, winTimer = 0, memTimer = 0;
 function endDrag() { if (drag) { drag.abort(); drag = null; } }
 function startDrag(e) {
   const el = e.target.closest?.("[data-piece]");
@@ -79,7 +100,7 @@ const empty = () => `<section></section>`;
 const VIEWS = {
   home: () => homeHTML(st.items),
   puzzle: puzzleView,
-  memory: empty,
+  memory: memoryView,
   scene: empty,
   clips: empty,
 };
@@ -93,8 +114,9 @@ function setupGame() {
 function render() {
   endDrag();
   clearTimeout(winTimer);
-  root.dataset.age = st.age;
   const route = parseRoute(location.hash);
+  if (route.game !== "memory") { st.mem = null; clearTimeout(memTimer); memTimer = 0; }
+  root.dataset.age = st.age;
   if (route.game) {
     if (st.age !== "small") { history.replaceState(null, "", location.pathname + location.search); }
     else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); return; }
@@ -129,6 +151,8 @@ root.addEventListener("click", e => {
   else if (a === "play") { location.hash = "play"; }
   else if (a === "go") { location.hash = `play/${v}`; }
   else if (a === "again") puzzleAgain();
+  else if (a === "mem-flip") memFlip(Number(v));
+  else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {
     const back = backHash(parseRoute(location.hash));
     if (back) location.hash = back;

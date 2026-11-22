@@ -77,3 +77,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @keyframes k-fall { to { transform: translateY(110vh) rotate(540deg); } }
 @media (prefers-reduced-motion: reduce) { .k-confetti { display: none; } }
 @media (prefers-reduced-motion: reduce) { .k-play * { animation: none !important; transition: none !important; } }
+
+/* memory */
+.k-mem-grid { display: grid; grid-template-columns: repeat(3, 96px); justify-content: center; gap: 14px; }
+.k-mem-card { width: 96px; height: 96px; padding: 0; border: 0; border-radius: 50%; background: var(--g); font-size: 40px; box-shadow: 0 5px 0 rgba(0, 0, 0, .18); }
+.k-mem-back { background: linear-gradient(135deg, #ff9f43, #ee5a6f); color: #fff; }
+.k-mem-pic { display: block; width: 96px; height: 96px; border-radius: 50%; background-repeat: no-repeat; background-color: var(--g-soft); }
+.k-mem-done { opacity: .75; }
