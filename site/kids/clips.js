@@ -2,6 +2,7 @@
 import { esc, safeImg, safeThumb } from "../lib/esc.js";
 import { embedUrl, validKey, YT_ORIGINS, ytErrorCode } from "../lib/trailer.js";
 import { stickerStyle } from "./art.js";
+import { title } from "./catalog.js";
 
 const STICKER = 72, DEFAULT = { x: 0.5, y: 0.5, r: 0.3 };
 
@@ -46,7 +47,7 @@ export function clipsPickerHTML(items) {
     const img = safeImg(i.backdrop), th = safeThumb(i.clips[0].thumb);
     const bg = img ? `background-image:url(${img});${stickerStyle(i.sticker ?? DEFAULT, STICKER)}`
       : th ? `background-image:url(${th});background-size:cover;background-position:center` : "";
-    return `<li><button class="k-cl-st" data-a="go" data-v="clips/${Number(i.tmdb)}" aria-label="${esc(i.name)}" style="${bg}"></button></li>`;
+    return `<li><button class="k-cl-st" data-a="go" data-v="clips/${Number(i.tmdb)}" aria-label="${esc(title(i))}" style="${bg}"></button></li>`;
   }).join("");
   return `<ul class="k-cl-picks">${tiles}</ul>`;
 }

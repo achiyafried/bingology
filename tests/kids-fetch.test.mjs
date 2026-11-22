@@ -168,3 +168,10 @@ test("the en-US request asks for textless images", async () => {
   assert.ok(en.searchParams.get("append_to_response").split(",").includes("images"));
   assert.equal(en.searchParams.get("include_image_language"), "null");
 });
+
+test("no YouTube calls when the run aborts", async () => {
+  const clipsImpl = spy(async () => [clip]);
+  const r = await run({ rows: [one, { ...one, tmdb: 2 }], prev: null, fetchImpl: fake({ fail: new Set([one.tmdb, 2]) }), now: NOW, map, youtubeKey: "k", clipsImpl });
+  assert.equal(r.abort, true);
+  assert.equal(clipsImpl.n, 0);
+});

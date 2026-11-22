@@ -59,7 +59,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-play { text-align: center; }
 .k-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .k-bar button { min-width: 64px; min-height: 64px; border: 0; border-radius: 50%; background: var(--g-soft); font-size: 30px; box-shadow: 0 3px 0 var(--line); }
-.k-play-area { touch-action: none; }
 .k-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .k-gtile { min-height: 140px; border: 0; border-radius: 24px; background: var(--g); color: var(--g-ink); font-size: 56px; box-shadow: 0 6px 0 rgba(0, 0, 0, .15); }
 .k-pz-picker { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -67,6 +66,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-pz-ghost, .k-pz-cell { position: absolute; background-size: cover; background-position: center; }
 .k-pz-ghost { inset: 0; filter: grayscale(1); opacity: .35; }
 .k-pz-tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px; min-height: 120px; }
+.k-pz-piece:not(.k-dragging) { transition: transform .25s ease; }
 .k-pz-piece { position: relative; border-radius: 10px; background-repeat: no-repeat; box-shadow: 0 4px 0 rgba(0, 0, 0, .25); touch-action: none; cursor: grab; user-select: none; }
 .k-pz-piece.k-dragging { z-index: 5; cursor: grabbing; box-shadow: 0 10px 18px rgba(0, 0, 0, .3); }
 .k-pz-cell { background-repeat: no-repeat; }
@@ -90,7 +90,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-sc-places { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .k-sc-tile { display: block; width: 100%; padding: 0; border: 0; border-radius: var(--radius); overflow: hidden; background: var(--g-soft); box-shadow: 0 5px 0 var(--line); }
 .k-sc-tile svg, .k-sc-scene > svg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
-.k-sc-scene { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius); box-shadow: 0 4px 0 var(--line); }
+.k-sc-scene { touch-action: none; position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius); box-shadow: 0 4px 0 var(--line); }
 .k-sc-scene > svg { border-radius: var(--radius); }
 .k-sc-st { position: absolute; width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; background-repeat: no-repeat; background-color: var(--g-soft); border: 3px solid #fff; box-shadow: 0 3px 6px rgba(0, 0, 0, .3); touch-action: none; cursor: grab; user-select: none; }
 .k-sc-st.k-dragging { z-index: 5; cursor: grabbing; box-shadow: 0 10px 18px rgba(0, 0, 0, .35); }

@@ -47,7 +47,7 @@ export async function run({ rows, prev, fetchImpl = fetch, now, map, youtubeKey 
 
   // Weekly clips, one series at a time. YouTube trouble never counts as a TMDB failure.
   const rowById = new Map(good.map(r => [r.tmdb, r]));
-  for (const item of items) {
+  for (const item of abort ? [] : items) {
     const yt = rowById.get(item.tmdb)?.yt;
     if (!yt) { delete item.clips; delete item.clipsAt; continue; }
     const due = !item.clipsAt || !(Date.parse(now) - Date.parse(item.clipsAt) < CLIPS_TTL);

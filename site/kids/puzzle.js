@@ -1,6 +1,7 @@
 // Toddler jigsaw: a backdrop cut into 2x2 (later 3x2) pieces. Pure state helpers plus the picker and board markup.
 import { esc, safeImg } from "../lib/esc.js";
 import { withArt } from "./art.js";
+import { title } from "./catalog.js";
 
 const SNAP = 0.35;
 
@@ -33,7 +34,7 @@ export function pickerHTML(items) {
   const tiles = withArt(items).map(x => {
     const src = safeImg(x.poster);
     const img = src ? `<img class="k-poster" src="${src}" alt="" loading="lazy">` : `<span class="k-poster k-noposter" aria-hidden="true">📺</span>`;
-    return `<li><button class="k-tile" data-a="go" data-v="puzzle/${Number(x.tmdb)}" aria-label="${esc(x.name || "פאזל")}">${img}</button></li>`;
+    return `<li><button class="k-tile" data-a="go" data-v="puzzle/${Number(x.tmdb)}" aria-label="${esc(title(x) || "פאזל")}">${img}</button></li>`;
   });
   return `<ul class="k-grid k-pz-picker">${tiles.join("")}</ul>`;
 }

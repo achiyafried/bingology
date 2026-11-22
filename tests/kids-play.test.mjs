@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseRoute, backHash, shellHTML, homeHTML } from "../site/kids/play.js";
+import { parseRoute, gameRouteFor, backHash, shellHTML, homeHTML } from "../site/kids/play.js";
 import { headerHTML } from "../site/kids/view.js";
 
 const B = "https://image.tmdb.org/t/p/w780/b.jpg";
@@ -21,6 +21,7 @@ test("backHash", () => {
   assert.equal(backHash({ game: "memory", arg: null }), "#play");
   assert.equal(backHash({ game: "scene", arg: "park" }), "#play/scene");
   assert.equal(backHash({ game: "scene", arg: null }), "#play");
+  assert.equal(backHash({ game: "clips", arg: "5" }), "#play/clips");
   assert.equal(backHash({ game: "home", arg: null }), "");
 });
 
@@ -59,4 +60,11 @@ test("homeHTML tiles", () => {
 test("every button has an aria-label", () => {
   const all = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]) + shellHTML("", { muted: false });
   for (const b of all.match(/<button[^>]*>/g)) assert.match(b, /aria-label="/);
+});
+
+test("gameRouteFor: games only for small", () => {
+  assert.equal(gameRouteFor("#play/puzzle", "mid"), null);
+  assert.equal(gameRouteFor("#play", "big"), null);
+  assert.deepEqual(gameRouteFor("#play/puzzle", "small"), { game: "puzzle", arg: null });
+  assert.equal(gameRouteFor("#game", "mid").game, null);
 });

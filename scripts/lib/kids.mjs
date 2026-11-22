@@ -30,7 +30,7 @@ export function validateKids(list) {
       else {
         if ("img" in a && !(typeof a.img === "string" && ART_IMG.test(a.img))) e("art.img must be a TMDB path like /abc.jpg");
         for (const k of ["x", "y", "r"])
-          if (k in a && !(typeof a[k] === "number" && a[k] >= 0 && a[k] <= 1)) e(`art.${k} must be a number from 0 to 1`);
+          if (k in a && !(typeof a[k] === "number" && a[k] >= (k === "r" ? Number.MIN_VALUE : 0) && a[k] <= 1)) e(k === "r" ? "art.r must be a number above 0 and up to 1" : `art.${k} must be a number from 0 to 1`);
       }
     }
     if ("yt" in r) {

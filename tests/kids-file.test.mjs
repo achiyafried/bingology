@@ -81,7 +81,7 @@ test("validateKids accepts art and yt", () => {
 });
 
 test("validateKids rejects bad art", () => {
-  for (const art of [{ x: 1.2 }, { img: "a.jpg" }, { img: "/a.gif" }, "x"]) {
+  for (const art of [{ x: 1.2 }, { r: 0 }, { img: "a.jpg" }, { img: "/a.gif" }, "x"]) {
     const errs = validateKids([{ tmdb: 1, age: "small", art }]);
     assert.ok(errs.some(e => e.startsWith("row 0:") && /art/.test(e)), JSON.stringify(art));
   }

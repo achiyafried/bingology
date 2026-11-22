@@ -2,6 +2,7 @@
 import { esc, safeImg } from "../lib/esc.js";
 import { withArt, stickerStyle } from "./art.js";
 import { SCENES } from "./scenes.js";
+import { title } from "./catalog.js";
 
 export const STICKER = 72; // px, same in the tray and on the scene
 const DEFAULT = { x: 0.5, y: 0.5, r: 0.3 };
@@ -31,10 +32,10 @@ export function sceneHTML(place, list, items, opts = {}) {
   const arts = withArt(items), byId = new Map(arts.map(i => [i.tmdb, i]));
   const placed = list.map((s, i) => {
     const item = byId.get(s.tmdb);
-    return item ? `<div class="k-sc-st" data-i="${i}" role="img" aria-label="${esc(item.name || "")}" style="left:${s.x * 100}%;top:${s.y * 100}%;${face(item)}"></div>` : "";
+    return item ? `<div class="k-sc-st" data-i="${i}" role="img" aria-label="${esc(title(item) || "")}" style="left:${s.x * 100}%;top:${s.y * 100}%;${face(item)}"></div>` : "";
   }).join("");
   const tray = arts.map(i =>
-    `<div class="k-sc-tpl" data-t="${Number(i.tmdb)}" role="img" aria-label="${esc(i.name || "")}" style="${face(i)}"></div>`).join("");
+    `<div class="k-sc-tpl" data-t="${Number(i.tmdb)}" role="img" aria-label="${esc(title(i) || "")}" style="${face(i)}"></div>`).join("");
   const clear = opts.confirm
     ? `<span class="k-sc-ask">לנקות?</span><button class="k-sc-btn" data-a="clear-yes" aria-label="כן, לנקות"><span aria-hidden="true">✓</span></button><button class="k-sc-btn" data-a="clear-no" aria-label="לא, להשאיר"><span aria-hidden="true">✕</span></button>`
     : `<button class="k-sc-btn" data-a="clear" aria-label="לנקות את החדר"><span aria-hidden="true">🧽</span></button>`;

@@ -14,8 +14,14 @@ export function parseRoute(hash) {
 
 export function backHash({ game, arg }) {
   if (game === "home") return "";
-  if (arg && (game === "puzzle" || game === "scene")) return `#play/${game}`;
+  if (arg && (game === "puzzle" || game === "scene" || game === "clips")) return `#play/${game}`;
   return "#play";
+}
+
+/** The route for a hash, or null when a #play… hash is opened outside the "small" group (games exist only there). */
+export function gameRouteFor(hash, age) {
+  const route = parseRoute(hash);
+  return route.game && age !== "small" ? null : route;
 }
 
 export function shellHTML(inner, { muted }) {

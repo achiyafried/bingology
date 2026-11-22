@@ -6,11 +6,11 @@ import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
-import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, STICKER } from "./scene.js";
+import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML } from "./scene.js";
 import { SCENES } from "./scenes.js";
 import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
 import { YT_ORIGINS } from "../lib/trailer.js";
-import { parseRoute, backHash, shellHTML, homeHTML } from "./play.js";
+import { parseRoute, gameRouteFor, backHash, shellHTML, homeHTML } from "./play.js";
 import { headerHTML, servicesHTML, gridHTML, cardHTML, gameHTML } from "./view.js";
 import { israelToday } from "../lib/games/day.js";
 
@@ -137,7 +137,7 @@ function startDrag(e) {
   const piece = Number(el.dataset.piece);
   const ac = new AbortController(), { signal } = ac;
   const x0 = e.clientX, y0 = e.clientY;
-  el.setPointerCapture(e.pointerId);
+  try { el.setPointerCapture(e.pointerId); } catch {}
   el.classList.add("k-dragging");
   el.addEventListener("pointermove", m => { el.style.transform = `translate(${m.clientX - x0}px,${m.clientY - y0}px)`; }, { signal });
   const finish = (up, drop) => {
@@ -225,12 +225,13 @@ function render() {
   endDrag();
   clearTimeout(winTimer);
   const route = parseRoute(location.hash);
+  const game = gameRouteFor(location.hash, st.age);
   if (route.game !== "memory") { st.mem = null; clearTimeout(memTimer); memTimer = 0; }
   if (route.game !== "scene") st.scn = null;
   if (route.game !== "clips") st.clip = null;
   root.dataset.age = st.age;
   if (route.game) {
-    if (st.age !== "small") { history.replaceState(null, "", location.pathname + location.search); }
+    if (!game) { history.replaceState(null, "", location.pathname + location.search); }
     else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); if (route.game === "clips") watchClip(); return; }
   }
   const group = inGroup(st.items, st.age);
@@ -274,7 +275,11 @@ root.addEventListener("click", e => {
     if (back) location.hash = back;
     else { history.pushState(null, "", location.pathname + location.search); render(); }
   }
-  else if (a === "mute") { st.muted = !st.muted; saveMute(store, st.muted); render(); }
+  else if (a === "mute") {
+    st.muted = !st.muted; saveMute(store, st.muted);
+    b.setAttribute("aria-label", st.muted ? "הפעלת צליל" : "השתקה");
+    const ic = b.querySelector("span"); if (ic) ic.textContent = st.muted ? "🔇" : "🔊";
+  }
   else if (a === "grid") { history.pushState(null, "", location.pathname + location.search); render(); }
   else if (a === "pick" && st.game) {
     st.game = guess(st.game, Number(v));
