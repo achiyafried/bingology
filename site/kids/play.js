@@ -13,7 +13,8 @@ export function parseRoute(hash) {
 
 export function backHash({ game, arg }) {
   if (game === "home") return "";
-  return game === "puzzle" && arg ? "#play/puzzle" : "#play";
+  if (arg && (game === "puzzle" || game === "scene")) return `#play/${game}`;
+  return "#play";
 }
 
 export function shellHTML(inner, { muted }) {

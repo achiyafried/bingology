@@ -19,6 +19,8 @@ test("backHash", () => {
   assert.equal(backHash({ game: "puzzle", arg: "1" }), "#play/puzzle");
   assert.equal(backHash({ game: "puzzle", arg: null }), "#play");
   assert.equal(backHash({ game: "memory", arg: null }), "#play");
+  assert.equal(backHash({ game: "scene", arg: "park" }), "#play/scene");
+  assert.equal(backHash({ game: "scene", arg: null }), "#play");
   assert.equal(backHash({ game: "home", arg: null }), "");
 });
 

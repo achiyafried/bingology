@@ -1,11 +1,13 @@
 // The kids page: loads kids-data.json, keeps the age group and today's game, paints the grid or the game.
 import { inGroup, servicesIn, pickServices, byServices } from "./catalog.js";
 import { puzzleFor, initGame, guess } from "./game.js";
-import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel } from "./store.js";
+import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
+import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, STICKER } from "./scene.js";
+import { SCENES } from "./scenes.js";
 import { parseRoute, backHash, shellHTML, homeHTML } from "./play.js";
 import { headerHTML, servicesHTML, gridHTML, cardHTML, gameHTML } from "./view.js";
 import { israelToday } from "../lib/games/day.js";
@@ -13,7 +15,7 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, muted: loadMute(store) };
+const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
@@ -56,9 +58,75 @@ function memFlip(i) {
   if (done) winTimer = setTimeout(() => sound.win(), 250);
 }
 
+function sceneView(route) {
+  if (!SCENES.some(x => x.id === route.arg)) { st.scn = null; return placesHTML(); }
+  if (!st.scn || st.scn.place !== route.arg) st.scn = { place: route.arg, list: loadScene(store, route.arg), confirm: false };
+  return sceneHTML(st.scn.place, st.scn.list, st.items, { confirm: st.scn.confirm });
+}
+
+function sceneSet(list) {
+  st.scn.list = list;
+  saveScene(store, st.scn.place, list);
+  render();
+}
+
+// Sticker scenes. From the tray: a press that moves mostly vertically (touch/pen) or any move of 6px+ (mouse)
+// lifts a copy, so a horizontal swipe still scrolls the tray (touch-action: pan-x; the browser then cancels the pointer).
+// On the scene: a sticker drags at once. Dropping outside the scene removes it.
+function sceneDown(e) {
+  if (!st.scn || e.button > 0) return;
+  const tpl = e.target.closest?.("[data-t]"), placed = e.target.closest?.("[data-i]");
+  const scene = root.querySelector("[data-scene]");
+  if (!scene || !(tpl || placed)) return;
+  endDrag();
+  const frac = (cx, cy) => { const b = scene.getBoundingClientRect(); return [(cx - b.left) / b.width, (cy - b.top) / b.height]; };
+  const ac = new AbortController(), { signal } = ac;
+  const el = tpl || placed, x0 = e.clientX, y0 = e.clientY;
+  let ghost = null;
+  const lift = () => {
+    if (placed) { el.classList.add("k-dragging"); return placed; }
+    ghost = tpl.cloneNode(false);
+    ghost.removeAttribute("data-t");
+    ghost.className = "k-sc-st k-dragging k-sc-ghost";
+    ghost.style.left = `${x0}px`; ghost.style.top = `${y0}px`;
+    document.body.appendChild(ghost);
+    return ghost;
+  };
+  let mover = null;
+  try { el.setPointerCapture(e.pointerId); } catch {}
+  if (placed) { e.preventDefault(); mover = lift(); }
+  const clean = () => { ghost?.remove(); el.classList.remove("k-dragging"); el.style.transform = ""; };
+  el.addEventListener("pointermove", m => {
+    const dx = m.clientX - x0, dy = m.clientY - y0;
+    if (!mover) {
+      const far = m.pointerType === "mouse" ? Math.hypot(dx, dy) > 6 : Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx);
+      if (!far) return;
+      mover = lift();
+    }
+    if (ghost) { ghost.style.left = `${m.clientX}px`; ghost.style.top = `${m.clientY}px`; }
+    else el.style.transform = `translate(${dx}px,${dy}px)`;
+  }, { signal });
+  el.addEventListener("pointerup", u => {
+    const moved = !!mover;
+    let cx = u.clientX, cy = u.clientY;
+    if (placed) { const r = el.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; }
+    endDrag(); clean();
+    if (!moved) return;
+    const [fx, fy] = frac(cx, cy);
+    if (placed) {
+      const i = Number(placed.dataset.i);
+      sceneSet(outside(fx, fy) ? removeSticker(st.scn.list, i) : moveSticker(st.scn.list, i, fx, fy));
+    } else if (!outside(fx, fy)) sceneSet(addSticker(st.scn.list, Number(tpl.dataset.t), fx, fy));
+  }, { signal });
+  el.addEventListener("pointercancel", () => { endDrag(); clean(); }, { signal });
+  drag = ac;
+  drag.clean = clean;
+}
+root.addEventListener("pointerdown", sceneDown);
+
 // Drag a tray piece with a pointer: move it with transform, re-render only on drop.
 let drag = null, winTimer = 0, memTimer = 0;
-function endDrag() { if (drag) { drag.abort(); drag = null; } }
+function endDrag() { if (drag) { drag.abort(); drag.clean?.(); drag = null; } }
 function startDrag(e) {
   const el = e.target.closest?.("[data-piece]");
   if (!el || !st.jig || e.button > 0) return;
@@ -101,7 +169,7 @@ const VIEWS = {
   home: () => homeHTML(st.items),
   puzzle: puzzleView,
   memory: memoryView,
-  scene: empty,
+  scene: sceneView,
   clips: empty,
 };
 
@@ -116,6 +184,7 @@ function render() {
   clearTimeout(winTimer);
   const route = parseRoute(location.hash);
   if (route.game !== "memory") { st.mem = null; clearTimeout(memTimer); memTimer = 0; }
+  if (route.game !== "scene") st.scn = null;
   root.dataset.age = st.age;
   if (route.game) {
     if (st.age !== "small") { history.replaceState(null, "", location.pathname + location.search); }
@@ -151,6 +220,9 @@ root.addEventListener("click", e => {
   else if (a === "play") { location.hash = "play"; }
   else if (a === "go") { location.hash = `play/${v}`; }
   else if (a === "again") puzzleAgain();
+  else if (a === "clear" && st.scn) { st.scn.confirm = true; render(); }
+  else if (a === "clear-no" && st.scn) { st.scn.confirm = false; render(); }
+  else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
   else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {
