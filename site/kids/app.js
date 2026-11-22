@@ -12,7 +12,7 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, muted: loadMute(store) };
+const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
@@ -20,27 +20,27 @@ const sound = makeSound(() => st.muted);
 function puzzleView(route) {
   const arts = withArt(st.items);
   const item = route.arg ? arts.find(i => String(i.tmdb) === route.arg) : null;
-  if (!item) { st.puzzle = null; return pickerHTML(st.items); }
-  if (!st.puzzle || st.puzzle.tmdb !== item.tmdb) st.puzzle = initPuzzle(item.tmdb, loadLevel(store, "puzzle"));
-  return puzzleHTML(item, st.puzzle);
+  if (!item) { st.jig = null; return pickerHTML(st.items); }
+  if (!st.jig || st.jig.tmdb !== item.tmdb) st.jig = initPuzzle(item.tmdb, loadLevel(store, "puzzle"));
+  return puzzleHTML(item, st.jig);
 }
 
 function puzzleAgain() {
   const arts = withArt(st.items);
-  const others = arts.filter(i => !st.puzzle || i.tmdb !== st.puzzle.tmdb);
+  const others = arts.filter(i => !st.jig || i.tmdb !== st.jig.tmdb);
   const pool = others.length ? others : arts;
-  st.puzzle = null;
+  st.jig = null;
   if (!pool.length) { location.hash = "play/puzzle"; return; }
   const h = `#play/puzzle/${pool[Math.floor(Math.random() * pool.length)].tmdb}`;
   if (location.hash === h) render(); else location.hash = h;
 }
 
 // Drag a tray piece with a pointer: move it with transform, re-render only on drop.
-let drag = null;
+let drag = null, winTimer = 0;
 function endDrag() { if (drag) { drag.abort(); drag = null; } }
 function startDrag(e) {
   const el = e.target.closest?.("[data-piece]");
-  if (!el || !st.puzzle || e.button > 0) return;
+  if (!el || !st.jig || e.button > 0) return;
   endDrag();
   e.preventDefault();
   const piece = Number(el.dataset.piece);
@@ -54,12 +54,14 @@ function startDrag(e) {
     const board = root.querySelector("[data-board]");
     if (drop && board) {
       const b = board.getBoundingClientRect(), r = el.getBoundingClientRect();
-      const next = trySnap(st.puzzle, piece, r.left + r.width / 2 - b.left, r.top + r.height / 2 - b.top, { w: b.width, h: b.height });
-      if (next !== st.puzzle) {
-        st.puzzle = next;
+      const next = trySnap(st.jig, piece, r.left + r.width / 2 - b.left, r.top + r.height / 2 - b.top, { w: b.width, h: b.height });
+      if (next !== st.jig) {
+        st.jig = next;
         sound.snap();
-        if (solved(next) && !next.won) { next.won = true; bumpLevel(store, "puzzle"); setTimeout(() => sound.win(), 250); }
+        const won = solved(next) && !next.won;
+        if (won) { next.won = true; bumpLevel(store, "puzzle"); }
         render();
+        if (won) winTimer = setTimeout(() => sound.win(), 250);
         return;
       }
     }
@@ -90,6 +92,7 @@ function setupGame() {
 
 function render() {
   endDrag();
+  clearTimeout(winTimer);
   root.dataset.age = st.age;
   const route = parseRoute(location.hash);
   if (route.game) {
