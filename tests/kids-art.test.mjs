@@ -75,3 +75,15 @@ test("makeSound resumes a suspended AudioContext", () => {
   };
   try { makeSound(() => false).snap(); assert.equal(resumed, 1); } finally { delete globalThis.AudioContext; }
 });
+
+test("makeSound swallows a rejected resume()", () => {
+  let caught = 0;
+  const node = () => ({ connect() {}, start() {}, stop() {}, frequency: { setValueAtTime() {} }, gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} } });
+  globalThis.AudioContext = class {
+    constructor() { this.state = "suspended"; this.currentTime = 0; this.destination = {}; }
+    resume() { return { catch(fn) { caught++; fn(); return this; } }; }
+    createOscillator() { return node(); }
+    createGain() { return node(); }
+  };
+  try { makeSound(() => false).snap(); assert.equal(caught, 1); } finally { delete globalThis.AudioContext; }
+});
