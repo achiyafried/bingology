@@ -50,7 +50,7 @@ export async function run({ rows, prev, fetchImpl = fetch, now, map, youtubeKey 
   for (const item of items) {
     const yt = rowById.get(item.tmdb)?.yt;
     if (!yt) { delete item.clips; delete item.clipsAt; continue; }
-    const due = !item.clipsAt || Date.parse(now) - Date.parse(item.clipsAt) >= CLIPS_TTL;
+    const due = !item.clipsAt || !(Date.parse(now) - Date.parse(item.clipsAt) < CLIPS_TTL);
     if (!youtubeKey || !due) continue;
     try {
       const clips = await clipsImpl(yt, { key: youtubeKey, fetchImpl });

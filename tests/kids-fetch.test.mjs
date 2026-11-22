@@ -16,7 +16,7 @@ const show = (id, rating = "TV-Y") => ({
 function fake({ fail = new Set(), rating = {} } = {}) {
   const calls = [];
   const f = async url => {
-    const u = new URL(url); calls.push(u.pathname);
+    const u = new URL(url); calls.push(u.pathname); f.urls.push(u);
     const m = /\/tv\/(\d+)$/.exec(u.pathname);
     if (!m) return new Response("{}", { status: 404 });
     const id = +m[1];
@@ -24,7 +24,7 @@ function fake({ fail = new Set(), rating = {} } = {}) {
     if (u.searchParams.get("language") === "he-IL") return new Response(JSON.stringify({ id, name: `סדרה ${id}`, overview: "תקציר" }));
     return new Response(JSON.stringify({ ...show(id, rating[id]), images: { backdrops: [{ file_path: "/b.jpg", iso_639_1: null }] } }));
   };
-  f.calls = calls;
+  f.calls = calls; f.urls = [];
   return f;
 }
 
@@ -135,7 +135,7 @@ test("YouTube failure keeps previous clips, warns, and is not a failure", async 
   const r = await run({ rows: [one], prev: prevWith(ago(30)), fetchImpl: fake(), now: NOW, map, youtubeKey: "k", clipsImpl });
   assert.equal(r.data.items[0].clips[0].id, "bbbbbbbbbbb");
   assert.equal(r.data.items[0].clipsAt, ago(30));
-  assert.ok(r.warnings.some(w => w.includes("1") && /quota/.test(w)), r.warnings.join(" | "));
+  assert.ok(r.warnings.some(w => /^1: .*quota/.test(w)), r.warnings.join(" | "));
   assert.equal(r.failed, 0);
   assert.equal(r.abort, false);
 });
@@ -152,4 +152,19 @@ test("a TMDB-failed series keeps its previous clips", async () => {
   const it = r.data.items.find(x => x.tmdb === 1);
   assert.equal(it.clips[0].id, "bbbbbbbbbbb");
   assert.equal(it.name, "Old");
+});
+
+test("a corrupt clipsAt counts as due", async () => {
+  const clipsImpl = spy(async () => [clip]);
+  const r = await run({ rows: [one], prev: prevWith("garbage"), fetchImpl: fake(), now: NOW, map, youtubeKey: "k", clipsImpl });
+  assert.equal(clipsImpl.n, 1);
+  assert.equal(r.data.items[0].clipsAt, NOW);
+});
+
+test("the en-US request asks for textless images", async () => {
+  const f = fake();
+  await run({ rows: [{ tmdb: 1, age: "small" }], prev: null, fetchImpl: f, now: NOW, map });
+  const en = f.urls.find(u => u.searchParams.get("language") === "en-US");
+  assert.ok(en.searchParams.get("append_to_response").split(",").includes("images"));
+  assert.equal(en.searchParams.get("include_image_language"), "null");
 });
