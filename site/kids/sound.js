@@ -14,6 +14,7 @@ export function makeSound(isMuted) {
         if (typeof globalThis.AudioContext !== "function") return;
         ctx = new globalThis.AudioContext();
       }
+      if (ctx.state === "suspended") ctx.resume();
       for (const [freq, at, dur] of TONES[name]) {
         const t = ctx.currentTime + at;
         const osc = ctx.createOscillator(), gain = ctx.createGain();

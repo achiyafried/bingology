@@ -63,3 +63,15 @@ test("makeSound is silent without AudioContext, and creates it lazily once", () 
     assert.equal(n, 1);
   } finally { delete globalThis.AudioContext; }
 });
+
+test("makeSound resumes a suspended AudioContext", () => {
+  let resumed = 0;
+  const node = () => ({ connect() {}, start() {}, stop() {}, frequency: { setValueAtTime() {} }, gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} } });
+  globalThis.AudioContext = class {
+    constructor() { this.state = "suspended"; this.currentTime = 0; this.destination = {}; }
+    resume() { resumed++; return Promise.resolve(); }
+    createOscillator() { return node(); }
+    createGain() { return node(); }
+  };
+  try { makeSound(() => false).snap(); assert.equal(resumed, 1); } finally { delete globalThis.AudioContext; }
+});
