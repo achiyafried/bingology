@@ -1,3 +1,4 @@
+// Girl templates avoid unpointed forms a Hebrew voice reads as masculine ("הצלחת", "איתך").
 // Personal cheers for the toddler games: who's playing (name + boy/girl, saved on this device only),
 // a random cheer with the child's name in the right grammar, shown big and spoken by the browser's Hebrew voice.
 import { esc } from "../lib/esc.js";
@@ -9,12 +10,12 @@ export const CHEERS = {
   m: [
     "{n}! איזה תותח!!", "וואו {n}, אלוף!", "{n}, אתה גאון!", "יש! {n} עשה את זה!", "{n}, איזה גיבור!",
     "כל הכבוד {n}!", "{n}! אתה מדהים!", "בראבו {n}!", "{n}, איזה כיף איתך!", "{n}! מושלם!",
-    "{n}, אתה כוכב!", "יופי {n}, הצלחת!", "{n}! איזה חכם!", "הידד ל{n}!", "{n}, אתה אלוף העולם!",
+    "{n}, אתה כוכב!", "יופי {n}, הצלחת!", "{n}! איזה חכם!", "{n}, הידד!", "{n}, אתה אלוף העולם!",
   ],
   f: [
     "{n}! איזו תותחית!!", "וואו {n}, אלופה!", "{n}, את גאונה!", "יש! {n} עשתה את זה!", "{n}, איזו גיבורה!",
-    "כל הכבוד {n}!", "{n}! את מדהימה!", "בראבו {n}!", "{n}, איזה כיף איתך!", "{n}! מושלם!",
-    "{n}, את כוכבת!", "יופי {n}, הצלחת!", "{n}! איזו חכמה!", "הידד ל{n}!", "{n}, את אלופת העולם!",
+    "כל הכבוד {n}!", "{n}! את מדהימה!", "בראבו {n}!", "{n}, איזה יופי!", "{n}! מושלם!",
+    "{n}, את כוכבת!", "יופי {n}! את מצליחה!", "{n}! איזו ילדה חכמה!", "{n}, הידד!", "{n}, את אלופת העולם!",
   ],
   none: ["כל הכבוד!", "וואו!", "יש! הצלחת!", "בראבו!", "מושלם!", "איזה כיף!", "הידד!", "יופי!"],
 };
@@ -25,11 +26,13 @@ export function pickCheer(player, rnd = Math.random, last = -1) {
   let idx = Math.floor(rnd() * set.length);
   if (idx === last && set.length > 1) idx = (idx + 1) % set.length;
   const template = set[idx];
-  return { idx, template, text: template.replace("{n}", player && player.name ? player.name : "") };
+  const name = player && player.name ? player.name : "";
+  return { idx, template, text: template.replace("{n}", () => name) }; // a function: "$&" in a name stays literal
 }
 
-/** A name as typed by a parent: trimmed, at most 16 characters, without markup characters. */
-export const cleanName = s => String(s ?? "").replace(/[<>"'&]/g, "").trim().slice(0, 16);
+/** A name as typed by a parent: trimmed, at most 24 characters (room for niqqud), no control or angle-bracket characters.
+ *  Geresh/quotes stay ("ג'וני"): every output escapes it anyway. */
+export const cleanName = s => String(s ?? "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 24);
 
 /** The big cheer bubble (announced politely to screen readers). */
 export const cheerHTML = text => `<div class="k-cheer" role="status" aria-live="polite"><span>${esc(text)} 🎉</span></div>`;
@@ -39,11 +42,12 @@ export function makeSpeaker(isMuted, synth = globalThis.speechSynthesis, Utteran
   return text => {
     try {
       if (isMuted() || !synth || typeof Utterance !== "function") return false;
-      const voice = (synth.getVoices() || []).find(v => /^he\b|^iw\b/i.test(v.lang || ""));
+      const he = (synth.getVoices() || []).filter(v => /^(he|iw)([-_]|$)/i.test(v.lang || ""));
+      const voice = he.find(v => v.localService) || he[0]; // prefer an on-device voice
       if (!voice) return false;
       const u = new Utterance(text);
       u.voice = voice; u.lang = voice.lang || "he-IL"; u.rate = 1; u.pitch = 1.15;
-      synth.cancel();
+      if (synth.speaking || synth.pending) synth.cancel(); // Safari may drop a speak() right after cancel()
       synth.speak(u);
       return true;
     } catch { return false; }
@@ -62,7 +66,7 @@ export function whoHTML({ g = "m" } = {}) {
   const gb = (v, label) => `<button class="k-who-g" data-a="who-g" data-v="${v}" aria-pressed="${g === v}">${label}</button>`;
   return `<section class="k-who"><h2>מי משחק? 🎮</h2>
 <label class="k-who-l" for="k-who-name">השם של הילד או הילדה</label>
-<input id="k-who-name" class="k-who-in" type="text" maxlength="16" autocomplete="off" enterkeyhint="done" placeholder="למשל: דין">
+<input id="k-who-name" class="k-who-in" type="text" maxlength="24" autocomplete="off" enterkeyhint="done" placeholder="למשל: דין">
 <div class="k-who-gs" role="group" aria-label="בן או בת">${gb("m", "👦 בן")}${gb("f", "👧 בת")}</div>
 <button class="k-who-save" data-a="who-save">יאללה!</button>
 <button class="k-who-skip" data-a="who-skip">אפשר גם לדלג</button></section>`;

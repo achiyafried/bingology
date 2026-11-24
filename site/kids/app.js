@@ -7,7 +7,7 @@ import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, confettiHTML } from "./puzzle.js";
 import { pickTargets, tryFill, allFilled, blocksFreeDrop } from "./silhouette.js";
 import { pickBubble, bubbleHTML, MAX_BUBBLES, SPAWN_MS } from "./bubbles.js";
-import { pickCheer, cleanName, cheerHTML, makeSpeaker, playersHTML, whoHTML } from "./cheers.js";
+import { pickCheer, cleanName, cheerHTML, makeSpeaker, playersHTML, whoHTML, MAX_PLAYERS } from "./cheers.js";
 import { deal, flip, settle, won as memWon, memoryHTML, memoryScreen, memLevelsHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
@@ -28,9 +28,15 @@ const sound = makeSound(() => st.muted);
 // Personal cheers: the current child's name, shown big and spoken (only in a tap handler, so iOS lets it speak).
 const speak = makeSpeaker(() => st.muted);
 try { globalThis.speechSynthesis?.getVoices(); } catch {} // voices load lazily; ask early
-let lastCheer = -1, cheerTimer = 0, pairsFound = 0, pops = 0;
+let lastCheer = -1, cheerTimer = 0, pairsFound = 0, pops = 0, speechReady = false;
+/** iOS unlocks speech only from a real tap: say nothing, once, from a click (the bubbles pop on pointerdown, which doesn't count). */
+function unlockSpeech() {
+  if (speechReady) return;
+  speechReady = true;
+  try { const u = new SpeechSynthesisUtterance(""); u.volume = 0; speechSynthesis.speak(u); } catch {}
+}
 function cheer() {
-  const players = loadPlayers(store), p = players[loadPlayer(store)] || players[0] || null;
+  const players = loadPlayers(store), p = players.length ? players[Math.min(loadPlayer(store), players.length - 1)] : null;
   const c = pickCheer(p, Math.random, lastCheer);
   lastCheer = c.idx;
   document.querySelector(".k-cheer")?.remove();
@@ -168,7 +174,7 @@ function sceneDown(e) {
   drag.clean = clean;
 }
 root.addEventListener("pointerdown", sceneDown);
-root.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "k-who-name") root.querySelector("[data-a=who-save]")?.click(); });
+root.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing && e.target.id === "k-who-name") root.querySelector("[data-a=who-save]")?.click(); });
 // A cut-out that fails to load (missing PNG) turns back into the round sticker.
 root.addEventListener("error", e => {
   const img = e.target;
@@ -346,6 +352,7 @@ function closeCard() { dlg.innerHTML = ""; if (dlg.open) dlg.close(); }
 
 root.addEventListener("click", e => {
   const b = e.target.closest("[data-a]"); if (!b) return;
+  if (location.hash.startsWith("#play")) unlockSpeech();
   const { a, v } = b.dataset;
   if (a === "age" && v !== st.age) { st.age = v; saveAge(store, v); setupGame(); render(); }
   else if (a === "svc") {
@@ -368,8 +375,11 @@ root.addEventListener("click", e => {
   else if (a === "who-save") {
     const input = root.querySelector("#k-who-name"), name = cleanName(input?.value);
     if (!name) { input?.focus(); return; }
-    const players = [...loadPlayers(store), { name, g: st.whoG === "f" ? "f" : "m" }].slice(0, 4);
+    const before = loadPlayers(store);
+    if (before.length >= MAX_PLAYERS) { location.hash = "play"; return; }
+    const players = [...before, { name, g: st.whoG === "f" ? "f" : "m" }];
     savePlayers(store, players); savePlayer(store, players.length - 1); saveNoName(store, false);
+    st.whoG = "m";
     if (location.hash === "#play") render(); else location.hash = "play";
   }
   else if (a === "who-skip") { saveNoName(store, true); if (location.hash === "#play") render(); else location.hash = "play"; }
@@ -391,6 +401,7 @@ root.addEventListener("click", e => {
   }
   else if (a === "mute") {
     st.muted = !st.muted; saveMute(store, st.muted);
+    if (st.muted) { try { speechSynthesis.cancel(); } catch {} }
     b.setAttribute("aria-label", st.muted ? "הפעלת צליל" : "השתקה");
     const ic = b.querySelector("span"); if (ic) ic.textContent = st.muted ? "🔇" : "🔊";
   }

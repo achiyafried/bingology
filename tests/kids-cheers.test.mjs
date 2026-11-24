@@ -28,14 +28,18 @@ test("pickCheer: the child's name in the right grammar, never the same twice in 
     last = c.idx;
   }
   assert.ok(CHEERS.f.includes(pickCheer({ name: "נועה", g: "f" }, rnd).template));
+  assert.ok(pickCheer({ name: "$&$`", g: "m" }, rnd).text.includes("$&$`")); // no replace() patterns
+  for (const t of [...CHEERS.m, ...CHEERS.f]) assert.doesNotMatch(t, /ל\{n\}/); // no prefix glued to the name
+  assert.ok(!CHEERS.f.some(t => /הצלחת|איתך|איזו חכמה/.test(t))); // read as masculine or sarcastic by a TTS voice
   const plain = pickCheer(null, rnd);
   assert.ok(CHEERS.none.includes(plain.text));
 });
 
-test("cleanName: trimmed, at most 16 characters, no markup characters", () => {
+test("cleanName: trimmed, at most 24 characters, keeps a geresh, drops angle brackets", () => {
   assert.equal(cleanName("  דין  "), "דין");
+  assert.equal(cleanName("ג'וני"), "ג'וני");
   assert.equal(cleanName("<b>דין</b>"), "bדין/b");
-  assert.equal(cleanName("א".repeat(30)).length, 16);
+  assert.equal(cleanName("א".repeat(30)).length, 24);
   assert.equal(cleanName("   "), "");
   assert.equal(cleanName(null), "");
 });
@@ -73,8 +77,12 @@ test("makeSpeaker: Hebrew voice speaks; muted or no Hebrew voice stays silent", 
   muted = true; assert.equal(s("x"), false);
   muted = false;
   assert.equal(makeSpeaker(() => false, synth([{ lang: "en-US" }]), U)("x"), false);
+  assert.equal(makeSpeaker(() => false, synth([{ lang: "he_IL", name: "a" }]), U)("x"), true); // Android style
+  const local = { lang: "he-IL", name: "local", localService: true };
+  makeSpeaker(() => false, synth([{ lang: "he-IL", name: "net", localService: false }, local]), U)("y");
+  assert.equal(spoken.at(-1).voice, local); // prefer an on-device voice: the name doesn't leave the device
   assert.equal(makeSpeaker(() => false, undefined, undefined)("x"), false);
-  assert.equal(spoken.length, 1);
+  assert.equal(spoken.length, 3);
 });
 
 test("playersHTML: a button per child (current pressed), add and remove", () => {
@@ -89,7 +97,7 @@ test("playersHTML: a button per child (current pressed), add and remove", () => 
 
 test("whoHTML: name input, boy/girl, save and skip", () => {
   const h = whoHTML({ g: "f" });
-  assert.match(h, /<input[^>]*id="k-who-name"[^>]*maxlength="16"/);
+  assert.match(h, /<input[^>]*id="k-who-name"[^>]*maxlength="24"/);
   assert.match(h, /data-a="who-g" data-v="m" aria-pressed="false"/);
   assert.match(h, /data-a="who-g" data-v="f" aria-pressed="true"/);
   assert.match(h, /data-a="who-save"/);
