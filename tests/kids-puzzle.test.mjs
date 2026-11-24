@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LEVELS, levelFor, initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen } from "../site/kids/puzzle.js";
+import { LEVELS, levelFor, initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, edges, pieceEdges, piecePath, pieceSVG } from "../site/kids/puzzle.js";
 
 const B = "https://image.tmdb.org/t/p/w780/abc.jpg";
 const item = { tmdb: 7, name: "x", backdrop: B, poster: "https://image.tmdb.org/t/p/w342/p.jpg", age: "small" };
@@ -93,4 +93,56 @@ test("puzzleScreen: picker, levels or board from the route", () => {
   assert.equal(puzzleScreen({ game: "puzzle", arg: "7", sub: "7" }, items), "levels");
   assert.equal(puzzleScreen({ game: "puzzle", arg: "7", sub: "x" }, items), "levels");
   assert.equal(puzzleScreen({ game: "puzzle", arg: "7", sub: "9" }, items), "board");
+});
+
+test("edges: one ±1 value per inner edge", () => {
+  const e = edges(4, 3, seeded());
+  assert.equal(e.h.length, 2); e.h.forEach(r => assert.equal(r.length, 4));
+  assert.equal(e.v.length, 3); e.v.forEach(r => assert.equal(r.length, 3));
+  for (const v of [...e.h.flat(), ...e.v.flat()]) assert.ok(v === 1 || v === -1);
+  const st = initPuzzle(7, 12, seeded());
+  assert.equal(st.edges.h.length, 2); assert.equal(st.edges.v[0].length, 3);
+});
+
+test("pieceEdges: frame sides are straight, inner sides curve", () => {
+  const st = initPuzzle(7, 12, seeded());
+  const e = pieceEdges(0, 0, st);
+  assert.equal(e.top.length, 2); assert.equal(e.left.length, 2);
+  assert.ok(e.right.length > 2); assert.ok(e.bottom.length > 2);
+  const last = pieceEdges(3, 2, st);
+  assert.equal(last.bottom.length, 2); assert.equal(last.right.length, 2);
+});
+
+test("pieceEdges: neighbours share each edge exactly (a tab meets a blank)", () => {
+  const st = initPuzzle(7, 20, seeded());
+  for (let r = 0; r < st.rows; r++) for (let c = 0; c < st.cols; c++) {
+    const a = pieceEdges(c, r, st);
+    if (c + 1 < st.cols) assert.deepEqual(pieceEdges(c + 1, r, st).left, [...a.right].reverse());
+    if (r + 1 < st.rows) assert.deepEqual(pieceEdges(c, r + 1, st).top, [...a.bottom].reverse());
+  }
+});
+
+test("piecePath: a closed SVG path with curves on inner edges", () => {
+  const st = initPuzzle(7, 4, seeded());
+  const d = piecePath(0, 0, st);
+  assert.match(d, /^M[\d.-]+ [\d.-]+/);
+  assert.match(d, / C/);
+  assert.match(d, /Z$/);
+});
+
+test("pieceSVG: clips the backdrop to the piece, unique ids, safe images only", () => {
+  const st = initPuzzle(7, 6, seeded());
+  const a = pieceSVG(0, st, B), b = pieceSVG(1, st, B);
+  assert.match(a, /<clipPath id="pz-7-6-0">/);
+  assert.match(a, /<image href="https:\/\/image\.tmdb\.org[^"]*" x="0" y="0" width="1600" height="900"[^>]*clip-path="url\(#pz-7-6-0\)"/);
+  assert.notEqual(a.match(/id="([^"]+)"/)[1], b.match(/id="([^"]+)"/)[1]);
+  assert.doesNotMatch(pieceSVG(0, st, "javascript:alert(1)"), /<image/);
+});
+
+test("puzzleHTML: tray pieces and placed pieces are SVG jigsaw shapes", () => {
+  const st = initPuzzle(7, 9, seeded());
+  const h = puzzleHTML(item, { ...st, placed: st.placed.map((_, i) => i === 0) });
+  assert.equal((h.match(/class="k-pz-piece"/g) || []).length, 8);
+  assert.match(h, /class="k-pz-placed"[^>]*viewBox="0 0 1600 900"/);
+  assert.match(h, /clip-path="url\(#pz-7-9-0\)"/);
 });
