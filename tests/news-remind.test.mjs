@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { remindInfo, googleCalUrl, icsText, waUrl, actionsHTML } from "../site/lib/remind.js";
+import { remindInfo, googleCalUrl, icsText, waUrl, actionsHTML, remindMenuHTML, fold } from "../site/lib/remind.js";
 import { rowHTML } from "../site/lib/news.js";
 
 const TODAY = "2026-11-24";
@@ -45,13 +45,13 @@ test("icsText: a valid all-day event with an alarm at 9:00 the day before", () =
 test("waUrl: WhatsApp with the Hebrew message and the site link", () => {
   const u = new URL(waUrl(info));
   assert.equal(u.origin + u.pathname, "https://wa.me/");
-  assert.equal(u.searchParams.get("text"), "עונה 3 של Severance מתחילה ב-14 במרץ 2027! 🎉 מתכננים בינג׳? https://achiyafried.github.io/bingology/");
+  assert.equal(u.searchParams.get("text"), "עונה 3 של \u2068Severance\u2069 מתחילה ב-14 במרץ 2027! 🎉 מתכננים בינג׳? https://achiyafried.github.io/bingology/");
 });
 
 test("actionsHTML: the two buttons, escaped", () => {
   const h = actionsHTML({ ...info, name: "<x>" });
-  assert.match(h, /data-a="nremind" data-t="95396" data-s="3" data-d="2027-03-14" aria-label="תזכורת לבכורה"/);
-  assert.match(h, /<a class="nact-b nwa" href="https:\/\/wa\.me\/\?text=[^"]+" target="_blank" rel="noopener noreferrer" aria-label="שיתוף בוואטסאפ">/);
+  assert.match(h, /data-a="nremind" data-t="95396" data-s="3" data-d="2027-03-14" aria-expanded="false" aria-controls="nm-95396-3" aria-label="תזכורת לבכורה של &lt;x&gt;"/);
+  assert.match(h, /<a class="nact-b nwa" href="https:\/\/wa\.me\/\?text=[^"]+" target="_blank" rel="noopener noreferrer" aria-label="שיתוף בוואטסאפ של &lt;x&gt; \(נפתח בלשונית חדשה\)"/);
   assert.doesNotMatch(h, /<x>/);
 });
 
@@ -62,4 +62,31 @@ test("rowHTML: an upcoming row carries the buttons beside it; other rows don't",
   const ended = rowHTML({ kind: "ended", tmdbId: 95396, date: TODAY, id: "x" }, S, TODAY, false);
   assert.match(ended, /^<button class="n"/);
   assert.doesNotMatch(ended, /nremind/);
+});
+
+test("remindMenuHTML: a plain group (no fake menu role) with the id the trigger controls", () => {
+  const h = remindMenuHTML(info);
+  assert.match(h, /^<div class="nmenu" id="nm-95396-3" role="group" aria-label="/);
+  assert.doesNotMatch(h, /role="menu/);
+  assert.match(h, /data-a="nics"/);
+});
+
+test("fold: lines over 75 octets wrap with CRLF+space, never inside a character", () => {
+  const long = "DESCRIPTION:" + "איפה רואים: ".repeat(12) + "🎬🎬🎬";
+  const f = fold(long);
+  const parts = f.split("\r\n");
+  assert.ok(parts.length > 1);
+  for (const p of parts) assert.ok(new TextEncoder().encode(p).length <= 75, p);
+  assert.equal(parts.map((p, k) => (k ? p.slice(1) : p)).join(""), long);
+  assert.ok(parts.slice(1).every(p => p.startsWith(" ")));
+  assert.equal(fold("SHORT:x"), "SHORT:x");
+});
+
+test("icsText: long lines are folded", () => {
+  const t = icsText({ ...info, where: "Amazon Prime Video, Philo, Starz Amazon Channel, Spectrum On Demand, Starz" }, "2026-11-24T10:00:00Z");
+  for (const line of t.split("\r\n")) assert.ok(new TextEncoder().encode(line).length <= 75, line);
+});
+
+test("waUrl: the series name is bidi-isolated inside the Hebrew sentence", () => {
+  assert.match(new URL(waUrl(info)).searchParams.get("text"), /של \u2068Severance\u2069 מתחילה/);
 });

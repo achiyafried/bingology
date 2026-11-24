@@ -586,16 +586,28 @@ function dlgGo(view) {
 function dlgBack() { const v = st.dlgStack.pop(); if (v) { st.dlgCur = v; paintDlg(false); } }
 function openDlg(i) { dlgGo({ t: "s", v: i }); }
 
-/** The upcoming season a reminder button/menu item points at (its data-t/s/d), or null. */
-const remindOf = el => remindInfo({ tmdbId: +el.dataset.t, season: +el.dataset.s, date: el.dataset.d }, S, today());
-const closeRemind = () => document.querySelectorAll(".nmenu").forEach(m => m.remove());
+/** The upcoming season a reminder button/menu item points at (its data-t/s/d), or null. The date was checked at render. */
+const remindOf = el => remindInfo({ tmdbId: +el.dataset.t, season: +el.dataset.s, date: el.dataset.d }, S, "0000-00-00");
+function closeRemind(focusBack) {
+  document.querySelectorAll(".nmenu").forEach(m => {
+    const trigger = document.querySelector(`[aria-controls="${m.id}"]`);
+    m.remove();
+    if (trigger) { trigger.setAttribute("aria-expanded", "false"); if (focusBack) trigger.focus(); }
+  });
+}
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 function downloadIcs(info) {
-  const url = URL.createObjectURL(new Blob([icsText(info)], { type: "text/calendar;charset=utf-8" }));
+  const ics = icsText(info);
+  // iOS opens Calendar's "add event" sheet when it navigates to the file; a download would only land in Files.
+  if (IOS) { location.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`; return; }
+  const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url; a.download = `bingology-${info.tmdbId}-s${info.season}.ics`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 10000);
+  showToast("אם היומן לא נפתח לבד, פתחו את הקובץ שירד");
 }
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".nmenu")) closeRemind(true); });
 
 /* actions */
 document.addEventListener("click", e => {
@@ -604,13 +616,17 @@ document.addEventListener("click", e => {
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
     case "nremind": {
-      const open = el.closest(".nrow")?.querySelector(".nmenu");
+      const open = el.getAttribute("aria-expanded") === "true";
       closeRemind();
       const info = remindOf(el);
-      if (!open && info) el.closest(".nact").insertAdjacentHTML("afterend", remindMenuHTML(info));
+      if (!open && info) {
+        el.insertAdjacentHTML("afterend", remindMenuHTML(info)); // right after ⏰, before 💬, so the tab order follows
+        el.setAttribute("aria-expanded", "true");
+        el.nextElementSibling.querySelector("a, button")?.focus();
+      }
       break;
     }
-    case "nics": { const info = remindOf(el); closeRemind(); if (info) { downloadIcs(info); showToast("האירוע ירד, פתחו אותו כדי להוסיף ליומן"); } break; }
+    case "nics": { const info = remindOf(el); closeRemind(); if (info) downloadIcs(info); break; }
     case "nclose": setTimeout(closeRemind, 0); break;
     case "hinvite": headerInvite(); break;
     case "home": // the logo: back to the start screen from anywhere (quiz answers are kept, like "לדף הראשי")
