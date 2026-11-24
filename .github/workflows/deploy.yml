@@ -31,8 +31,11 @@ jobs:
       # Version every module URL with the commit SHA so a cached old module never meets a new app.js
       # (HEAD, not github.sha: a nightly call checks out main after its own data commit)
       - run: node scripts/stamp.mjs site _site "$(git rev-parse --short HEAD)"
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      # deploy-pages has failed with "No artifacts named github-pages were found" right after the upload,
+      # then worked on a re-run: give the artifact a moment to become visible to the deploy API.
+      - run: sleep 20
       - id: deployment
         uses: actions/deploy-pages@v4
