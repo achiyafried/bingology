@@ -48,10 +48,10 @@ function puzzleAgain() {
 
 function memoryView(route) {
   const arts = withArt(st.items);
-  if (memoryScreen(route, st.items) === "levels") { st.mem = null; return memLevelsHTML(loadMemorySize(store), st.items); }
+  if (memoryScreen(route, st.items) === "levels") { st.mem = null; clearTimeout(memTimer); memTimer = 0; return memLevelsHTML(loadMemorySize(store), st.items); }
   const n = Number(route.arg);
   saveMemorySize(store, n);
-  if (!st.mem || st.mem.cards.length !== n) st.mem = deal(arts, n / 2);
+  if (!st.mem || st.mem.cards.length !== n) { clearTimeout(memTimer); memTimer = 0; st.mem = deal(arts, n / 2); } // no stale settle on a new board
   return memoryHTML(st.mem, arts);
 }
 
