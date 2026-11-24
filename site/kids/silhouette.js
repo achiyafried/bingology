@@ -22,7 +22,8 @@ export function pickTargets(items, rnd = Math.random) {
 
 /** Fills the silhouette of `tmdb` when (fx, fy) is within FILL of its centre; otherwise returns the same list. */
 export function tryFill(targets, tmdb, fx, fy) {
-  const i = targets.findIndex(t => t.tmdb === tmdb && !t.done && Math.hypot(t.x - fx, t.y - fy) <= FILL);
+  // fy is a share of the height of a 16:9 scene: scale it so the zone is round in pixels.
+  const i = targets.findIndex(t => t.tmdb === tmdb && !t.done && Math.hypot(t.x - fx, (t.y - fy) * 9 / 16) <= FILL);
   return i < 0 ? targets : targets.map((t, j) => (j === i ? { ...t, done: true } : t));
 }
 

@@ -69,8 +69,9 @@ function memFlip(i) {
 function sceneView(route) {
   if (!SCENES.some(x => x.id === route.arg)) { st.scn = null; return placesHTML(); }
   if (!st.scn || st.scn.place !== route.arg) st.scn = { place: route.arg, list: loadScene(store, route.arg), confirm: false, targets: pickTargets(st.items) };
+  const cheer = st.scn.cheer; st.scn.cheer = false; // confetti only in the render right after the last fill
   const end = allFilled(st.scn.targets)
-    ? `${confettiHTML()}<div class="k-pz-end"><button class="k-pz-btn" data-a="sil-again" aria-label="צלליות חדשות"><span aria-hidden="true">🔁</span></button></div>` : "";
+    ? `${cheer ? confettiHTML() : ""}<div class="k-pz-end"><button class="k-pz-btn" data-a="sil-again" aria-label="צלליות חדשות"><span aria-hidden="true">🔁</span></button></div>` : "";
   return sceneHTML(st.scn.place, st.scn.list, st.items, { confirm: st.scn.confirm, targets: st.scn.targets }) + end;
 }
 
@@ -130,6 +131,7 @@ function sceneDown(e) {
       const filled = tryFill(st.scn.targets, Number(tpl.dataset.t), fx, fy);
       if (filled !== st.scn.targets) { // the right character on its silhouette: it fills in (not a free sticker)
         st.scn.targets = filled;
+        st.scn.cheer = allFilled(filled);
         sound.pair();
         render();
         if (allFilled(filled)) winTimer = setTimeout(() => sound.win(), 250);
@@ -268,12 +270,17 @@ function startBubbles() {
   spawn();
   bubTimer = setInterval(spawn, SPAWN_MS);
 }
-root.addEventListener("pointerdown", e => {
-  const b = e.target.closest?.("[data-a=pop]"); if (!b || b.classList.contains("k-popped")) return;
-  e.preventDefault();
+function pop(b) {
+  if (b.classList.contains("k-popped")) return;
   b.classList.add("k-popped");
   sound.pair();
   setTimeout(() => b.remove(), reducedMotion() ? 0 : 450);
+}
+// Pointer: pop on press (a moving target); keyboard: Enter/Space reach the click delegation below.
+root.addEventListener("pointerdown", e => {
+  const b = e.target.closest?.("[data-a=pop]"); if (!b) return;
+  e.preventDefault();
+  pop(b);
 });
 
 function render() {
@@ -326,6 +333,7 @@ root.addEventListener("click", e => {
   else if (a === "clear-no" && st.scn) { st.scn.confirm = false; render(); }
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
+  else if (a === "pop") pop(b);
   else if (a === "sil-again" && st.scn) { st.scn.targets = pickTargets(st.items); render(); }
   else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {

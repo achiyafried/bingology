@@ -27,6 +27,9 @@ test("tryFill: the right character close enough fills its silhouette", () => {
   assert.notEqual(hit, t); assert.equal(hit[0].done, true);
   assert.equal(tryFill(t, 1, 0.5 + FILL + 0.01, 0.5), t);
   assert.equal(tryFill(t, 2, 0.5, 0.5), t); // wrong character on this silhouette
+  // the zone is a circle in pixels on the 16:9 scene: vertically it reaches FILL x 16/9 in height fractions
+  assert.equal(tryFill(t, 1, 0.5, 0.5 + FILL * 16 / 9 - 0.01)[0].done, true);
+  assert.equal(tryFill(t, 1, 0.5, 0.5 + FILL * 16 / 9 + 0.01), t);
   assert.equal(allFilled(t), false);
   assert.equal(allFilled(t.map(x => ({ ...x, done: true }))), true);
   assert.equal(allFilled([]), false);
