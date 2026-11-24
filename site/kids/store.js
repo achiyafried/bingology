@@ -30,3 +30,29 @@ export function saveGame(storage, date, age, state) {
   const day = read(storage, GAME(date));
   write(storage, GAME(date), { ...(day && typeof day === "object" ? day : {}), [age]: state });
 }
+
+const LEVEL = game => `bingology:kids-level:${game}`;
+const MUTE_KEY = "bingology:kids-mute";
+const SCENE = place => `bingology:kids-scene:${place}`;
+
+/** Completed rounds of a game ("puzzle" | "memory"); a non-negative integer, else 0. */
+export function loadLevel(storage, game) {
+  const v = read(storage, LEVEL(game));
+  return Number.isInteger(v) && v >= 0 ? v : 0;
+}
+export const bumpLevel = (storage, game) => write(storage, LEVEL(game), loadLevel(storage, game) + 1);
+
+export const loadMute = storage => read(storage, MUTE_KEY) === true;
+export const saveMute = (storage, on) => write(storage, MUTE_KEY, !!on);
+
+const unit = n => typeof n === "number" && n >= 0 && n <= 1;
+
+/** Stickers placed in a scene, as [{tmdb,x,y}]; drops entries with a non-integer tmdb or x/y outside 0-1. */
+export function loadScene(storage, place) {
+  const v = read(storage, SCENE(place));
+  return Array.isArray(v) ? v.filter(e => e && Number.isInteger(e.tmdb) && unit(e.x) && unit(e.y)).map(e => ({ tmdb: e.tmdb, x: e.x, y: e.y })) : [];
+}
+export const saveScene = (storage, place, list) => write(storage, SCENE(place), list);
+export function clearScene(storage, place) {
+  try { storage.removeItem(SCENE(place)); } catch {}
+}

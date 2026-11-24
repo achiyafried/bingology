@@ -17,7 +17,7 @@ export function headerHTML(age) {
     `<button class="k-age" data-age="${g.id}" data-a="age" data-v="${g.id}" ${pressed(g.id === age)}><span aria-hidden="true">${g.icon}</span> ${g.name}<small><bdi dir="ltr">${g.range}</bdi></small></button>`).join("");
   return `<header class="k-head"><a class="k-back" href="./">← חזרה ל-Bingology</a><h1>🧸 ילדים</h1></header>
 <nav class="k-ages" aria-label="קבוצת גיל">${groups}</nav>
-<button class="k-gamebtn" data-a="game"><span aria-hidden="true">🎲</span> משחק היום</button>`;
+<div class="k-btns"><button class="k-gamebtn" data-a="game"><span aria-hidden="true">🎲</span> משחק היום</button>${age === "small" ? `<button class="k-gamebtn k-playbtn" data-a="play"><span aria-hidden="true">🎮</span> משחקים</button>` : ""}</div>`;
 }
 
 export function servicesHTML(available, selected) {

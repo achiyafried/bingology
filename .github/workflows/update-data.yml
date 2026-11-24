@@ -33,6 +33,8 @@ jobs:
       # The kids section: best effort, never stops the series update.
       - name: Fetch kids section
         continue-on-error: true
+        env:
+          YOUTUBE_KEY: ${{ secrets.YOUTUBE_KEY }}
         run: node scripts/fetch-kids.mjs
       - name: Make daily games
         continue-on-error: true
