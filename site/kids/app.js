@@ -240,7 +240,7 @@ function render() {
   const body = location.hash === "#game"
     ? gameHTML(st.puzzle, st.game, st.items)
     : servicesHTML(available, st.services) + gridHTML(byServices(group, st.services));
-  root.innerHTML = headerHTML(st.age) + body
+  root.innerHTML = headerHTML(st.age, { hasClips: withClips(st.items).length > 0 }) + body
     + FOOT;
 }
 
@@ -262,6 +262,7 @@ root.addEventListener("click", e => {
   else if (a === "card") openCard(Number(v));
   else if (a === "game") { location.hash = "game"; }
   else if (a === "play") { location.hash = "play"; }
+  else if (a === "clips") { location.hash = "play/clips"; }
   else if (a === "go") { location.hash = `play/${v}`; }
   else if (a === "again") puzzleAgain();
   else if (a === "clip") playClip(Number(v));

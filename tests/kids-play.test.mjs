@@ -22,6 +22,7 @@ test("backHash", () => {
   assert.equal(backHash({ game: "scene", arg: "park" }), "#play/scene");
   assert.equal(backHash({ game: "scene", arg: null }), "#play");
   assert.equal(backHash({ game: "clips", arg: "5" }), "#play/clips");
+  assert.equal(backHash({ game: "clips", arg: null }), "");
   assert.equal(backHash({ game: "home", arg: null }), "");
 });
 
@@ -49,12 +50,17 @@ test("homeHTML tiles", () => {
   assert.match(h2, /data-v="puzzle"/);
   assert.match(h2, /data-v="scene"/);
   assert.doesNotMatch(h2, /data-v="memory"/);
-  assert.doesNotMatch(h2, /data-v="clips"/);
   const h3 = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]);
   assert.match(h3, /data-v="memory"/);
-  assert.match(h3, /data-v="clips"/);
-  assert.doesNotMatch(homeHTML([s(1), s(2), s(3, { clips: [] })]), /data-v="clips"/);
-  for (const l of ["פאזל", "זיכרון", "איפה?", "קליפים"]) assert.match(h3, new RegExp(`aria-label="${l.replace("?", "\\?")}"`));
+  assert.doesNotMatch(h3, /clips/);
+  for (const l of ["פאזל", "זיכרון", "איפה?"]) assert.match(h3, new RegExp(`aria-label="${l.replace("?", "\\?")}"`));
+});
+
+test("headerHTML: clips button only for small with clips", () => {
+  assert.match(headerHTML("small", { hasClips: true }), /<button class="k-gamebtn k-clipbtn" data-a="clips">.*קליפים<\/button>/);
+  assert.doesNotMatch(headerHTML("small", { hasClips: false }), /data-a="clips"/);
+  assert.doesNotMatch(headerHTML("small"), /data-a="clips"/);
+  assert.doesNotMatch(headerHTML("mid", { hasClips: true }), /data-a="clips"/);
 });
 
 test("every button has an aria-label", () => {

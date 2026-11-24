@@ -16,8 +16,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* name on one line, the age range under it */
 .k-age small { display: block; font-size: 15px; font-weight: 600; }
 .k-age[aria-pressed="true"] { background: var(--g); color: var(--g-ink); border-color: rgba(0, 0, 0, .12); box-shadow: 0 4px 0 rgba(0, 0, 0, .15); }
-.k-btns { display: flex; gap: 8px; margin: 4px 0 12px; }
-.k-btns .k-gamebtn { flex: 1; margin: 0; }
+.k-btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+.k-btns .k-gamebtn { flex: 1 1 100px; margin: 0; }
+.k-clipbtn { background: #9b5de5; box-shadow: 0 4px 0 #7a3fc0; }
 .k-playbtn { background: #4d96ff; box-shadow: 0 4px 0 #2f6fcc; }
 .k-gamebtn { width: 100%; min-height: 56px; margin: 4px 0 12px; border: 0; border-radius: var(--radius); background: #ff6b6b; color: #fff; font-size: 20px; font-weight: 800; box-shadow: 0 4px 0 #c94444; }
 .k-svcs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
