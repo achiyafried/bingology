@@ -1,7 +1,7 @@
 // Toddler games shell: hash routes, the games home screen, and the frame (home + mute buttons, TMDB credit).
 import { withArt } from "./art.js";
 
-const GAMES = ["puzzle", "memory", "scene", "clips"];
+const GAMES = ["puzzle", "memory", "scene", "bubbles", "clips"];
 
 export function parseRoute(hash) {
   const m = /^#play(?:\/([^/]*))?(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");
@@ -33,9 +33,11 @@ export function shellHTML(inner, { muted }) {
 }
 
 export function homeHTML(items) {
-  const tile = (v, label, icon) => `<button class="k-gtile" data-a="go" data-v="${v}" aria-label="${label}"><span aria-hidden="true">${icon}</span></button>`;
-  const tiles = [tile("puzzle", "פאזל", "🧩")];
-  if (withArt(items).length >= 3) tiles.push(tile("memory", "זיכרון", "🃏"));
-  tiles.push(tile("scene", "איפה?", "🔍"));
+  // title: the explanation shown on hover; the same sentence goes to screen readers.
+  const tile = (v, label, icon, tip) => `<button class="k-gtile" data-a="go" data-v="${v}" title="${tip}" aria-label="${label}: ${tip}"><span aria-hidden="true">${icon}</span></button>`;
+  const tiles = [tile("puzzle", "פאזל", "🧩", "בונים תמונה מחתיכות פאזל")];
+  if (withArt(items).length >= 3) tiles.push(tile("memory", "זיכרון", "🃏", "מוצאים זוגות של דמויות"));
+  tiles.push(tile("scene", "איפה?", "🔍", "מוצאים לכל צללית את הדמות שלה"));
+  tiles.push(tile("bubbles", "בועות", "🫧", "מפוצצים בועות עם דמויות"));
   return `<div class="k-tiles">${tiles.join("")}</div>`;
 }

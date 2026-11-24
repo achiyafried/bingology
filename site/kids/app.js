@@ -4,7 +4,9 @@ import { puzzleFor, initGame, guess } from "./game.js";
 import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
-import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels } from "./puzzle.js";
+import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, confettiHTML } from "./puzzle.js";
+import { pickTargets, tryFill, allFilled } from "./silhouette.js";
+import { pickBubble, bubbleHTML, MAX_BUBBLES, SPAWN_MS } from "./bubbles.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
@@ -66,8 +68,11 @@ function memFlip(i) {
 
 function sceneView(route) {
   if (!SCENES.some(x => x.id === route.arg)) { st.scn = null; return placesHTML(); }
-  if (!st.scn || st.scn.place !== route.arg) st.scn = { place: route.arg, list: loadScene(store, route.arg), confirm: false };
-  return sceneHTML(st.scn.place, st.scn.list, st.items, { confirm: st.scn.confirm });
+  if (!st.scn || st.scn.place !== route.arg) st.scn = { place: route.arg, list: loadScene(store, route.arg), confirm: false, targets: pickTargets(st.items) };
+  const cheer = st.scn.cheer; st.scn.cheer = false; // confetti only in the render right after the last fill
+  const end = allFilled(st.scn.targets)
+    ? `${cheer ? confettiHTML() : ""}<div class="k-pz-end"><button class="k-pz-btn" data-a="sil-again" aria-label="צלליות חדשות"><span aria-hidden="true">🔁</span></button></div>` : "";
+  return sceneHTML(st.scn.place, st.scn.list, st.items, { confirm: st.scn.confirm, targets: st.scn.targets }) + end;
 }
 
 function sceneSet(list) {
@@ -122,7 +127,18 @@ function sceneDown(e) {
     if (placed) {
       const i = Number(placed.dataset.i);
       sceneSet(outside(fx, fy) ? removeSticker(st.scn.list, i) : moveSticker(st.scn.list, i, fx, fy));
-    } else if (!outside(fx, fy)) sceneSet(addSticker(st.scn.list, Number(tpl.dataset.t), fx, fy));
+    } else if (!outside(fx, fy)) {
+      const filled = tryFill(st.scn.targets, Number(tpl.dataset.t), fx, fy);
+      if (filled !== st.scn.targets) { // the right character on its silhouette: it fills in (not a free sticker)
+        st.scn.targets = filled;
+        st.scn.cheer = allFilled(filled);
+        sound.pair();
+        render();
+        if (allFilled(filled)) winTimer = setTimeout(() => sound.win(), 250);
+        return;
+      }
+      sceneSet(addSticker(st.scn.list, Number(tpl.dataset.t), fx, fy));
+    }
   }, { signal });
   el.addEventListener("pointercancel", () => { endDrag(); clean(); }, { signal });
   drag = ac;
@@ -226,6 +242,7 @@ const VIEWS = {
   puzzle: puzzleView,
   memory: memoryView,
   scene: sceneView,
+  bubbles: () => `<div class="k-bub-area" data-bubbles></div>`,
   clips: clipsView,
 };
 
@@ -235,8 +252,40 @@ function setupGame() {
   st.game = st.puzzle ? { ...initGame(st.puzzle), ...(loadGame(store, date, st.age, st.puzzle) ?? {}), choices: st.puzzle.choices } : null;
 }
 
+// 🫧 Bubbles: spawn on a timer while the bubbles screen is up; render() always stops it first.
+let bubTimer = 0, bubId = 0;
+const reducedMotion = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch { return false; } };
+function stopBubbles() { clearInterval(bubTimer); bubTimer = 0; }
+function startBubbles() {
+  const area = root.querySelector("[data-bubbles]"); if (!area) return;
+  const spawn = () => {
+    if (!area.isConnected) { stopBubbles(); return; }
+    if (area.querySelectorAll(".k-bub:not(.k-popped)").length >= MAX_BUBBLES) return;
+    const b = pickBubble(st.items, Math.random, bubId++); if (!b) return;
+    const item = st.items.find(i => i.tmdb === b.tmdb);
+    area.insertAdjacentHTML("beforeend", bubbleHTML(b, item, reducedMotion()));
+    const el = area.lastElementChild;
+    el.addEventListener("animationend", ev => { if (ev.animationName === "k-rise") el.remove(); });
+  };
+  spawn();
+  bubTimer = setInterval(spawn, SPAWN_MS);
+}
+function pop(b) {
+  if (b.classList.contains("k-popped")) return;
+  b.classList.add("k-popped");
+  sound.pair();
+  setTimeout(() => b.remove(), reducedMotion() ? 0 : 450);
+}
+// Pointer: pop on press (a moving target); keyboard: Enter/Space reach the click delegation below.
+root.addEventListener("pointerdown", e => {
+  const b = e.target.closest?.("[data-a=pop]"); if (!b) return;
+  e.preventDefault();
+  pop(b);
+});
+
 function render() {
   endDrag();
+  stopBubbles();
   clearTimeout(winTimer);
   const route = parseRoute(location.hash);
   const game = gameRouteFor(location.hash, st.age);
@@ -246,7 +295,7 @@ function render() {
   root.dataset.age = st.age;
   if (route.game) {
     if (!game) { history.replaceState(null, "", location.pathname + location.search); }
-    else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); if (route.game === "clips") watchClip(); return; }
+    else { root.innerHTML = shellHTML(VIEWS[route.game](route), { muted: st.muted }); if (route.game === "clips") watchClip(); if (route.game === "bubbles") startBubbles(); return; }
   }
   const group = inGroup(st.items, st.age);
   const available = servicesIn(group);
@@ -284,6 +333,8 @@ root.addEventListener("click", e => {
   else if (a === "clear-no" && st.scn) { st.scn.confirm = false; render(); }
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
+  else if (a === "pop") pop(b);
+  else if (a === "sil-again" && st.scn) { st.scn.targets = pickTargets(st.items); render(); }
   else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {
     const back = backHash(parseRoute(location.hash));

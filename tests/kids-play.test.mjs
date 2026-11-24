@@ -56,7 +56,15 @@ test("homeHTML tiles", () => {
   const h3 = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]);
   assert.match(h3, /data-v="memory"/);
   assert.doesNotMatch(h3, /clips/);
-  for (const l of ["פאזל", "זיכרון", "איפה?"]) assert.match(h3, new RegExp(`aria-label="${l.replace("?", "\\?")}"`));
+  assert.match(h3, /data-v="bubbles"/);
+  const tips = { puzzle: "בונים תמונה מחתיכות פאזל", memory: "מוצאים זוגות של דמויות", scene: "מוצאים לכל צללית את הדמות שלה", bubbles: "מפוצצים בועות עם דמויות" };
+  for (const [v, tip] of Object.entries(tips)) {
+    assert.match(h3, new RegExp(`data-v="${v}" title="${tip}" aria-label="[^"]+: ${tip}"`));
+  }
+});
+
+test("parseRoute knows the bubbles game", () => {
+  assert.deepEqual(parseRoute("#play/bubbles"), { game: "bubbles", arg: null, sub: null });
 });
 
 test("headerHTML: clips button only for small with clips", () => {
