@@ -56,3 +56,12 @@ export const saveScene = (storage, place, list) => write(storage, SCENE(place), 
 export function clearScene(storage, place) {
   try { storage.removeItem(SCENE(place)); } catch {}
 }
+
+const SIZE = "bingology:kids-puzzle-size";
+const SIZES = [4, 6, 9, 12, 16, 20];
+/** The last puzzle size picked: one of the six level sizes, default 4. */
+export function loadPuzzleSize(storage) {
+  const v = read(storage, SIZE);
+  return SIZES.includes(v) ? v : 4;
+}
+export const savePuzzleSize = (storage, n) => write(storage, SIZE, n);

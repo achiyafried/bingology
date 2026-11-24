@@ -1,21 +1,28 @@
-// Toddler jigsaw: a backdrop cut into 2x2 (later 3x2) pieces. Pure state helpers plus the picker and board markup.
+// Toddler jigsaw: a backdrop cut into 4–20 pieces (the child picks the level). Pure state helpers plus the picker, level and board markup.
 import { esc, safeImg } from "../lib/esc.js";
 import { withArt } from "./art.js";
 import { title } from "./catalog.js";
 
 const SNAP = 0.35;
 
-export const grid = level => (level < 3 ? { cols: 2, rows: 2 } : { cols: 3, rows: 2 });
+export const LEVELS = [
+  { n: 4, cols: 2, rows: 2 }, { n: 6, cols: 3, rows: 2 }, { n: 9, cols: 3, rows: 3 },
+  { n: 12, cols: 4, rows: 3 }, { n: 16, cols: 4, rows: 4 }, { n: 20, cols: 5, rows: 4 },
+];
+/** The level with n pieces (a number), or null. */
+export const levelFor = n => LEVELS.find(l => l.n === n) ?? null;
 
-export function initPuzzle(tmdb, level, rnd = Math.random) {
-  const { cols, rows } = grid(level), n = cols * rows;
+/** n: one of the LEVELS sizes. */
+export function initPuzzle(tmdb, n, rnd = Math.random) {
+  const { cols, rows } = levelFor(n) ?? LEVELS[0];
+  n = cols * rows;
   const tray = [...Array(n).keys()];
   for (let i = n - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
     [tray[i], tray[j]] = [tray[j], tray[i]];
   }
   if (n > 1 && tray.every((p, i) => p === i)) tray.push(tray.shift());
-  return { tmdb, cols, rows, placed: Array(n).fill(false), tray };
+  return { tmdb, n, cols, rows, placed: Array(n).fill(false), tray };
 }
 
 /** cx, cy: the piece centre in board pixels. Places the piece when it is close enough to its own cell centre. */
@@ -29,6 +36,23 @@ export function trySnap(state, piece, cx, cy, board) {
 }
 
 export const solved = state => state.placed.every(Boolean);
+
+/** Which puzzle screen a route shows: the series picker, the level picker, or the board. */
+export function puzzleScreen(route, items) {
+  const item = route.arg ? withArt(items).find(i => String(i.tmdb) === route.arg) : null;
+  if (!item) return "picker";
+  return route.sub && levelFor(Number(route.sub)) ? "board" : "levels";
+}
+
+/** Six level buttons, each drawing its grid; `current` (a size) is pressed. */
+export function levelsHTML(item, current) {
+  const id = Number(item.tmdb), src = safeImg(item.poster);
+  const btns = LEVELS.map(l => {
+    const cells = `<span class="k-lv-grid" style="grid-template-columns:repeat(${l.cols},1fr)" aria-hidden="true">${"<i></i>".repeat(l.n)}</span>`;
+    return `<button class="k-lv" data-a="go" data-v="puzzle/${id}/${l.n}" aria-label="פאזל של ${l.n} חלקים" aria-pressed="${l.n === current}">${cells}</button>`;
+  }).join("");
+  return `<section class="k-lvs">${src ? `<img class="k-lv-poster" src="${src}" alt="">` : ""}<div class="k-lv-list">${btns}</div></section>`;
+}
 
 export function pickerHTML(items) {
   const tiles = withArt(items).map(x => {
@@ -61,7 +85,7 @@ export function puzzleHTML(item, state) {
   const ghost = `<div class="k-pz-ghost"${src ? ` style="background-image:url(${src})"` : ""}></div>`;
   const done = solved(state);
   const tray = state.tray.filter(p => !state.placed[p]).map(p =>
-    `<div class="k-pz-piece" data-piece="${p}" style="width:${cols === 2 ? 42 : 30}%;aspect-ratio:${(16 / 9) * rows / cols};${sliceStyle(src, state, p)}"></div>`).join("");
+    `<div class="k-pz-piece" data-piece="${p}" style="width:calc(${100 / cols}% - 12px);aspect-ratio:${(16 / 9) * rows / cols};${sliceStyle(src, state, p)}"></div>`).join("");
   const end = done
     ? `${confettiHTML()}<div class="k-pz-end"><button class="k-pz-btn" data-a="again" aria-label="עוד פעם"><span aria-hidden="true">🔁</span></button><button class="k-pz-btn" data-a="home" aria-label="חזרה"><span aria-hidden="true">🏠</span></button></div>`
     : `<div class="k-pz-tray">${tray}</div>`;

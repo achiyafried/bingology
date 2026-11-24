@@ -7,15 +7,18 @@ const B = "https://image.tmdb.org/t/p/w780/b.jpg";
 const s = (tmdb, o = {}) => ({ tmdb, age: "small", name: `S${tmdb}`, backdrop: B, ...o });
 
 test("parseRoute", () => {
-  assert.deepEqual(parseRoute(""), { game: null, arg: null });
-  assert.deepEqual(parseRoute("#game"), { game: null, arg: null });
-  assert.deepEqual(parseRoute("#play"), { game: "home", arg: null });
-  assert.deepEqual(parseRoute("#play/puzzle/82728"), { game: "puzzle", arg: "82728" });
-  assert.deepEqual(parseRoute("#play/memory"), { game: "memory", arg: null });
-  assert.deepEqual(parseRoute("#play/nope"), { game: "home", arg: null });
+  assert.deepEqual(parseRoute(""), { game: null, arg: null, sub: null });
+  assert.deepEqual(parseRoute("#game"), { game: null, arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play"), { game: "home", arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play/puzzle/82728"), { game: "puzzle", arg: "82728", sub: null });
+  assert.deepEqual(parseRoute("#play/puzzle/82728/9"), { game: "puzzle", arg: "82728", sub: "9" });
+  assert.deepEqual(parseRoute("#play/puzzle/82728/7"), { game: "puzzle", arg: "82728", sub: "7" });
+  assert.deepEqual(parseRoute("#play/memory"), { game: "memory", arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play/nope"), { game: "home", arg: null, sub: null });
 });
 
 test("backHash", () => {
+  assert.equal(backHash({ game: "puzzle", arg: "1", sub: "9" }), "#play/puzzle/1");
   assert.equal(backHash({ game: "puzzle", arg: "1" }), "#play/puzzle");
   assert.equal(backHash({ game: "puzzle", arg: null }), "#play");
   assert.equal(backHash({ game: "memory", arg: null }), "#play");
@@ -71,6 +74,6 @@ test("every button has an aria-label", () => {
 test("gameRouteFor: games only for small", () => {
   assert.equal(gameRouteFor("#play/puzzle", "mid"), null);
   assert.equal(gameRouteFor("#play", "big"), null);
-  assert.deepEqual(gameRouteFor("#play/puzzle", "small"), { game: "puzzle", arg: null });
+  assert.deepEqual(gameRouteFor("#play/puzzle", "small"), { game: "puzzle", arg: null, sub: null });
   assert.equal(gameRouteFor("#game", "mid").game, null);
 });

@@ -113,7 +113,7 @@ test("a saved game with other choices than today's puzzle is ignored", () => {
   assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [3, 2, 1, 5] }).misses[0], 1);
 });
 
-import { loadLevel, bumpLevel, loadMute, saveMute, loadScene, saveScene, clearScene } from "../site/kids/store.js";
+import { loadPuzzleSize, savePuzzleSize, loadLevel, bumpLevel, loadMute, saveMute, loadScene, saveScene, clearScene } from "../site/kids/store.js";
 
 const mem2 = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v), removeItem: k => m.delete(k) }; };
 const broken2 = { getItem() { throw new Error("no"); }, setItem() { throw new Error("no"); }, removeItem() { throw new Error("no"); } };
@@ -158,4 +158,17 @@ test("scene: keeps valid stickers, drops bad ones, survives bad storage", () => 
   st.setItem("bingology:kids-scene:park", "{bad");
   assert.deepEqual(loadScene(st, "park"), []);
   saveScene(broken2, "park", []); clearScene(broken2, "park");
+});
+
+test("puzzle size: one of the six sizes, default 4", () => {
+  const st = mem2();
+  assert.equal(loadPuzzleSize(st), 4);
+  savePuzzleSize(st, 16);
+  assert.equal(loadPuzzleSize(st), 16);
+  st.setItem("bingology:kids-puzzle-size", "7");
+  assert.equal(loadPuzzleSize(st), 4);
+  st.setItem("bingology:kids-puzzle-size", '"x"');
+  assert.equal(loadPuzzleSize(st), 4);
+  assert.equal(loadPuzzleSize(broken2), 4);
+  savePuzzleSize(broken2, 9);
 });

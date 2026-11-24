@@ -1,10 +1,10 @@
 // The kids page: loads kids-data.json, keeps the age group and today's game, paints the grid or the game.
 import { inGroup, servicesIn, pickServices, byServices } from "./catalog.js";
 import { puzzleFor, initGame, guess } from "./game.js";
-import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadScene, saveScene, clearScene } from "./store.js";
+import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
-import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js";
+import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML } from "./scene.js";
 import { SCENES } from "./scenes.js";
@@ -23,20 +23,24 @@ const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not e
 const sound = makeSound(() => st.muted);
 
 function puzzleView(route) {
-  const arts = withArt(st.items);
-  const item = route.arg ? arts.find(i => String(i.tmdb) === route.arg) : null;
-  if (!item) { st.jig = null; return pickerHTML(st.items); }
-  if (!st.jig || st.jig.tmdb !== item.tmdb) st.jig = initPuzzle(item.tmdb, loadLevel(store, "puzzle"));
+  const screen = puzzleScreen(route, st.items);
+  if (screen === "picker") { st.jig = null; return pickerHTML(st.items); }
+  const item = withArt(st.items).find(i => String(i.tmdb) === route.arg);
+  if (screen === "levels") return levelsHTML(item, loadPuzzleSize(store));
+  const n = Number(route.sub);
+  savePuzzleSize(store, n);
+  if (!st.jig || st.jig.tmdb !== item.tmdb || st.jig.n !== n) st.jig = initPuzzle(item.tmdb, n);
   return puzzleHTML(item, st.jig);
 }
 
 function puzzleAgain() {
   const arts = withArt(st.items);
+  const n = st.jig ? st.jig.n : loadPuzzleSize(store);
   const others = arts.filter(i => !st.jig || i.tmdb !== st.jig.tmdb);
   const pool = others.length ? others : arts;
   st.jig = null;
   if (!pool.length) { location.hash = "play/puzzle"; return; }
-  const h = `#play/puzzle/${pool[Math.floor(Math.random() * pool.length)].tmdb}`;
+  const h = `#play/puzzle/${pool[Math.floor(Math.random() * pool.length)].tmdb}/${n}`;
   if (location.hash === h) render(); else location.hash = h;
 }
 
@@ -150,7 +154,7 @@ function startDrag(e) {
         st.jig = next;
         sound.snap();
         const won = solved(next) && !next.won;
-        if (won) { next.won = true; bumpLevel(store, "puzzle"); }
+        if (won) next.won = true;
         render();
         if (won) winTimer = setTimeout(() => sound.win(), 250);
         return;

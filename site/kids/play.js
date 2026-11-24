@@ -4,15 +4,15 @@ import { withArt } from "./art.js";
 const GAMES = ["puzzle", "memory", "scene", "clips"];
 
 export function parseRoute(hash) {
-  const m = /^#play(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");
-  if (!m) return { game: null, arg: null };
-  if (!m[1]) return { game: "home", arg: null };
-  if (!GAMES.includes(m[1])) return { game: "home", arg: null };
-  return { game: m[1], arg: m[2] || null };
+  const m = /^#play(?:\/([^/]*))?(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");
+  if (!m) return { game: null, arg: null, sub: null };
+  if (!m[1] || !GAMES.includes(m[1])) return { game: "home", arg: null, sub: null };
+  return { game: m[1], arg: m[2] || null, sub: m[3] || null };
 }
 
-export function backHash({ game, arg }) {
+export function backHash({ game, arg, sub }) {
   if (game === "home" || (game === "clips" && !arg)) return "";
+  if (game === "puzzle" && arg && sub) return `#play/puzzle/${arg}`;
   if (arg && (game === "puzzle" || game === "scene" || game === "clips")) return `#play/${game}`;
   return "#play";
 }
