@@ -78,7 +78,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-confetti i { position: absolute; top: -20px; width: 12px; height: 18px; border-radius: 3px; animation: k-fall 2.6s ease-in forwards; }
 @keyframes k-fall { to { transform: translateY(110vh) rotate(540deg); } }
 @media (prefers-reduced-motion: reduce) { .k-confetti { display: none; } }
-@media (prefers-reduced-motion: reduce) { .k-play * { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .k-play *:not(.k-bub) { animation: none !important; transition: none !important; } } /* bubbles still rise, 3x slower (bubbles.js) */
 
 /* memory */
 .k-mem-grid { display: grid; grid-template-columns: repeat(var(--c, 3), var(--s, 96px)); justify-content: center; gap: 10px; }
@@ -131,3 +131,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-sc-tpl.k-cut { height: 72px; }
 .k-cut-img { display: block; height: 100%; width: auto; pointer-events: none; -webkit-user-drag: none; }
 .k-sc-st.k-cut.k-dragging { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, .35)); }
+
+/* איפה?: silhouettes to fill */
+.k-sil { position: absolute; translate: -50% -50%; pointer-events: none; }
+.k-sil img { display: block; height: 64px; width: auto; max-width: 104px; object-fit: contain; filter: brightness(0) opacity(.35); }
+.k-sil.k-sil-done img { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .3)); animation: k-fill .35s ease-out; }
+@keyframes k-fill { from { transform: scale(.7); } to { transform: scale(1); } }
+
+/* 🫧 Bubbles */
+.k-bub-area { position: relative; height: min(70vh, 560px); overflow: hidden; border-radius: var(--radius); background: linear-gradient(#d8f3ff, #fff3c9); touch-action: manipulation; }
+.k-bub { position: absolute; bottom: -130px; translate: -50% 0; padding: 0; border: 0; background: none; animation: k-rise linear forwards; cursor: pointer; }
+.k-bub-in { display: grid; place-items: center; width: 100%; height: 100%; overflow: hidden; border: 2px solid rgba(255, 255, 255, .9); border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .95) 0 8%, rgba(255, 255, 255, .25) 9% 55%, rgba(140, 200, 255, .35) 100%); box-shadow: inset 0 0 12px rgba(255, 255, 255, .8); }
+.k-bub img { height: 78%; width: auto; pointer-events: none; }
+.k-bub-face { width: 72px; height: 72px; border-radius: 50%; background-repeat: no-repeat; transform: scale(.85); }
+@keyframes k-rise { from { transform: translateY(0); } to { transform: translateY(calc(-1 * min(70vh, 560px) - 260px)); } }
+.k-bub.k-popped { pointer-events: none; }
+.k-bub.k-popped .k-bub-in { animation: k-pop .45s ease-out forwards; }
+@keyframes k-pop { 0% { transform: scale(1); opacity: 1; } 40% { transform: scale(1.35); opacity: .9; border-color: transparent; } 100% { transform: scale(.2) translateY(-40px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .k-bub.k-popped { opacity: 0; } }

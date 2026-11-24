@@ -49,5 +49,9 @@ export function sceneHTML(place, list, items, opts = {}) {
   const clear = opts.confirm
     ? `<span class="k-sc-ask">לנקות?</span><button class="k-sc-btn" data-a="clear-yes" aria-label="כן, לנקות"><span aria-hidden="true">✓</span></button><button class="k-sc-btn" data-a="clear-no" aria-label="לא, להשאיר"><span aria-hidden="true">✕</span></button>`
     : `<button class="k-sc-btn" data-a="clear" aria-label="לנקות את החדר"><span aria-hidden="true">🧽</span></button>`;
-  return `<section class="k-sc"><div class="k-sc-scene" data-scene>${scene.svg}${placed}</div><div class="k-sc-foot"><div class="k-sc-tray">${tray}</div><div class="k-sc-clear">${clear}</div></div></section>`;
+  const sils = (opts.targets || []).map(t => {
+    const id = Number.isInteger(t.tmdb) ? t.tmdb : null;
+    return id ? `<div class="k-sil${t.done ? " k-sil-done" : ""}" style="left:${Math.round(t.x * 1000) / 10}%;top:${Math.round(t.y * 1000) / 10}%" aria-hidden="true"><img src="kids/chars/${id}.png" alt="" draggable="false"></div>` : "";
+  }).join("");
+  return `<section class="k-sc"><div class="k-sc-scene" data-scene>${scene.svg}${placed}${sils}</div><div class="k-sc-foot"><div class="k-sc-tray">${tray}</div><div class="k-sc-clear">${clear}</div></div></section>`;
 }
