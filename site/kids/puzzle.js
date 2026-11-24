@@ -37,6 +37,14 @@ export function trySnap(state, piece, cx, cy, board) {
 
 export const solved = state => state.placed.every(Boolean);
 
+/** The board to show for (tmdb, n): the current game (also while its win screen shows), else a fresh one. */
+export function boardFor(cur, tmdb, n, rnd = Math.random) {
+  return cur && cur.tmdb === tmdb && cur.n === n ? cur : initPuzzle(tmdb, n, rnd);
+}
+
+/** Back on the level screen: a solved game is over (picking the same level starts fresh); a half-done one can resume. */
+export const onLevels = cur => (cur && !solved(cur) ? cur : null);
+
 // Jigsaw shapes, in board coordinates (the backdrop is 1600x900).
 export const BW = 1600, BH = 900;
 const geo = state => {

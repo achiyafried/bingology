@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LEVELS, levelFor, initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, edges, pieceEdges, piecePath, pieceSVG } from "../site/kids/puzzle.js";
+import { LEVELS, levelFor, initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, edges, pieceEdges, piecePath, pieceSVG } from "../site/kids/puzzle.js";
 
 const B = "https://image.tmdb.org/t/p/w780/abc.jpg";
 const item = { tmdb: 7, name: "x", backdrop: B, poster: "https://image.tmdb.org/t/p/w342/p.jpg", age: "small" };
@@ -145,4 +145,23 @@ test("puzzleHTML: tray pieces and placed pieces are SVG jigsaw shapes", () => {
   assert.equal((h.match(/class="k-pz-piece"/g) || []).length, 8);
   assert.match(h, /class="k-pz-placed"[^>]*viewBox="0 0 1600 900"/);
   assert.match(h, /clip-path="url\(#pz-7-9-0\)"/);
+});
+
+test("boardFor: keeps the current game (also on its win screen), new for another series/size", () => {
+  const cur = initPuzzle(7, 9, seeded());
+  assert.equal(boardFor(cur, 7, 9), cur);
+  const won = { ...cur, placed: cur.placed.map(() => true), won: true };
+  assert.equal(boardFor(won, 7, 9), won);
+  assert.equal(boardFor(cur, 7, 12).n, 12);
+  assert.equal(boardFor(cur, 8, 9).tmdb, 8);
+  assert.equal(boardFor(null, 7, 4).n, 4);
+});
+
+test("onLevels: a solved game is dropped when the child is back on the level screen, a half-done one stays", () => {
+  const cur = initPuzzle(7, 9, seeded());
+  assert.equal(onLevels(cur), cur);
+  assert.equal(onLevels({ ...cur, placed: cur.placed.map(() => true) }), null);
+  assert.equal(onLevels(null), null);
+  const won = { ...cur, placed: cur.placed.map(() => true) };
+  assert.ok(boardFor(onLevels(won), 7, 9).placed.every(p => p === false));
 });

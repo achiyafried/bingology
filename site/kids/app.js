@@ -4,7 +4,7 @@ import { puzzleFor, initGame, guess } from "./game.js";
 import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
-import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen } from "./puzzle.js";
+import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
@@ -26,10 +26,10 @@ function puzzleView(route) {
   const screen = puzzleScreen(route, st.items);
   if (screen === "picker") { st.jig = null; return pickerHTML(st.items); }
   const item = withArt(st.items).find(i => String(i.tmdb) === route.arg);
-  if (screen === "levels") return levelsHTML(item, loadPuzzleSize(store));
+  if (screen === "levels") { st.jig = onLevels(st.jig); return levelsHTML(item, loadPuzzleSize(store)); }
   const n = Number(route.sub);
   savePuzzleSize(store, n);
-  if (!st.jig || st.jig.tmdb !== item.tmdb || st.jig.n !== n) st.jig = initPuzzle(item.tmdb, n);
+  st.jig = boardFor(st.jig, item.tmdb, n);
   return puzzleHTML(item, st.jig);
 }
 
