@@ -1,7 +1,7 @@
 // Toddler games shell: hash routes, the games home screen, and the frame (home + mute buttons, TMDB credit).
 import { withArt } from "./art.js";
 
-const GAMES = ["puzzle", "memory", "scene", "bubbles", "clips"];
+const GAMES = ["puzzle", "memory", "scene", "bubbles", "clips", "who"];
 
 export function parseRoute(hash) {
   const m = /^#play(?:\/([^/]*))?(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");

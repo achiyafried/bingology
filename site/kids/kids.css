@@ -158,3 +158,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-lv-sq i { border-radius: 2px; }
 /* Arrows at both ends of the sticker tray */
 .k-sc-arr { flex: none; width: 48px; height: 64px; border: 0; border-radius: 12px; background: var(--g-soft); color: var(--ink); font-size: 30px; font-weight: 800; line-height: 1; box-shadow: 0 3px 0 var(--line); cursor: pointer; }
+
+/* Who's playing */
+.k-who { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 8px 0 24px; text-align: center; }
+.k-who h2 { margin: 4px 0; font-size: 26px; }
+.k-who-l { font-weight: 700; color: var(--muted); }
+.k-who-in { width: min(320px, 100%); min-height: 56px; padding: 0 16px; border: 3px solid var(--line); border-radius: 18px; font: inherit; font-size: 22px; text-align: center; }
+.k-who-gs { display: flex; gap: 12px; }
+.k-who-g { min-width: 120px; min-height: 64px; border: 3px solid transparent; border-radius: 18px; background: var(--g-soft); font-size: 22px; font-weight: 800; }
+.k-who-g[aria-pressed="true"] { background: var(--g); border-color: rgba(0, 0, 0, .12); }
+.k-who-save { min-width: 200px; min-height: 60px; border: 0; border-radius: 999px; background: #ff6b6b; color: #fff; font-size: 22px; font-weight: 800; box-shadow: 0 4px 0 #c94444; }
+.k-who-skip { border: 0; background: none; color: var(--muted); text-decoration: underline; min-height: 44px; }
+.k-pls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 12px; }
+.k-pl { display: inline-flex; align-items: center; gap: 2px; }
+.k-pl-b { min-height: 48px; padding: 0 16px; border: 3px solid transparent; border-radius: 999px; background: var(--g-soft); font-weight: 800; font-size: 18px; }
+.k-pl-b[aria-pressed="true"] { background: var(--g); border-color: rgba(0, 0, 0, .12); }
+.k-pl-x { width: 32px; height: 32px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 14px; }
+.k-pl-add { width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--g-soft); font-size: 20px; }
+/* The cheer bubble */
+.k-cheer { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
+.k-cheer span { max-width: min(90vw, 520px); padding: 22px 28px; border-radius: 32px; background: #fff; color: #ff5a5f; font-size: clamp(26px, 8vw, 44px); font-weight: 800; text-align: center; box-shadow: 0 12px 40px rgba(0, 0, 0, .25); animation: k-cheer 2.3s ease-out forwards; }
+@keyframes k-cheer { 0% { transform: scale(.4); opacity: 0; } 12% { transform: scale(1.08); opacity: 1; } 20% { transform: scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }
+@media (prefers-reduced-motion: reduce) { .k-cheer span { animation: none; } }

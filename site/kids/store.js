@@ -74,3 +74,22 @@ export function loadMemorySize(storage) {
   return MEM_SIZES.includes(v) ? v : 6;
 }
 export const saveMemorySize = (storage, n) => write(storage, MEM_SIZE, n);
+
+// Who plays the toddler games: [{ name, g: "m" | "f" }], saved on this device only.
+const PLAYERS = "bingology:kids-players";
+const PLAYER = "bingology:kids-player";
+const NONAME = "bingology:kids-noname";
+export function loadPlayers(storage) {
+  const v = read(storage, PLAYERS);
+  return (Array.isArray(v) ? v : [])
+    .filter(p => p && typeof p.name === "string" && p.name.trim() && (p.g === "m" || p.g === "f"))
+    .map(p => ({ name: p.name, g: p.g })).slice(0, 4);
+}
+export const savePlayers = (storage, list) => write(storage, PLAYERS, list);
+export function loadPlayer(storage) {
+  const v = read(storage, PLAYER);
+  return Number.isInteger(v) && v >= 0 ? v : 0;
+}
+export const savePlayer = (storage, i) => write(storage, PLAYER, i);
+export const loadNoName = storage => read(storage, NONAME) === true;
+export const saveNoName = (storage, on) => write(storage, NONAME, on);
