@@ -175,3 +175,12 @@ test("no YouTube calls when the run aborts", async () => {
   assert.equal(r.abort, true);
   assert.equal(clipsImpl.n, 0);
 });
+
+test("copies cutout from kids.json, and drops it when the row loses it", async () => {
+  const r = await run({ rows: [{ tmdb: 1, age: "small", cutout: true }, { tmdb: 2, age: "small" }], prev: null, fetchImpl: fake(), now: NOW, map });
+  assert.equal(r.data.items.find(i => i.tmdb === 1).cutout, true);
+  assert.equal("cutout" in r.data.items.find(i => i.tmdb === 2), false);
+  const prev = { items: [{ tmdb: 3, age: "small", name: "S3", cutout: true }] };
+  const r2 = await run({ rows: [{ tmdb: 3, age: "small" }], prev, fetchImpl: fake({ fail: new Set([3]) }), now: NOW, map });
+  assert.equal("cutout" in r2.data.items[0], false);
+});

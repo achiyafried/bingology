@@ -7,21 +7,25 @@ const B = "https://image.tmdb.org/t/p/w780/b.jpg";
 const s = (tmdb, o = {}) => ({ tmdb, age: "small", name: `S${tmdb}`, backdrop: B, ...o });
 
 test("parseRoute", () => {
-  assert.deepEqual(parseRoute(""), { game: null, arg: null });
-  assert.deepEqual(parseRoute("#game"), { game: null, arg: null });
-  assert.deepEqual(parseRoute("#play"), { game: "home", arg: null });
-  assert.deepEqual(parseRoute("#play/puzzle/82728"), { game: "puzzle", arg: "82728" });
-  assert.deepEqual(parseRoute("#play/memory"), { game: "memory", arg: null });
-  assert.deepEqual(parseRoute("#play/nope"), { game: "home", arg: null });
+  assert.deepEqual(parseRoute(""), { game: null, arg: null, sub: null });
+  assert.deepEqual(parseRoute("#game"), { game: null, arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play"), { game: "home", arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play/puzzle/82728"), { game: "puzzle", arg: "82728", sub: null });
+  assert.deepEqual(parseRoute("#play/puzzle/82728/9"), { game: "puzzle", arg: "82728", sub: "9" });
+  assert.deepEqual(parseRoute("#play/puzzle/82728/7"), { game: "puzzle", arg: "82728", sub: "7" });
+  assert.deepEqual(parseRoute("#play/memory"), { game: "memory", arg: null, sub: null });
+  assert.deepEqual(parseRoute("#play/nope"), { game: "home", arg: null, sub: null });
 });
 
 test("backHash", () => {
+  assert.equal(backHash({ game: "puzzle", arg: "1", sub: "9" }), "#play/puzzle/1");
   assert.equal(backHash({ game: "puzzle", arg: "1" }), "#play/puzzle");
   assert.equal(backHash({ game: "puzzle", arg: null }), "#play");
   assert.equal(backHash({ game: "memory", arg: null }), "#play");
   assert.equal(backHash({ game: "scene", arg: "park" }), "#play/scene");
   assert.equal(backHash({ game: "scene", arg: null }), "#play");
   assert.equal(backHash({ game: "clips", arg: "5" }), "#play/clips");
+  assert.equal(backHash({ game: "clips", arg: null }), "");
   assert.equal(backHash({ game: "home", arg: null }), "");
 });
 
@@ -49,12 +53,17 @@ test("homeHTML tiles", () => {
   assert.match(h2, /data-v="puzzle"/);
   assert.match(h2, /data-v="scene"/);
   assert.doesNotMatch(h2, /data-v="memory"/);
-  assert.doesNotMatch(h2, /data-v="clips"/);
   const h3 = homeHTML([s(1), s(2), s(3, { clips: [{ id: "aaaaaaaaaaa" }] })]);
   assert.match(h3, /data-v="memory"/);
-  assert.match(h3, /data-v="clips"/);
-  assert.doesNotMatch(homeHTML([s(1), s(2), s(3, { clips: [] })]), /data-v="clips"/);
-  for (const l of ["פאזל", "זיכרון", "איפה?", "קליפים"]) assert.match(h3, new RegExp(`aria-label="${l.replace("?", "\\?")}"`));
+  assert.doesNotMatch(h3, /clips/);
+  for (const l of ["פאזל", "זיכרון", "איפה?"]) assert.match(h3, new RegExp(`aria-label="${l.replace("?", "\\?")}"`));
+});
+
+test("headerHTML: clips button only for small with clips", () => {
+  assert.match(headerHTML("small", { hasClips: true }), /<button class="k-gamebtn k-clipbtn" data-a="clips">.*קליפים<\/button>/);
+  assert.doesNotMatch(headerHTML("small", { hasClips: false }), /data-a="clips"/);
+  assert.doesNotMatch(headerHTML("small"), /data-a="clips"/);
+  assert.doesNotMatch(headerHTML("mid", { hasClips: true }), /data-a="clips"/);
 });
 
 test("every button has an aria-label", () => {
@@ -65,6 +74,6 @@ test("every button has an aria-label", () => {
 test("gameRouteFor: games only for small", () => {
   assert.equal(gameRouteFor("#play/puzzle", "mid"), null);
   assert.equal(gameRouteFor("#play", "big"), null);
-  assert.deepEqual(gameRouteFor("#play/puzzle", "small"), { game: "puzzle", arg: null });
+  assert.deepEqual(gameRouteFor("#play/puzzle", "small"), { game: "puzzle", arg: null, sub: null });
   assert.equal(gameRouteFor("#game", "mid").game, null);
 });

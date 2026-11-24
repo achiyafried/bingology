@@ -1,4 +1,4 @@
-// Sticker scenes: pick a place, drag round character stickers anywhere, they stay. Pure list helpers plus markup.
+// Sticker scenes: pick a place, drag character stickers (cut-outs, else round crops) anywhere, they stay. Pure list helpers plus markup.
 import { esc, safeImg } from "../lib/esc.js";
 import { withArt, stickerStyle } from "./art.js";
 import { SCENES } from "./scenes.js";
@@ -20,9 +20,20 @@ export function placesHTML() {
   return `<ul class="k-sc-places">${tiles.join("")}</ul>`;
 }
 
-function face(item, extra) {
-  const src = safeImg(item.backdrop);
-  return `background-image:url(${src});${stickerStyle(item.sticker ?? DEFAULT, STICKER)}${extra ? `;${extra}` : ""}`;
+/** The round sticker's style (also the fallback when a cut-out fails to load). */
+export function circleStyle(item) {
+  return `background-image:url(${safeImg(item.backdrop)});${stickerStyle(item.sticker ?? DEFAULT, STICKER)}`;
+}
+
+/** A cut-out PNG in site/kids/chars/ for this series, or null. */
+const cutId = item => (item.cutout === true && Number.isInteger(item.tmdb) && item.tmdb > 0 ? item.tmdb : null);
+
+/** One sticker element: the cut-out image when there is one, else the round crop. */
+function stickerEl(cls, attrs, item, pos = "") {
+  const id = cutId(item), label = `role="img" aria-label="${esc(title(item) || "")}"`;
+  return id
+    ? `<div class="${cls} k-cut" ${attrs} ${label}${pos ? ` style="${pos}"` : ""}><img class="k-cut-img" src="kids/chars/${id}.png" alt="" draggable="false" data-tmdb="${id}"></div>`
+    : `<div class="${cls}" ${attrs} ${label} style="${pos}${circleStyle(item)}"></div>`;
 }
 
 /** opts.confirm: show the "clean up?" question instead of the sponge. */
@@ -32,10 +43,9 @@ export function sceneHTML(place, list, items, opts = {}) {
   const arts = withArt(items), byId = new Map(arts.map(i => [i.tmdb, i]));
   const placed = list.map((s, i) => {
     const item = byId.get(s.tmdb);
-    return item ? `<div class="k-sc-st" data-i="${i}" role="img" aria-label="${esc(title(item) || "")}" style="left:${s.x * 100}%;top:${s.y * 100}%;${face(item)}"></div>` : "";
+    return item ? stickerEl("k-sc-st", `data-i="${i}"`, item, `left:${s.x * 100}%;top:${s.y * 100}%;`) : "";
   }).join("");
-  const tray = arts.map(i =>
-    `<div class="k-sc-tpl" data-t="${Number(i.tmdb)}" role="img" aria-label="${esc(title(i) || "")}" style="${face(i)}"></div>`).join("");
+  const tray = arts.map(i => stickerEl("k-sc-tpl", `data-t="${Number(i.tmdb)}"`, i)).join("");
   const clear = opts.confirm
     ? `<span class="k-sc-ask">לנקות?</span><button class="k-sc-btn" data-a="clear-yes" aria-label="כן, לנקות"><span aria-hidden="true">✓</span></button><button class="k-sc-btn" data-a="clear-no" aria-label="לא, להשאיר"><span aria-hidden="true">✕</span></button>`
     : `<button class="k-sc-btn" data-a="clear" aria-label="לנקות את החדר"><span aria-hidden="true">🧽</span></button>`;

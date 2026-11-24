@@ -1,19 +1,18 @@
 // Toddler games shell: hash routes, the games home screen, and the frame (home + mute buttons, TMDB credit).
 import { withArt } from "./art.js";
-import { withClips } from "./clips.js";
 
 const GAMES = ["puzzle", "memory", "scene", "clips"];
 
 export function parseRoute(hash) {
-  const m = /^#play(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");
-  if (!m) return { game: null, arg: null };
-  if (!m[1]) return { game: "home", arg: null };
-  if (!GAMES.includes(m[1])) return { game: "home", arg: null };
-  return { game: m[1], arg: m[2] || null };
+  const m = /^#play(?:\/([^/]*))?(?:\/([^/]*))?(?:\/(.*))?$/.exec(hash || "");
+  if (!m) return { game: null, arg: null, sub: null };
+  if (!m[1] || !GAMES.includes(m[1])) return { game: "home", arg: null, sub: null };
+  return { game: m[1], arg: m[2] || null, sub: m[3] || null };
 }
 
-export function backHash({ game, arg }) {
-  if (game === "home") return "";
+export function backHash({ game, arg, sub }) {
+  if (game === "home" || (game === "clips" && !arg)) return "";
+  if (game === "puzzle" && arg && sub) return `#play/puzzle/${arg}`;
   if (arg && (game === "puzzle" || game === "scene" || game === "clips")) return `#play/${game}`;
   return "#play";
 }
@@ -38,6 +37,5 @@ export function homeHTML(items) {
   const tiles = [tile("puzzle", "פאזל", "🧩")];
   if (withArt(items).length >= 3) tiles.push(tile("memory", "זיכרון", "🃏"));
   tiles.push(tile("scene", "איפה?", "🔍"));
-  if (withClips(items).length) tiles.push(tile("clips", "קליפים", "🎬"));
   return `<div class="k-tiles">${tiles.join("")}</div>`;
 }

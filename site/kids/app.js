@@ -1,12 +1,12 @@
 // The kids page: loads kids-data.json, keeps the age group and today's game, paints the grid or the game.
 import { inGroup, servicesIn, pickServices, byServices } from "./catalog.js";
 import { puzzleFor, initGame, guess } from "./game.js";
-import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadScene, saveScene, clearScene } from "./store.js";
+import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
-import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML } from "./puzzle.js";
+import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
-import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML } from "./scene.js";
+import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
 import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
 import { YT_ORIGINS } from "../lib/trailer.js";
@@ -23,20 +23,24 @@ const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not e
 const sound = makeSound(() => st.muted);
 
 function puzzleView(route) {
-  const arts = withArt(st.items);
-  const item = route.arg ? arts.find(i => String(i.tmdb) === route.arg) : null;
-  if (!item) { st.jig = null; return pickerHTML(st.items); }
-  if (!st.jig || st.jig.tmdb !== item.tmdb) st.jig = initPuzzle(item.tmdb, loadLevel(store, "puzzle"));
+  const screen = puzzleScreen(route, st.items);
+  if (screen === "picker") { st.jig = null; return pickerHTML(st.items); }
+  const item = withArt(st.items).find(i => String(i.tmdb) === route.arg);
+  if (screen === "levels") { st.jig = onLevels(st.jig); return levelsHTML(item, loadPuzzleSize(store)); }
+  const n = Number(route.sub);
+  savePuzzleSize(store, n);
+  st.jig = boardFor(st.jig, item.tmdb, n);
   return puzzleHTML(item, st.jig);
 }
 
 function puzzleAgain() {
   const arts = withArt(st.items);
+  const n = st.jig ? st.jig.n : loadPuzzleSize(store);
   const others = arts.filter(i => !st.jig || i.tmdb !== st.jig.tmdb);
   const pool = others.length ? others : arts;
   st.jig = null;
   if (!pool.length) { location.hash = "play/puzzle"; return; }
-  const h = `#play/puzzle/${pool[Math.floor(Math.random() * pool.length)].tmdb}`;
+  const h = `#play/puzzle/${pool[Math.floor(Math.random() * pool.length)].tmdb}/${n}`;
   if (location.hash === h) render(); else location.hash = h;
 }
 
@@ -87,9 +91,9 @@ function sceneDown(e) {
   let ghost = null;
   const lift = () => {
     if (placed) { el.classList.add("k-dragging"); return placed; }
-    ghost = tpl.cloneNode(false);
+    ghost = tpl.cloneNode(true);
     ghost.removeAttribute("data-t");
-    ghost.className = "k-sc-st k-dragging k-sc-ghost";
+    ghost.className = `k-sc-st k-dragging k-sc-ghost${tpl.classList.contains("k-cut") ? " k-cut" : ""}`;
     ghost.style.left = `${x0}px`; ghost.style.top = `${y0}px`;
     document.body.appendChild(ghost);
     return ghost;
@@ -125,6 +129,16 @@ function sceneDown(e) {
   drag.clean = clean;
 }
 root.addEventListener("pointerdown", sceneDown);
+// A cut-out that fails to load (missing PNG) turns back into the round sticker.
+root.addEventListener("error", e => {
+  const img = e.target;
+  if (!(img instanceof HTMLImageElement) || !img.classList.contains("k-cut-img")) return;
+  const box = img.parentElement, item = st.items.find(i => i.tmdb === Number(img.dataset.tmdb));
+  img.remove();
+  if (!box || !item) return;
+  box.classList.remove("k-cut");
+  box.setAttribute("style", `${box.getAttribute("style") || ""}${circleStyle(item)}`);
+}, true);
 
 // Drag a tray piece with a pointer: move it with transform, re-render only on drop.
 let drag = null, winTimer = 0, memTimer = 0;
@@ -150,7 +164,7 @@ function startDrag(e) {
         st.jig = next;
         sound.snap();
         const won = solved(next) && !next.won;
-        if (won) { next.won = true; bumpLevel(store, "puzzle"); }
+        if (won) next.won = true;
         render();
         if (won) winTimer = setTimeout(() => sound.win(), 250);
         return;
@@ -240,7 +254,7 @@ function render() {
   const body = location.hash === "#game"
     ? gameHTML(st.puzzle, st.game, st.items)
     : servicesHTML(available, st.services) + gridHTML(byServices(group, st.services));
-  root.innerHTML = headerHTML(st.age) + body
+  root.innerHTML = headerHTML(st.age, { hasClips: withClips(st.items).length > 0 }) + body
     + FOOT;
 }
 
@@ -262,6 +276,7 @@ root.addEventListener("click", e => {
   else if (a === "card") openCard(Number(v));
   else if (a === "game") { location.hash = "game"; }
   else if (a === "play") { location.hash = "play"; }
+  else if (a === "clips") { location.hash = "play/clips"; }
   else if (a === "go") { location.hash = `play/${v}`; }
   else if (a === "again") puzzleAgain();
   else if (a === "clip") playClip(Number(v));

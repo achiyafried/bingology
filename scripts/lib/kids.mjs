@@ -24,6 +24,7 @@ export function validateKids(list) {
     else seen.add(r.tmdb);
     if (!AGES.includes(r.age)) e(`age must be one of ${AGES.join(", ")}`);
     if ("he" in r && !text(r.he)) e("he (Hebrew name) must be non-empty text");
+    if ("cutout" in r && r.cutout !== true) e("cutout must be true when present");
     if ("art" in r) {
       const a = r.art;
       if (!a || typeof a !== "object" || Array.isArray(a)) e("art must be an object");
