@@ -32,7 +32,7 @@ const cutId = item => (item.cutout === true && Number.isInteger(item.tmdb) && it
 function stickerEl(cls, attrs, item, pos = "") {
   const id = cutId(item), label = `role="img" aria-label="${esc(title(item) || "")}"`;
   return id
-    ? `<div class="${cls} k-cut" ${attrs} ${label}${pos ? ` style="${pos}"` : ""}><img class="k-cut-img" src="chars/${id}.png" alt="" draggable="false" data-tmdb="${id}"></div>`
+    ? `<div class="${cls} k-cut" ${attrs} ${label}${pos ? ` style="${pos}"` : ""}><img class="k-cut-img" src="kids/chars/${id}.png" alt="" draggable="false" data-tmdb="${id}"></div>`
     : `<div class="${cls}" ${attrs} ${label} style="${pos}${circleStyle(item)}"></div>`;
 }
 

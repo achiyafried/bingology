@@ -73,7 +73,7 @@ test("sceneHTML: unknown tmdb skipped, confirm state, unknown place", () => {
 test("sceneHTML: a cut-out character instead of the circle when the series has one", () => {
   const items = [it(5, { cutout: true }), it(6)];
   const h = sceneHTML("kitchen", [{ tmdb: 5, x: 0.2, y: 0.3 }, { tmdb: 6, x: 0.5, y: 0.5 }], items);
-  assert.equal((h.match(/<img class="k-cut-img" src="chars\/5\.png" alt="" draggable="false" data-tmdb="5">/g) || []).length, 2); // placed + tray
+  assert.equal((h.match(/<img class="k-cut-img" src="kids\/chars\/5\.png" alt="" draggable="false" data-tmdb="5">/g) || []).length, 2); // placed + tray
   assert.doesNotMatch(h, /chars\/6\.png/);
   assert.match(h, /class="k-sc-st k-cut" data-i="0"/);
   assert.match(h, /class="k-sc-tpl k-cut" data-t="5"/);

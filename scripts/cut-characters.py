@@ -24,8 +24,41 @@ from rembg import new_session, remove
 MODEL = "isnet-general-use"
 SIZE = 256        # px on the longer side
 SPAN = 3.2        # crop side, in sticker radii x image height
-FLOOR = 40        # alpha below this is dropped
-GAIN = 1.5        # the rest is strengthened, without a hard cut that punches holes
+FLOOR = 120       # alpha below this is dropped (removes faint "ghosts" of the background)
+GAIN = 2.0        # the rest is strengthened
+SPECK = 0.04      # opaque islands smaller than this share of the largest one are dropped
+
+
+def drop_specks(img):
+    """Keep only the big opaque parts: 4-connected islands under SPECK x the largest are made transparent."""
+    w, h = img.size
+    a = img.getchannel("A")
+    px = a.load()
+    seen = bytearray(w * h)
+    islands = []
+    for y0 in range(h):
+        for x0 in range(w):
+            if px[x0, y0] == 0 or seen[y0 * w + x0]:
+                continue
+            stack, cells = [(x0, y0)], []
+            seen[y0 * w + x0] = 1
+            while stack:
+                x, y = stack.pop()
+                cells.append((x, y))
+                for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if 0 <= nx < w and 0 <= ny < h and px[nx, ny] and not seen[ny * w + nx]:
+                        seen[ny * w + nx] = 1
+                        stack.append((nx, ny))
+            islands.append(cells)
+    if not islands:
+        return img
+    big = max(len(c) for c in islands)
+    for cells in islands:
+        if len(cells) < SPECK * big:
+            for x, y in cells:
+                px[x, y] = 0
+    img.putalpha(a)
+    return img
 
 
 def cut(item, session):
@@ -37,6 +70,8 @@ def cut(item, session):
            min(w, int(st["x"] * w + half)), min(h, int(st["y"] * h + half)))
     out = remove(img.crop(box), session=session)
     out.putalpha(out.getchannel("A").point(lambda v: 0 if v < FLOOR else min(255, int(v * GAIN))))
+    out.thumbnail((SIZE * 2, SIZE * 2))
+    out = drop_specks(out)
     bbox = out.getbbox()
     if not bbox:
         return None
