@@ -7,7 +7,7 @@ import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, confettiHTML } from "./puzzle.js";
 import { pickTargets, tryFill, allFilled, blocksFreeDrop } from "./silhouette.js";
 import { pickBubble, bubbleHTML, MAX_BUBBLES, SPAWN_MS } from "./bubbles.js";
-import { pickCheer, cleanName, cheerHTML, makeSpeaker, playersHTML, whoHTML, MAX_PLAYERS } from "./cheers.js";
+import { pickCheer, cleanName, cleanEn, cheerHTML, makeSpeaker, playersHTML, whoHTML, missingEn, MAX_PLAYERS } from "./cheers.js";
 import { deal, flip, settle, won as memWon, memoryHTML, memoryScreen, memLevelsHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
@@ -20,7 +20,7 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { whoG: "m", items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, clip: null, muted: loadMute(store) };
+const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, clip: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
@@ -174,7 +174,11 @@ function sceneDown(e) {
   drag.clean = clean;
 }
 root.addEventListener("pointerdown", sceneDown);
-root.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing && e.target.id === "k-who-name") root.querySelector("[data-a=who-save]")?.click(); });
+root.addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.isComposing) return;
+  if (e.target.id === "k-who-name") root.querySelector("#k-who-en")?.focus(); // Hebrew name → English spelling
+  else if (e.target.id === "k-who-en") root.querySelector("[data-a=who-save]")?.click();
+});
 // A cut-out that fails to load (missing PNG) turns back into the round sticker.
 root.addEventListener("error", e => {
   const img = e.target;
@@ -270,10 +274,12 @@ window.addEventListener("message", e => {
 const VIEWS = {
   home: () => {
     const players = loadPlayers(store);
-    if (!players.length && !loadNoName(store)) return whoHTML({ g: st.whoG }); // first visit: who's playing?
+    if (!players.length && !loadNoName(store)) return whoHTML(); // first visit: who's playing?
+    const gap = missingEn(players); // saved before cheers were in English: ask once for the spelling
+    if (gap >= 0) return whoHTML({ edit: gap, name: players[gap].name });
     return (players.length ? playersHTML(players, Math.min(loadPlayer(store), players.length - 1)) : "") + homeHTML(st.items);
   },
-  who: () => whoHTML({ g: st.whoG }),
+  who: () => (loadPlayers(store).length >= MAX_PLAYERS ? homeHTML(st.items) : whoHTML()),
   puzzle: puzzleView,
   memory: memoryView,
   scene: sceneView,
@@ -371,15 +377,18 @@ root.addEventListener("click", e => {
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
   else if (a === "pop") pop(b);
-  else if (a === "who-g") { st.whoG = v; root.querySelectorAll("[data-a=who-g]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === v))); }
   else if (a === "who-save") {
-    const input = root.querySelector("#k-who-name"), name = cleanName(input?.value);
-    if (!name) { input?.focus(); return; }
-    const before = loadPlayers(store);
-    if (before.length >= MAX_PLAYERS) { location.hash = "play"; return; }
-    const players = [...before, { name, g: st.whoG === "f" ? "f" : "m" }];
-    savePlayers(store, players); savePlayer(store, players.length - 1); saveNoName(store, false);
-    st.whoG = "m";
+    const nameIn = root.querySelector("#k-who-name"), enIn = root.querySelector("#k-who-en");
+    const name = cleanName(nameIn?.value), en = cleanEn(enIn?.value);
+    if (!name) { nameIn?.focus(); return; }
+    if (!en) { enIn?.focus(); return; }
+    const players = loadPlayers(store), edit = b.dataset.edit !== undefined ? Number(b.dataset.edit) : null;
+    if (edit !== null && players[edit]) { players[edit] = { name, en }; savePlayers(store, players); }
+    else {
+      if (players.length >= MAX_PLAYERS) { location.hash = "play"; return; }
+      players.push({ name, en }); savePlayers(store, players); savePlayer(store, players.length - 1);
+    }
+    saveNoName(store, false);
     if (location.hash === "#play") render(); else location.hash = "play";
   }
   else if (a === "who-skip") { saveNoName(store, true); if (location.hash === "#play") render(); else location.hash = "play"; }

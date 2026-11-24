@@ -164,9 +164,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-who h2 { margin: 4px 0; font-size: 26px; }
 .k-who-l { font-weight: 700; color: var(--muted); }
 .k-who-in { width: min(320px, 100%); min-height: 56px; padding: 0 16px; border: 3px solid var(--line); border-radius: 18px; font: inherit; font-size: 22px; text-align: center; }
-.k-who-gs { display: flex; gap: 12px; }
-.k-who-g { min-width: 120px; min-height: 64px; border: 3px solid transparent; border-radius: 18px; background: var(--g-soft); font-size: 22px; font-weight: 800; }
-.k-who-g[aria-pressed="true"] { background: var(--g); border-color: rgba(0, 0, 0, .12); }
 .k-who-save { min-width: 200px; min-height: 60px; border: 0; border-radius: 999px; background: #ff6b6b; color: #fff; font-size: 22px; font-weight: 800; box-shadow: 0 4px 0 #c94444; }
 .k-who-skip { border: 0; background: none; color: var(--muted); text-decoration: underline; min-height: 44px; }
 .k-pls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 12px; }
