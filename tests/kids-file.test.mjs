@@ -115,3 +115,11 @@ test("kidsArt sticker defaults", () => {
   assert.deepEqual(kidsArt(undefined).sticker, { x: .5, y: .5, r: .3 });
   assert.deepEqual(kidsArt(undefined, { y: .4 }).sticker, { x: .5, y: .4, r: .3 });
 });
+
+test("validateKids: cutout must be true when present", () => {
+  assert.deepEqual(validateKids([{ tmdb: 1, age: "small", cutout: true }]), []);
+  for (const bad of [1, "yes", false, null]) {
+    const e = validateKids([{ tmdb: 1, age: "small", cutout: bad }]);
+    assert.equal(e.length, 1); assert.match(e[0], /^row 0: .*cutout/);
+  }
+});

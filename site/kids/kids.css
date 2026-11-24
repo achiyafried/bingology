@@ -124,3 +124,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .k-lv[aria-pressed="true"] { border-color: var(--g); background: var(--g); }
 .k-lv-grid { display: grid; gap: 3px; width: 100%; height: 100%; }
 .k-lv-grid i { background: #fff; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+
+/* Cut-out characters: the character itself, no circle */
+.k-sc-st.k-cut, .k-sc-tpl.k-cut { width: auto; border: 0; border-radius: 0; background: none; box-shadow: none; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .3)); }
+.k-sc-st.k-cut { height: 96px; margin: 0; translate: -50% -50%; }
+.k-sc-tpl.k-cut { height: 72px; }
+.k-cut-img { display: block; height: 100%; width: auto; pointer-events: none; -webkit-user-drag: none; }
+.k-sc-st.k-cut.k-dragging { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, .35)); }

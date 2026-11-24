@@ -41,6 +41,7 @@ export async function run({ rows, prev, fetchImpl = fetch, now, map, youtubeKey 
     if (live) item = { tmdb: r.tmdb, age: r.age, ...live, nameHe: r.he ?? live.nameHe, fetchedAt: now, ...carried(prevById.get(r.tmdb)) };
     else if (prevById.has(r.tmdb)) item = { ...prevById.get(r.tmdb), age: r.age, ...(r.he ? { nameHe: r.he } : {}) };
     else continue;
+    if (r.cutout === true) item.cutout = true; else delete item.cutout;
     if (overCap(item)) { warnings.push(`${r.tmdb}: minAge ${item.minAge} is above the ${r.age} cap`); continue; }
     items.push(item);
   }

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML } from "../site/kids/scene.js";
+import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "../site/kids/scene.js";
 import { SCENES } from "../site/kids/scenes.js";
 
 const B = "https://image.tmdb.org/t/p/w780/abc.jpg";
@@ -68,4 +68,23 @@ test("sceneHTML: unknown tmdb skipped, confirm state, unknown place", () => {
   assert.match(h, /data-a="clear-no" aria-label="[^"]+"/);
   assert.match(h, /לנקות\?/);
   assert.equal(sceneHTML("nope", [], [it(1)]), placesHTML());
+});
+
+test("sceneHTML: a cut-out character instead of the circle when the series has one", () => {
+  const items = [it(5, { cutout: true }), it(6)];
+  const h = sceneHTML("kitchen", [{ tmdb: 5, x: 0.2, y: 0.3 }, { tmdb: 6, x: 0.5, y: 0.5 }], items);
+  assert.equal((h.match(/<img class="k-cut-img" src="chars\/5\.png" alt="" draggable="false" data-tmdb="5">/g) || []).length, 2); // placed + tray
+  assert.doesNotMatch(h, /chars\/6\.png/);
+  assert.match(h, /class="k-sc-st k-cut" data-i="0"/);
+  assert.match(h, /class="k-sc-tpl k-cut" data-t="5"/);
+  assert.match(h, /class="k-sc-st" data-i="1"[^>]*background-image:url\(https:\/\/image\.tmdb\.org/);
+});
+
+test("sceneHTML: the cut-out path uses an integer id only", () => {
+  const h = sceneHTML("kitchen", [], [it("5x", { cutout: true })]);
+  assert.doesNotMatch(h, /chars\/5x/);
+});
+
+test("circleStyle: the round sticker style used when a cut-out fails to load", () => {
+  assert.match(circleStyle(it(6)), /^background-image:url\(https:\/\/image\.tmdb\.org[^)]*\);background-size:/);
 });

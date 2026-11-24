@@ -6,7 +6,7 @@ import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen } from "./puzzle.js";
 import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
-import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML } from "./scene.js";
+import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
 import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
 import { YT_ORIGINS } from "../lib/trailer.js";
@@ -91,9 +91,9 @@ function sceneDown(e) {
   let ghost = null;
   const lift = () => {
     if (placed) { el.classList.add("k-dragging"); return placed; }
-    ghost = tpl.cloneNode(false);
+    ghost = tpl.cloneNode(true);
     ghost.removeAttribute("data-t");
-    ghost.className = "k-sc-st k-dragging k-sc-ghost";
+    ghost.className = `k-sc-st k-dragging k-sc-ghost${tpl.classList.contains("k-cut") ? " k-cut" : ""}`;
     ghost.style.left = `${x0}px`; ghost.style.top = `${y0}px`;
     document.body.appendChild(ghost);
     return ghost;
@@ -129,6 +129,16 @@ function sceneDown(e) {
   drag.clean = clean;
 }
 root.addEventListener("pointerdown", sceneDown);
+// A cut-out that fails to load (missing PNG) turns back into the round sticker.
+root.addEventListener("error", e => {
+  const img = e.target;
+  if (!(img instanceof HTMLImageElement) || !img.classList.contains("k-cut-img")) return;
+  const box = img.parentElement, item = st.items.find(i => i.tmdb === Number(img.dataset.tmdb));
+  img.remove();
+  if (!box || !item) return;
+  box.classList.remove("k-cut");
+  box.setAttribute("style", `${box.getAttribute("style") || ""}${circleStyle(item)}`);
+}, true);
 
 // Drag a tray piece with a pointer: move it with transform, re-render only on drop.
 let drag = null, winTimer = 0, memTimer = 0;
