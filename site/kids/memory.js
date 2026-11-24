@@ -3,11 +3,36 @@ import { esc, safeImg } from "../lib/esc.js";
 import { stickerStyle } from "./art.js";
 import { title } from "./catalog.js";
 import { confettiHTML } from "./puzzle.js";
+import { withArt } from "./art.js";
 
-const sizeFor = n => (n > 6 ? 72 : 96);
 const STICKER = { x: 0.5, y: 0.5, r: 0.3 };
 
-export const pairsFor = level => (level < 3 ? 3 : 4);
+/** Card counts the child can pick, with how many columns their grid has. */
+export const MEM_LEVELS = [
+  { n: 4, cols: 2 }, { n: 6, cols: 3 }, { n: 8, cols: 4 }, { n: 12, cols: 4 }, { n: 16, cols: 4 }, { n: 20, cols: 5 },
+];
+export const memLevelFor = n => MEM_LEVELS.find(l => l.n === n) ?? null;
+const GAP = 8, PHONE = 328; // px between cards; usable width of a 360px phone
+/** Square card size so the level's columns fit a phone, at most 96px. */
+const sizeFor = n => {
+  const cols = (memLevelFor(n) ?? { cols: n > 6 ? 4 : 3 }).cols;
+  return Math.min(96, Math.floor((PHONE - (cols - 1) * GAP) / cols));
+};
+const colsFor = n => (memLevelFor(n) ?? { cols: n > 6 ? 4 : 3 }).cols;
+
+/** Which memory screen a route shows: the level picker, or the board for a valid size there are enough series for. */
+export function memoryScreen(route, items) {
+  const l = memLevelFor(Number(route.arg));
+  return l && withArt(items).length >= l.n / 2 ? "board" : "levels";
+}
+
+/** The level buttons there are enough series for, each drawing its grid; `current` (a card count) is pressed. */
+export function memLevelsHTML(current, items) {
+  const series = withArt(items).length;
+  const btns = MEM_LEVELS.filter(l => l.n / 2 <= series).map(l =>
+    `<button class="k-lv" data-a="go" data-v="memory/${l.n}" aria-label="זיכרון עם ${l.n} קלפים" aria-pressed="${l.n === current}"><span class="k-lv-grid k-lv-sq" style="grid-template-columns:repeat(${l.cols},1fr)" aria-hidden="true">${"<i></i>".repeat(l.n)}</span></button>`).join("");
+  return `<section class="k-lvs"><div class="k-lv-list">${btns}</div></section>`;
+}
 
 function shuffle(list, rnd) {
   const a = [...list];
@@ -56,5 +81,5 @@ export function memoryHTML(state, items) {
   const end = won(state)
     ? `${confettiHTML()}<div class="k-pz-end"><button class="k-pz-btn" data-a="mem-again" aria-label="עוד פעם"><span aria-hidden="true">🔁</span></button><button class="k-pz-btn" data-a="home" aria-label="חזרה"><span aria-hidden="true">🏠</span></button></div>`
     : "";
-  return `<section class="k-mem"><div class="k-mem-grid" style="--s:${SIZE}px;--c:${state.cards.length > 6 ? 4 : 3}">${cards}</div>${end}</section>`;
+  return `<section class="k-mem"><div class="k-mem-grid" style="--s:${SIZE}px;--c:${colsFor(state.cards.length)}">${cards}</div>${end}</section>`;
 }

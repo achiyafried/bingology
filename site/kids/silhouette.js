@@ -28,3 +28,6 @@ export function tryFill(targets, tmdb, fx, fy) {
 }
 
 export const allFilled = targets => targets.length > 0 && targets.every(t => t.done);
+
+/** While silhouettes are still waiting, a drop that doesn't fill one floats back instead of staying as a sticker. */
+export const blocksFreeDrop = targets => targets.length > 0 && !allFilled(targets);

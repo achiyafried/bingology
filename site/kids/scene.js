@@ -53,5 +53,5 @@ export function sceneHTML(place, list, items, opts = {}) {
     const id = Number.isInteger(t.tmdb) ? t.tmdb : null;
     return id ? `<div class="k-sil${t.done ? " k-sil-done" : ""}" style="left:${Math.round(t.x * 1000) / 10}%;top:${Math.round(t.y * 1000) / 10}%" aria-hidden="true"><img src="kids/chars/${id}.png" alt="" draggable="false"></div>` : "";
   }).join("");
-  return `<section class="k-sc"><div class="k-sc-scene" data-scene>${scene.svg}${placed}${sils}</div><div class="k-sc-foot"><div class="k-sc-tray">${tray}</div><div class="k-sc-clear">${clear}</div></div></section>`;
+  return `<section class="k-sc"><div class="k-sc-scene" data-scene>${scene.svg}${placed}${sils}</div><div class="k-sc-foot"><button class="k-sc-arr" data-a="tray" data-v="-1" aria-label="לדמויות הקודמות"><span aria-hidden="true">›</span></button><div class="k-sc-tray">${tray}</div><button class="k-sc-arr" data-a="tray" data-v="1" aria-label="לדמויות הבאות"><span aria-hidden="true">‹</span></button><div class="k-sc-clear">${clear}</div></div></section>`;
 }

@@ -113,7 +113,7 @@ test("a saved game with other choices than today's puzzle is ignored", () => {
   assert.equal(loadGame(st, "2026-11-19", "mid", { answer: 5, choices: [3, 2, 1, 5] }).misses[0], 1);
 });
 
-import { loadPuzzleSize, savePuzzleSize, loadLevel, bumpLevel, loadMute, saveMute, loadScene, saveScene, clearScene } from "../site/kids/store.js";
+import { loadMemorySize, saveMemorySize, loadPuzzleSize, savePuzzleSize, loadLevel, bumpLevel, loadMute, saveMute, loadScene, saveScene, clearScene } from "../site/kids/store.js";
 
 const mem2 = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v), removeItem: k => m.delete(k) }; };
 const broken2 = { getItem() { throw new Error("no"); }, setItem() { throw new Error("no"); }, removeItem() { throw new Error("no"); } };
@@ -171,4 +171,14 @@ test("puzzle size: one of the six sizes, default 4", () => {
   assert.equal(loadPuzzleSize(st), 4);
   assert.equal(loadPuzzleSize(broken2), 4);
   savePuzzleSize(broken2, 9);
+});
+
+test("memory size: one of the six sizes, default 6", () => {
+  const st = mem2();
+  assert.equal(loadMemorySize(st), 6);
+  saveMemorySize(st, 16);
+  assert.equal(loadMemorySize(st), 16);
+  st.setItem("bingology:kids-memory-size", "9");
+  assert.equal(loadMemorySize(st), 6);
+  assert.equal(loadMemorySize(broken2), 6);
 });

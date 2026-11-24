@@ -1,13 +1,14 @@
 // The kids page: loads kids-data.json, keeps the age group and today's game, paints the grid or the game.
 import { inGroup, servicesIn, pickServices, byServices } from "./catalog.js";
 import { puzzleFor, initGame, guess } from "./game.js";
-import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
+import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadPuzzleSize, savePuzzleSize, loadMemorySize, saveMemorySize, loadScene, saveScene, clearScene, loadPlayers, savePlayers, loadPlayer, savePlayer, loadNoName, saveNoName } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, confettiHTML } from "./puzzle.js";
-import { pickTargets, tryFill, allFilled } from "./silhouette.js";
+import { pickTargets, tryFill, allFilled, blocksFreeDrop } from "./silhouette.js";
 import { pickBubble, bubbleHTML, MAX_BUBBLES, SPAWN_MS } from "./bubbles.js";
-import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
+import { pickCheer, cleanName, cheerHTML, makeSpeaker, playersHTML, whoHTML, MAX_PLAYERS } from "./cheers.js";
+import { deal, flip, settle, won as memWon, memoryHTML, memoryScreen, memLevelsHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
 import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
@@ -19,10 +20,31 @@ import { israelToday } from "../lib/games/day.js";
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const root = document.getElementById("kids");
 const dlg = document.getElementById("kcard");
-const st = { items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, clip: null, muted: loadMute(store) };
+const st = { whoG: "m", items: [], age: loadAge(store), services: [], game: null, puzzle: null, jig: null, mem: null, scn: null, clip: null, muted: loadMute(store) };
 const FOOT = `<footer class="k-foot">This product uses the TMDB API but is not endorsed or certified by TMDB.</footer>`;
 
 const sound = makeSound(() => st.muted);
+
+// Personal cheers: the current child's name, shown big and spoken (only in a tap handler, so iOS lets it speak).
+const speak = makeSpeaker(() => st.muted);
+try { globalThis.speechSynthesis?.getVoices(); } catch {} // voices load lazily; ask early
+let lastCheer = -1, cheerTimer = 0, pairsFound = 0, pops = 0, speechReady = false;
+/** iOS unlocks speech only from a real tap: say nothing, once, from a click (the bubbles pop on pointerdown, which doesn't count). */
+function unlockSpeech() {
+  if (speechReady) return;
+  speechReady = true;
+  try { const u = new SpeechSynthesisUtterance(""); u.volume = 0; speechSynthesis.speak(u); } catch {}
+}
+function cheer() {
+  const players = loadPlayers(store), p = players.length ? players[Math.min(loadPlayer(store), players.length - 1)] : null;
+  const c = pickCheer(p, Math.random, lastCheer);
+  lastCheer = c.idx;
+  document.querySelector(".k-cheer")?.remove();
+  clearTimeout(cheerTimer);
+  document.body.insertAdjacentHTML("beforeend", cheerHTML(c.text));
+  cheerTimer = setTimeout(() => document.querySelector(".k-cheer")?.remove(), 2300);
+  speak(c.text);
+}
 
 function puzzleView(route) {
   const screen = puzzleScreen(route, st.items);
@@ -46,9 +68,12 @@ function puzzleAgain() {
   if (location.hash === h) render(); else location.hash = h;
 }
 
-function memoryView() {
+function memoryView(route) {
   const arts = withArt(st.items);
-  if (!st.mem) st.mem = deal(arts, pairsFor(loadLevel(store, "memory")));
+  if (memoryScreen(route, st.items) === "levels") { st.mem = null; clearTimeout(memTimer); memTimer = 0; return memLevelsHTML(loadMemorySize(store), st.items); }
+  const n = Number(route.arg);
+  saveMemorySize(store, n);
+  if (!st.mem || st.mem.cards.length !== n) { clearTimeout(memTimer); memTimer = 0; pairsFound = 0; st.mem = deal(arts, n / 2); } // no stale settle on a new board
   return memoryHTML(st.mem, arts);
 }
 
@@ -60,9 +85,11 @@ function memFlip(i) {
   st.mem = next;
   if (matched) sound.pair();
   const done = memWon(next);
-  if (done) bumpLevel(store, "memory");
-  else if (next.busy) memTimer = setTimeout(() => { memTimer = 0; if (st.mem) { st.mem = settle(st.mem); render(); } }, 1500);
+  if (matched) pairsFound++;
+  const cheerNow = done || (matched && pairsFound % 2 === 0);
+  if (!done && next.busy) memTimer = setTimeout(() => { memTimer = 0; if (st.mem) { st.mem = settle(st.mem); render(); } }, 1500);
   render();
+  if (cheerNow) cheer();
   if (done) winTimer = setTimeout(() => sound.win(), 250);
 }
 
@@ -134,9 +161,11 @@ function sceneDown(e) {
         st.scn.cheer = allFilled(filled);
         sound.pair();
         render();
+        cheer();
         if (allFilled(filled)) winTimer = setTimeout(() => sound.win(), 250);
         return;
       }
+      if (blocksFreeDrop(st.scn.targets)) return; // silhouettes still waiting: a wrong character floats back
       sceneSet(addSticker(st.scn.list, Number(tpl.dataset.t), fx, fy));
     }
   }, { signal });
@@ -145,6 +174,7 @@ function sceneDown(e) {
   drag.clean = clean;
 }
 root.addEventListener("pointerdown", sceneDown);
+root.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing && e.target.id === "k-who-name") root.querySelector("[data-a=who-save]")?.click(); });
 // A cut-out that fails to load (missing PNG) turns back into the round sticker.
 root.addEventListener("error", e => {
   const img = e.target;
@@ -182,7 +212,7 @@ function startDrag(e) {
         const won = solved(next) && !next.won;
         if (won) next.won = true;
         render();
-        if (won) winTimer = setTimeout(() => sound.win(), 250);
+        if (won) { cheer(); winTimer = setTimeout(() => sound.win(), 250); }
         return;
       }
     }
@@ -238,7 +268,12 @@ window.addEventListener("message", e => {
 
 // Game views by route.game.
 const VIEWS = {
-  home: () => homeHTML(st.items),
+  home: () => {
+    const players = loadPlayers(store);
+    if (!players.length && !loadNoName(store)) return whoHTML({ g: st.whoG }); // first visit: who's playing?
+    return (players.length ? playersHTML(players, Math.min(loadPlayer(store), players.length - 1)) : "") + homeHTML(st.items);
+  },
+  who: () => whoHTML({ g: st.whoG }),
   puzzle: puzzleView,
   memory: memoryView,
   scene: sceneView,
@@ -274,6 +309,7 @@ function pop(b) {
   if (b.classList.contains("k-popped")) return;
   b.classList.add("k-popped");
   sound.pair();
+  if (++pops % 5 === 0) cheer();
   setTimeout(() => b.remove(), reducedMotion() ? 0 : 450);
 }
 // Pointer: pop on press (a moving target); keyboard: Enter/Space reach the click delegation below.
@@ -316,6 +352,7 @@ function closeCard() { dlg.innerHTML = ""; if (dlg.open) dlg.close(); }
 
 root.addEventListener("click", e => {
   const b = e.target.closest("[data-a]"); if (!b) return;
+  if (location.hash.startsWith("#play")) unlockSpeech();
   const { a, v } = b.dataset;
   if (a === "age" && v !== st.age) { st.age = v; saveAge(store, v); setupGame(); render(); }
   else if (a === "svc") {
@@ -334,6 +371,27 @@ root.addEventListener("click", e => {
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
   else if (a === "pop") pop(b);
+  else if (a === "who-g") { st.whoG = v; root.querySelectorAll("[data-a=who-g]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === v))); }
+  else if (a === "who-save") {
+    const input = root.querySelector("#k-who-name"), name = cleanName(input?.value);
+    if (!name) { input?.focus(); return; }
+    const before = loadPlayers(store);
+    if (before.length >= MAX_PLAYERS) { location.hash = "play"; return; }
+    const players = [...before, { name, g: st.whoG === "f" ? "f" : "m" }];
+    savePlayers(store, players); savePlayer(store, players.length - 1); saveNoName(store, false);
+    st.whoG = "m";
+    if (location.hash === "#play") render(); else location.hash = "play";
+  }
+  else if (a === "who-skip") { saveNoName(store, true); if (location.hash === "#play") render(); else location.hash = "play"; }
+  else if (a === "player") { savePlayer(store, Number(v)); render(); }
+  else if (a === "player-del") {
+    const players = loadPlayers(store), i = Number(v);
+    if (!players[i] || !confirm(`להסיר את ${players[i].name}?`)) return;
+    players.splice(i, 1); savePlayers(store, players);
+    const cur = loadPlayer(store); savePlayer(store, cur > i ? cur - 1 : Math.min(cur, Math.max(0, players.length - 1)));
+    render();
+  }
+  else if (a === "tray") { const t = root.querySelector(".k-sc-tray"); if (t) t.scrollBy({ left: Number(v) * -Math.max(160, t.clientWidth * 0.8), behavior: "smooth" }); }
   else if (a === "sil-again" && st.scn) { st.scn.targets = pickTargets(st.items); render(); }
   else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {
@@ -343,6 +401,7 @@ root.addEventListener("click", e => {
   }
   else if (a === "mute") {
     st.muted = !st.muted; saveMute(store, st.muted);
+    if (st.muted) { try { speechSynthesis.cancel(); } catch {} }
     b.setAttribute("aria-label", st.muted ? "הפעלת צליל" : "השתקה");
     const ic = b.querySelector("span"); if (ic) ic.textContent = st.muted ? "🔇" : "🔊";
   }
