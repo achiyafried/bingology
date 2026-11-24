@@ -75,15 +75,15 @@ export function loadMemorySize(storage) {
 }
 export const saveMemorySize = (storage, n) => write(storage, MEM_SIZE, n);
 
-// Who plays the toddler games: [{ name, g: "m" | "f" }], saved on this device only.
+// Who plays the toddler games: [{ name (Hebrew, shown), en (English spelling, spoken) }], saved on this device only.
 const PLAYERS = "bingology:kids-players";
 const PLAYER = "bingology:kids-player";
 const NONAME = "bingology:kids-noname";
 export function loadPlayers(storage) {
   const v = read(storage, PLAYERS);
   return (Array.isArray(v) ? v : [])
-    .filter(p => p && typeof p.name === "string" && p.name.trim() && (p.g === "m" || p.g === "f"))
-    .map(p => ({ name: p.name, g: p.g })).slice(0, 4);
+    .filter(p => p && typeof p.name === "string" && p.name.trim())
+    .map(p => ({ name: p.name, en: typeof p.en === "string" ? p.en : "" })).slice(0, 4);
 }
 export const savePlayers = (storage, list) => write(storage, PLAYERS, list);
 export function loadPlayer(storage) {
