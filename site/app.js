@@ -9,6 +9,7 @@ import { hebKey, latKey, keyMatch } from "./lib/phonetic.js";
 import { searchSeries } from "./lib/search.js";
 import { addSeriesUrl } from "./lib/addlink.js";
 import { bellHTML, stripHTML, stripItems, unseenCount, upcomingSeasons, visibleItems } from "./lib/news.js";
+import { remindInfo, remindMenuHTML, icsText } from "./lib/remind.js";
 import { israelToday } from "./lib/games/day.js";
 import { dayProgress, loadTotal, streak as gamesStreak } from "./lib/games/store.js";
 
@@ -585,11 +586,32 @@ function dlgGo(view) {
 function dlgBack() { const v = st.dlgStack.pop(); if (v) { st.dlgCur = v; paintDlg(false); } }
 function openDlg(i) { dlgGo({ t: "s", v: i }); }
 
+/** The upcoming season a reminder button/menu item points at (its data-t/s/d), or null. */
+const remindOf = el => remindInfo({ tmdbId: +el.dataset.t, season: +el.dataset.s, date: el.dataset.d }, S, today());
+const closeRemind = () => document.querySelectorAll(".nmenu").forEach(m => m.remove());
+function downloadIcs(info) {
+  const url = URL.createObjectURL(new Blob([icsText(info)], { type: "text/calendar;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = `bingology-${info.tmdbId}-s${info.season}.ics`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
 /* actions */
 document.addEventListener("click", e => {
+  if (!e.target.closest(".nmenu, [data-a=nremind]")) closeRemind();
   const el = e.target.closest("[data-a]"); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v, i = el.dataset.i !== undefined ? +el.dataset.i : null;
   switch (a) {
+    case "nremind": {
+      const open = el.closest(".nrow")?.querySelector(".nmenu");
+      closeRemind();
+      const info = remindOf(el);
+      if (!open && info) el.closest(".nact").insertAdjacentHTML("afterend", remindMenuHTML(info));
+      break;
+    }
+    case "nics": { const info = remindOf(el); closeRemind(); if (info) { downloadIcs(info); showToast("האירוע ירד, פתחו אותו כדי להוסיף ליומן"); } break; }
+    case "nclose": setTimeout(closeRemind, 0); break;
     case "hinvite": headerInvite(); break;
     case "home": // the logo: back to the start screen from anywhere (quiz answers are kept, like "לדף הראשי")
       if (st.share || location.hash) { st.share = null; history.replaceState(null, "", location.pathname + location.search); }

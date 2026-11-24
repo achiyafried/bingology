@@ -4,6 +4,7 @@
 //   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 import { esc, safeImg } from "./esc.js";
+import { remindInfo, actionsHTML } from "./remind.js";
 
 const MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
 
@@ -135,7 +136,9 @@ export function rowHTML(entry, S, today, when) {
   const src = safeImg(s.poster);
   const img = src ? `<img class="poster" src="${src}" alt="" loading="lazy" data-pi="${i}" data-pc="">` : `<span class="noimg" aria-hidden="true"></span>`;
   const subBits = [t.sub ? bidi(t.sub) : "", entry.kind && when ? dayWord(entry.date, today) : ""].filter(Boolean).join(" · ");
-  return `<button class="n" data-a="detail" data-i="${i}">${img}<span class="i"><span class="k ${KCLS[t.kind] || "season"}">${esc(t.tag)}</span><b><bdi dir="rtl">${bidi(t.title)}</bdi>${flag(t.region)}</b>${subBits ? `<small>${subBits}</small>` : ""}</span></button>`;
+  const row = `<button class="n" data-a="detail" data-i="${i}">${img}<span class="i"><span class="k ${KCLS[t.kind] || "season"}">${esc(t.tag)}</span><b><bdi dir="rtl">${bidi(t.title)}</bdi>${flag(t.region)}</b>${subBits ? `<small>${subBits}</small>` : ""}</span></button>`;
+  const up = remindInfo(entry, S, today);
+  return up ? `<div class="nrow">${row}${actionsHTML(up)}</div>` : row;
 }
 
 /** Home-screen strip under "או פשוט תפתיעו אותי"; "" when there is nothing to show. */
