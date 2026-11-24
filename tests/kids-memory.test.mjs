@@ -1,16 +1,38 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { pairsFor, deal, flip, settle, won, memoryHTML } from "../site/kids/memory.js";
+import { MEM_LEVELS, memLevelFor, memLevelsHTML, memoryScreen, deal, flip, settle, won, memoryHTML } from "../site/kids/memory.js";
 
 const B = "https://image.tmdb.org/t/p/w780/abc.jpg";
 const mk = n => Array.from({ length: n }, (_, i) => ({ tmdb: i + 1, name: `s${i + 1}`, backdrop: B, age: "small" }));
 const seeded = () => { let s = 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; };
 const idx = (st, t) => st.cards.flatMap((c, i) => (c.tmdb === t ? [i] : []));
 
-test("pairsFor: 3 below level 3, 4 from 3", () => {
-  assert.equal(pairsFor(0), 3);
-  assert.equal(pairsFor(2), 3);
-  assert.equal(pairsFor(3), 4);
+test("memory levels: 4 to 20 cards with their grids", () => {
+  assert.deepEqual(MEM_LEVELS.map(l => [l.n, l.cols]), [[4, 2], [6, 3], [8, 4], [12, 4], [16, 4], [20, 5]]);
+  for (const l of MEM_LEVELS) assert.equal(memLevelFor(l.n), l);
+  for (const bad of [0, 5, 10, 24, NaN, "8"]) assert.equal(memLevelFor(bad), null);
+});
+
+test("memoryScreen: the level picker until a valid size is in the route", () => {
+  assert.equal(memoryScreen({ game: "memory", arg: null }, mk(10)), "levels");
+  assert.equal(memoryScreen({ game: "memory", arg: "7" }, mk(10)), "levels");
+  assert.equal(memoryScreen({ game: "memory", arg: "20" }, mk(10)), "board");
+  assert.equal(memoryScreen({ game: "memory", arg: "20" }, mk(9)), "levels"); // not enough series for 10 pairs
+});
+
+test("memLevelsHTML: only the levels there are enough series for; Hebrew labels; current pressed", () => {
+  const h = memLevelsHTML(12, mk(7)); // 7 series -> up to 14 cards
+  for (const n of [4, 6, 8, 12]) assert.match(h, new RegExp(`data-a="go" data-v="memory/${n}" aria-label="זיכרון עם ${n} קלפים" aria-pressed="${n === 12}"`));
+  assert.doesNotMatch(h, /memory\/16|memory\/20/);
+});
+
+test("memoryHTML: square cards sized to fit the level's grid", () => {
+  const big = memoryHTML(deal(mk(10), 10, seeded()), mk(10));
+  assert.match(big, /--c:5/);
+  const px = Number(/--s:(\d+)px/.exec(big)[1]);
+  assert.ok(5 * px + 4 * 8 <= 328, `20 cards fit a 360px phone (${px}px)`);
+  assert.match(memoryHTML(deal(mk(2), 2, seeded()), mk(2)), /--c:2/);
+  assert.match(memoryHTML(deal(mk(4), 4, seeded()), mk(4)), /--c:4/);
 });
 
 test("deal: each of 3 distinct series twice; fewer series -> fewer cards", () => {

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { pickTargets, tryFill, allFilled, MIN_GAP, FILL } from "../site/kids/silhouette.js";
+import { pickTargets, tryFill, allFilled, blocksFreeDrop, MIN_GAP, FILL } from "../site/kids/silhouette.js";
 import { sceneHTML } from "../site/kids/scene.js";
 
 const seeded = () => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; };
@@ -39,4 +39,11 @@ test("sceneHTML: silhouettes dark until filled, colour when done", () => {
   const h = sceneHTML("kitchen", [], items, { targets: [{ tmdb: 1, x: 0.3, y: 0.5, done: false }, { tmdb: 2, x: 0.7, y: 0.5, done: true }] });
   assert.match(h, /class="k-sil" style="left:30%;top:50%"[^>]*><img src="kids\/chars\/1\.png"/);
   assert.match(h, /class="k-sil k-sil-done" style="left:70%;top:50%"/);
+});
+
+test("blocksFreeDrop: while silhouettes wait to be filled, a wrong drop doesn't stay", () => {
+  const t = [{ tmdb: 1, x: 0.5, y: 0.5, done: false }, { tmdb: 2, x: 0.2, y: 0.5, done: true }];
+  assert.equal(blocksFreeDrop(t), true);
+  assert.equal(blocksFreeDrop(t.map(x => ({ ...x, done: true }))), false);
+  assert.equal(blocksFreeDrop([]), false);
 });

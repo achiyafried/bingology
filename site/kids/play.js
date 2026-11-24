@@ -13,7 +13,7 @@ export function parseRoute(hash) {
 export function backHash({ game, arg, sub }) {
   if (game === "home" || (game === "clips" && !arg)) return "";
   if (game === "puzzle" && arg && sub) return `#play/puzzle/${arg}`;
-  if (arg && (game === "puzzle" || game === "scene" || game === "clips")) return `#play/${game}`;
+  if (arg && (game === "puzzle" || game === "scene" || game === "clips" || game === "memory")) return `#play/${game}`;
   return "#play";
 }
 
@@ -34,7 +34,7 @@ export function shellHTML(inner, { muted }) {
 
 export function homeHTML(items) {
   // title: the explanation shown on hover; the same sentence goes to screen readers.
-  const tile = (v, label, icon, tip) => `<button class="k-gtile" data-a="go" data-v="${v}" title="${tip}" aria-label="${label}: ${tip}"><span aria-hidden="true">${icon}</span></button>`;
+  const tile = (v, label, icon, tip) => `<button class="k-gtile" data-a="go" data-v="${v}" title="${tip}" aria-label="${label}: ${tip}"><span class="k-gtile-ico" aria-hidden="true">${icon}</span><span class="k-gtile-name">${label}</span><span class="k-gtile-tip">${tip}</span></button>`;
   const tiles = [tile("puzzle", "פאזל", "🧩", "בונים תמונה מחתיכות פאזל")];
   if (withArt(items).length >= 3) tiles.push(tile("memory", "זיכרון", "🃏", "מוצאים זוגות של דמויות"));
   tiles.push(tile("scene", "איפה?", "🔍", "מוצאים לכל צללית את הדמות שלה"));

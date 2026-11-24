@@ -88,3 +88,9 @@ test("sceneHTML: the cut-out path uses an integer id only", () => {
 test("circleStyle: the round sticker style used when a cut-out fails to load", () => {
   assert.match(circleStyle(it(6)), /^background-image:url\(https:\/\/image\.tmdb\.org[^)]*\);background-size:/);
 });
+
+test("sceneHTML: arrows at both ends of the tray to scroll the characters", () => {
+  const h = sceneHTML("kitchen", [], [it(5), it(6)]);
+  assert.match(h, /<button class="k-sc-arr" data-a="tray" data-v="1" aria-label="לדמויות הבאות"/);
+  assert.match(h, /<button class="k-sc-arr" data-a="tray" data-v="-1" aria-label="לדמויות הקודמות"/);
+});

@@ -1,13 +1,13 @@
 // The kids page: loads kids-data.json, keeps the age group and today's game, paints the grid or the game.
 import { inGroup, servicesIn, pickServices, byServices } from "./catalog.js";
 import { puzzleFor, initGame, guess } from "./game.js";
-import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadLevel, bumpLevel, loadPuzzleSize, savePuzzleSize, loadScene, saveScene, clearScene } from "./store.js";
+import { loadAge, saveAge, loadGame, saveGame, loadMute, saveMute, loadPuzzleSize, savePuzzleSize, loadMemorySize, saveMemorySize, loadScene, saveScene, clearScene } from "./store.js";
 import { makeSound } from "./sound.js";
 import { withArt } from "./art.js";
 import { initPuzzle, trySnap, solved, pickerHTML, puzzleHTML, levelsHTML, puzzleScreen, boardFor, onLevels, confettiHTML } from "./puzzle.js";
-import { pickTargets, tryFill, allFilled } from "./silhouette.js";
+import { pickTargets, tryFill, allFilled, blocksFreeDrop } from "./silhouette.js";
 import { pickBubble, bubbleHTML, MAX_BUBBLES, SPAWN_MS } from "./bubbles.js";
-import { pairsFor, deal, flip, settle, won as memWon, memoryHTML } from "./memory.js";
+import { deal, flip, settle, won as memWon, memoryHTML, memoryScreen, memLevelsHTML } from "./memory.js";
 import { addSticker, moveSticker, removeSticker, outside, placesHTML, sceneHTML, circleStyle } from "./scene.js";
 import { SCENES } from "./scenes.js";
 import { withClips, onPlayerMessage, afterError, clipsPickerHTML, clipScreenHTML } from "./clips.js";
@@ -46,9 +46,12 @@ function puzzleAgain() {
   if (location.hash === h) render(); else location.hash = h;
 }
 
-function memoryView() {
+function memoryView(route) {
   const arts = withArt(st.items);
-  if (!st.mem) st.mem = deal(arts, pairsFor(loadLevel(store, "memory")));
+  if (memoryScreen(route, st.items) === "levels") { st.mem = null; return memLevelsHTML(loadMemorySize(store), st.items); }
+  const n = Number(route.arg);
+  saveMemorySize(store, n);
+  if (!st.mem || st.mem.cards.length !== n) st.mem = deal(arts, n / 2);
   return memoryHTML(st.mem, arts);
 }
 
@@ -60,8 +63,7 @@ function memFlip(i) {
   st.mem = next;
   if (matched) sound.pair();
   const done = memWon(next);
-  if (done) bumpLevel(store, "memory");
-  else if (next.busy) memTimer = setTimeout(() => { memTimer = 0; if (st.mem) { st.mem = settle(st.mem); render(); } }, 1500);
+  if (!done && next.busy) memTimer = setTimeout(() => { memTimer = 0; if (st.mem) { st.mem = settle(st.mem); render(); } }, 1500);
   render();
   if (done) winTimer = setTimeout(() => sound.win(), 250);
 }
@@ -137,6 +139,7 @@ function sceneDown(e) {
         if (allFilled(filled)) winTimer = setTimeout(() => sound.win(), 250);
         return;
       }
+      if (blocksFreeDrop(st.scn.targets)) return; // silhouettes still waiting: a wrong character floats back
       sceneSet(addSticker(st.scn.list, Number(tpl.dataset.t), fx, fy));
     }
   }, { signal });
@@ -334,6 +337,7 @@ root.addEventListener("click", e => {
   else if (a === "clear-yes" && st.scn) { clearScene(store, st.scn.place); st.scn.list = []; st.scn.confirm = false; render(); }
   else if (a === "mem-flip") memFlip(Number(v));
   else if (a === "pop") pop(b);
+  else if (a === "tray") { const t = root.querySelector(".k-sc-tray"); if (t) t.scrollBy({ left: Number(v) * -Math.max(160, t.clientWidth * 0.8), behavior: "smooth" }); }
   else if (a === "sil-again" && st.scn) { st.scn.targets = pickTargets(st.items); render(); }
   else if (a === "mem-again") { clearTimeout(memTimer); memTimer = 0; st.mem = null; render(); }
   else if (a === "home") {

@@ -22,6 +22,7 @@ test("backHash", () => {
   assert.equal(backHash({ game: "puzzle", arg: "1" }), "#play/puzzle");
   assert.equal(backHash({ game: "puzzle", arg: null }), "#play");
   assert.equal(backHash({ game: "memory", arg: null }), "#play");
+  assert.equal(backHash({ game: "memory", arg: "12" }), "#play/memory");
   assert.equal(backHash({ game: "scene", arg: "park" }), "#play/scene");
   assert.equal(backHash({ game: "scene", arg: null }), "#play");
   assert.equal(backHash({ game: "clips", arg: "5" }), "#play/clips");
@@ -61,6 +62,12 @@ test("homeHTML tiles", () => {
   for (const [v, tip] of Object.entries(tips)) {
     assert.match(h3, new RegExp(`data-v="${v}" title="${tip}" aria-label="[^"]+: ${tip}"`));
   }
+});
+
+test("homeHTML: every tile shows its name and explanation as visible text", () => {
+  const h = homeHTML([s(1), s(2), s(3)]);
+  assert.match(h, /<span class="k-gtile-name">פאזל<\/span><span class="k-gtile-tip">בונים תמונה מחתיכות פאזל<\/span>/);
+  assert.match(h, /<span class="k-gtile-tip">מפוצצים בועות עם דמויות<\/span>/);
 });
 
 test("parseRoute knows the bubbles game", () => {

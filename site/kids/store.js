@@ -65,3 +65,12 @@ export function loadPuzzleSize(storage) {
   return SIZES.includes(v) ? v : 4;
 }
 export const savePuzzleSize = (storage, n) => write(storage, SIZE, n);
+
+const MEM_SIZE = "bingology:kids-memory-size";
+const MEM_SIZES = [4, 6, 8, 12, 16, 20];
+/** The last memory size picked (cards): one of the six, default 6. */
+export function loadMemorySize(storage) {
+  const v = read(storage, MEM_SIZE);
+  return MEM_SIZES.includes(v) ? v : 6;
+}
+export const saveMemorySize = (storage, n) => write(storage, MEM_SIZE, n);
